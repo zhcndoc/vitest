@@ -21,7 +21,7 @@ import { teamMembers } from './contributors'
 
 export default () => {
   return withPwa(defineConfig({
-    lang: 'en-US',
+    lang: 'zh-CN',
     title: vitestName,
     description: vitestDescription,
     locales: {

@@ -1,9 +1,9 @@
 // noinspection ES6PreferShortImport: IntelliJ IDE hint to avoid warning to use `~/contributors`, will fail on build if changed
 
 /* Texts */
-export const vitestName = 'Vitest'
+export const vitestName = 'Vitest 中文文档'
 export const vitestShortName = 'Vitest'
-export const vitestDescription = 'Next generation testing framework powered by Vite'
+export const vitestDescription = '由 Vite 驱动的下一代测试框架'
 
 /* CDN fonts and styles */
 export const googleapis = 'https://fonts.googleapis.com'
