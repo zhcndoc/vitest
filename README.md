@@ -25,3 +25,7 @@ Vitest
 ### 感谢
 
 [@elonehoo](https://github.com/elonehoo) - 发起与维护该文档翻译
+
+## Deploy
+
+[![Deployed on Zeabur](https://zeabur.com/deployed-on-zeabur-dark.svg)](https://zeabur.com?referralCode=ikxin&utm_source=ikxin)

@@ -96,7 +96,7 @@ export default () => {
       lastUpdatedText: '最后更新时间',
 
       footer: {
-        message: 'Released under the MIT License.',
+        message: '<a style="display: block; width: fit-content; margin: 10px auto;" href="https://zeabur.com?referralCode=ikxin&utm_source=ikxin"><img src=https://zeabur.com/deployed-on-zeabur-light.svg alt="Deployed on Zeabur"/></a>',
         copyright:
           'Copyright © 2021-PRESENT Anthony Fu, Matías Capeletto and Vitest contributors',
       },
