@@ -4,14 +4,11 @@ import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
 import { version } from '../package.json'
 import {
   contributing,
-  discord,
   font,
   github,
-  mastodon,
   ogImage,
   ogUrl,
   releases,
-  twitter,
   vitestDescription,
   vitestName,
 } from './meta'
@@ -23,6 +20,7 @@ export default () => {
   return withPwa(defineConfig({
     lang: 'zh-CN',
     title: vitestName,
+    titleTemplate: ':title - Vitest 中文文档',
     description: vitestDescription,
     locales: {
       root: {
@@ -36,6 +34,15 @@ export default () => {
       },
     },
     head: [
+      ['meta', { name: 'baidu-site-verification', content: 'codeva-ODQv7tkUKc' }],
+      [
+        'script',
+        {
+          'defer': '',
+          'src': 'https://analytics.ikxin.com/script.js',
+          'data-website-id': 'f0e90b0d-e086-4fdc-b173-de4857b71900',
+        },
+      ],
       ['meta', { name: 'theme-color', content: '#729b1a' }],
       ['link', { rel: 'icon', href: '/favicon.ico', sizes: 'any' }],
       ['link', { rel: 'icon', href: '/logo.svg', type: 'image/svg+xml' }],
@@ -65,40 +72,53 @@ export default () => {
       ],
     },
     ignoreDeadLinks: true,
+
+    sitemap: {
+      hostname: 'https://vitest.zhcndoc.com'
+    },
+
     themeConfig: {
       logo: '/logo.svg',
 
       editLink: {
-        pattern: 'https://github.com/vitest-dev/docs-cn/tree/dev/:path',
-        text: '为此页提供修改建议',
+        text: '在 GitHub 上查看此页面',
+        pattern: 'https://github.com/zhcndoc/vitest/tree/main/:path',
       },
-
+      docFooter: {
+        prev: '上一页',
+        next: '下一页',
+      },
       outline: {
-        label: '本页目录',
+        label: '页面导航',
       },
+      lastUpdated: {
+        text: '最后更新于',
+        formatOptions: {
+          dateStyle: 'short',
+          timeStyle: 'medium',
+        },
+      },
+      langMenuLabel: '多语言',
+      returnToTopLabel: '回到顶部',
+      sidebarMenuLabel: '菜单',
+      darkModeSwitchLabel: '主题',
+      lightModeSwitchTitle: '切换到浅色模式',
+      darkModeSwitchTitle: '切换到深色模式',
 
       search: {
         provider: 'local',
       },
 
       socialLinks: [
-        { icon: 'mastodon', link: mastodon },
-        { icon: 'x', link: twitter },
-        { icon: 'discord', link: discord },
         { icon: 'github', link: github },
       ],
 
-      docFooter: {
-        prev: '上一篇',
-        next: '下一篇',
-      },
-
-      lastUpdatedText: '最后更新时间',
-
       footer: {
-        message: '<a style="display: block; width: fit-content; margin: 10px auto;" href="https://zeabur.com?referralCode=ikxin&utm_source=ikxin"><img src=https://zeabur.com/deployed-on-zeabur-light.svg alt="Deployed on Zeabur"/></a>',
-        copyright:
-          'Copyright © 2021-PRESENT Anthony Fu, Matías Capeletto and Vitest contributors',
+        message: `
+          <a style="text-decoration: none;" rel="nofollow" target="__blank" href="https://zeabur.com?referralCode=ikxin&amp;utm_source=ikxin">Deployed on Zeabur</a>
+          <a style="text-decoration: none; margin-left: 8px;" rel="nofollow" target="__blank" href="https://beian.miit.gov.cn">沪ICP备2024070610号-3</a>
+        `,
+        copyright: 'Copyright © 2021-2024 Anthony Fu, Matías Capeletto 和 Vitest 贡献者',
       },
 
       nav: [

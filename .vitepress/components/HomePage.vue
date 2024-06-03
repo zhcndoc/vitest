@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { VPHomeSponsors } from 'vitepress/theme'
-import { sponsors } from '../sponsors'
+// import { VPHomeSponsors } from 'vitepress/theme'
+// import { sponsors } from '../sponsors'
 </script>
 
 <template>
-  <div class="content">
+  <!-- <div class="content">
     <div class="content-container">
       <main class="main">
         <VPHomeSponsors
@@ -35,7 +35,7 @@ import { sponsors } from '../sponsors'
         </p>
       </main>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <style scoped>
