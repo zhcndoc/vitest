@@ -252,5 +252,7 @@ test('my types work properly', () => {
 ```bash
 vitest --shard=1/2 --reporter=blob
 vitest --shard=2/2 --reporter=blob
-vitest --merge-reports --reporter=junit
+vitest --merge-reports --reporter=junit --coverage.reporter=text
 ```
+
+了解更多信息 [`性能优化 | 分片`](/guide/improving-performance#sharding)

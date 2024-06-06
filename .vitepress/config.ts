@@ -148,6 +148,10 @@ export default () => {
             {
               items: [
                 {
+                  text: 'unreleased',
+                  link: 'https://main.vitest.dev/',
+                },
+                {
                   text: 'v0.x',
                   link: 'https://v0.vitest.dev/',
                 },
