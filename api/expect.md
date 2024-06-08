@@ -1021,7 +1021,7 @@ test('spy function returns bananas on second call', () => {
 
 如果函数返回了一个promise，但尚未resolved，则将会失败。
 
-```ts twoslash
+```ts
 // @filename: db/apples.js
 /** @type {any} */
 const db = {}
@@ -1054,7 +1054,7 @@ test('spy function resolved a value', async () => {
 这只会计算已resolved的promises。如果函数返回了一个promise，但尚未resolved，则不会计算在内。
 
 
-```ts twoslash
+```ts
 import { expect, test, vi } from 'vitest'
 
 test('spy function resolved a value two times', async () => {
@@ -1078,7 +1078,7 @@ test('spy function resolved a value two times', async () => {
 如果函数返回了一个promise，但尚未resolved，则将会失败。
 
 
-```ts twoslash
+```ts
 import { expect, test, vi } from 'vitest'
 
 test('spy function resolved a product', async () => {
@@ -1098,7 +1098,7 @@ test('spy function resolved a product', async () => {
 
 如果函数返回了一个promise，但尚未resolved，则将会失败。
 
-```ts twoslash
+```ts
 import { expect, test, vi } from 'vitest'
 
 test('spy function resolves bananas on a last call', async () => {
@@ -1119,7 +1119,7 @@ test('spy function resolves bananas on a last call', async () => {
 
 如果函数返回了一个promise，但尚未resolved，则将会失败。
 
-```ts twoslash
+```ts
 import { expect, test, vi } from 'vitest'
 
 test('spy function returns bananas on second call', async () => {
