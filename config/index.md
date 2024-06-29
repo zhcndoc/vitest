@@ -491,7 +491,12 @@ export default defineConfig({
 Vitest 中的默认测试环境是一个 Node.js 环境。如果你正在构建 Web 端应用，你可以使用 [`jsdom`](https://github.com/jsdom/jsdom) 或 [`happy-dom`](https://github.com/capricorn86/happy-dom) 这种类似浏览器(browser-like)的环境来替代 Node.js。
 如果你正在构建边缘计算函数，你可以使用 [`edge-runtime`](https://edge-runtime.vercel.app/packages/vm) 环境
 
+::: tip
+你还可以使用 [浏览器模式](/guide/browser) 在浏览器中运行集成或单元测试，而无需模拟环境。
+:::
+
 你可以通过在文件顶部添加包含 `@vitest-environment` 的文档块或注释，为某个测试文件中的所有测试指定环境：
+
 
 文档块格式:
 
@@ -571,7 +576,7 @@ jsdom 环境变量导出了等同于当前[JSDOM](https://github.com/jsdom/jsdom
 - **类型:** `Record<'jsdom' | string, unknown>`
 - **默认值:** `{}`
 
-这些选项被传递给当前 [`environment`](/#environment) 的 `setup` 方法。 默认情况下，如果你将其用作测试环境，则只能配置 JSDOM 选项。
+这些选项被传递给当前 [`environment`](#environment) 的 `setup` 方法。 默认情况下，如果你将其用作测试环境，则只能配置 JSDOM 选项。
 
 ### environmentMatchGlobs
 
@@ -988,7 +993,7 @@ export default defineConfig({
 使用时要小心，因为某些选项（如 `--prof` 、`--title`）可能会导致 worker 崩溃。查看 https://github.com/nodejs/node/issues/41103 了解更多详情。
 :::
 
-### fileParallelism {#fileparallelism}
+### fileParallelism<NonProjectOption /> {#fileparallelism}
 
 - **类型:** `boolean`
 - **默认值:** `true`
@@ -1000,13 +1005,13 @@ export default defineConfig({
 此选项不会影响在同一文件中运行的测试。如果你想并行运行这些程序，请在[description](/api/#describe-concurrent)或通过[a config](#sequence-concurrent) 上使用 `concurrent` 选项。
 :::
 
-### maxWorkers {#maxworkers}
+### maxWorkers<NonProjectOption /> {#maxworkers}
 
 - **类型:** `number`
 
 运行测试时设置的最大工作线程数。`poolOptions。｛threads，vmThreads｝.maxThreads `/`poolOptions.forks.maxForks` 具有更高的优先级。
 
-### minWorkers {#minworkers}
+### minWorkers<NonProjectOption /> {#minworkers}
 
 - **类型:** `number`
 
@@ -1015,7 +1020,7 @@ export default defineConfig({
 ### testTimeout
 
 - **类型:** `number`
-- **默认值:** `5000`
+- **默认值:** `5_000` in Node.js, `15_000` if `browser.enabled` is `true`
 - **命令行终端:** `--test-timeout=5000`, `--testTimeout=5000`
 
 测试的默认超时时间（以毫秒为单位）。
@@ -1023,7 +1028,7 @@ export default defineConfig({
 ### hookTimeout
 
 - **类型:** `number`
-- **默认值:** `10000`
+- **默认值:** `10_000` in Node.js, `30_000` if `browser.enabled` is `true`
 - **命令行终端:** `--hook-timeout=10000`, `--hookTimeout=10000`
 
 钩子(hook)的默认超时时间（以毫秒为单位）。
@@ -1735,7 +1740,21 @@ export default defineConfig({
 - **Type:** `{ width, height }`
 - **Default:** `414x896`
 
-Default iframe's viewport.
+默认 iframe 的viewport。
+
+#### browser.screenshotDirectory {#browser-screenshotdirectory}
+
+- **Type:** `string`
+- **Default:** `__snapshots__` in the test file directory
+
+相对于 `root` 的快照目录路径。
+
+#### browser.screenshotFailures {#browser-screenshotfailures}
+
+- **Type:** `boolean`
+- **Default:** `!browser.ui`
+
+如果测试失败，Vitest 是否应截图。
 
 #### browser.orchestratorScripts {#browser-orchestratorscripts}
 
@@ -1992,6 +2011,26 @@ export default defineConfig({
 - **命令行终端**: `--no-cache`, `--cache=false`
 
 如果要禁用缓存功能，请使用此选项。目前，Vitest 会对测试结果进行缓存，优先运行时间较长和失败的测试。
+
+缓存目录由 Vite 的 [`cacheDir`](https://vitejs.dev/config/shared-options.html#cachedir) 选项控制：
+
+```ts
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  cacheDir: 'custom-folder/.vitest'
+})
+```
+
+您可以使用 `process.env.VITEST` 来限制目录，使其仅用于 Vitest：
+
+```ts
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  cacheDir: process.env.VITEST ? 'custom-folder/.vitest' : undefined
+})
+```
 
 ### sequence
 
@@ -2250,12 +2289,14 @@ export default defineConfig({
   test: {
     onStackTrace(error: Error, { file }: ParsedStack): boolean | void {
       // If we've encountered a ReferenceError, show the whole stack.
-      if (error.name === 'ReferenceError')
+      if (error.name === 'ReferenceError') {
         return
+      }
 
       // Reject all frames from third party libraries.
-      if (file.includes('node_modules'))
+      if (file.includes('node_modules')) {
         return false
+      }
     },
   },
 })
@@ -2397,6 +2438,11 @@ export default defineConfig({
 Vitest API 在 [reporters](#reporters) 中接收任务时是否应包含`location`属性。如果您有大量测试，这可能会导致性能小幅下降。
 
 `location` 属性的 `列` 和 `行` 值与原始文件中的 `test` 或 `describe` 位置相对应。
+
+This option will be auto-enabled if you don't disable it explicitly, and you are running Vitest with:
+- [Vitest UI](/guide/ui)
+- or using the [Browser Mode](/guide/browser) without [headless](/guide/browser#headless) mode
+- or using [HTML Reporter](/guide/reporters#html-reporter)
 
 ::: tip
 如果不使用依赖于该选项的自定义代码，该选项将不起作用。

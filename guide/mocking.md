@@ -27,8 +27,9 @@ function purchase() {
   const currentHour = new Date().getHours()
   const [open, close] = businessHours
 
-  if (currentHour > open && currentHour < close)
+  if (currentHour > open && currentHour < close) {
     return { message: 'Success' }
+  }
 
   return { message: 'Error' }
 }
@@ -79,16 +80,16 @@ describe('purchasing flow', () => {
 ```js twoslash
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-function getLatest(index = messages.items.length - 1) {
-  return messages.items[index]
-}
-
 const messages = {
   items: [
     { message: 'Simple test message', from: 'Testman' },
     // ...
   ],
   getLatest, // 也可以是一个 `getter 或 setter 如果支持`
+}
+
+function getLatest(index = messages.items.length - 1) {
+  return messages.items[index]
 }
 
 describe('reading messages', () => {
@@ -195,7 +196,7 @@ export default {
     {
       name: 'virtual-modules',
       resolveId(id) {
-        if (id === '$app/forms')
+        if (id === '$app/forms') {
           return 'virtual:$app/forms'
       },
     },
@@ -267,10 +268,6 @@ export function foobar(injectedFoo) {
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { Client } from 'pg'
 import { failure, success } from './handlers.js'
-
-// handlers
-export function success(data) {}
-export function failure(data) {}
 
 // get todos
 export async function getTodos(event, context) {
