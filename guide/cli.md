@@ -56,6 +56,36 @@ export default {
 
 仅运行 [基准](https://vitest.dev/guide/features.html#benchmarking-experimental) 测试，比较性能结果。
 
+### `vitest init`
+
+`vitest-init<name>` 可以用于设置项目配置。目前，它只支持 [`browser`](/guide/browser/) 值：
+
+```bash
+vitest init browser
+```
+
+### `vitest list`
+
+`vitest list` 命令继承所有的 `vitest` 选项以打印所有匹配测试的列表。此命令忽略 `reporters` 选项。默认情况下，它将打印与文件过滤器和名称模式匹配的所有测试的名称：
+
+```shell
+vitest list filename.spec.ts -t="some-test"
+```
+
+```txt
+describe > some-test
+describe > some-test > test 1
+describe > some-test > test 2
+```
+
+你可以传递 `--json` 标志以 JSON 格式打印测试，也可以将其保存在单独的文件中：
+
+```bash
+vitest list filename.spec.ts -t="some-test" --json=./file.json
+```
+
+如果 `--json` 标志没有接收到值，它将把 JSON 输出到 stdout 中。
+
 ## 选项
 
 <!--@include: ./cli-table.md-->

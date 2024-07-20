@@ -46,6 +46,10 @@ export interface ProcessPool {
     files: [project: WorkspaceProject, testFile: string][],
     invalidates?: string[]
   ) => Promise<void>
+  collectTests: (
+    files: [project: WorkspaceProject, testFile: string][],
+    invalidates?: string[]
+  ) => Promise<void>
   close?: () => Promise<void>
 }
 ```
@@ -58,7 +62,9 @@ Vitest 会等到 `runTests` 执行完毕后才结束运行（即只有在 `runTe
 
 如果你正在使用自定义池，需要自行提供测试文件及其结果 - 可以参考 [`vitest.state`](https://github.com/vitest-dev/vitest/blob/main/packages/vitest/src/node/state.ts)（最重要的是 `collectFiles` 和 `updateTasks`）。Vitest 使用 `@vitest/runner` 包中的 `startTests` 函数来执行这些操作。
 
-要在不同进程之间进行通信，可以使用 `vitest/node` 中的 `createMethodsRPC` 创建方法对象，并使用你喜欢的任何通信形式。例如，要使用 `birpc` 的 websockets，可以编写类似以下的内容：
+如果通过 CLI 命令调用 `vitest.collect` 或 `vitest list`，则 Vitest 将调用 `collectTests`。它的工作方式与 `runTests` 相同，但你不必运行测试回调，只需通过调用 `vitest.state.collectFiles(files)` 来报告它们的任务。
+
+要在不同的进程之间进行通信，可以使用 `vitest/node` 中的 `createMethodsRPC` 创建方法对象，并使用你喜欢的任何形式的通信。例如，要将 WebSockets 与 `birpc` 一起使用，你可以编写以下内容：
 
 ```ts
 import { createBirpc } from 'birpc'
