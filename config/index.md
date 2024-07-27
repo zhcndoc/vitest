@@ -656,6 +656,14 @@ export default defineConfig({
 
 项目的根目录
 
+### dir
+
+- **类型:** `string`
+- **命令行终端:** `--dir=<path>`
+- **默认值:** same as `root`
+
+扫描测试文件的基本目录。如果您的根目录覆盖整个项目，您可以指定此选项以加快测试发现速度
+
 ### reporters<NonProjectOption />
 
 - **类型:** `Reporter | Reporter[]`
@@ -1200,7 +1208,7 @@ npx vitest --coverage.enabled --coverage.provider=istanbul --coverage.all
 #### coverage.extension
 
 - **类型:** `string | string[]`
-- **默认值:** `['.js', '.cjs', '.mjs', '.ts', '.mts', '.cts', '.tsx', '.jsx', '.vue', '.svelte', '.marko']`
+- **默认值:** `['.js', '.cjs', '.mjs', '.ts', '.mts', '.tsx', '.jsx', '.vue', '.svelte', '.marko']`
 - **可用的测试提供者:** `'v8' | 'istanbul'`
 - **命令行终端:** `--coverage.extension=<extension>`, `--coverage.extension=<extension1> --coverage.extension=<extension2>`
 
@@ -1461,6 +1469,11 @@ statements 的全局阈值。
 
 设置与 glob 模式匹配的文件的阈值。
 
+::: tip NOTE
+Vitest counts all files, including those covered by glob-patterns, into the global coverage thresholds.
+This is different from Jest behavior.
+:::
+
 <!-- eslint-skip -->
 
 ```ts
@@ -1484,6 +1497,31 @@ statements 的全局阈值。
       '**/math.ts': {
         lines: 100,
       }
+    }
+  }
+}
+```
+
+##### coverage.thresholds[glob-pattern].100
+
+- **Type:** `boolean`
+- **Default:** `false`
+- **Available for providers:** `'v8' | 'istanbul'`
+
+Sets thresholds to 100 for files matching the glob pattern.
+
+<!-- eslint-skip -->
+```ts
+{
+  coverage: {
+    thresholds: {
+      // Thresholds for all files
+      functions: 95,
+      branches: 70,
+
+      // Thresholds for matching glob pattern
+      'src/utils/**.ts': { 100: true },
+      '**/math.ts': { 100: true }
     }
   }
 }
