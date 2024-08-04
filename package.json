@@ -5,7 +5,7 @@
   "private": true,
   "packageManager": "pnpm@9.5.0",
   "scripts": {
-    "dev": "vitepress",
+    "dev": "vitepress --port 3333 --open",
     "build": "nr prefetch && vitepress build",
     "build-no-prefetch": "vitepress build",
     "serve": "vitepress serve",
@@ -32,10 +32,10 @@
     "@vite-pwa/assets-generator": "^0.2.4",
     "@vite-pwa/vitepress": "^0.5.0",
     "@vitejs/plugin-vue": "latest",
-    "@vitest/browser": "^2.0.3",
-    "@vitest/coverage-istanbul": "^2.0.3",
-    "@vitest/coverage-v8": "^2.0.3",
-    "@vitest/ui": "^2.0.3",
+    "@vitest/browser": "^2.0.5",
+    "@vitest/coverage-istanbul": "^2.0.5",
+    "@vitest/coverage-v8": "^2.0.5",
+    "@vitest/ui": "^2.0.5",
     "eslint": "^9.7.0",
     "esno": "^4.7.0",
     "fast-glob": "^3.3.2",
@@ -51,7 +51,7 @@
     "vite": "^5.3.3",
     "vite-plugin-pwa": "^0.20.1",
     "vitepress": "^1.3.1",
-    "vitest": "^2.0.3",
+    "vitest": "^2.0.5",
     "workbox-window": "^7.1.0"
   }
 }
