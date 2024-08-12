@@ -6,7 +6,7 @@
 type Awaitable<T> = T | PromiseLike<T>
 ```
 
-`expect` 用于创建断言。 在这种情况下， `assertions` 是可以调用来断言语句的函数。 Vitest 默认提供 `chai` 断言，并且还在 `chai` 之上构建了与 `Jest` 兼容的断言。
+`expect` 用于创建断言。在这种情况下， `assertions` 是可以调用来断言语句的函数。 Vitest 默认提供 `chai` 断言，并且还在 `chai` 之上构建了与 `Jest` 兼容的断言。
 
 例如，此代码断言 `input` 值等于 `2`。 如果不是，assertions 将抛出错误，并且测试将失败。
 
@@ -725,342 +725,13 @@ test('matches snapshot', () => {
 })
 ```
 
-## toMatchInlineSnapshot
-
-- **类型:** `<T>(shape?: Partial<T> | string, snapshot?: string, message?: string) => void`
-
-这样可以确保一个值与最近的快照匹配。
-
-Vitest 将内联快照字符串参数添加并更新到测试文件中的匹配器（而不是外部的 `.snap` 文件）。
-
-```ts
-import { expect, test } from 'vitest'
-
-test('matches inline snapshot', () => {
-  const data = { foo: new Set(['bar', 'snapshot']) }
-  // Vitest will update following content when updating the snapshot
-  expect(data).toMatchInlineSnapshot(`
-    {
-      "foo": Set {
-        "bar",
-        "snapshot",
-      },
-    }
-  `)
-})
-```
-
-我们还可以提供一个对象的形状，如果你只是测试对象的形状，而不需要它完全兼容：
-
-```ts
-import { expect, test } from 'vitest'
-
-test('matches snapshot', () => {
-  const data = { foo: new Set(['bar', 'snapshot']) }
-  expect(data).toMatchInlineSnapshot(
-    { foo: expect.any(Set) },
-    `
-    {
-      "foo": Any<Set>,
-    }
-  `
-  )
-})
-```
-
-## toMatchFileSnapshot {#tomatchfilesnapshot}
-
-- **类型:** `<T>(filepath: string, message?: string) => Promise<void>`
-
-明确比较或更新快照与显式指定的文件内容（而不是 `.snap` 文件）。
-
-```ts
-import { expect, it } from 'vitest'
-
-it('render basic', async () => {
-  const result = renderHTML(h('div', { class: 'foo' }))
-  await expect(result).toMatchFileSnapshot('./test/basic.output.html')
-})
-```
-
-请注意，由于文件系统操作是异步的，你需要在 `toMatchFileSnapshot()` 中使用 `await`。
-
-## toThrowErrorMatchingSnapshot
-
-- **类型:** `(message?: string) => void`
-
-与 [`toMatchSnapshot`](#tomatchsnapshot) 相同，但期望的值与 [`toThrowError`](#tothrowerror) 相同。
-
-## toThrowErrorMatchingInlineSnapshot
-
-- **类型:** `(snapshot?: string, message?: string) => void`
-
-与 [`toMatchInlineSnapshot`](#tomatchinlinesnapshot) 相同，但期望的值与 [`toThrowError`](#tothrowerror) 相同。
-
-## toHaveBeenCalled
-
-- **类型:** `() => Awaitable<void>`
-
-这个断言对于测试函数是否被调用很有用。需要将一个 spy 函数传递给 `expect`。
-
-```ts
-import { expect, test, vi } from 'vitest'
-
-const market = {
-  buy(subject: string, amount: number) {
-    // ...
-  },
-}
-
-test('spy function', () => {
-  const buySpy = vi.spyOn(market, 'buy')
-
-  expect(buySpy).not.toHaveBeenCalled()
-
-  market.buy('apples', 10)
-
-  expect(buySpy).toHaveBeenCalled()
-})
-```
-
-## toHaveBeenCalledTimes
-
-- **类型**: `(amount: number) => Awaitable<void>`
-
-这个断言检查函数被调用的次数是否达到特定次数。需要将一个 spy 函数传递给 `expect`。
-
-```ts
-import { expect, test, vi } from 'vitest'
-
-const market = {
-  buy(subject: string, amount: number) {
-    // ...
-  },
-}
-
-test('spy function called two times', () => {
-  const buySpy = vi.spyOn(market, 'buy')
-
-  market.buy('apples', 10)
-  market.buy('apples', 20)
-
-  expect(buySpy).toHaveBeenCalledTimes(2)
-})
-```
-
-## toHaveBeenCalledWith
-
-- **类型**: `(...args: any[]) => Awaitable<void>`
-
-这个断言检查函数是否至少被传递了特定参数调用过一次。需要将一个 spy 函数传递给 `expect`。
-
-```ts
-import { expect, test, vi } from 'vitest'
-
-const market = {
-  buy(subject: string, amount: number) {
-    // ...
-  },
-}
-
-test('spy function', () => {
-  const buySpy = vi.spyOn(market, 'buy')
-
-  market.buy('apples', 10)
-  market.buy('apples', 20)
-
-  expect(buySpy).toHaveBeenCalledWith('apples', 10)
-  expect(buySpy).toHaveBeenCalledWith('apples', 20)
-})
-```
-
-## toHaveBeenLastCalledWith
-
-- **类型**: `(...args: any[]) => Awaitable<void>`
-
-这个断言检查函数在最后一次调用时是否使用了特定参数。需要将一个 spy 函数传递给 `expect`。
-
-```ts
-import { expect, test, vi } from 'vitest'
-
-const market = {
-  buy(subject: string, amount: number) {
-    // ...
-  },
-}
-
-test('spy function', () => {
-  const buySpy = vi.spyOn(market, 'buy')
-
-  market.buy('apples', 10)
-  market.buy('apples', 20)
-
-  expect(buySpy).not.toHaveBeenLastCalledWith('apples', 10)
-  expect(buySpy).toHaveBeenLastCalledWith('apples', 20)
-})
-```
-
-## toHaveBeenNthCalledWith
-
-- **类型**: `(time: number, ...args: any[]) => Awaitable<void>`
-
-这个断言检查函数在特定时间是否使用了特定参数进行调用。计数从 1 开始。因此，要检查第二个条目，我们应该写 `.toHaveBeenNthCalledWith(2, ...)`。
-
-需要将一个 spy 函数传递给 `expect`。
-
-```ts
-import { expect, test, vi } from 'vitest'
-
-const market = {
-  buy(subject: string, amount: number) {
-    // ...
-  },
-}
-
-test('first call of spy function called with right params', () => {
-  const buySpy = vi.spyOn(market, 'buy')
-
-  market.buy('apples', 10)
-  market.buy('apples', 20)
-
-  expect(buySpy).toHaveBeenNthCalledWith(1, 'apples', 10)
-})
-```
-
-## toHaveReturned
-
-- **类型**: `() => Awaitable<void>`
-
-这个断言检查函数是否至少成功返回过一个值（即没有抛出错误）。需要将一个 spy 函数传递给 `expect`。
-
-```ts
-import { expect, test, vi } from 'vitest'
-
-function getApplesPrice(amount: number) {
-  const PRICE = 10
-  return amount * PRICE
-}
-
-test('spy function returned a value', () => {
-  const getPriceSpy = vi.fn(getApplesPrice)
-
-  const price = getPriceSpy(10)
-
-  expect(price).toBe(100)
-  expect(getPriceSpy).toHaveReturned()
-})
-```
-
-## toHaveReturnedTimes
-
-- **类型**: `(amount: number) => Awaitable<void>`
-
-这个断言检查函数是否成功返回了确切次数的值（即没有抛出错误）。需要将一个 spy 函数传递给 `expect`。
-
-```ts
-import { expect, test, vi } from 'vitest'
-
-test('spy function returns a value two times', () => {
-  const sell = vi.fn((product: string) => ({ product }))
-
-  sell('apples')
-  sell('bananas')
-
-  expect(sell).toHaveReturnedTimes(2)
-})
-```
-
-## toHaveReturnedWith
-
-- **类型**: `(returnValue: any) => Awaitable<void>`
-
-我们可以调用此断言来检查函数是否至少成功返回过一个带有特定参数的值。需要将一个 spy 函数传递给 `expect`。
-
-```ts
-import { expect, test, vi } from 'vitest'
-
-test('spy function returns a product', () => {
-  const sell = vi.fn((product: string) => ({ product }))
-
-  sell('apples')
-
-  expect(sell).toHaveReturnedWith({ product: 'apples' })
-})
-```
-
-## toHaveLastReturnedWith
-
-- **类型**: `(returnValue: any) => Awaitable<void>`
-
-我们可以调用此断言来检查函数是否在最后一次调用时成功返回了带有特定参数的值。需要将一个 spy 函数传递给 `expect`。
-
-```ts
-import { expect, test, vi } from 'vitest'
-
-test('spy function returns bananas on a last call', () => {
-  const sell = vi.fn((product: string) => ({ product }))
-
-  sell('apples')
-  sell('bananas')
-
-  expect(sell).toHaveLastReturnedWith({ product: 'bananas' })
-})
-```
-
-## toHaveNthReturnedWith
-
-- **类型**: `(time: number, returnValue: any) => Awaitable<void>`
-
-我们可以调用此断言来检查函数是否在特定调用时成功返回了带有特定参数的值。需要将一个 spy 函数传递给 `expect`。
-
-```ts
-import { expect, test, vi } from 'vitest'
-
-test('spy function returns bananas on second call', () => {
-  const sell = vi.fn((product: string) => ({ product }))
-
-  sell('apples')
-  sell('bananas')
-
-  expect(sell).toHaveNthReturnedWith(2, { product: 'bananas' })
-})
-```
-
-## toHaveResolved
-
-- **类型**: `() => Awaitable<void>`
-
-
-此断言检查函数是否至少成功解析过一次值（即未reject）。需要将 spy 函数传递给 `expect`。
-
-如果函数返回了一个promise，但尚未resolved，则将会失败。
-
-```ts
-import { expect, test, vi } from 'vitest'
-import db from './db/apples.js'
-
-async function getApplesPrice(amount: number) {
-  return amount * await db.get('price')
-}
-
-test('spy function resolved a value', async () => {
-  const getPriceSpy = vi.fn(getApplesPrice)
-
-  const price = await getPriceSpy(10)
-
-  expect(price).toBe(100)
-  expect(getPriceSpy).toHaveResolved()
-})
-```
-
 ## toHaveResolvedTimes
 
 - **类型**: `(amount: number) => Awaitable<void>`
 
-此断言检查函数是否已成功解析值精确次数（即未reject）。需要将 spy 函数传递给`expect`。
+此断言检查函数是否已成功解析值精确次数（即未 reject）。需要将 spy 函数传递给`expect`。
 
-这只会计算已resolved的promises。如果函数返回了一个promise，但尚未resolved，则不会计算在内。
-
+这只会计算已 resolved 的 promises。如果函数返回了一个 promise，但尚未 resolved，则不会计算在内。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1079,12 +750,9 @@ test('spy function resolved a value two times', async () => {
 
 - **类型**: `(returnValue: any) => Awaitable<void>`
 
-
-
 您可以调用此断言来检查函数是否至少成功解析过一次某个值。需要将 spy 函数传递给`expect`。
 
-如果函数返回了一个promise，但尚未resolved，则将会失败。
-
+如果函数返回了一个 promise，但尚未 resolved，则将会失败。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1104,7 +772,7 @@ test('spy function resolved a product', async () => {
 
 您可以调用此断言来检查函数在上次调用时是否已成功解析某个值。需要将 spy 函数传递给`expect`。
 
-如果函数返回了一个promise，但尚未resolved，则将会失败。
+如果函数返回了一个 promise，但尚未 resolved，则将会失败。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1125,7 +793,7 @@ test('spy function resolves bananas on a last call', async () => {
 
 您可以调用此断言来检查函数在上次调用时是否已成功解析某个值。需要将 spy 函数传递给`expect`。
 
-如果函数返回了一个promise，但尚未resolved，则将会失败。
+如果函数返回了一个 promise，但尚未 resolved，则将会失败。
 
 ```ts
 import { expect, test, vi } from 'vitest'
