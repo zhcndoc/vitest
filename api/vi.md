@@ -17,7 +17,7 @@ import { vi } from 'vitest'
 ### vi.mock
 
 - **类型**: `(path: string, factory?: (importOriginal: () => unknown) => unknown) => void`
-- **类型**: `<T>(path: Promise<T>, factory?: (importOriginal: () => T) => unknown) => void`
+- **类型**: `<T>(path: Promise<T>, factory?: (importOriginal: () => T) => T | Promise<T>) => void`
 
 用另一个模块替换提供的 `path` 中的所有导入模块。我们可以在路径内使用配置的 Vite 别名。对 `vi.mock` 的调用是悬挂式的，因此在何处调用并不重要。它总是在所有导入之前执行。如果需要在其作用域之外引用某些变量，可以在 [`vi.hoisted`](/api/vi#vi-hoisted)中定义它们，并在 `vi.mock` 中引用它们。
 
@@ -30,9 +30,11 @@ Vitest 不会模拟 [setup file](/config/#setupfiles) 中导入的模块，因�
 :::
 
 
-如果定义了 `factory`，所有导入都将返回其结果。Vitest 只调用一次 factory，并缓存所有后续导入的结果，直到 [`vi.unmock`](#vii-unmock) 或 [`vi.doUnmock`](#vii-dounmock) 被调用。
+如果定义了 `factory`，所有导入都将返回其结果。Vitest 只调用一次 factory，并缓存所有后续导入的结果，直到 [`vi.unmock`](#vi-unmock) 或 [`vi.doUnmock`](#vi-dounmock) 被调用。
 
-与 `jest` 不同, factory可以是异步的。可以使用 [`vi.importActual`](#vi-importactual)，或者使用以工厂作为第一个参数传递的辅助器，并在其中获取原始模块。Vitest 还支持在 `vi.mock` 方法中使用module promise代替字符串，以获得更好的集成开发环境支持（文件移动时，路径会更新，`importOriginal` 也会自动继承类型）。
+与 `jest` 不同，工厂可以是异步的。你可以使用 [`vi.importActual`](#vi-importactual)，或将工厂作为第一个参数传递的助手，并在其中获取原始模块。
+
+Vitest 还在 `vi.mock` 和 `vi.doMock` 方法中支持 module promise 而非字符串，以获得更好的集成开发环境支持。当文件被移动时，路径会被更新，`importOriginal` 也会自动继承类型。使用此签名还将强制工厂返回类型与原始模块兼容（但每次导出都是可选的）。
 
 ```ts twoslash
 // @filename: ./path/to/module.js
@@ -52,6 +54,10 @@ vi.mock(import('./path/to/module.js'), async (importOriginal) => {
 ```
 
 在此钩子下，Vitest 仍然对字符串而不是模块对象进行操作。
+
+如果你使用的 TypeScript 在 `tsconfig.json` 中配置了 `paths` 别名，编译器将无法正确解析导入类型。
+为了使其正常工作，请确保将所有别名导入替换为相应的相对路径。
+例如，使用 `import('./path/to/module.js')`，而不是 `import('@/module')`。
 
 ::: warning
 `vi.mock` 被提升（换句话说，_移动_）到**文件的顶部**。这意味着无论何时写入它（无论是在 `beforeEach` 还是 `test`），它都会在此之前被调用。
@@ -142,7 +148,7 @@ axios.get(`/apples/${increment(1)}`)
 ### vi.doMock
 
 - **类型**: `(path: string, factory?: (importOriginal: () => unknown) => unknown) => void`
-- **类型**: `<T>(path: Promise<T>, factory?: (importOriginal: () => T) => unknown) => void`
+- **类型**: `<T>(path: Promise<T>, factory?: (importOriginal: () => T) => T | Promise<T>) => void`
 
 与 [`vi.mock`](#vi-mock) 相同，但它不会被移动到文件顶部，因此我们可以引用全局文件作用域中的变量。模块的下一个 [dynamic import](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import) 将被模拟。
 
@@ -382,7 +388,7 @@ expect(getApples).toHaveNthReturnedWith(2, 5)
 
 - **类型:** `<T, K extends keyof T>(object: T, method: K, accessType?: 'get' | 'set') => MockInstance`
 
-创建与 [`vi.fn()`](/#vi-fn) 类似的对象的方法或 getter/setter 的监听(spy) 。它会返回一个 [mock 函数](/api/mock) 。
+创建与 [`vi.fn()`](#vi-fn) 类似的对象的方法或 getter/setter 的监听(spy) 。它会返回一个 [mock 函数](/api/mock) 。
 
 ```ts
 let apples = 0
@@ -603,6 +609,24 @@ expect(console.log).toHaveBeenCalledWith(1)
 
 await vi.advanceTimersToNextTimerAsync() // log: 2
 await vi.advanceTimersToNextTimerAsync() // log: 3
+```
+
+### vi.advanceTimersToNextFrame <Version>2.1.0</Version> {#vi-advancetimerstonextframe}
+
+- **Type:** `() => Vitest`
+
+Similar to [`vi.advanceTimersByTime`](https://vitest.dev/api/vi#vi-advancetimersbytime), but will advance timers by the milliseconds needed to execute callbacks currently scheduled with `requestAnimationFrame`.
+
+```ts
+let frameRendered = false
+
+requestAnimationFrame(() => {
+  frameRendered = true
+})
+
+vi.advanceTimersToNextFrame()
+
+expect(frameRendered).toBe(true)
 ```
 
 ### vi.getTimerCount

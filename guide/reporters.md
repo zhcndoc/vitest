@@ -16,8 +16,7 @@ npx vitest --reporter=verbose
 通过配置文件 [`vitest.config.ts`](/config/) 使用报告器:
 
 ```ts
-/// <reference types="vitest" />
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
@@ -531,4 +530,4 @@ export default defineConfig({
 npx vitest --reporter=./path/to/reporter.ts
 ```
 
-自定义报告器应实现[报告器接口](https://github.com/vitest-dev/vitest/blob/main/packages/vitest/src/types/reporter.ts)。
+自定义报告器应实现[报告器接口](https://github.com/vitest-dev/vitest/blob/main/packages/vitest/src/node/types/reporter.ts)。

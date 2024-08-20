@@ -122,6 +122,16 @@ export default ({ mode }: { mode: string }) => {
         provider: 'local',
       },
 
+      carbonAds: {
+        code: 'CW7DVKJE',
+        placement: 'vitestdev',
+      },
+
+      carbonAds: {
+        code: 'CW7DVKJE',
+        placement: 'vitestdev',
+      },
+
       socialLinks: [
         { icon: 'github', link: github },
       ],
@@ -185,6 +195,11 @@ export default ({ mode }: { mode: string }) => {
             text: 'Why Browser Mode?',
             link: '/guide/browser/why',
             docFooterText: 'Why Browser Mode? | Browser Mode',
+          },
+          {
+            text: 'Getting Started',
+            link: '/guide/browser/',
+            docFooterText: 'Getting Started | Browser Mode',
           },
           {
             text: 'Context API',

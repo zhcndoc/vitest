@@ -1096,6 +1096,54 @@ afterEach(() => {
 globalThis.resetBeforeEachTest = true
 ```
 
+### provide <Version>2.1.0</Version> {#provide}
+
+- **Type:** `Partial<ProvidedContext>`
+
+使用 `inject` 方法定义可在测试中访问的值。
+
+:::code-group
+```ts [vitest.config.js]
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    provide: {
+      API_KEY: '123',
+    },
+  },
+})
+```
+```ts [my.test.js]
+import { expect, inject, test } from 'vitest'
+
+test('api key is defined', () => {
+  expect(inject('API_KEY')).toBe('123')
+})
+```
+:::
+
+::: warning
+属性必须是字符串，值必须是[可序列化](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm#supported_types)，因为该对象将在不同进程之间传输。
+:::
+
+::: tip
+如果使用的是 TypeScript，则需要增强 `ProvidedContext` 类型，以实现类型安全访问：
+
+```ts
+// vitest.shims.d.ts
+
+declare module 'vitest' {
+  export interface ProvidedContext {
+    API_KEY: string
+  }
+}
+
+// mark this file as a module so augmentation works correctly
+export {}
+```
+:::
+
 ### globalSetup
 
 - **类型:** `string | string[]`
@@ -1111,7 +1159,7 @@ globalThis.resetBeforeEachTest = true
 ::: warning
 全局设置只有在至少有一个正在运行的测试时才运行。这意味着在测试文件更改后，全局安装程序可能会在监视模式下开始运行（测试文件将等待全局安装程序完成后再运行）。
 
-请注意，全局设置在不同的全局范围内运行，因此你的测试无法访问此处定义的变量。悬停，从 1.0.0 开始，你可以通过 `provide` 方法将可序列化数据传递给测试：
+请注意，全局设置在不同的全局范围内运行，因此你的测试无法访问此处定义的变量。悬停，从 1.0.0 开始，你可以通过 [`provide`](#provide) 方法将可序列化数据传递给测试：
 
 :::code-group
 
@@ -1128,7 +1176,6 @@ export default function setup({ provide }: GlobalSetupContext) {
   provide('wsPort', 3000)
 }
 
-// 你还可以可以扩展 `ProvidedContext` 类型，以便对 `provide/inject` 方法进行类型安全访问：
 declare module 'vitest' {
   export interface ProvidedContext {
     wsPort: number
@@ -1367,6 +1414,18 @@ Vitest 会自动将测试文件的 `include` 模式添加到 `coverage.exclude` 
 
 收集 [项目`root`](#root) 之外文件的覆盖率。
 
+#### coverage.excludeAfterRemap <Version>2.1.0</Version> {#coverage-exclude-after-remap}
+
+- **类型:** `boolean`
+- **默认值:** `false`
+- **可用的测试提供者:** `'v8' | 'istanbul'`
+- **命令行终端:** `--coverage.excludeAfterRemap`, `--coverage.excludeAfterRemap=false`
+
+在覆盖范围重新映射到原始源后再次应用排除。
+当你的源文件被转译并且可能包含非源文件的源映射时，这很有用。
+
+当你看到报告中显示的文件与你的 `coverage.exclude` 模式匹配时，请使用此选项。
+
 #### coverage.skipFull
 
 - **类型:** `boolean`
@@ -1486,7 +1545,7 @@ This is different from Jest behavior.
 }
 ```
 
-##### coverage.thresholds[glob-pattern].100
+##### coverage.thresholds[glob-pattern].100 <Version>2.1.0</Version> {#coverage-thresholds-glob-pattern-100}
 
 - **Type:** `boolean`
 - **Default:** `false`
@@ -2030,7 +2089,7 @@ export default defineConfig({
 如果你决定处理 CSS 文件，你可以配置 CSS 模块中的类名是否在限定范围内。 默认情况下，Vitest 会导出一个代理，绕过 CSS 模块处理。 你可以选择以下选项之一：
 
 - `stable`: 类名将生成为`_${name}_${hashedFilename}`，这意味着如果 CSS 内容发生变化，生成的类将保持不变，但如果文件名被修改，或者文件名将发生变化 被移动到另一个文件夹。 如果你使用快照功能，此设置很有用。
-- `scoped`: 类名将照常生成，遵照 `css.modules.generateScopeName` 方法，如果你有的话。 默认情况下，文件名将生成为`_${name}_${hash}`，其中 hash 包括文件名和文件内容。
+- `scoped`: 类名将照常生成，遵照 `css.modules.generateScopedName` 方法，如果你有的话。 默认情况下，文件名将生成为`_${name}_${hash}`，其中 hash 包括文件名和文件内容。
 - `non-scoped`: 类名将保留 CSS 中定义的名称。
 
 ::: warning
