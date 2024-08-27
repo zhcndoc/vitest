@@ -66,7 +66,7 @@ export default defineConfig({
 ```ts twoslash
 import type { Vitest } from 'vitest/node'
 import type { RunnerTestFile } from 'vitest'
-import type { Reporter, TestFile } from 'vitest/reporters'
+import type { Reporter, TestModule } from 'vitest/reporters'
 
 class MyReporter implements Reporter {
   ctx!: Vitest
@@ -77,9 +77,10 @@ class MyReporter implements Reporter {
 
   onFinished(files: RunnerTestFile[]) {
     for (const fileTask of files) {
-      const testFile = this.ctx.state.getReportedEntity(fileTask) as TestFile
-      for (const task of testFile.children) {
-        //                         ^?
+      // note that the old task implementation uses "file" instead of "module"
+      const testModule = this.ctx.state.getReportedEntity(fileTask) as TestModule
+      for (const task of testModule.children) {
+        //                          ^?
         console.log('finished', task.type, task.fullName)
       }
     }
@@ -109,7 +110,7 @@ declare class TestCase {
   /**
    * 直接引用定义测试的测试文件。
    */
-  readonly file: TestFile
+  readonly module: TestModule
   /**
    * 测试名称。
    */
@@ -128,11 +129,11 @@ declare class TestCase {
    * 文件中定义测试的位置。
    * 只有在配置中启用  `includeTaskLocation` 时，才会收集位置信息。
    */
-  readonly location: { line: number; column: number } | undefined
+  readonly location: { line: number, column: number } | undefined
   /**
    * 如果测试是在文件中直接调用的，则父套件将是文件。
    */
-  readonly parent: TestSuite | TestFile
+  readonly parent: TestSuite | TestModule
   /**
    * 启动测试时使用的选项。
    */
@@ -243,7 +244,7 @@ declare class TestSuite {
   /**
    * 直接引用定义套件的测试文件。
    */
-  readonly file: TestFile
+  readonly module: TestModule
   /**
    * Name of the suite.
    */
@@ -262,7 +263,7 @@ declare class TestSuite {
    * 文件中定义套件的位置。
    * 只有在配置中启用 `includeTaskLocation` 时，才会收集位置信息。
    */
-  readonly location: { line: number; column: number } | undefined
+  readonly location: { line: number, column: number } | undefined
   /**
    * 套件和属于该套件的测试的集合。
    */
@@ -274,13 +275,13 @@ declare class TestSuite {
 }
 ```
 
-### TestFile
+### TestModule
 
-`TestFile` 表示包含套件和测试的单个文件。
+`TestModule` 表示包含套件和测试的单个文件。
 
 ```ts
-declare class TestFile extends SuiteImplementation {
-  readonly type = 'file'
+declare class TestModule extends SuiteImplementation {
+  readonly type = 'module'
   /**
    * Task instance.
    * @experimental Public task API 是实验性的，并不遵循 semver。
@@ -300,10 +301,10 @@ declare class TestFile extends SuiteImplementation {
    * 有关文件的有用信息，如持续时间、内存使用情况等。
    * 如果文件尚未执行，所有诊断值都将返回 `0`。
    */
-  diagnostic(): FileDiagnostic
+  diagnostic(): ModuleDiagnostic
 }
 
-export interface FileDiagnostic {
+export interface ModuleDiagnostic {
   /**
    * 导入和启动环境所需的时间。
    */
@@ -369,11 +370,11 @@ declare class TestCollection {
 例如，你可以通过调用 `testFile.children.allTests()` 遍历文件中的所有测试：
 
 ```ts
-function onFileCollected(testFile: TestFile): void {
-  console.log('collecting tests in', testFile.moduleId)
+function onFileCollected(testModule: TestModule): void {
+  console.log('collecting tests in', testModule.moduleId)
 
-  // iterate over all tests and suites in the file
-  for (const task of testFile.children.allTests()) {
+  // iterate over all tests and suites in the module
+  for (const task of testModule.children.allTests()) {
     console.log('collected', task.type, task.fullName)
   }
 }

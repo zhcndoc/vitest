@@ -1,8 +1,8 @@
 import { defineConfig } from 'vitepress'
 import { withPwa } from '@vite-pwa/vitepress'
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
-import { version } from '../package.json'
 import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
+import { version } from '../package.json'
 import {
   contributing,
   font,
@@ -76,7 +76,9 @@ export default ({ mode }: { mode: string }) => {
         : [
             transformerTwoslash({
               processHoverInfo: (info) => {
+                // eslint-disable-next-line node/prefer-global/process
                 if (info.includes(process.cwd())) {
+                  // eslint-disable-next-line node/prefer-global/process
                   return info.replace(new RegExp(process.cwd(), 'g'), '')
                 }
                 return info
@@ -127,11 +129,6 @@ export default ({ mode }: { mode: string }) => {
         placement: 'vitestdev',
       },
 
-      carbonAds: {
-        code: 'CW7DVKJE',
-        placement: 'vitestdev',
-      },
-
       socialLinks: [
         { icon: 'github', link: github },
       ],
@@ -167,7 +164,7 @@ export default ({ mode }: { mode: string }) => {
                   text: '社区指南',
                   link: contributing,
                 },
-              ]
+              ],
             },
             {
               items: [
