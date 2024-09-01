@@ -5,11 +5,14 @@ import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
 import { version } from '../package.json'
 import {
   contributing,
+  discord,
   font,
   github,
+  mastodon,
   ogImage,
   ogUrl,
   releases,
+  twitter,
   vitestDescription,
   vitestName,
 } from './meta'
@@ -89,36 +92,20 @@ export default ({ mode }: { mode: string }) => {
     ignoreDeadLinks: true,
 
     sitemap: {
-      hostname: 'https://vitest.zhcndoc.com'
+      hostname: 'https://vitest.zhcndoc.com',
     },
 
     themeConfig: {
       logo: '/logo.svg',
 
       editLink: {
-        text: '在 GitHub 上查看此页面',
-        pattern: 'https://github.com/zhcndoc/vitest/tree/main/:path',
+        pattern: 'https://github.com/vitest-dev/docs-cn/tree/dev/:path',
+        text: '为此页提供修改建议',
       },
-      docFooter: {
-        prev: '上一页',
-        next: '下一页',
-      },
+
       outline: {
-        label: '页面导航',
+        label: '本页目录',
       },
-      lastUpdated: {
-        text: '最后更新于',
-        formatOptions: {
-          dateStyle: 'short',
-          timeStyle: 'medium',
-        },
-      },
-      langMenuLabel: '多语言',
-      returnToTopLabel: '回到顶部',
-      sidebarMenuLabel: '菜单',
-      darkModeSwitchLabel: '主题',
-      lightModeSwitchTitle: '切换到浅色模式',
-      darkModeSwitchTitle: '切换到深色模式',
 
       search: {
         provider: 'local',
@@ -130,8 +117,18 @@ export default ({ mode }: { mode: string }) => {
       },
 
       socialLinks: [
+        { icon: 'mastodon', link: mastodon },
+        { icon: 'x', link: twitter },
+        { icon: 'discord', link: discord },
         { icon: 'github', link: github },
       ],
+
+      docFooter: {
+        prev: '上一篇',
+        next: '下一篇',
+      },
+
+      lastUpdatedText: '最后更新时间',
 
       footer: {
         message: `
