@@ -47,6 +47,21 @@ export default ({ mode }: { mode: string }) => {
           'data-website-id': 'f0e90b0d-e086-4fdc-b173-de4857b71900',
         },
       ],
+      [
+        'script',
+        {
+          async: '',
+          src: 'https://www.googletagmanager.com/gtag/js?id=G-HYH4TH7PWM',
+        },
+      ],
+      [
+        'script',
+        {},
+        `window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-HYH4TH7PWM');`,
+      ],
       ['meta', { name: 'theme-color', content: '#729b1a' }],
       ['link', { rel: 'icon', href: '/favicon.ico', sizes: '48x48' }],
       ['link', { rel: 'icon', href: '/logo.svg', sizes: 'any', type: 'image/svg+xml' }],
@@ -109,17 +124,37 @@ export default ({ mode }: { mode: string }) => {
 
       search: {
         provider: 'local',
+        options: {
+          locales: {
+            root: {
+              translations: {
+                button: {
+                  buttonText: '搜索文档',
+                  buttonAriaLabel: '搜索文档',
+                },
+                modal: {
+                  noResultsText: '无法找到相关结果',
+                  resetButtonTitle: '清除查询条件',
+                  footer: {
+                    selectText: '选择',
+                    navigateText: '切换',
+                  },
+                },
+              },
+            },
+          },
+        },
       },
 
-      carbonAds: {
-        code: 'CW7DVKJE',
-        placement: 'vitestdev',
-      },
+      // carbonAds: {
+      //   code: 'CW7DVKJE',
+      //   placement: 'vitestdev',
+      // },
 
       socialLinks: [
-        { icon: 'mastodon', link: mastodon },
-        { icon: 'x', link: twitter },
-        { icon: 'discord', link: discord },
+        // { icon: 'mastodon', link: mastodon },
+        // { icon: 'x', link: twitter },
+        // { icon: 'discord', link: discord },
         { icon: 'github', link: github },
       ],
 
@@ -131,11 +166,8 @@ export default ({ mode }: { mode: string }) => {
       lastUpdatedText: '最后更新时间',
 
       footer: {
-        message: `
-          <a style="text-decoration: none;" rel="nofollow" target="__blank" href="https://zeabur.com?referralCode=ikxin&amp;utm_source=ikxin">Deployed on Zeabur</a>
-          <a style="text-decoration: none; margin-left: 8px;" rel="nofollow" target="__blank" href="https://beian.miit.gov.cn">沪ICP备2024070610号-3</a>
-        `,
-        copyright: 'Copyright © 2021-2024 Anthony Fu, Matías Capeletto 和 Vitest 贡献者',
+        message: `<a target="_blank" href="https://www.zhcndoc.com?ref=vitest">简中文档</a>`,
+        copyright: '<a rel="nofollow" target="_blank" href="https://beian.miit.gov.cn">沪ICP备2024070610号-3</a>',
       },
 
       nav: [

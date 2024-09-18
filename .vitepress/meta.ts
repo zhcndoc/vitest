@@ -11,11 +11,11 @@ export const gstatic = 'https://fonts.gstatic.com'
 export const font = `${googleapis}/css2?family=Readex+Pro:wght@200;400;600&display=swap`
 
 /* vitepress head */
-export const ogUrl = 'https://vitest.dev/'
+export const ogUrl = 'https://vitest.zhcndoc.com/'
 export const ogImage = `${ogUrl}og.png`
 
 /* GitHub and social links */
-export const github = 'https://github.com/vitest-dev/vitest'
+export const github = 'https://github.com/zhcndoc/vitest'
 export const releases = 'https://github.com/vitest-dev/vitest/releases'
 export const contributing = 'https://github.com/vitest-dev/vitest/blob/main/CONTRIBUTING.md'
 export const discord = 'https://chat.vitest.dev'

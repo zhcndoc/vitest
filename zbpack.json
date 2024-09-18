@@ -1,4 +1,0 @@
-{
-  "build_command": "pnpm run build",
-  "output_dir": ".vitepress/dist"
-}
