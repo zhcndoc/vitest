@@ -61,7 +61,11 @@ test('expect.soft test', () => {
 
 ## poll
 
-- **类型:** `ExpectStatic & (actual: () => any, options: { interval, timeout, message }) => Assertions`
+```ts
+interface ExpectPoll extends ExpectStatic {
+  (actual: () => T, options: { interval; timeout; message }): Promise<Assertions<T>>
+}
+```
 
 `expect.poll` 重新运行断言，直到成功为止。你可以通过设置 `interval` 和 `timeout` 选项来配置 Vitest 应重新运行 `expect.poll` 回调的次数。
 
@@ -816,9 +820,10 @@ test('spy function returns bananas on second call', async () => {
 
 ```ts
 import { describe, expect, it } from 'vitest'
-describe('toSatisfy()', () => {
-  const isOdd = (value: number) => value % 2 !== 0
 
+const isOdd = (value: number) => value % 2 !== 0
+
+describe('toSatisfy()', () => {
   it('pass with 0', () => {
     expect(1).toSatisfy(isOdd)
   })

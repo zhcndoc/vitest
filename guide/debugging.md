@@ -53,6 +53,67 @@ ndb npm run test
 
 然后在调试选项卡中确保选择 'Debug Current Test File'，然后你可以打开要调试的测试文件并按 F5 开始调试。
 
+### 浏览器模式
+
+要调试 [Vitest 浏览器模式](/guide/browser/index.md)，请在 CLI 中传递 `--inspect` 或 `--inspect-brk`，或在 Vitest 配置中定义它：
+
+::: code-group
+```bash [CLI]
+vitest --inspect-brk --browser --no-file-parallelism
+```
+```ts [vitest.config.js]
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    inspectBrk: true,
+    fileParallelism: false,
+    browser: {
+      name: 'chromium',
+      provider: 'playwright',
+    },
+  },
+})
+```
+:::
+
+默认情况下，Vitest 将使用端口 `9229` 作为调试端口。您可以通过在 `--inspect-brk`中传递值来覆盖它：
+
+```bash
+vitest --inspect-brk=127.0.0.1:3000 --browser --no-file-parallelism
+```
+
+使用以下 [VSCode 复合配置](https://code.visualstudio.com/docs/editor/debugging#_compound-launch-configurations) 在浏览器中启动 Vitest 并附加调试器：
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run Vitest Browser",
+      "program": "${workspaceRoot}/node_modules/vitest/vitest.mjs",
+      "console": "integratedTerminal",
+      "args": ["--inspect-brk", "--browser", "--no-file-parallelism"]
+    },
+    {
+      "type": "chrome",
+      "request": "attach",
+      "name": "Attach to Vitest Browser",
+      "port": 9229
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Debug Vitest Browser",
+      "configurations": ["Attach to Vitest Browser", "Run Vitest Browser"],
+      "stopAll": true
+    }
+  ]
+}
+```
+
 ## IntelliJ IDEA
 
 创建一个 'Node.js' 运行配置。使用以下配置在调试模式下运行所有测试：
@@ -75,6 +136,9 @@ vitest --inspect-brk --pool threads --poolOptions.threads.singleThread
 
 # To run in a single child process
 vitest --inspect-brk --pool forks --poolOptions.forks.singleFork
+
+# To run in browser mode
+vitest --inspect-brk --browser --no-file-parallelism
 ```
 
 如果你使用的是 Vitest 1.1 或更高版本，你也可以仅提供 `--no-parallelism` 标志：
