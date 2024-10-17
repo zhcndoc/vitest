@@ -664,7 +664,7 @@ export default defineConfig({
 - **默认值:** `'default'`
 - **命令行终端:** `--reporter=<name>`, `--reporter=<name1> --reporter=<name2>`
 
-用于输出的自定义 reporters 。 Reporters 可以是 [一个 Reporter 实例](https://github.com/vitest-dev/vitest/blob/main/packages/vitest/src/types/reporter.ts) 或选择内置的 reporters 字符串：
+用于输出的自定义 reporters 。 Reporters 可以是 [一个 Reporter 实例](https://github.com/vitest-dev/vitest/blob/main/packages/vitest/src/node/types/reporter.ts) 或选择内置的 reporters 字符串：
 
 - `'default'` - 当他们经过测试套件
 - `'basic'` - 给定一个类似于 CI 中的默认报告实例
@@ -1328,7 +1328,7 @@ Vitest 会自动将测试文件的 `include` 模式添加到 `coverage.exclude` 
 - **可用的测试提供者:** `'v8' | 'istanbul'`
 - **命令行终端:** `--coverage.cleanOnRerun`, `--coverage.cleanOnRerun=false`
 
-监视重新运行时是否清除覆盖率报告
+监视重新运行时是否清除覆盖率报告。设置为 `false` 可保留观察模式下上次运行的覆盖结果。
 
 #### coverage.reportsDirectory
 
@@ -1748,15 +1748,15 @@ test('doNotRun', () => {
 - **默认值:** `63315`
 - **命令行终端:** `--browser.api=63315`, `--browser.api.port=1234, --browser.api.host=example.com`
 
-为在浏览器中提供代码的 Vite 服务器配置选项。它不影响 [`test.api`](#api) 选项。
+为在浏览器中提供代码的 Vite 服务器配置选项。它不影响 [`test.api`](#api) 选项。默认情况下，Vitest 会分配端口 `63315`，以避免与开发服务器冲突，从而允许同时运行这两个端口。
 
 #### browser.provider
 
-- **类型:** `'webdriverio' | 'playwright' | string`
-- **默认值:** `'webdriverio'`
+- **类型:** `'webdriverio' | 'playwright' | 'preview' | string`
+- **默认值:** `'preview'`
 - **命令行终端:** `--browser.provider=playwright`
 
-设置运行浏览器测试时浏览器的路径。Vitest 提供了两个浏览器驱动选项: `webdriverio`(默认) 和 `playwright`。自定义提供商应该使用 `default` 进行导出，并具有如下类型签名:
+设置运行浏览器测试时浏览器的路径。Vitest 提供了三个浏览器驱动选项: `preview`（默认）、`webdriverio` 和 `playwright` 。自定义提供商应该使用 `default` 进行导出，并具有如下类型签名:
 
 ```ts
 export interface BrowserProvider {
