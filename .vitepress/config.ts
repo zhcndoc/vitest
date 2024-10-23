@@ -1,8 +1,13 @@
-import { defineConfig } from 'vitepress'
-import { withPwa } from '@vite-pwa/vitepress'
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
+import { withPwa } from '@vite-pwa/vitepress'
+import { defineConfig } from 'vitepress'
 import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
+<<<<<<< HEAD
 import { version } from '../package.json'
+=======
+import { version } from '../../package.json'
+import { teamMembers } from './contributors'
+>>>>>>> 90dce0798621c937b236aae14408802a1293c44a
 import {
   contributing,
   discord,
@@ -18,7 +23,6 @@ import {
 } from './meta'
 import { pwa } from './scripts/pwa'
 import { transformHead } from './scripts/transformHead'
-import { teamMembers } from './contributors'
 
 export default ({ mode }: { mode: string }) => {
   return withPwa(defineConfig({
