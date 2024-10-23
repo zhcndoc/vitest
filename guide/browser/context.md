@@ -20,6 +20,7 @@ Vitest 通过 `@vitest/browser/context` 入口点公开上下文模块。从 2.0
  */
 export const userEvent: {
   setup: () => UserEvent
+  cleanup: () => Promise<void>
   click: (element: Element, options?: UserEventClickOptions) => Promise<void>
   dblClick: (element: Element, options?: UserEventDoubleClickOptions) => Promise<void>
   tripleClick: (element: Element, options?: UserEventTripleClickOptions) => Promise<void>
