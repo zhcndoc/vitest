@@ -21,21 +21,14 @@
     "vue": "^3.5.12"
   },
   "devDependencies": {
-<<<<<<< HEAD
     "@antfu/eslint-config": "^2.26.0",
     "@antfu/ni": "^0.22.4",
-    "@iconify-json/carbon": "^1.2.2",
+    "@iconify-json/carbon": "^1.2.3",
     "@iconify-json/logos": "^1.2.3",
     "@shikijs/vitepress-twoslash": "^1.22.0",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^22.4.1",
-    "@unocss/reset": "^0.63.4",
-=======
-    "@iconify-json/carbon": "^1.2.3",
-    "@iconify-json/logos": "^1.2.3",
-    "@shikijs/vitepress-twoslash": "^1.22.0",
     "@unocss/reset": "^0.63.6",
->>>>>>> 90dce0798621c937b236aae14408802a1293c44a
     "@vite-pwa/assets-generator": "^0.2.6",
     "@vite-pwa/vitepress": "^0.5.3",
     "@vitejs/plugin-vue": "^5.1.4",
@@ -46,7 +39,6 @@
     "eslint": "^9.7.0",
     "esno": "^4.7.0",
     "tinyglobby": "^0.2.9",
-<<<<<<< HEAD
     "fs-extra": "^11.2.0",
     "https-localhost": "^4.7.1",
     "ofetch": "^1.3.4",
@@ -54,10 +46,7 @@
     "pnpm": "^9.7.1",
     "tsx": "^4.17.0",
     "typescript": "^5.5.4",
-    "unocss": "^0.63.4",
-=======
     "unocss": "^0.63.6",
->>>>>>> 90dce0798621c937b236aae14408802a1293c44a
     "unplugin-vue-components": "^0.27.4",
     "vite": "^5.4.1",
     "vite-plugin-pwa": "^0.20.5",
