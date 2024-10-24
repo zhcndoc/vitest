@@ -444,7 +444,7 @@ Mock Service Worker (MSW) 的工作原理是拦截测试请求，让我们可以
 ```js
 import { afterAll, afterEach, beforeAll } from 'vitest'
 import { setupServer } from 'msw/node'
-import { HttpResponse, graphql, http } from 'msw'
+import { graphql, http, HttpResponse } from 'msw'
 
 const posts = [
   {

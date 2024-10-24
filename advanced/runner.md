@@ -122,7 +122,7 @@ Vitest 还会将 `ViteNodeRunner` 的实例作为 `__vitest_executor` 属性注�
 // ./utils/custom.js
 import { createTaskCollector, getCurrentSuite, setFn } from 'vitest/suite'
 
-export { describe, beforeAll, afterAll } from 'vitest'
+export { afterAll, beforeAll, describe } from 'vitest'
 
 // 当 Vitest 收集任务时，将调用此函数
 // createTaskCollector 只提供了所有的 "todo"/"each"/... 支持，你不必使用它
