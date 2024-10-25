@@ -1742,6 +1742,14 @@ test('doNotRun', () => {
 
 在单独的 iframe 中运行每个测试。
 
+#### browser.testerHtmlPath
+
+- **Type:** `string`
+- **Default:** `@vitest/browser/tester.html`
+- **Version:** Since Vitest 2.1.4
+
+A path to the HTML entry point. Can be relative to the root of the project. This file will be processed with [`transformIndexHtml`](https://vite.dev/guide/api-plugin#transformindexhtml) hook.
+
 #### browser.api
 
 - **类型:** `number | { port?, strictPort?, host? }`
