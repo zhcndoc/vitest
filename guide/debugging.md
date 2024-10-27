@@ -25,7 +25,7 @@ ndb npm run test
 
 ## VS Code
 
-在 VSCode 中调试测试的快速方法是通过 `JavaScript 调试终端`。 打开一个新的 `JavaScript 调试终端` 并直接运行 `npm run test` 或 `vitest`。_这适用于在 Node 中运行的任何代码，因此适用于大多数 JS 测试框架_
+在 VSCode 中快速调试测试的方法是通过 `JavaScript Debug Terminal` 。打开一个新的 `JavaScript Debug Terminal` 并直接运行 `npm run test` 或 `vitest` 。*这适用于在 Node 中运行的任何代码，因此将适用于大多数 JS 测试框架*。
 
 ![image](https://user-images.githubusercontent.com/5594348/212169143-72bf39ce-f763-48f5-822a-0c8b2e6a8484.png)
 
