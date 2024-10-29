@@ -544,7 +544,7 @@ export interface Options {
   teardown?: Hook
 }
 ```
-After the test case is run, the output structure information is as follows:
+测试用例运行后，输出结构信息如下：
 
 ```
   name                      hz     min     max    mean     p75     p99    p995    p999     rme  samples
@@ -553,106 +553,106 @@ After the test case is run, the output structure information is as follows:
 ```ts
 export interface TaskResult {
   /*
-   * the last error that was thrown while running the task
+   * 运行任务时发生的最后一次错误
    */
   error?: unknown
 
   /**
-   * The amount of time in milliseconds to run the benchmark task (cycle).
+   * 以毫秒为单位的基准任务运行时间（周期）。
    */
   totalTime: number
 
   /**
-   * the minimum value in the samples
+   * 样本中的最小值
    */
   min: number
   /**
-   * the maximum value in the samples
+   * 样本中的最大值
    */
   max: number
 
   /**
-   * the number of operations per second
+   * 每秒的操作次数
    */
   hz: number
 
   /**
-   * how long each operation takes (ms)
+   * 每个操作需要多长时间（毫秒）
    */
   period: number
 
   /**
-   * task samples of each task iteration time (ms)
+   * 每个任务的任务样本迭代时间（毫秒）
    */
   samples: number[]
 
   /**
-   * samples mean/average (estimate of the population mean)
+   * 样本平均数/平均值（总体平均数的估计值）
    */
   mean: number
 
   /**
-   * samples variance (estimate of the population variance)
+   * 样本方差（总体方差的估计值）
    */
   variance: number
 
   /**
-   * samples standard deviation (estimate of the population standard deviation)
+   * 样本标准差（总体标准差的估计值）
    */
   sd: number
 
   /**
-   * standard error of the mean (a.k.a. the standard deviation of the sampling distribution of the sample mean)
+   * 平均值的标准误差（又称样本平均值的抽样分布标准差）
    */
   sem: number
 
   /**
-   * degrees of freedom
+   * 自由度
    */
   df: number
 
   /**
-   * critical value of the samples
+   * 样本临界值
    */
   critical: number
 
   /**
-   * margin of error
+   * 误差率
    */
   moe: number
 
   /**
-   * relative margin of error
+   * 相对误差
    */
   rme: number
 
   /**
-   * median absolute deviation
+   * 中位绝对偏差
    */
   mad: number
 
   /**
-   * p50/median percentile
+   * P50/中位百分位数
    */
   p50: number
 
   /**
-   * p75 percentile
+   * p75 百分位数
    */
   p75: number
 
   /**
-   * p99 percentile
+   * p99 百分位数
    */
   p99: number
 
   /**
-   * p995 percentile
+   * p995 百分位数
    */
   p995: number
 
   /**
-   * p999 percentile
+   * p999 百分位数
    */
   p999: number
 }
