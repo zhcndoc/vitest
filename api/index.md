@@ -544,6 +544,119 @@ export interface Options {
   teardown?: Hook
 }
 ```
+测试用例运行后，输出结构信息如下：
+
+```
+  name                      hz     min     max    mean     p75     p99    p995    p999     rme  samples
+· normal sorting  6,526,368.12  0.0001  0.3638  0.0002  0.0002  0.0002  0.0002  0.0004  ±1.41%   652638
+```
+```ts
+export interface TaskResult {
+  /*
+   * 运行任务时发生的最后一次错误
+   */
+  error?: unknown
+
+  /**
+   * 以毫秒为单位的基准任务运行时间（周期）。
+   */
+  totalTime: number
+
+  /**
+   * 样本中的最小值
+   */
+  min: number
+  /**
+   * 样本中的最大值
+   */
+  max: number
+
+  /**
+   * 每秒的操作次数
+   */
+  hz: number
+
+  /**
+   * 每个操作需要多长时间（毫秒）
+   */
+  period: number
+
+  /**
+   * 每个任务的任务样本迭代时间（毫秒）
+   */
+  samples: number[]
+
+  /**
+   * 样本平均数/平均值（总体平均数的估计值）
+   */
+  mean: number
+
+  /**
+   * 样本方差（总体方差的估计值）
+   */
+  variance: number
+
+  /**
+   * 样本标准差（总体标准差的估计值）
+   */
+  sd: number
+
+  /**
+   * 平均值的标准误差（又称样本平均值的抽样分布标准差）
+   */
+  sem: number
+
+  /**
+   * 自由度
+   */
+  df: number
+
+  /**
+   * 样本临界值
+   */
+  critical: number
+
+  /**
+   * 误差率
+   */
+  moe: number
+
+  /**
+   * 相对误差
+   */
+  rme: number
+
+  /**
+   * 中位绝对偏差
+   */
+  mad: number
+
+  /**
+   * P50/中位百分位数
+   */
+  p50: number
+
+  /**
+   * p75 百分位数
+   */
+  p75: number
+
+  /**
+   * p99 百分位数
+   */
+  p99: number
+
+  /**
+   * p995 百分位数
+   */
+  p995: number
+
+  /**
+   * p999 百分位数
+   */
+  p999: number
+}
+```
 
 ### bench.skip
 

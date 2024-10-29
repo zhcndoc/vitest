@@ -2507,9 +2507,9 @@ export default defineConfig({
 #### fakeTimers.shouldClearNativeTimers
 
 - **类型:** `boolean`
-- **默认值:** `false`
+- **默认值:** `true`
 
-通过委托各自的处理程序，告诉假冒计时器清除 "native"（即非假冒）计时器。这些计时器默认情况下不会被清除，如果计时器在假计时器会话启动前就已存在，则可能会导致意外行为。
+通过委托各自的处理程序，告诉假冒计时器清除 "native"（即非假冒）计时器。禁用时，如果计时器在启动假计时器会话之前已经存在，则可能导致意外行为。
 
 ### workspace<NonProjectOption /> {#workspace}
 
