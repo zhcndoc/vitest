@@ -404,7 +404,15 @@ declare class TestProject {
    */
   readonly workspaceProject: WorkspaceProject
   /**
+<<<<<<< HEAD
    * 已解决项目配置问题。
+=======
+   * Vite's dev server instance. Every workspace project has its own server.
+   */
+  readonly vite: ViteDevServer
+  /**
+   * Resolved project configuration.
+>>>>>>> 7dece1af507454c3a1b5848804e53c6b15528454
    */
   readonly config: ResolvedProjectConfig
   /**

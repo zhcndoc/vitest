@@ -1061,8 +1061,13 @@ Vitest 关闭时等待关闭的默认超时时间，以毫秒为单位
 
 setup 文件的路径。它们将运行在每个测试文件之前。
 
+<<<<<<< HEAD
 ::: info 提示
 更改配置文件将触发所有测试的重新运行。
+=======
+:::info
+Editing a setup file will automatically trigger a rerun of all tests.
+>>>>>>> 7dece1af507454c3a1b5848804e53c6b15528454
 :::
 
 你可以在全局设置文件中使用 `process.env.VITEST_POOL_ID`（类似整数的字符串）来区分不同的线程。
