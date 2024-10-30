@@ -404,6 +404,10 @@ declare class TestProject {
    */
   readonly workspaceProject: WorkspaceProject
   /**
+   * Vite 的开发服务器实例。每个工作区项目都有自己的服务器。
+   */
+  readonly vite: ViteDevServer
+  /**
    * 已解决项目配置问题。
    */
   readonly config: ResolvedProjectConfig
