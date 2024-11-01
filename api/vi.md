@@ -221,13 +221,31 @@ TypeScript 的类型助手。只返回传入的对象。
 当 `partial` 为 `true` 时，它将期望一个 `Partial<T>` 作为返回值。默认情况下，这只会让 TypeScript 认为第一层的值是模拟的。我们可以将 `{ deep: true }` 作为第二个参数传递给 TypeScript，告诉它整个对象都是模拟的（如果实际上是的话）。
 
 ```ts
-import example from './example.js'
+// example.ts
+export function add(x: number, y: number): number {
+  return x + y
+}
 
-vi.mock('./example.js')
+export function fetchSomething(): Promise<Response> {
+  return fetch('https://vitest.dev/')
+}
+```
+
+```ts
+// example.test.ts
+import * as example from './example'
+
+vi.mock('./example')
 
 test('1 + 1 equals 10', async () => {
-  vi.mocked(example.calc).mockReturnValue(10)
-  expect(example.calc(1, '+', 1)).toBe(10)
+  vi.mocked(example.add).mockReturnValue(10)
+  expect(example.add(1, 1)).toBe(10)
+})
+
+test('mock return value with only partially correct typing', async () => {
+  vi.mocked(example.fetchSomething).mockResolvedValue(new Response('hello'))
+  vi.mocked(example.fetchSomething, { partial: true }).mockResolvedValue({ ok: false })
+  // vi.mocked(example.someFn).mockResolvedValue({ ok: false }) // this is a type error
 })
 ```
 

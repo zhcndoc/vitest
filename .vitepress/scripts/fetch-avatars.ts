@@ -13,7 +13,7 @@ async function download(url: string, fileName: string) {
   if (existsSync(fileName)) {
     return
   }
-  // eslint-disable-next-line no-console
+
   console.log('downloading', fileName)
   try {
     const image = await (await fetch(url)).arrayBuffer()

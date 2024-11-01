@@ -1062,7 +1062,7 @@ Vitest 关闭时等待关闭的默认超时时间，以毫秒为单位
 setup 文件的路径。它们将运行在每个测试文件之前。
 
 ::: info 提示
-更改配置文件将触发所有测试的重新运行。
+编辑设置文件将自动触发所有测试的重新运行。
 :::
 
 你可以在全局设置文件中使用 `process.env.VITEST_POOL_ID`（类似整数的字符串）来区分不同的线程。
@@ -1741,6 +1741,14 @@ test('doNotRun', () => {
 - **命令行终端:** `--browser.isolate`, `--browser.isolate=false`
 
 在单独的 iframe 中运行每个测试。
+
+#### browser.testerHtmlPath
+
+- **Type:** `string`
+- **Default:** `@vitest/browser/tester.html`
+- **Version:** Since Vitest 2.1.4
+
+A path to the HTML entry point. Can be relative to the root of the project. This file will be processed with [`transformIndexHtml`](https://vite.dev/guide/api-plugin#transformindexhtml) hook.
 
 #### browser.api
 
@@ -2499,9 +2507,9 @@ export default defineConfig({
 #### fakeTimers.shouldClearNativeTimers
 
 - **类型:** `boolean`
-- **默认值:** `false`
+- **默认值:** `true`
 
-通过委托各自的处理程序，告诉假冒计时器清除 "native"（即非假冒）计时器。这些计时器默认情况下不会被清除，如果计时器在假计时器会话启动前就已存在，则可能会导致意外行为。
+通过委托各自的处理程序，告诉假冒计时器清除 "native"（即非假冒）计时器。禁用时，如果计时器在启动假计时器会话之前已经存在，则可能导致意外行为。
 
 ### workspace<NonProjectOption /> {#workspace}
 
