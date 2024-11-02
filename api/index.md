@@ -32,11 +32,7 @@ interface TestOptions {
 }
 ```
 
-<<<<<<< HEAD
-当测试函数返回承诺时，运行程序将等待它被解析以收集异步期望。 如果承诺被拒绝，测试就会失败。
-=======
-When a test function returns a promise, the runner will wait until it is resolved to collect async expectations. If the promise is rejected, the test will fail.
->>>>>>> c83e1043b7a8fc13eab44381ef956032539b5979
+当测试函数返回一个 promise 时，运行器会等待它解结束收集异步的结果。如果 promise 被拒绝，测试就会失败。
 
 ::: tip
 在 Jest 中，`TestFunction` 也可以是 `(done: DoneCallback) => void` 类型。如果使用这种形式，测试将在调用 `done` 之前不会结束。也可以使用 `async` 函数来实现相同的效果，请参阅[迁移指南中的回调完成部分](/guide/migration#回调完成)。
