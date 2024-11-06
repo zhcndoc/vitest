@@ -10,11 +10,11 @@ title: 工作空间 | 指南
 
 :::
 
-Vitest 通过工作空间配置文件提供了对 monorepos 的内置支持。你可以创建一个工作空间来定义项目的配置。
+Vitest 提供了在单个 Vitest 进程中定义多个项目配置的方法。该功能对单核设置尤为有用，但也可用于运行不同配置的测试，如 `resolve.alias`、`plugins` 或 `test.browser` 等。
 
 ## 定义工作空间
 
-工作区必须在其根目录（与根配置文件位于同一文件夹，如适用）中包含一个 `vitest.workspace` 或 `vitest.projects` 文件。Vitest 支持该文件的 `ts`、`js` 和 `json` 扩展名。
+工作区必须在其根目录（与根配置文件或工作目录位于同一文件夹，如果不存在的话）中包含一个 `vitest.workspace` 或 `vitest.projects` 文件。Vitest 支持该文件的 `ts`、`js` 和 `json` 扩展名。
 
 ::: tip NAMING
 请注意，该功能的名称是`workspace`，而不是 `workspaces`（后面没有 “s”）。
@@ -81,7 +81,7 @@ export default defineWorkspace([
 :::
 
 ::: warning
-所有项目都必须有唯一的名称，否则 Vitest 会出错。如果内联配置中没有提供名称，Vitest 将分配一个数字。对于使用 glob 语法定义的项目配置，Vitest 将默认使用最近的 `package.json` 文件中的 "name" 属性，如果不存在此类文件，则使用文件夹名称。
+所有项目都必须有唯一的名称，否则 Vitest 会出错。如果内联配置中没有提供名称，Vitest 将分配一个数字。对于使用 glob 语法定义的项目配置，Vitest 将默认使用最近的 `package.json` 文件中的 "name" 属性，如果不存在，则使用文件夹名称。
 :::
 
 如果你不依赖内联配置，你可以在根目录中创建一个小的 JSON 文件：
