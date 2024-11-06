@@ -8,7 +8,11 @@ title: 与其他测试框架对比 | 指南
 
 [Jest](https://jestjs.io/) 在测试框架领域占据了主导地位，因为它为大多数 JavaScript 项目提供开箱即用的支持，具备舒适的 API（`it` 和 `expect`），且覆盖了大多数测试的需求（例如快照、模拟和覆盖率）。我们感谢 Jest 团队和社区创建了一个令人愉悦的测试 API，并引入了许多已成为 Web 生态系统标准的测试模式。
 
+<<<<<<< HEAD
 在 Vite 项目中使用 Jest 是可能的。[@sodatea](https://twitter.com/haoqunjiang) 开发了 [vite-jest](https://github.com/sodatea/vite-jest#readme) ，旨在为 [Jest](https://jestjs.io/) 提供一流的 Vite 集成。[Jest 中最后的阻碍](https://github.com/sodatea/vite-jest/blob/main/packages/vite-jest/README.md#vite-jest)已经解决。因此，在 Vite 项目的单元测试中，Jest 仍是一个可用选项。
+=======
+It is possible to use Jest in Vite setups. [@sodatea](https://bsky.app/profile/haoqun.dev) built [vite-jest](https://github.com/sodatea/vite-jest#readme), which aims to provide first-class Vite integration for [Jest](https://jestjs.io/). The last [blockers in Jest](https://github.com/sodatea/vite-jest/blob/main/packages/vite-jest/README.md#vite-jest) have been solved, so this is a valid option for your unit tests.
+>>>>>>> 5d371e37ea216e95b57a244bac24e1f5bfa346cf
 
 然而，在 [Vite](https://vitejs.dev) 已为最常见的 Web 工具（TypeScript、JSX、最流行的 UI 框架）提供了支持的情况下，引入 Jest 会增添不必要的复杂性。如果你的应用由 Vite 驱动，那么配置和维护两个不同的管道是不合理的。如果使用 Vitest，你可以在同一个管道中进行开发、构建和测试环境的配置，它们共享相同的插件和 `vite.config.js` 文件。
 
