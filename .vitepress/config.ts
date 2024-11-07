@@ -145,10 +145,6 @@ export default ({ mode }: { mode: string }) => {
                   link: mastodon,
                 },
                 {
-                  text: 'Twitter',
-                  link: twitter,
-                },
-                {
                   text: 'Discord 聊天室',
                   link: discord,
                 },
