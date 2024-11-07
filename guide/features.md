@@ -22,11 +22,7 @@ outline: deep
 $ vitest
 ```
 
-<<<<<<< HEAD
-当你修改源代码或测试文件时，Vitest 智能搜索模块依赖树并只重新运行相关测试，[就像 HMR 在 Vite 中的工作方式一样!](https://twitter.com/antfu7/status/1468233216939245579)
-=======
-When you modify your source code or the test files, Vitest smartly searches the module graph and only reruns the related tests, just like how HMR works in Vite!
->>>>>>> 5d371e37ea216e95b57a244bac24e1f5bfa346cf
+当你修改源代码或测试文件时，Vitest 智能搜索模块依赖树并只重新运行相关测试，就像 HMR 在 Vite 中的工作方式一样!
 
 `vitest` **在开发环境下默认** 启动时使用 `监听模式`，在 CI 环境（当 `process.env.CI` 出现时）中以 `运行模式(run mode)` 启动。你可以使用 `vitest watch` 或 `vitest run` 明确指定所需的模式。
 
