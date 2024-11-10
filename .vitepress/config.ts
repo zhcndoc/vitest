@@ -5,6 +5,7 @@ import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
 import { version } from '../package.json'
 import { teamMembers } from './contributors'
 import {
+  bluesky,
   contributing,
   discord,
   font,
@@ -13,7 +14,6 @@ import {
   ogImage,
   ogUrl,
   releases,
-  twitter,
   vitestDescription,
   vitestName,
 } from './meta'
@@ -152,9 +152,9 @@ export default ({ mode }: { mode: string }) => {
       // },
 
       socialLinks: [
-        // { icon: 'mastodon', link: mastodon },
-        // { icon: 'x', link: twitter },
-        // { icon: 'discord', link: discord },
+        { icon: 'bluesky', link: bluesky },
+        { icon: 'mastodon', link: mastodon },
+        { icon: 'discord', link: discord },
         { icon: 'github', link: github },
       ],
 
@@ -192,10 +192,6 @@ export default ({ mode }: { mode: string }) => {
                 {
                   text: 'Mastodon',
                   link: mastodon,
-                },
-                {
-                  text: 'Twitter',
-                  link: twitter,
                 },
                 {
                   text: 'Discord 聊天室',
