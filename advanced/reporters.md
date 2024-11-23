@@ -88,11 +88,6 @@ class MyReporter implements Reporter {
   }
 }
 ```
-<<<<<<< HEAD
-
-我们计划在 Vitest 2.1 中稳定该应用程序接口。
-=======
->>>>>>> 7cf8024e91c803287732c5382e03cccd9608b915
 :::
 
 ### TestCase
