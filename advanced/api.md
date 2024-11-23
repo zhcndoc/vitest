@@ -106,11 +106,7 @@ Vitest 实例需要当前的测试模式。它可以是以下之一：
 
 ### `provide`
 
-<<<<<<< HEAD
-Vitest 暴露了`provide`方法，它是`vitest.getCoreWorkspaceProject().provide`的简写。使用该方法，您可以从主线程向测试传递值。所有值在存储前都会通过 `structuredClone`进行检查，但值本身不会被克隆。
-=======
-Vitest exposes `provide` method which is a shorthand for `vitest.getRootTestProject().provide`. With this method you can pass down values from the main thread to tests. All values are checked with `structuredClone` before they are stored, but the values themselves are not cloned.
->>>>>>> 7cf8024e91c803287732c5382e03cccd9608b915
+Vitest 提供了 `provide` 方法，它是 `vitest.getRootTestProject().provide` 的简写形式。通过这个方法，你可以将值从主线程传递到测试中。所有值在存储之前都会通过 `structuredClone` 进行检查，但值本身不会被克隆。
 
 要在测试中接收值，需要从 `vitest` entrypont 导入 `inject` 方法：
 
@@ -137,19 +133,11 @@ declare module 'vitest' {
 ```
 
 ::: warning
-<<<<<<< HEAD
-从技术上讲，`provide`是`WorkspaceProject`的一个方法，因此仅限于特定的项目。不过，所有项目都继承了核心项目的值，这使得 `vitest.provide` 成为向测试传递值的通用方法。
+在技术上来说，`provide` 是 [`TestProject`](#testproject) 的一个方法，因此它受限于特定的项目。然而，所有项目都从核心项目继承了值，这使得 `vitest.provide` 成为了一种普遍的方式来向测试传递值。
 :::
 
 ::: tip
-在不想使用公共 API 的情况下，[全局设置文件](/config/#globalsetup) 也可以使用此方法：
-=======
-Technically, `provide` is a method of [`TestProject`](#testproject), so it is limited to the specific project. However, all projects inherit the values from the core project which makes `vitest.provide` universal way of passing down values to tests.
-:::
-
-::: tip
-This method is also available to [global setup files](/config/#globalsetup) for cases where you cannot use the public API:
->>>>>>> 7cf8024e91c803287732c5382e03cccd9608b915
+该方法同样适用于[全局配置文件](/config/#globalsetup)，在无法使用公共API的情况下。
 
 ```js
 export default function setup({ provide }) {
@@ -160,11 +148,11 @@ export default function setup({ provide }) {
 
 ## TestProject <Version>2.2.0</Version> {#testproject}
 
-- **Alias**: `WorkspaceProject` before 2.2.0
+- **别名**: `WorkspaceProject` before 2.2.0
 
 ### name
 
-The name is a unique string assigned by the user or interpreted by Vitest. If user did not provide a name, Vitest tries to load a `package.json` in the root of the project and takes the `name` property from there. If there is no `package.json`, Vitest uses the name of the folder by default. Inline projects use numbers as the name (converted to string).
+这个 name 是由用户指定的唯一字符串，或由 Vitest 解释得出。如果用户未提供名称，Vitest 会尝试在项目根目录加载 `package.json` 文件，并从中获取 `name` 属性作为 name 。若项目中不存在 `package.json` 文件，则 Vitest 默认使用文件夹的名字。对于内联项目，Vitest 使用数字（转换为字符串）作为 name 。
 
 ::: code-group
 ```ts [node.js]
@@ -200,11 +188,11 @@ export default [
 
 ### vitest
 
-`vitest` references the global [`vitest`](#vitest) process.
+`vitest` 是指全局的 [`vitest`](#vitest) 进程。
 
 ### serializedConfig
 
-This is the test config that all tests will receive. Vitest [serializes config](https://github.com/vitest-dev/vitest/blob/main/packages/vitest/src/node/config/serializeConfig.ts) manually by removing all functions and properties that are not possible to serialize. Since this value is available in both tests and node, it is exported from the main entry point.
+所有测试都会接收到的测试配置。Vitest 手动[序列化配置](https://github.com/vitest-dev/vitest/blob/main/packages/vitest/src/node/config/serializeConfig.ts)，通过移除所有无法序列化的函数和属性来实现。由于这个值在测试和 Node 环境中都可用，因此它从主入口点导出。
 
 ```ts
 import type { SerializedConfig } from 'vitest'
@@ -214,7 +202,7 @@ const config: SerializedConfig = vitest.projects[0].serializedConfig
 
 ### globalConfig
 
-The test config that `vitest` was initialized with. If this is the root project, `globalConfig` and `config` will reference the same object. This config is useful for values that cannot be set on the project level, like `coverage` or `reporters`.
+`vitest` 初始化时所使用的测试配置。如果这是根项目，`globalConfig` 和 `config` 将引用同一个对象。这个配置对于不能在项目级别设置的值非常有用，比如 `coverage` 或 `reporters`。
 
 ```ts
 import type { ResolvedConfig } from 'vitest/node'
@@ -224,23 +212,24 @@ vitest.config === vitest.projects[0].globalConfig
 
 ### config
 
-This is the project's resolved test config.
+这是项目的解析后的测试配置。
 
 ### vite
 
-This is project's `ViteDevServer`. All projects have their own Vite servers.
+这是项目的 `ViteDevServer`。每个项目都有自己的 Vite 服务器。
 
 ### browser
 
-This value will be set only if tests are running in the browser. If `browser` is enabled, but tests didn't run yet, this will be `undefined`. If you need to check if the project supports browser tests, use `project.isBrowserSupported()` method.
+此值仅在测试运行于浏览器中时才会被设置。如果启用了 `browser`，但测试尚未运行，这将为 `undefined`。如果您需要检查项目是否支持浏览器测试，请使用 `project.isBrowserSupported()` 方法。
+
 
 ::: warning
-The browser API is even more experimental and doesn't follow SemVer. The browser API will be standardized separately from the rest of the APIs.
+这个浏览器API尚在实验阶段，并不遵循语义化（SemVer）版本控制。浏览器API将会独立于其他API进行标准化。
 :::
 
 ### provide
 
-A way to provide custom values to tests in addition to [`config.provide`](/config/#provide) field. All values are validated with [`structuredClone`](https://developer.mozilla.org/en-US/docs/Web/API/Window/structuredClone) before they are stored, but the values on `providedContext` themselves are not cloned.
+这是一种在 [`config.provide`](/config/#provide) 字段之外向测试提供自定义值的方法。所有值在存储之前都会通过 [`structuredClone`](https://developer.mozilla.org/en-US/docs/Web/API/Window/structuredClone) 进行验证，但 `providedContext` 中的值本身不会被克隆。
 
 ::: code-group
 ```ts [node.js]
@@ -257,11 +246,12 @@ const value = inject('key')
 ```
 :::
 
-The values can be provided dynamicaly. Provided value in tests will be updated on their next run.
+
+这些值可以动态提供。在测试中提供的值将在下一次运行时更新。
 
 ### getProvidedContext
 
-This returns the context object. Every project also inherits the global context set by `vitest.provide`.
+这将返回上下文对象。每个项目也会继承由 `vitest.provide` 设置的全局上下文。
 
 ```ts
 import { createVitest } from 'vitest/node'
@@ -276,12 +266,12 @@ const context = project.getProvidedContext()
 ```
 
 ::: tip
-Project context values will always override global ones.
+项目上下文的值总是会覆盖全局的值。
 :::
 
 ### createSpecification
 
-Create a test specification that can be used in `vitest.runFiles`. Specification scopes the test file to a specific `project` and `pool` (optionally).
+创建一个测试规范，该规范可用于 `vitest.runFiles`。规范将测试文件限定在特定的 `project` 和（可选的）`pool` 中。
 
 ```ts
 import { createVitest } from 'vitest/node'
@@ -297,20 +287,20 @@ await vitest.runFiles([specification], true)
 ```
 
 ::: warning
-`createSpecification` expects an absolute file path. It doesn't resolve the file or check that it exists on the file system.
+`createSpecification` 需要一个绝对文件路径。但是它不会解析文件或检查文件系统上是否存在该文件。
 :::
 
 ### isRootProject
 
-Checks if the current project is the root project. You can also get the root project by calling `vitest.getRootTestProject()`.
+检查当前项目是否为根项目。我们也可以尝试调用 `vitest.getRootTestProject()` 来获取根项目。
 
-The root project generally doesn't run any tests and is not included in `vitest.projects` unless the user explicitly includes the root config in their workspace.
+根项目通常不运行任何测试，并且不包含在 `vitest.projects` 中，除非我们明确地将根配置包含在它们的工作空间中。
 
-The primary goal of the root project is to setup the global config. In fact, `rootProject.config` references `rootProject.globalConfig` and `vitest.config` directly.
+根项目的主要目标是设置全局配置。实际上，`rootProject.config` 直接引用了 `rootProject.globalConfig` 和 `vitest.config`。
 
 ### globTestFiles
 
-Globs all test files. This function returns an object with regular tests and typecheck tests:
+匹配所有测试文件。这个函数返回一个包含常规测试和类型检查测试的对象：
 
 ```ts
 interface GlobReturn {
@@ -326,20 +316,20 @@ interface GlobReturn {
 ```
 
 ::: tip
-Vitest uses [fast-glob](https://www.npmjs.com/package/fast-glob) to find test files. `test.dir`, `test.root`, `root` or `process.cwd()` define the `cwd` option.
+Vitest 使用 [fast-glob](https://www.npmjs.com/package/fast-glob) 来查找测试文件。`test.dir`、`test.root`、`root` 或 `process.cwd()` 定义了 `cwd` 选项。
 
-This method looks at several config options:
+这个方法会查看几个配置选项：
 
-- `test.include`, `test.exclude` to find regular test files
-- `test.includeSource`, `test.exclude` to find in-source tests
-- `test.typecheck.include`, `test.typecheck.exclude` to find typecheck tests
+- `test.include`、`test.exclude` 用于查找常规测试文件；
+- `test.includeSource`、`test.exclude` 用于查找源代码中的测试；
+- `test.typecheck.include`、`test.typecheck.exclude` 用于查找类型检查测试。
 :::
 
 ### matchesTestGlob
 
-This method checks if the file is a regular test file. It uses the same config properties that `globTestFiles` uses for validation.
+此方法用于检查文件是否为常规测试文件。它使用与 `globTestFiles` 相同的配置属性进行验证。
 
-This method also accepts a second parameter, which is the source code. This is used to validate if the file is an in-source test. If you are calling this method several times for several projects it is recommended to read the file once and pass it down directly.
+此方法还接受第二个参数，即源代码。这用于验证文件是否为源代码中的测试。如果我们需要多次为多个项目调用此方法，建议先读取文件一次，然后直接传递源代码。
 
 ```ts
 import { createVitest } from 'vitest/node'
@@ -359,6 +349,6 @@ if (import.meta.vitest) {
 
 ### close
 
-Closes the project and all associated resources. This can only be called once; the closing promise is cached until the server restarts. If the resources are needed again, create a new project.
+关闭项目及其所有相关资源。此操作只能调用一次；关闭的承诺会被缓存，直到服务器重新启动。如果再次需要资源，请创建一个新项目。
 
-In detail, this method closes the Vite server, stops the typechecker service, closes the browser if it's running, deletes the temporary directory that holds the source code, and resets the provided context.
+具体来说，这个方法会关闭 Vite 服务器，停止类型检查服务，如果浏览器正在运行则关闭它，删除存放源代码的临时目录，并重置提供的上下文。
