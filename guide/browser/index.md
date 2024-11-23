@@ -107,13 +107,9 @@ export default defineConfig({
 ```
 
 ::: info
-<<<<<<< HEAD
-Vitest 分配的端口为 `63315`，以避免与开发服务器冲突，从而允许同时运行两个服务器。你可以使用 [`browser.api`](/config/#browser-api) 选项来更改。
-=======
-Vitest assigns port `63315` to avoid conflicts with the development server, allowing you to run both in parallel. You can change that with the [`browser.api`](/config/#browser-api) option.
+Vitest 默认分配端口号 `63315` 以避免与开发服务器冲突，允许我们同时并行运行两者。我们可以通过 [`browser.api`](/config/#browser-api) 选项来更改这个端口号。
 
-Since Vitest 2.1.5, the CLI no longer prints the Vite URL automatically. You can press "b" to print the URL when running in watch mode.
->>>>>>> 7cf8024e91c803287732c5382e03cccd9608b915
+自 Vitest 2.1.5 版本起，命令行界面（CLI）不再自动打印 Vite 的 URL。当您在观察模式下运行时，可以通过按 "b" 键来打印 URL。
 :::
 
 如果之前未使用过 Vite，请确保已安装框架插件并在配置中指定。有些框架可能需要额外配置才能运行，请查看其 Vite 相关文档以确定。

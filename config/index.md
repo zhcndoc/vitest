@@ -2019,13 +2019,8 @@ export default defineConfig({
 
 ### resolveSnapshotPath<NonProjectOption />
 
-<<<<<<< HEAD
-- **类型**: `(testPath: string, snapExtension: string) => string`
-- **默认值**: 存储快照文件在 `__snapshots__` 目录
-=======
-- **Type**: `(testPath: string, snapExtension: string, context: { config: SerializedConfig }) => string`
-- **Default**: stores snapshot files in `__snapshots__` directory
->>>>>>> 7cf8024e91c803287732c5382e03cccd9608b915
+- **类型**: `(testPath: string, snapExtension: string, context: { config: SerializedConfig }) => string`
+- **默认值**: stores snapshot files in `__snapshots__` directory
 
 覆盖快照的默认路径。例如，要在测试文件旁边存储一下快照：
 
@@ -2424,30 +2419,17 @@ export default defineConfig({
 
 ### diff
 
-<<<<<<< HEAD
 - **类型:** `string`
-- **命令行终端:** `--diff=<value>`
+- **命令行终端:** `--diff=<path>`
 
-生成差异界面时使用的不同配置的路径。如果你想自定义差异显示，这将非常有用。
+`DiffOptions` 对象或者是一个导出 `DiffOptions` 的模块路径。如果我们想要自定义差异显示，这将非常有用。
 
-:::code-group
-
-```ts [vitest.diff.ts]
-import type { DiffOptions } from 'vitest'
-import c from 'tinyrainbow'
-=======
-- **Type:** `string`
-- **CLI:** `--diff=<path>`
-
-`DiffOptions` object or a path to a module which exports `DiffOptions`. Useful if you want to customize diff display.
-
-For example, as a config object:
+例如，作为一个配置对象：
 
 :::code-group
 ```ts [vitest.config.js]
 import { defineConfig } from 'vitest/config'
 import c from 'picocolors'
->>>>>>> 7cf8024e91c803287732c5382e03cccd9608b915
 
 export default defineConfig({
   test: {
@@ -2474,8 +2456,6 @@ export default defineConfig({
 })
 ```
 
-<<<<<<< HEAD
-=======
 ```ts [vitest.diff.ts]
 import type { DiffOptions } from 'vitest'
 import c from 'picocolors'
@@ -2486,41 +2466,30 @@ export default {
   omitAnnotationLines: true,
 } satisfies DiffOptions
 ```
->>>>>>> 7cf8024e91c803287732c5382e03cccd9608b915
 :::
 
 #### diff.expand
 
-- **Type**: `boolean`
-- **Default**: `true`
-- **CLI:** `--diff.expand=false`
+- **类型**: `boolean`
+- **默认值**: `true`
+- **命令行终端:** `--diff.expand=false`
 
 Expand all common lines.
 
 #### diff.truncateThreshold
 
-<<<<<<< HEAD
 - **类型**: `number`
 - **默认值**: `0`
-=======
-- **Type**: `number`
-- **Default**: `0`
-- **CLI:** `--diff.truncateThreshold=<path>`
->>>>>>> 7cf8024e91c803287732c5382e03cccd9608b915
+- **命令行终端:** `--diff.truncateThreshold=<path>`
 
 要显示的差异结果的最大长度。超过此阈值的差异将被截断。
 默认值为 0 时，截断不会生效。
 
 #### diff.truncateAnnotation
 
-<<<<<<< HEAD
 - **类型**: `string`
 - **默认值**: `'... Diff result is truncated'`
-=======
-- **Type**: `string`
-- **Default**: `'... Diff result is truncated'`
-- **CLI:** `--diff.truncateAnnotation=<annotation>`
->>>>>>> 7cf8024e91c803287732c5382e03cccd9608b915
+- **命令行终端:** `--diff.truncateAnnotation=<annotation>`
 
 在 diff 结果末尾输出的注释（如果被截断）。
 
@@ -2592,15 +2561,9 @@ Print basic prototype `Object` and `Array` in diff output
 
 ### workspace<NonProjectOption /> {#workspace}
 
-<<<<<<< HEAD
-- **类型:** `string`
+- **类型:** `string | TestProjectConfiguration`
 - **命令行终端:** `--workspace=./file.js`
 - **默认值:** `vitest.{workspace,projects}.{js,ts,json}` close to the config file or root
-=======
-- **Type:** `string | TestProjectConfiguration`
-- **CLI:** `--workspace=./file.js`
-- **Default:** `vitest.{workspace,projects}.{js,ts,json}` close to the config file or root
->>>>>>> 7cf8024e91c803287732c5382e03cccd9608b915
 
 相对于[root](#root) 的 [workspace](/guide/workspace) 配置文件的路径。
 
