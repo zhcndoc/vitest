@@ -733,15 +733,13 @@ test('matches snapshot', () => {
 })
 ```
 
-<<<<<<< HEAD
-=======
 ## toMatchInlineSnapshot
 
-- **Type:** `<T>(shape?: Partial<T> | string, snapshot?: string, message?: string) => void`
+- **类型:** `<T>(shape?: Partial<T> | string, snapshot?: string, message?: string) => void`
 
-This ensures that a value matches the most recent snapshot.
+这确保了一个值与最近的快照相匹配。
 
-Vitest adds and updates the inlineSnapshot string argument to the matcher in the test file (instead of an external `.snap` file).
+Vitest 会在测试文件中的匹配器添加和更新内联快照字符串参数（而不是外部的 `.snap` 文件）。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -760,7 +758,7 @@ test('matches inline snapshot', () => {
 })
 ```
 
-You can also provide a shape of an object, if you are testing just a shape of an object, and don't need it to be 100% compatible:
+如果我么只是在测试对象的形状，而不需要它 100% 兼容，我们也可以提供一个对象的形状。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -780,9 +778,9 @@ test('matches snapshot', () => {
 
 ## toMatchFileSnapshot {#tomatchfilesnapshot}
 
-- **Type:** `<T>(filepath: string, message?: string) => Promise<void>`
+- **类型:** `<T>(filepath: string, message?: string) => Promise<void>`
 
-Compare or update the snapshot with the content of a file explicitly specified (instead of the `.snap` file).
+指定文件内容与快照进行比较或更新（而非使用 `.snap` 文件）。
 
 ```ts
 import { expect, it } from 'vitest'
@@ -793,25 +791,25 @@ it('render basic', async () => {
 })
 ```
 
-Note that since file system operation is async, you need to use `await` with `toMatchFileSnapshot()`. If `await` is not used, Vitest treats it like `expect.soft`, meaning the code after the statement will continue to run even if the snapshot mismatches. After the test finishes, Vitest will check the snapshot and fail if there is a mismatch.
+请注意，由于文件系统操作是异步的，我们需要在 `toMatchFileSnapshot()` 中使用 `await`。如果没有使用 `await`，Vitest 会将其视为 `expect.soft`，这意味着即使快照不匹配，代码在该语句之后也会继续运行。测试完成后，Vitest 会检查快照，如果有不匹配，测试将失败。
 
 ## toThrowErrorMatchingSnapshot
 
-- **Type:** `(message?: string) => void`
+- **类型:** `(message?: string) => void`
 
-The same as [`toMatchSnapshot`](#tomatchsnapshot), but expects the same value as [`toThrowError`](#tothrowerror).
+与 [`toMatchSnapshot`](#tomatchsnapshot) 相同，但期望的值与 [`toThrowError`](#tothrowerror) 相同。
 
 ## toThrowErrorMatchingInlineSnapshot
 
-- **Type:** `(snapshot?: string, message?: string) => void`
+- **类型:** `(snapshot?: string, message?: string) => void`
 
-The same as [`toMatchInlineSnapshot`](#tomatchinlinesnapshot), but expects the same value as [`toThrowError`](#tothrowerror).
+与 [`toMatchInlineSnapshot`](#tomatchinlinesnapshot) 类似，但期望的值与 [`toThrowError`](#tothrowerror) 相同。
 
 ## toHaveBeenCalled
 
-- **Type:** `() => Awaitable<void>`
+- **类型:** `() => Awaitable<void>`
 
-This assertion is useful for testing that a function has been called. Requires a spy function to be passed to `expect`.
+这个断言对于测试函数是否被调用非常有用。需要将一个 spy 函数传递给 `expect`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -835,9 +833,9 @@ test('spy function', () => {
 
 ## toHaveBeenCalledTimes
 
-- **Type**: `(amount: number) => Awaitable<void>`
+- **类型**: `(amount: number) => Awaitable<void>`
 
-This assertion checks if a function was called a certain amount of times. Requires a spy function to be passed to `expect`.
+这个断言检查函数是否被调用了特定次数。需要将一个 spy 函数传递给 `expect`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -860,9 +858,9 @@ test('spy function called two times', () => {
 
 ## toHaveBeenCalledWith
 
-- **Type**: `(...args: any[]) => Awaitable<void>`
+- **类型**: `(...args: any[]) => Awaitable<void>`
 
-This assertion checks if a function was called at least once with certain parameters. Requires a spy function to be passed to `expect`.
+这个断言检查函数是否至少一次被调用，并带有特定的参数。需要将一个 spy 函数传递给 `expect`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -886,9 +884,9 @@ test('spy function', () => {
 
 ## toHaveBeenCalledBefore <Version>2.2.0</Version> {#tohavebeencalledbefore}
 
-- **Type**: `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => Awaitable<void>`
+- **类型**: `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => Awaitable<void>`
 
-This assertion checks if a `Mock` was called before another `Mock`.
+这个断言检查一个 `Mock` 是否在另一个 `Mock` 之前被调用。
 
 ```ts
 test('calls mock1 before mock2', () => {
@@ -905,9 +903,9 @@ test('calls mock1 before mock2', () => {
 
 ## toHaveBeenCalledAfter <Version>2.2.0</Version> {#tohavebeencalledafter}
 
-- **Type**: `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => Awaitable<void>`
+- **类型**: `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => Awaitable<void>`
 
-This assertion checks if a `Mock` was called after another `Mock`.
+这个断言检查一个 `Mock` 是否在另一个 `Mock` 之后被调用。
 
 ```ts
 test('calls mock1 after mock2', () => {
@@ -924,9 +922,9 @@ test('calls mock1 after mock2', () => {
 
 ## toHaveBeenCalledExactlyOnceWith <Version>2.2.0</Version> {#tohavebeencalledexactlyoncewith}
 
-- **Type**: `(...args: any[]) => Awaitable<void>`
+- **类型**: `(...args: any[]) => Awaitable<void>`
 
-This assertion checks if a function was called exactly once and with certain parameters. Requires a spy function to be passed to `expect`.
+这个断言检查函数是否恰好被调用了一次，并且带有特定的参数。需要将一个 spy 函数传递给 `expect`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -948,9 +946,9 @@ test('spy function', () => {
 
 ## toHaveBeenLastCalledWith
 
-- **Type**: `(...args: any[]) => Awaitable<void>`
+- **类型**: `(...args: any[]) => Awaitable<void>`
 
-This assertion checks if a function was called with certain parameters at its last invocation. Requires a spy function to be passed to `expect`.
+这个断言检查函数在其最后一次调用时是否被传入了特定的参数。需要将一个 spy 函数传递给 `expect`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -974,11 +972,11 @@ test('spy function', () => {
 
 ## toHaveBeenNthCalledWith
 
-- **Type**: `(time: number, ...args: any[]) => Awaitable<void>`
+- **类型**: `(time: number, ...args: any[]) => Awaitable<void>`
 
-This assertion checks if a function was called with certain parameters at the certain time. The count starts at 1. So, to check the second entry, you would write `.toHaveBeenNthCalledWith(2, ...)`.
+这个断言检查函数是否在特定的次数被调用时带有特定的参数。计数从 1 开始。因此，要检查第二次调用，我们需要写成 `.toHaveBeenNthCalledWith(2, ...)`。
 
-Requires a spy function to be passed to `expect`.
+需要将一个 spy 函数传递给 `expect`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1001,9 +999,9 @@ test('first call of spy function called with right params', () => {
 
 ## toHaveReturned
 
-- **Type**: `() => Awaitable<void>`
+- **类型**: `() => Awaitable<void>`
 
-This assertion checks if a function has successfully returned a value at least once (i.e., did not throw an error). Requires a spy function to be passed to `expect`.
+这个断言检查函数是否至少成功返回了一次值（ i.e. ，没有抛出错误）。需要将一个 spy 函数传递给 `expect`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1025,9 +1023,9 @@ test('spy function returned a value', () => {
 
 ## toHaveReturnedTimes
 
-- **Type**: `(amount: number) => Awaitable<void>`
+- **类型**: `(amount: number) => Awaitable<void>`
 
-This assertion checks if a function has successfully returned a value an exact amount of times (i.e., did not throw an error). Requires a spy function to be passed to `expect`.
+这个断言检查函数是否在确切的次数内成功返回了值（ i.e. ，没有抛出错误）。需要将一个 spy 函数传递给 `expect`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1044,9 +1042,10 @@ test('spy function returns a value two times', () => {
 
 ## toHaveReturnedWith
 
-- **Type**: `(returnValue: any) => Awaitable<void>`
+- **类型**: `(returnValue: any) => Awaitable<void>`
 
-You can call this assertion to check if a function has successfully returned a value with certain parameters at least once. Requires a spy function to be passed to `expect`.
+我们可以调用这个断言来检查函数是否至少一次成功返回了带有特定参数的值。需要将一个 spy 函数传递给 `expect`。
+
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1062,9 +1061,9 @@ test('spy function returns a product', () => {
 
 ## toHaveLastReturnedWith
 
-- **Type**: `(returnValue: any) => Awaitable<void>`
+- **类型**: `(returnValue: any) => Awaitable<void>`
 
-You can call this assertion to check if a function has successfully returned a certain value when it was last invoked. Requires a spy function to be passed to `expect`.
+我们可以使用这个断言来检查函数在最后一次被调用时是否成功返回了特定的值。需要将一个 spy 函数传递给 `expect`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1081,9 +1080,9 @@ test('spy function returns bananas on a last call', () => {
 
 ## toHaveNthReturnedWith
 
-- **Type**: `(time: number, returnValue: any) => Awaitable<void>`
+- **类型**: `(time: number, returnValue: any) => Awaitable<void>`
 
-You can call this assertion to check if a function has successfully returned a value with certain parameters on a certain call. Requires a spy function to be passed to `expect`.
+我们可以调用这个断言来检查函数是否在特定的调用中成功返回了带有特定参数的值。需要将一个 spy 函数传递给 `expect`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1100,11 +1099,11 @@ test('spy function returns bananas on second call', () => {
 
 ## toHaveResolved
 
-- **Type**: `() => Awaitable<void>`
+- **类型**: `() => Awaitable<void>`
 
-This assertion checks if a function has successfully resolved a value at least once (i.e., did not reject). Requires a spy function to be passed to `expect`.
+这个断言检查函数是否至少一次成功地解析了一个值（ i.e. ，没有被拒绝）。需要将一个 spy 函数传递给 `expect`。
 
-If the function returned a promise, but it was not resolved yet, this will fail.
+如果函数返回了一个 promise ，但它还没有被解决，这个断言将会失败。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1124,7 +1123,6 @@ test('spy function resolved a value', async () => {
 })
 ```
 
->>>>>>> 7cf8024e91c803287732c5382e03cccd9608b915
 ## toHaveResolvedTimes
 
 - **类型**: `(amount: number) => Awaitable<void>`
@@ -1255,13 +1253,9 @@ test('buyApples returns new stock id', async () => {
 ```
 
 :::warning
-<<<<<<< HEAD
-如果断言没有被等待，那么将得到一个虚假的测试，它将每次都通过。为了确保断言实际上被调用，需要使用 [`expect.assertions(number)`](#expect-assertions)。
-=======
-If the assertion is not awaited, then you will have a false-positive test that will pass every time. To make sure that assertions are actually called, you may use [`expect.assertions(number)`](#expect-assertions).
+如果断言没有被异步等待，那么我们将得到一个误报测试，这个测试每次都能通过。为了确保断言确实被调用，我们可以尝试使用 [`expect.assertions(number)`](#expect-assertions)。
 
-Since Vitest 2.2, if a method is not awaited, Vitest will show a warning at the end of the test. In Vitest 3, the test will be marked as "failed" if the assertion is not awaited.
->>>>>>> 7cf8024e91c803287732c5382e03cccd9608b915
+自 Vitest 2.2 起，如果一个方法没有被异步等待，Vitest 会在测试结束时显示警告。在 Vitest 3 中，如果断言没有被异步等待，测试将被标记为 "failed" 。
 :::
 
 ## rejects
@@ -1290,13 +1284,9 @@ test('buyApples throws an error when no id provided', async () => {
 ```
 
 :::warning
-<<<<<<< HEAD
-如果不等待断言，那么将得到每次都会通过的误报测试。 为了确保确实调用了断言，可以使用 [`expect.assertions(number)`](#expect-assertions)。
-=======
-If the assertion is not awaited, then you will have a false-positive test that will pass every time. To make sure that assertions were actually called, you can use [`expect.assertions(number)`](#expect-assertions).
+如果断言没有被等待执行，那么我们将得到一个误报测试，这个测试每次都能通过。为了确保断言实际上被调用了，我们可以尝试使用 [`expect.assertions(number)`](#expect-assertions)。
 
-Since Vitest 2.2, if a method is not awaited, Vitest will show a warning at the end of the test. In Vitest 3, the test will be marked as "failed" if the assertion is not awaited.
->>>>>>> 7cf8024e91c803287732c5382e03cccd9608b915
+从 Vitest 2.2 版本开始，如果一个方法没有被等待执行，Vitest 会在测试结束时显示一个警告。在 Vitest 3 版本中，如果断言没有被等待执行，测试将被标记为 "failed"。
 :::
 
 ## expect.assertions
