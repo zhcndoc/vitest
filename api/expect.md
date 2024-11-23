@@ -63,7 +63,7 @@ test('expect.soft test', () => {
 
 ```ts
 interface ExpectPoll extends ExpectStatic {
-  (actual: () => T, options: { interval; timeout; message }): Promise<Assertions<T>>
+  (actual: () => T, options: { interval, timeout, message }): Promise<Assertions<T>>
 }
 ```
 
@@ -82,11 +82,7 @@ test('element exists', async () => {
 ```
 
 ::: warning
-<<<<<<< HEAD
-`expect.poll` 使每个断言都异步，所以不要忘记等待它，否则可能会收到未经处理的 promise 拒绝。
-=======
-`expect.poll` makes every assertion asynchronous, so you need to await it. Since Vitest 2.2, if you forget to await it, the test will fail with a warning to do so.
->>>>>>> 7cf8024e91c803287732c5382e03cccd9608b915
+`expect.poll` 使得每次断言都变为异步，因此我们需要等待它。自 Vitest 2.2 起，如果我们忘记等待，测试将以警告失败，并提示我们应该这样做。
 
 `expect.poll` 不适用于多个匹配器：
 
@@ -1045,7 +1041,6 @@ test('spy function returns a value two times', () => {
 - **类型**: `(returnValue: any) => Awaitable<void>`
 
 我们可以调用这个断言来检查函数是否至少一次成功返回了带有特定参数的值。需要将一个 spy 函数传递给 `expect`。
-
 
 ```ts
 import { expect, test, vi } from 'vitest'
