@@ -1185,6 +1185,18 @@ inject('wsPort') === 3000
 
 :::
 
+Since Vitest 2.2.0, you can define a custom callback function to be called when Vitest reruns tests. If the function is asynchronous, the runner will wait for it to complete before executing the tests.
+
+```ts
+import type { GlobalSetupContext } from 'vitest/node'
+
+export default function setup({ onTestsRerun }: GlobalSetupContext) {
+  onTestsRerun(async () => {
+    await restartDb()
+  })
+}
+```
+
 ### forceRerunTriggers<NonProjectOption />
 
 - **类型**: `string[]`
@@ -2007,8 +2019,8 @@ export default defineConfig({
 
 ### resolveSnapshotPath<NonProjectOption />
 
-- **类型**: `(testPath: string, snapExtension: string) => string`
-- **默认值**: 存储快照文件在 `__snapshots__` 目录
+- **类型**: `(testPath: string, snapExtension: string, context: { config: SerializedConfig }) => string`
+- **默认值**: stores snapshot files in `__snapshots__` directory
 
 覆盖快照的默认路径。例如，要在测试文件旁边存储一下快照：
 
@@ -2408,23 +2420,32 @@ export default defineConfig({
 ### diff
 
 - **类型:** `string`
-- **命令行终端:** `--diff=<value>`
+- **命令行终端:** `--diff=<path>`
 
-生成差异界面时使用的不同配置的路径。如果你想自定义差异显示，这将非常有用。
+`DiffOptions` 对象或者是一个导出 `DiffOptions` 的模块路径。如果我们想要自定义差异显示，这将非常有用。
+
+例如，作为一个配置对象：
 
 :::code-group
+```ts [vitest.config.js]
+import { defineConfig } from 'vitest/config'
+import c from 'picocolors'
 
-```ts [vitest.diff.ts]
-import type { DiffOptions } from 'vitest'
-import c from 'tinyrainbow'
-
-export default {
-  aIndicator: c.bold('--'),
-  bIndicator: c.bold('++'),
-  omitAnnotationLines: true,
-} satisfies DiffOptions
+export default defineConfig({
+  test: {
+    diff: {
+      aIndicator: c.bold('--'),
+      bIndicator: c.bold('++'),
+      omitAnnotationLines: true,
+    }
+  }
+})
 ```
+:::
 
+Or as a module:
+
+:::code-group
 ```ts [vitest.config.js]
 import { defineConfig } from 'vitest/config'
 
@@ -2435,12 +2456,31 @@ export default defineConfig({
 })
 ```
 
+```ts [vitest.diff.ts]
+import type { DiffOptions } from 'vitest'
+import c from 'picocolors'
+
+export default {
+  aIndicator: c.bold('--'),
+  bIndicator: c.bold('++'),
+  omitAnnotationLines: true,
+} satisfies DiffOptions
+```
 :::
+
+#### diff.expand
+
+- **类型**: `boolean`
+- **默认值**: `true`
+- **命令行终端:** `--diff.expand=false`
+
+Expand all common lines.
 
 #### diff.truncateThreshold
 
 - **类型**: `number`
 - **默认值**: `0`
+- **命令行终端:** `--diff.truncateThreshold=<path>`
 
 要显示的差异结果的最大长度。超过此阈值的差异将被截断。
 默认值为 0 时，截断不会生效。
@@ -2449,6 +2489,7 @@ export default defineConfig({
 
 - **类型**: `string`
 - **默认值**: `'... Diff result is truncated'`
+- **命令行终端:** `--diff.truncateAnnotation=<annotation>`
 
 在 diff 结果末尾输出的注释（如果被截断）。
 
@@ -2458,6 +2499,13 @@ export default defineConfig({
 - **默认值**: `noColor = (string: string): string => string`
 
 截断注释的颜色，默认为无色输出。
+
+#### diff.printBasicPrototype
+
+- **Type**: `boolean`
+- **Default**: `true`
+
+Print basic prototype `Object` and `Array` in diff output
 
 ### fakeTimers
 
@@ -2513,11 +2561,13 @@ export default defineConfig({
 
 ### workspace<NonProjectOption /> {#workspace}
 
-- **类型:** `string`
+- **类型:** `string | TestProjectConfiguration`
 - **命令行终端:** `--workspace=./file.js`
 - **默认值:** `vitest.{workspace,projects}.{js,ts,json}` close to the config file or root
 
 相对于[root](#root) 的 [workspace](/guide/workspace) 配置文件的路径。
+
+Since Vitest 2.2, you can also define the workspace array in the root config. If the `workspace` is defined in the config manually, Vitest will ignore the `vitest.workspace` file in the root.
 
 ### isolate
 

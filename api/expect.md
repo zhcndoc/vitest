@@ -63,7 +63,7 @@ test('expect.soft test', () => {
 
 ```ts
 interface ExpectPoll extends ExpectStatic {
-  (actual: () => T, options: { interval; timeout; message }): Promise<Assertions<T>>
+  (actual: () => T, options: { interval, timeout, message }): Promise<Assertions<T>>
 }
 ```
 
@@ -82,7 +82,7 @@ test('element exists', async () => {
 ```
 
 ::: warning
-`expect.poll` 使每个断言都异步，所以不要忘记等待它，否则可能会收到未经处理的 promise 拒绝。
+`expect.poll` 使得每次断言都变为异步，因此我们需要等待它。自 Vitest 2.2 起，如果我们忘记等待，测试将以警告失败，并提示我们应该这样做。
 
 `expect.poll` 不适用于多个匹配器：
 
@@ -729,6 +729,395 @@ test('matches snapshot', () => {
 })
 ```
 
+## toMatchInlineSnapshot
+
+- **类型:** `<T>(shape?: Partial<T> | string, snapshot?: string, message?: string) => void`
+
+这确保了一个值与最近的快照相匹配。
+
+Vitest 会在测试文件中的匹配器添加和更新内联快照字符串参数（而不是外部的 `.snap` 文件）。
+
+```ts
+import { expect, test } from 'vitest'
+
+test('matches inline snapshot', () => {
+  const data = { foo: new Set(['bar', 'snapshot']) }
+  // Vitest will update following content when updating the snapshot
+  expect(data).toMatchInlineSnapshot(`
+    {
+      "foo": Set {
+        "bar",
+        "snapshot",
+      },
+    }
+  `)
+})
+```
+
+如果我么只是在测试对象的形状，而不需要它 100% 兼容，我们也可以提供一个对象的形状。
+
+```ts
+import { expect, test } from 'vitest'
+
+test('matches snapshot', () => {
+  const data = { foo: new Set(['bar', 'snapshot']) }
+  expect(data).toMatchInlineSnapshot(
+    { foo: expect.any(Set) },
+    `
+    {
+      "foo": Any<Set>,
+    }
+  `
+  )
+})
+```
+
+## toMatchFileSnapshot {#tomatchfilesnapshot}
+
+- **类型:** `<T>(filepath: string, message?: string) => Promise<void>`
+
+指定文件内容与快照进行比较或更新（而非使用 `.snap` 文件）。
+
+```ts
+import { expect, it } from 'vitest'
+
+it('render basic', async () => {
+  const result = renderHTML(h('div', { class: 'foo' }))
+  await expect(result).toMatchFileSnapshot('./test/basic.output.html')
+})
+```
+
+请注意，由于文件系统操作是异步的，我们需要在 `toMatchFileSnapshot()` 中使用 `await`。如果没有使用 `await`，Vitest 会将其视为 `expect.soft`，这意味着即使快照不匹配，代码在该语句之后也会继续运行。测试完成后，Vitest 会检查快照，如果有不匹配，测试将失败。
+
+## toThrowErrorMatchingSnapshot
+
+- **类型:** `(message?: string) => void`
+
+与 [`toMatchSnapshot`](#tomatchsnapshot) 相同，但期望的值与 [`toThrowError`](#tothrowerror) 相同。
+
+## toThrowErrorMatchingInlineSnapshot
+
+- **类型:** `(snapshot?: string, message?: string) => void`
+
+与 [`toMatchInlineSnapshot`](#tomatchinlinesnapshot) 类似，但期望的值与 [`toThrowError`](#tothrowerror) 相同。
+
+## toHaveBeenCalled
+
+- **类型:** `() => Awaitable<void>`
+
+这个断言对于测试函数是否被调用非常有用。需要将一个 spy 函数传递给 `expect`。
+
+```ts
+import { expect, test, vi } from 'vitest'
+
+const market = {
+  buy(subject: string, amount: number) {
+    // ...
+  },
+}
+
+test('spy function', () => {
+  const buySpy = vi.spyOn(market, 'buy')
+
+  expect(buySpy).not.toHaveBeenCalled()
+
+  market.buy('apples', 10)
+
+  expect(buySpy).toHaveBeenCalled()
+})
+```
+
+## toHaveBeenCalledTimes
+
+- **类型**: `(amount: number) => Awaitable<void>`
+
+这个断言检查函数是否被调用了特定次数。需要将一个 spy 函数传递给 `expect`。
+
+```ts
+import { expect, test, vi } from 'vitest'
+
+const market = {
+  buy(subject: string, amount: number) {
+    // ...
+  },
+}
+
+test('spy function called two times', () => {
+  const buySpy = vi.spyOn(market, 'buy')
+
+  market.buy('apples', 10)
+  market.buy('apples', 20)
+
+  expect(buySpy).toHaveBeenCalledTimes(2)
+})
+```
+
+## toHaveBeenCalledWith
+
+- **类型**: `(...args: any[]) => Awaitable<void>`
+
+这个断言检查函数是否至少一次被调用，并带有特定的参数。需要将一个 spy 函数传递给 `expect`。
+
+```ts
+import { expect, test, vi } from 'vitest'
+
+const market = {
+  buy(subject: string, amount: number) {
+    // ...
+  },
+}
+
+test('spy function', () => {
+  const buySpy = vi.spyOn(market, 'buy')
+
+  market.buy('apples', 10)
+  market.buy('apples', 20)
+
+  expect(buySpy).toHaveBeenCalledWith('apples', 10)
+  expect(buySpy).toHaveBeenCalledWith('apples', 20)
+})
+```
+
+## toHaveBeenCalledBefore <Version>2.2.0</Version> {#tohavebeencalledbefore}
+
+- **类型**: `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => Awaitable<void>`
+
+这个断言检查一个 `Mock` 是否在另一个 `Mock` 之前被调用。
+
+```ts
+test('calls mock1 before mock2', () => {
+  const mock1 = vi.fn()
+  const mock2 = vi.fn()
+
+  mock1()
+  mock2()
+  mock1()
+
+  expect(mock1).toHaveBeenCalledBefore(mock2)
+})
+```
+
+## toHaveBeenCalledAfter <Version>2.2.0</Version> {#tohavebeencalledafter}
+
+- **类型**: `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => Awaitable<void>`
+
+这个断言检查一个 `Mock` 是否在另一个 `Mock` 之后被调用。
+
+```ts
+test('calls mock1 after mock2', () => {
+  const mock1 = vi.fn()
+  const mock2 = vi.fn()
+
+  mock2()
+  mock1()
+  mock2()
+
+  expect(mock1).toHaveBeenCalledAfter(mock2)
+})
+```
+
+## toHaveBeenCalledExactlyOnceWith <Version>2.2.0</Version> {#tohavebeencalledexactlyoncewith}
+
+- **类型**: `(...args: any[]) => Awaitable<void>`
+
+这个断言检查函数是否恰好被调用了一次，并且带有特定的参数。需要将一个 spy 函数传递给 `expect`。
+
+```ts
+import { expect, test, vi } from 'vitest'
+
+const market = {
+  buy(subject: string, amount: number) {
+    // ...
+  },
+}
+
+test('spy function', () => {
+  const buySpy = vi.spyOn(market, 'buy')
+
+  market.buy('apples', 10)
+
+  expect(buySpy).toHaveBeenCalledExactlyOnceWith('apples', 10)
+})
+```
+
+## toHaveBeenLastCalledWith
+
+- **类型**: `(...args: any[]) => Awaitable<void>`
+
+这个断言检查函数在其最后一次调用时是否被传入了特定的参数。需要将一个 spy 函数传递给 `expect`。
+
+```ts
+import { expect, test, vi } from 'vitest'
+
+const market = {
+  buy(subject: string, amount: number) {
+    // ...
+  },
+}
+
+test('spy function', () => {
+  const buySpy = vi.spyOn(market, 'buy')
+
+  market.buy('apples', 10)
+  market.buy('apples', 20)
+
+  expect(buySpy).not.toHaveBeenLastCalledWith('apples', 10)
+  expect(buySpy).toHaveBeenLastCalledWith('apples', 20)
+})
+```
+
+## toHaveBeenNthCalledWith
+
+- **类型**: `(time: number, ...args: any[]) => Awaitable<void>`
+
+这个断言检查函数是否在特定的次数被调用时带有特定的参数。计数从 1 开始。因此，要检查第二次调用，我们需要写成 `.toHaveBeenNthCalledWith(2, ...)`。
+
+需要将一个 spy 函数传递给 `expect`。
+
+```ts
+import { expect, test, vi } from 'vitest'
+
+const market = {
+  buy(subject: string, amount: number) {
+    // ...
+  },
+}
+
+test('first call of spy function called with right params', () => {
+  const buySpy = vi.spyOn(market, 'buy')
+
+  market.buy('apples', 10)
+  market.buy('apples', 20)
+
+  expect(buySpy).toHaveBeenNthCalledWith(1, 'apples', 10)
+})
+```
+
+## toHaveReturned
+
+- **类型**: `() => Awaitable<void>`
+
+这个断言检查函数是否至少成功返回了一次值（ i.e. ，没有抛出错误）。需要将一个 spy 函数传递给 `expect`。
+
+```ts
+import { expect, test, vi } from 'vitest'
+
+function getApplesPrice(amount: number) {
+  const PRICE = 10
+  return amount * PRICE
+}
+
+test('spy function returned a value', () => {
+  const getPriceSpy = vi.fn(getApplesPrice)
+
+  const price = getPriceSpy(10)
+
+  expect(price).toBe(100)
+  expect(getPriceSpy).toHaveReturned()
+})
+```
+
+## toHaveReturnedTimes
+
+- **类型**: `(amount: number) => Awaitable<void>`
+
+这个断言检查函数是否在确切的次数内成功返回了值（ i.e. ，没有抛出错误）。需要将一个 spy 函数传递给 `expect`。
+
+```ts
+import { expect, test, vi } from 'vitest'
+
+test('spy function returns a value two times', () => {
+  const sell = vi.fn((product: string) => ({ product }))
+
+  sell('apples')
+  sell('bananas')
+
+  expect(sell).toHaveReturnedTimes(2)
+})
+```
+
+## toHaveReturnedWith
+
+- **类型**: `(returnValue: any) => Awaitable<void>`
+
+我们可以调用这个断言来检查函数是否至少一次成功返回了带有特定参数的值。需要将一个 spy 函数传递给 `expect`。
+
+```ts
+import { expect, test, vi } from 'vitest'
+
+test('spy function returns a product', () => {
+  const sell = vi.fn((product: string) => ({ product }))
+
+  sell('apples')
+
+  expect(sell).toHaveReturnedWith({ product: 'apples' })
+})
+```
+
+## toHaveLastReturnedWith
+
+- **类型**: `(returnValue: any) => Awaitable<void>`
+
+我们可以使用这个断言来检查函数在最后一次被调用时是否成功返回了特定的值。需要将一个 spy 函数传递给 `expect`。
+
+```ts
+import { expect, test, vi } from 'vitest'
+
+test('spy function returns bananas on a last call', () => {
+  const sell = vi.fn((product: string) => ({ product }))
+
+  sell('apples')
+  sell('bananas')
+
+  expect(sell).toHaveLastReturnedWith({ product: 'bananas' })
+})
+```
+
+## toHaveNthReturnedWith
+
+- **类型**: `(time: number, returnValue: any) => Awaitable<void>`
+
+我们可以调用这个断言来检查函数是否在特定的调用中成功返回了带有特定参数的值。需要将一个 spy 函数传递给 `expect`。
+
+```ts
+import { expect, test, vi } from 'vitest'
+
+test('spy function returns bananas on second call', () => {
+  const sell = vi.fn((product: string) => ({ product }))
+
+  sell('apples')
+  sell('bananas')
+
+  expect(sell).toHaveNthReturnedWith(2, { product: 'bananas' })
+})
+```
+
+## toHaveResolved
+
+- **类型**: `() => Awaitable<void>`
+
+这个断言检查函数是否至少一次成功地解析了一个值（ i.e. ，没有被拒绝）。需要将一个 spy 函数传递给 `expect`。
+
+如果函数返回了一个 promise ，但它还没有被解决，这个断言将会失败。
+
+```ts
+import { expect, test, vi } from 'vitest'
+import db from './db/apples.js'
+
+async function getApplesPrice(amount: number) {
+  return amount * await db.get('price')
+}
+
+test('spy function resolved a value', async () => {
+  const getPriceSpy = vi.fn(getApplesPrice)
+
+  const price = await getPriceSpy(10)
+
+  expect(price).toBe(100)
+  expect(getPriceSpy).toHaveResolved()
+})
+```
+
 ## toHaveResolvedTimes
 
 - **类型**: `(amount: number) => Awaitable<void>`
@@ -859,7 +1248,9 @@ test('buyApples returns new stock id', async () => {
 ```
 
 :::warning
-如果断言没有被等待，那么将得到一个虚假的测试，它将每次都通过。为了确保断言实际上被调用，需要使用 [`expect.assertions(number)`](#expect-assertions)。
+如果断言没有被异步等待，那么我们将得到一个误报测试，这个测试每次都能通过。为了确保断言确实被调用，我们可以尝试使用 [`expect.assertions(number)`](#expect-assertions)。
+
+自 Vitest 2.2 起，如果一个方法没有被异步等待，Vitest 会在测试结束时显示警告。在 Vitest 3 中，如果断言没有被异步等待，测试将被标记为 "failed" 。
 :::
 
 ## rejects
@@ -888,7 +1279,9 @@ test('buyApples throws an error when no id provided', async () => {
 ```
 
 :::warning
-如果不等待断言，那么将得到每次都会通过的误报测试。 为了确保确实调用了断言，可以使用 [`expect.assertions(number)`](#expect-assertions)。
+如果断言没有被等待执行，那么我们将得到一个误报测试，这个测试每次都能通过。为了确保断言实际上被调用了，我们可以尝试使用 [`expect.assertions(number)`](#expect-assertions)。
+
+从 Vitest 2.2 版本开始，如果一个方法没有被等待执行，Vitest 会在测试结束时显示一个警告。在 Vitest 3 版本中，如果断言没有被等待执行，测试将被标记为 "failed"。
 :::
 
 ## expect.assertions

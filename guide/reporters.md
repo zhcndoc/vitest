@@ -98,33 +98,54 @@ export default defineConfig({
 
 ### 默认报告器
 
-默认情况下（即未指定报告程序），Vitest 会在每个测试套件运行时分级显示结果，并在套件通过后折叠显示。所有测试运行结束后，最终终端输出将显示结果摘要和失败测试的详细信息。
+默认情况下（即如果没有指定报告器），Vitest 会在底部显示运行测试的摘要及其状态。一旦测试套件通过，其状态将被报告在摘要的顶部。
+
+我们可以通过配置报告器来禁用摘要：
+
+:::code-group
+```ts [vitest.config.ts]
+export default defineConfig({
+  test: {
+    reporters: [
+      ['default', { summary: false }]
+    ]
+  },
+})
+```
+:::
 
 项目中的测试输出示例:
 
 ```bash
-✓ __tests__/file1.test.ts (2) 725ms
-✓ __tests__/file2.test.ts (5) 746ms
-  ✓ second test file (2) 746ms
-    ✓ 1 + 1 should equal 2
-    ✓ 2 - 1 should equal 1
+ ✓ test/example-1.test.ts (5 tests | 1 skipped) 306ms
+ ✓ test/example-2.test.ts (5 tests | 1 skipped) 307ms
+
+ ❯ test/example-3.test.ts 3/5
+ ❯ test/example-4.test.ts 1/5
+
+ Test Files 2 passed (4)
+      Tests 10 passed | 3 skipped (65)
+   Start at 11:01:36
+   Duration 2.00s
 ```
 
 测试完成后的最终输出:
 
 ```bash
-✓ __tests__/file1.test.ts (2) 725ms
-✓ __tests__/file2.test.ts (2) 746ms
+ ✓ test/example-1.test.ts (5 tests | 1 skipped) 306ms
+ ✓ test/example-2.test.ts (5 tests | 1 skipped) 307ms
+ ✓ test/example-3.test.ts (5 tests | 1 skipped) 307ms
+ ✓ test/example-4.test.ts (5 tests | 1 skipped) 307ms
 
- Test Files  2 passed (2)
-      Tests  4 passed (4)
+ Test Files  4 passed (4)
+      Tests  16 passed | 4 skipped (20)
    Start at  12:34:32
    Duration  1.26s (transform 35ms, setup 1ms, collect 90ms, tests 1.47s, environment 0ms, prepare 267ms)
 ```
 
 ### 基础报告器
 
-基础报告器会显示已运行的测试文件，以及整个套件运行结束后的结果摘要。单独的测试除非不合格，否则不列入报告。
+`basic` 报告器等同于没有 `summary` 的 `default` 报告器。
 
 :::code-group
 
@@ -156,7 +177,7 @@ export default defineConfig({
 
 ### 详细报告器
 
-采用与`默认报告器`相同的层次结构，但不会折叠已通过测试套件的子树。终端最终输出会显示所有已运行的测试，包括已通过的测试。
+详细报告器与 `default` 报告器相同，但它还会在测试套件完成后显示每个单独的测试。它还会显示当前正在运行且耗时超过 [`slowTestThreshold`](/config/#slowtestthreshold) 的测试。与 `default` 报告器类似，我们可以通过配置报告器来禁用摘要。
 
 :::code-group
 
@@ -167,12 +188,32 @@ npx vitest --reporter=verbose
 ```ts [vitest.config.ts]
 export default defineConfig({
   test: {
-    reporters: ['verbose'],
+    reporters: [
+      ['verbose', { summary: false }]
+    ]
   },
 })
 ```
 
 :::
+
+使用默认 `slowTestThreshold: 300` 的情况下，测试进行中的示例输出：
+
+```bash
+ ✓ __tests__/example-1.test.ts (2) 725ms
+   ✓ first test file (2) 725ms
+     ✓ 2 + 2 should equal 4
+     ✓ 4 - 2 should equal 2
+
+ ❯ test/example-2.test.ts 3/5
+   ↳ should run longer than three seconds 1.57s
+ ❯ test/example-3.test.ts 1/5
+
+ Test Files 2 passed (4)
+      Tests 10 passed | 3 skipped (65)
+   Start at 11:01:36
+   Duration 2.00s
+```
 
 测试套件通过后的终端最终输出示例:
 
@@ -261,17 +302,18 @@ AssertionError: expected 5 to be 4 // Object.is equality
 </testsuites>
 ```
 
-输出的 XML 包含嵌套的 `testsuites` 和 `testcase` 标签。我们可以使用 reporter 选项来配置这些属性：
+输出的 XML 包含嵌套的 `testsuites` 和 `testcase` 标签。这些也可以通过报告选项 `suiteName` 和 `classnameTemplate` 进行自定义。`classnameTemplate` 可以是一个模板字符串或者一个函数。
+
+`classnameTemplate` 选项支持的占位符有：
+- filename
+- filepath
 
 ```ts
 export default defineConfig({
   test: {
     reporters: [
-      [
-        'junit',
-        { suiteName: 'custom suite name', classname: 'custom-classname' },
-      ],
-    ],
+      ['junit', { suiteName: 'custom suite name', classnameTemplate: 'filename:{filename} - filepath:{filepath}' }]
+    ]
   },
 })
 ```
@@ -280,7 +322,7 @@ export default defineConfig({
 
 ### JSON 报告器
 
-以 JSON 格式输出测试结果报告。既可打印到终端，也可使用 [`outputFile`](##报告器输出) 配置选项写入文件。
+以与 Jest 的 `--json` 选项兼容的 JSON 格式生成测试结果报告。可以打印到终端，也可以使用 [`outputFile`](/config/#outputfile) 配置选项写入文件。
 
 :::code-group
 
@@ -336,9 +378,14 @@ JSON 报告示例:
       "message": "",
       "name": "/root-directory/__tests__/test-file-1.test.ts"
     }
-  ]
+  ],
+  "coverageMap": {}
 }
 ```
+
+::: info
+自 Vitest 2.2 版本起，如果启用了代码覆盖率功能，JSON 报告器会在 `coverageMap` 中包含覆盖率信息。
+:::
 
 ### HTML 报告器
 

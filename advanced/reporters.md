@@ -88,8 +88,6 @@ class MyReporter implements Reporter {
   }
 }
 ```
-
-我们计划在 Vitest 2.1 中稳定该应用程序接口。
 :::
 
 ### TestCase
@@ -382,55 +380,6 @@ function onFileCollected(testModule: TestModule): void {
   for (const task of testModule.children.allTests()) {
     console.log('collected', task.type, task.fullName)
   }
-}
-```
-
-### TestProject
-
-`TestProject` 是与文件相关联的项目。该文件中的每个测试和套件都将引用同一个项目。
-
-项目可用于获取配置或提供的上下文。
-
-```ts
-declare class TestProject {
-  /**
-   * The global vitest instance.
-   * @experimental The public Vitest API 是实验性的，并不遵循 semver。
-   */
-  readonly vitest: Vitest
-  /**
-   * 与该测试项目相关联的工作区项目。
-   * @experimental The public Vitest API 是实验性的，并不遵循 semver。
-   */
-  readonly workspaceProject: WorkspaceProject
-  /**
-   * Vite 的开发服务器实例。每个工作区项目都有自己的服务器。
-   */
-  readonly vite: ViteDevServer
-  /**
-   * 已解决项目配置问题。
-   */
-  readonly config: ResolvedProjectConfig
-  /**
-   * 已解决的全局配置问题。如果没有工作区项目，则与 `config`相同。
-   */
-  readonly globalConfig: ResolvedConfig
-  /**
-   * 序列化的项目配置。这就是测试会收到的配置。
-   */
-  get serializedConfig(): SerializedConfig
-  /**
-   * 项目名称，如果未设置，则为空字符串。
-   */
-  name(): string
-  /**
-   * 为项目提供的自定义上下文。
-   */
-  context(): ProvidedContext
-  /**
-   * 为项目提供自定义的可序列化上下文。测试运行后，该上下文将可供测试使用。
-   */
-  provide<T extends keyof ProvidedContext & string>(key: T, value: ProvidedContext[T]): void
 }
 ```
 

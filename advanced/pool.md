@@ -38,18 +38,12 @@ export default defineConfig({
 在 `pool` 选项中指定的文件应该导出一个函数（可以是异步的），该函数接受 `Vitest` 接口作为其第一个选项。这个函数需要返回一个与 `ProcessPool` 接口匹配的对象：
 
 ```ts
-import { ProcessPool, WorkspaceProject } from 'vitest/node'
+import { ProcessPool, TestSpecification } from 'vitest/node'
 
 export interface ProcessPool {
   name: string
-  runTests: (
-    files: [project: WorkspaceProject, testFile: string][],
-    invalidates?: string[]
-  ) => Promise<void>
-  collectTests: (
-    files: [project: WorkspaceProject, testFile: string][],
-    invalidates?: string[]
-  ) => Promise<void>
+  runTests: (files: TestSpecification[], invalidates?: string[]) => Promise<void>
+  collectTests: (files: TestSpecification[], invalidates?: string[]) => Promise<void>
   close?: () => Promise<void>
 }
 ```
@@ -69,23 +63,26 @@ Vitest 会等到 `runTests` 执行完毕后才结束运行（即只有在 `runTe
 ```ts
 import { createBirpc } from 'birpc'
 import { parse, stringify } from 'flatted'
-import { createMethodsRPC, WorkspaceProject } from 'vitest/node'
+import { createMethodsRPC, TestProject } from 'vitest/node'
 
-function createRpc(project: WorkspaceProject, wss: WebSocketServer) {
-  return createBirpc(createMethodsRPC(project), {
-    post: msg => wss.send(msg),
-    on: fn => wss.on('message', fn),
-    serialize: stringify,
-    deserialize: parse,
-  })
+function createRpc(project: TestProject, wss: WebSocketServer) {
+  return createBirpc(
+    createMethodsRPC(project),
+    {
+      post: msg => wss.send(msg),
+      on: fn => wss.on('message', fn),
+      serialize: stringify,
+      deserialize: parse,
+    },
+  )
 }
 ```
 
 为了确保收集每个测试，你可以调用 `ctx.state.collectFiles` 并将其交给 Vitest 报告器：
 
 ```ts
-async function runTests(project: WorkspaceProject, tests: string[]) {
-  // ... 运行测试，放入 `files` 和 `tasks` 中
+async function runTests(project: TestProject, tests: string[]) {
+  // ... running tests, put into "files" and "tasks"
   const methods = createMethodsRPC(project)
   await methods.onCollected(files)
   // 大多数报告都依赖于在 `onTaskUpdate` 中更新结果
