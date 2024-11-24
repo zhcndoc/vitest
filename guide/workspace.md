@@ -14,13 +14,16 @@ Vitest 提供了在单个 Vitest 进程中定义多个项目配置的方法。�
 
 ## 定义工作空间
 
-工作区必须在其根目录（与根配置文件或工作目录位于同一文件夹，如果不存在的话）中包含一个 `vitest.workspace` 或 `vitest.projects` 文件。Vitest 支持该文件的 `ts`、`js` 和 `json` 扩展名。
+工作区必须在其根目录中包含一个 `vitest.workspace` 或 `vitest.projects` 文件（位于与我们的根配置文件相同的文件夹中，或者如果不存在，则位于工作目录中）。请注意，`projects` 只是一个别名，不会改变此功能的行为或语义。Vitest 支持此文件的 `ts`、`js` 和 `json` 扩展名。
+
+自 Vitest 2.2 起，我们还可以在根配置中定义工作区。在这种情况下，如果存在，Vitest 将忽略根目录中的 `vitest.workspace` 文件。
+
+>>>>>>> 7cf8024e91c803287732c5382e03cccd9608b915
 
 ::: tip NAMING
-请注意，该功能的名称是`workspace`，而不是 `workspaces`（后面没有 “s”）。
 :::
 
-工作区配置文件必须有一个默认导出，其中包含引用项目的文件列表或 glob 模式。例如，如果你有一个名为 `packages` 的文件夹，其中包含你的项目，你就可以用这个配置文件定义一个工作区：
+工作区是一系列内联配置、文件或引用我们项目的全局模式的列表。例如，如果我们有一个名为 `packages` 的文件夹，其中包含了我们的项目，我们可以直接创建一个工作区文件，或者在根配置中定义一个数组：
 
 :::code-group
 
@@ -28,6 +31,15 @@ Vitest 提供了在单个 Vitest 进程中定义多个项目配置的方法。�
 export default ['packages/*']
 ```
 
+```ts [vitest.config.ts <Version>2.2.0</Version>]
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    workspace: ['packages/*'],
+  },
+})
+```
 :::
 
 即使某个文件夹中没有配置文件，Vitest 也会将 `packages` 文件夹中的每个文件夹视为单独的项目。自 Vitest 2.1 起，如果此 glob 模式匹配到任何文件，即使文件名中没有 `vitest` 也会被视为 Vitest 配置文件。
@@ -44,6 +56,15 @@ export default ['packages/*']
 export default ['packages/*/vitest.config.{e2e,unit}.ts']
 ```
 
+```ts [vitest.config.ts <Version>2.2.0</Version>]
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    workspace: ['packages/*/vitest.config.{e2e,unit}.ts'],
+  },
+})
+```
 :::
 
 该模式仅包括具有包含 `e2e` 或 `unit` 的 `vitest.config` 文件的项目。这些关键字需要在文件扩展名之前出现。
@@ -78,18 +99,57 @@ export default defineWorkspace([
 ])
 ```
 
+```ts [vitest.config.ts <Version>2.2.0</Version>]
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    workspace: [
+      // matches every folder and file inside the `packages` folder
+      'packages/*',
+      {
+        // add "extends: true" to inherit the options from the root config
+        extends: true,
+        test: {
+          include: ['tests/**/*.{browser}.test.{ts,js}'],
+          // it is recommended to define a name when using inline configs
+          name: 'happy-dom',
+          environment: 'happy-dom',
+        }
+      },
+      {
+        test: {
+          include: ['tests/**/*.{node}.test.{ts,js}'],
+          name: 'node',
+          environment: 'node',
+        }
+      }
+    ]
+  }
+})
+```
 :::
 
 ::: warning
 所有项目都必须有唯一的名称，否则 Vitest 会出错。如果内联配置中没有提供名称，Vitest 将分配一个数字。对于使用 glob 语法定义的项目配置，Vitest 将默认使用最近的 `package.json` 文件中的 "name" 属性，如果不存在，则使用文件夹名称。
 :::
 
-如果你不依赖内联配置，你可以在根目录中创建一个小的 JSON 文件：
+如果我们不使用内联配置，我们可以在根目录创建一个小的 JSON 文件，或者仅仅在根配置中指定它：
 
 :::code-group
 
 ```json [vitest.workspace.json]
 ["packages/*"]
+```
+
+```ts [vitest.config.ts <Version>2.2.0</Version>]
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    workspace: ['packages/*'],
+  },
+})
 ```
 
 :::
@@ -203,7 +263,7 @@ export default mergeConfig(
 
 :::
 
-在 `defineWorkspace`级别，你也可以使用 `extends`选项来继承根级别配置。所有选项都将合并。
+此外，在 `defineWorkspace` 层级，您可以使用 `extends` 选项来继承根级别的配置。所有选项将被合并。
 
 ::: code-group
 ```ts [vitest.workspace.ts]
@@ -225,6 +285,36 @@ export default defineWorkspace([
     },
   },
 ])
+```
+```ts [vitest.config.ts <Version>2.2.0</Version>]
+import { defineConfig } from 'vitest/config'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    pool: 'threads',
+    workspace: [
+      {
+        // will inherit options from this config like plugins and pool
+        extends: true,
+        test: {
+          name: 'unit',
+          include: ['**/*.unit.test.ts'],
+        },
+      },
+      {
+        // won't inherit any options from this config
+        // this is the default behaviour
+        extends: false,
+        test: {
+          name: 'integration',
+          include: ['**/*.integration.test.ts'],
+        },
+      },
+    ],
+  },
+})
 ```
 :::
 
