@@ -246,8 +246,11 @@ export default defineConfig({
   },
 })
 ```
+<<<<<<< HEAD
 
 要获得类型提示，请在 `tsconfig.json` 文件的 `compilerOptions.types` 中添加 `@vitest/browser/providers/playwright`。
+=======
+>>>>>>> 3a52ba1d2d9da58b53acb59bb2bbe2fabc08b047
 == WebdriverIO
 
 你可以通过 [`providerOptions`](/config/#browser-provideroptions)字段配置 Vitest 在启动浏览器时应使用哪些 [options](https://webdriver.io/docs/configuration#webdriverio)：
@@ -268,8 +271,11 @@ export default defineConfig({
   },
 })
 ```
+<<<<<<< HEAD
 
 要获得类型提示，请在 `tsconfig.json` 文件的 `compilerOptions.types` 中添加 `@vitest/browser/providers/webdriverio`。
+=======
+>>>>>>> 3a52ba1d2d9da58b53acb59bb2bbe2fabc08b047
 :::
 
 ## 浏览器选项类型
@@ -285,7 +291,52 @@ Vitest 中的浏览器选项取决于provider。如果在配置文件中传递 `
   - `webkit`
   - `chromium`
 
+<<<<<<< HEAD
 ## 浏览器兼容性
+=======
+## TypeScript
+
+By default, TypeScript doesn't recognize providers options and extra `expect` properties. If you don't use any providers, make sure the `@vitest/browser/matchers` is referenced somewhere in your tests, [setup file](/config/#setupfile) or a [config file](/config/file) to pick up the extra `expect` definitions. If you are using custom providers, make sure to add `@vitest/browser/providers/playwright` or `@vitest/browser/providers/webdriverio` to the same file so TypeScript can pick up definitions for custom options:
+
+::: code-block
+```ts [default]
+/// <reference types="@vitest/browser/matchers" />
+```
+```ts [playwright]
+/// <reference types="@vitest/browser/providers/playwright" />
+```
+```ts [webdriverio]
+/// <reference types="@vitest/browser/providers/webdriverio" />
+```
+
+Alternatively, you can also add them to `compilerOptions.types` field in your `tsconfig.json` file. Note that specifying anything in this field will disable [auto loading](https://www.typescriptlang.org/tsconfig/#types) of `@types/*` packages.
+
+::: code-block
+```json [default]
+{
+  "compilerOptions": {
+    "types": ["@vitest/browser/matchers"]
+  }
+}
+```
+```json [playwright]
+{
+  "compilerOptions": {
+    "types": ["@vitest/browser/providers/playwright"]
+  }
+}
+```
+```json [webdriverio]
+{
+  "compilerOptions": {
+    "types": ["@vitest/browser/providers/webdriverio"]
+  }
+}
+```
+:::
+
+## Browser Compatibility
+>>>>>>> 3a52ba1d2d9da58b53acb59bb2bbe2fabc08b047
 
 Vitest 使用 [Vite dev server](https://cn.vitejs.dev/guide/#browser-support) 来运行您的测试，因此我们只支持 [`esbuild.target`](https://cn.vitejs.dev/config/shared-options#esbuild)选项（默认为 `esnext`）中指定的功能。
 

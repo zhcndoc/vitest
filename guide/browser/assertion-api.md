@@ -32,35 +32,21 @@ Vitest 捆绑了 [`@testing-library/jest-dom`](https://github.com/testing-librar
 - [`toHaveRole`](https://github.com/testing-library/jest-dom#toHaveRole)
 - [`toHaveErrorMessage`](https://github.com/testing-library/jest-dom#toHaveErrorMessage)
 
+<<<<<<< HEAD
 如果使用 TypeScript 或希望在 `expect` 中获得正确的类型提示，请确保根据使用的提供程序，在 `tsconfig` 中指定了 `@vitest/browser/providers/playwright` 或 `@vitest/browser/providers/webdriverio`。如果使用默认的 `preview` 提供程序，则可指定 `@vitest/browser/matchers` 代替。
+=======
+If you are using [TypeScript](/guide/browser/#typescript) or want to have correct type hints in `expect`, make sure you have either `@vitest/browser/providers/playwright` or `@vitest/browser/providers/webdriverio` referenced in your [setup file](/config/#setupfile) or a [config file](/config/file) depending on the provider you use. If you use the default `preview` provider, you can specify `@vitest/browser/matchers` instead.
+>>>>>>> 3a52ba1d2d9da58b53acb59bb2bbe2fabc08b047
 
 ::: code-group
-```json [preview]
-{
-  "compilerOptions": {
-    "types": [
-      "@vitest/browser/matchers"
-    ]
-  }
-}
+```ts [preview]
+/// <reference types="@vitest/browser/matchers" />
 ```
-```json [playwright]
-{
-  "compilerOptions": {
-    "types": [
-      "@vitest/browser/providers/playwright"
-    ]
-  }
-}
+```ts [playwright]
+/// <reference types="@vitest/browser/providers/playwright" />
 ```
-```json [webdriverio]
-{
-  "compilerOptions": {
-    "types": [
-      "@vitest/browser/providers/webdriverio"
-    ]
-  }
-}
+```ts [webdriverio]
+/// <reference types="@vitest/browser/providers/webdriverio" />
 ```
 :::
 

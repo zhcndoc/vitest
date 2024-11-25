@@ -12,26 +12,18 @@ import { userEvent } from '@vitest/browser/context'
 await userEvent.click(document.querySelector('.button'))
 ```
 
+<<<<<<< HEAD
 几乎每个 `userEvent` 方法都继承了其provider选项。要在集成开发环境中查看所有可用选项，请在 `tsconfig.json` 文件中添加 `webdriver` 或 `playwright` 类型：
+=======
+Almost every `userEvent` method inherits its provider options. To see all available options in your IDE, add `webdriver` or `playwright` types (depending on your provider) to your [setup file](/config/#setupfile) or a [config file](/config/file) (depending on what is in `included` in your `tsconfig.json`):
+>>>>>>> 3a52ba1d2d9da58b53acb59bb2bbe2fabc08b047
 
 ::: code-group
-```json [playwright]
-{
-  "compilerOptions": {
-    "types": [
-      "@vitest/browser/providers/playwright"
-    ]
-  }
-}
+```ts [playwright]
+/// <reference types="@vitest/browser/providers/playwright" />
 ```
-```json [webdriverio]
-{
-  "compilerOptions": {
-    "types": [
-      "@vitest/browser/providers/webdriverio"
-    ]
-  }
-}
+```ts [webdriverio]
+/// <reference types="@vitest/browser/providers/webdriverio" />
 ```
 :::
 
