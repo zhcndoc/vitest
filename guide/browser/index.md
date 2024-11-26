@@ -246,11 +246,6 @@ export default defineConfig({
   },
 })
 ```
-<<<<<<< HEAD
-
-要获得类型提示，请在 `tsconfig.json` 文件的 `compilerOptions.types` 中添加 `@vitest/browser/providers/playwright`。
-=======
->>>>>>> 3a52ba1d2d9da58b53acb59bb2bbe2fabc08b047
 == WebdriverIO
 
 你可以通过 [`providerOptions`](/config/#browser-provideroptions)字段配置 Vitest 在启动浏览器时应使用哪些 [options](https://webdriver.io/docs/configuration#webdriverio)：
@@ -271,11 +266,6 @@ export default defineConfig({
   },
 })
 ```
-<<<<<<< HEAD
-
-要获得类型提示，请在 `tsconfig.json` 文件的 `compilerOptions.types` 中添加 `@vitest/browser/providers/webdriverio`。
-=======
->>>>>>> 3a52ba1d2d9da58b53acb59bb2bbe2fabc08b047
 :::
 
 ## 浏览器选项类型
@@ -291,12 +281,9 @@ Vitest 中的浏览器选项取决于provider。如果在配置文件中传递 `
   - `webkit`
   - `chromium`
 
-<<<<<<< HEAD
-## 浏览器兼容性
-=======
 ## TypeScript
 
-By default, TypeScript doesn't recognize providers options and extra `expect` properties. If you don't use any providers, make sure the `@vitest/browser/matchers` is referenced somewhere in your tests, [setup file](/config/#setupfile) or a [config file](/config/file) to pick up the extra `expect` definitions. If you are using custom providers, make sure to add `@vitest/browser/providers/playwright` or `@vitest/browser/providers/webdriverio` to the same file so TypeScript can pick up definitions for custom options:
+默认情况下，TypeScript 不识别 providers 选项和额外的 `expect` 属性。如果我们不使用任何 providers ，请确保在我们的测试、 [setup 文件](/config/#setupfile)或 [config 文件](/config/file)中引用了 `@vitest/browser/matchers` ，以便获取额外的 `expect` 定义。如果我们使用自定义 providers ，请确保在同一文件中添加 `@vitest/browser/providers/playwright` 或 `@vitest/browser/providers/webdriverio` ，以便 TypeScript 能够识别自定义选项的定义：
 
 ::: code-block
 ```ts [default]
@@ -309,7 +296,7 @@ By default, TypeScript doesn't recognize providers options and extra `expect` pr
 /// <reference types="@vitest/browser/providers/webdriverio" />
 ```
 
-Alternatively, you can also add them to `compilerOptions.types` field in your `tsconfig.json` file. Note that specifying anything in this field will disable [auto loading](https://www.typescriptlang.org/tsconfig/#types) of `@types/*` packages.
+或者，我们也可以将它们添加到 `tsconfig.json` 文件中的 `compilerOptions.types` 字段。请注意，在此字段中指定任何内容将禁用 `@types/*` 包的[自动加载](https://www.typescriptlang.org/tsconfig/#types)功能。
 
 ::: code-block
 ```json [default]
@@ -335,8 +322,7 @@ Alternatively, you can also add them to `compilerOptions.types` field in your `t
 ```
 :::
 
-## Browser Compatibility
->>>>>>> 3a52ba1d2d9da58b53acb59bb2bbe2fabc08b047
+## 浏览器兼容性
 
 Vitest 使用 [Vite dev server](https://cn.vitejs.dev/guide/#browser-support) 来运行您的测试，因此我们只支持 [`esbuild.target`](https://cn.vitejs.dev/config/shared-options#esbuild)选项（默认为 `esnext`）中指定的功能。
 
@@ -414,7 +400,6 @@ import { page } from '@vitest/browser/context'
 await expect.element(page.getByText('Hello World')).toBeInTheDocument()
 ```
 Vitest 公开了一个[Context API](/guide/browser/context)，其中包含一小套在测试中可能有用的实用程序。例如，如果您需要进行交互，如点击元素或在输入框中输入文本，您可以使用 `@vitest/browser/context` 中的 `userEvent`。更多信息请参阅 [Interactivity API](/guide/browser/interactivity-api)。
-
 
 ```ts
 import { page, userEvent } from '@vitest/browser/context'
