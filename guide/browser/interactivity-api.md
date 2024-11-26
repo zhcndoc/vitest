@@ -12,11 +12,7 @@ import { userEvent } from '@vitest/browser/context'
 await userEvent.click(document.querySelector('.button'))
 ```
 
-<<<<<<< HEAD
-几乎每个 `userEvent` 方法都继承了其provider选项。要在集成开发环境中查看所有可用选项，请在 `tsconfig.json` 文件中添加 `webdriver` 或 `playwright` 类型：
-=======
-Almost every `userEvent` method inherits its provider options. To see all available options in your IDE, add `webdriver` or `playwright` types (depending on your provider) to your [setup file](/config/#setupfile) or a [config file](/config/file) (depending on what is in `included` in your `tsconfig.json`):
->>>>>>> 3a52ba1d2d9da58b53acb59bb2bbe2fabc08b047
+几乎所有的 `userEvent` 方法都继承了其 provider 的选项。要在 IDE 中查看所有可用的选项，请根据我们的 provider ，将 `webdriver` 或 `playwright` 类型添加到 [ setup 文件](/config/#setupfile)或 [config 文件](/config/file)中（取决于 `tsconfig.json` 中 `included` 的内容）：
 
 ::: code-group
 ```ts [playwright]
