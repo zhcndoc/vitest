@@ -1158,12 +1158,11 @@ export {}
 :::code-group
 
 ```js [globalSetup.js]
-export default function setup({ provide }) {
-  provide('wsPort', 3000)
+export default function setup(project) {
+  project.provide('wsPort', 3000)
 }
 ```
-
-```ts [globalSetup.ts]
+```ts [globalSetup.ts <Version>2.0.0</Version>]
 import type { GlobalSetupContext } from 'vitest/node'
 
 export default function setup({ provide }: GlobalSetupContext) {
@@ -1176,7 +1175,19 @@ declare module 'vitest' {
   }
 }
 ```
+```ts [globalSetup.ts <Version>2.2.0</Version>]
+import type { TestProject } from 'vitest/node'
 
+export default function setup(project: TestProject) {
+  project.provide('wsPort', 3000)
+}
+
+declare module 'vitest' {
+  export interface ProvidedContext {
+    wsPort: number
+  }
+}
+```
 ```ts [example.test.js]
 import { inject } from 'vitest'
 
@@ -1185,13 +1196,13 @@ inject('wsPort') === 3000
 
 :::
 
-Since Vitest 2.2.0, you can define a custom callback function to be called when Vitest reruns tests. If the function is asynchronous, the runner will wait for it to complete before executing the tests.
+Since Vitest 2.2.0, you can define a custom callback function to be called when Vitest reruns tests. If the function is asynchronous, the runner will wait for it to complete before executing tests. Note that you cannot destruct the `project` like `{ onTestsRerun }` because it relies on the context.
 
 ```ts
-import type { GlobalSetupContext } from 'vitest/node'
+import type { TestProject } from 'vitest/node'
 
-export default function setup({ onTestsRerun }: GlobalSetupContext) {
-  onTestsRerun(async () => {
+export default function setup(project: TestProject) {
+  project.onTestsRerun(async () => {
     await restartDb()
   })
 }
@@ -1816,17 +1827,11 @@ export default defineConfig({
 ```
 
 ::: tip
-为了在使用内置提供程序时获得更好的类型安全性，你可以将以下类型之一（针对正在使用的提供程序）添加到 tsconfig 的 `compilerOptions.types` 字段中：
+为了在使用内置提供者时获得更好的类型安全性，我们应该在[配置文件](/config/file)中引用这些类型之一（针对所使用的提供）：
 
-```json
-{
-  "compilerOptions": {
-    "types": [
-      "@vitest/browser/providers/webdriverio",
-      "@vitest/browser/providers/playwright"
-    ]
-  }
-}
+```ts
+/// <reference types="@vitest/browser/providers/playwright" />
+/// <reference types="@vitest/browser/providers/webdriverio" />
 ```
 
 :::
