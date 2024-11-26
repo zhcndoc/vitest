@@ -1162,12 +1162,7 @@ export default function setup(project) {
   project.provide('wsPort', 3000)
 }
 ```
-<<<<<<< HEAD
-
-```ts [globalSetup.ts]
-=======
 ```ts [globalSetup.ts <Version>2.0.0</Version>]
->>>>>>> 3a52ba1d2d9da58b53acb59bb2bbe2fabc08b047
 import type { GlobalSetupContext } from 'vitest/node'
 
 export default function setup({ provide }: GlobalSetupContext) {
@@ -1180,9 +1175,6 @@ declare module 'vitest' {
   }
 }
 ```
-<<<<<<< HEAD
-
-=======
 ```ts [globalSetup.ts <Version>2.2.0</Version>]
 import type { TestProject } from 'vitest/node'
 
@@ -1196,7 +1188,6 @@ declare module 'vitest' {
   }
 }
 ```
->>>>>>> 3a52ba1d2d9da58b53acb59bb2bbe2fabc08b047
 ```ts [example.test.js]
 import { inject } from 'vitest'
 
@@ -1836,11 +1827,7 @@ export default defineConfig({
 ```
 
 ::: tip
-<<<<<<< HEAD
-为了在使用内置提供程序时获得更好的类型安全性，你可以将以下类型之一（针对正在使用的提供程序）添加到 tsconfig 的 `compilerOptions.types` 字段中：
-=======
-To have a better type safety when using built-in providers, you should reference one of these types (for provider that you are using) in your [config file](/config/file):
->>>>>>> 3a52ba1d2d9da58b53acb59bb2bbe2fabc08b047
+为了在使用内置提供者时获得更好的类型安全性，我们应该在[配置文件](/config/file)中引用这些类型之一（针对所使用的提供）：
 
 ```ts
 /// <reference types="@vitest/browser/providers/playwright" />
