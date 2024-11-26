@@ -1196,7 +1196,7 @@ inject('wsPort') === 3000
 
 :::
 
-Since Vitest 2.2.0, you can define a custom callback function to be called when Vitest reruns tests. If the function is asynchronous, the runner will wait for it to complete before executing tests. Note that you cannot destruct the `project` like `{ onTestsRerun }` because it relies on the context.
+自 Vitest 2.2.0 起，可以定义一个自定义回调函数，在 Vitest 重新运行测试时被调用。如果该函数是异步的，测试运行器将等待其完成后再执行测试。请注意，我们不能像 `{ onTestsRerun }` 那样解构 `project` ，因为它依赖于上下文。
 
 ```ts
 import type { TestProject } from 'vitest/node'
