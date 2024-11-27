@@ -246,8 +246,6 @@ export default defineConfig({
   },
 })
 ```
-
-要获得类型提示，请在 `tsconfig.json` 文件的 `compilerOptions.types` 中添加 `@vitest/browser/providers/playwright`。
 == WebdriverIO
 
 你可以通过 [`providerOptions`](/config/#browser-provideroptions)字段配置 Vitest 在启动浏览器时应使用哪些 [options](https://webdriver.io/docs/configuration#webdriverio)：
@@ -268,8 +266,6 @@ export default defineConfig({
   },
 })
 ```
-
-要获得类型提示，请在 `tsconfig.json` 文件的 `compilerOptions.types` 中添加 `@vitest/browser/providers/webdriverio`。
 :::
 
 ## 浏览器选项类型
@@ -284,6 +280,47 @@ Vitest 中的浏览器选项取决于provider。如果在配置文件中传递 `
   - `firefox`
   - `webkit`
   - `chromium`
+
+## TypeScript
+
+默认情况下，TypeScript 不识别 providers 选项和额外的 `expect` 属性。如果我们不使用任何 providers ，请确保在我们的测试、 [setup 文件](/config/#setupfile)或 [config 文件](/config/file)中引用了 `@vitest/browser/matchers` ，以便获取额外的 `expect` 定义。如果我们使用自定义 providers ，请确保在同一文件中添加 `@vitest/browser/providers/playwright` 或 `@vitest/browser/providers/webdriverio` ，以便 TypeScript 能够识别自定义选项的定义：
+
+::: code-block
+```ts [default]
+/// <reference types="@vitest/browser/matchers" />
+```
+```ts [playwright]
+/// <reference types="@vitest/browser/providers/playwright" />
+```
+```ts [webdriverio]
+/// <reference types="@vitest/browser/providers/webdriverio" />
+```
+
+或者，我们也可以将它们添加到 `tsconfig.json` 文件中的 `compilerOptions.types` 字段。请注意，在此字段中指定任何内容将禁用 `@types/*` 包的[自动加载](https://www.typescriptlang.org/tsconfig/#types)功能。
+
+::: code-block
+```json [default]
+{
+  "compilerOptions": {
+    "types": ["@vitest/browser/matchers"]
+  }
+}
+```
+```json [playwright]
+{
+  "compilerOptions": {
+    "types": ["@vitest/browser/providers/playwright"]
+  }
+}
+```
+```json [webdriverio]
+{
+  "compilerOptions": {
+    "types": ["@vitest/browser/providers/webdriverio"]
+  }
+}
+```
+:::
 
 ## 浏览器兼容性
 
@@ -363,7 +400,6 @@ import { page } from '@vitest/browser/context'
 await expect.element(page.getByText('Hello World')).toBeInTheDocument()
 ```
 Vitest 公开了一个[Context API](/guide/browser/context)，其中包含一小套在测试中可能有用的实用程序。例如，如果您需要进行交互，如点击元素或在输入框中输入文本，您可以使用 `@vitest/browser/context` 中的 `userEvent`。更多信息请参阅 [Interactivity API](/guide/browser/interactivity-api)。
-
 
 ```ts
 import { page, userEvent } from '@vitest/browser/context'
