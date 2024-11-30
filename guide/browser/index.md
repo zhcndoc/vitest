@@ -285,7 +285,7 @@ Vitest 中的浏览器选项取决于provider。如果在配置文件中传递 `
 
 默认情况下，TypeScript 不识别 providers 选项和额外的 `expect` 属性。如果我们不使用任何 providers ，请确保在我们的测试、 [setup 文件](/config/#setupfile)或 [config 文件](/config/file)中引用了 `@vitest/browser/matchers` ，以便获取额外的 `expect` 定义。如果我们使用自定义 providers ，请确保在同一文件中添加 `@vitest/browser/providers/playwright` 或 `@vitest/browser/providers/webdriverio` ，以便 TypeScript 能够识别自定义选项的定义：
 
-::: code-block
+::: code-group
 ```ts [default]
 /// <reference types="@vitest/browser/matchers" />
 ```
@@ -295,10 +295,11 @@ Vitest 中的浏览器选项取决于provider。如果在配置文件中传递 `
 ```ts [webdriverio]
 /// <reference types="@vitest/browser/providers/webdriverio" />
 ```
+:::
 
 或者，我们也可以将它们添加到 `tsconfig.json` 文件中的 `compilerOptions.types` 字段。请注意，在此字段中指定任何内容将禁用 `@types/*` 包的[自动加载](https://www.typescriptlang.org/tsconfig/#types)功能。
 
-::: code-block
+::: code-group
 ```json [default]
 {
   "compilerOptions": {
