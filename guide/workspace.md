@@ -16,9 +16,13 @@ Vitest 提供了在单个 Vitest 进程中定义多个项目配置的方法。�
 
 工作区必须在其根目录中包含一个 `vitest.workspace` 或 `vitest.projects` 文件（位于与我们的根配置文件相同的文件夹中，或者如果不存在，则位于工作目录中）。请注意，`projects` 只是一个别名，不会改变此功能的行为或语义。Vitest 支持此文件的 `ts`、`js` 和 `json` 扩展名。
 
+<<<<<<< HEAD
 自 Vitest 2.2 起，我们还可以在根配置中定义工作区。在这种情况下，如果存在，Vitest 将忽略根目录中的 `vitest.workspace` 文件。
 
 >>>>>>> 7cf8024e91c803287732c5382e03cccd9608b915
+=======
+Since Vitest 3, you can also define a workspace in the root config. In this case, Vitest will ignore the `vitest.workspace` file in the root, if one exists.
+>>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 
 ::: tip NAMING
 :::
@@ -30,8 +34,12 @@ Vitest 提供了在单个 Vitest 进程中定义多个项目配置的方法。�
 ```ts [vitest.workspace.ts]
 export default ['packages/*']
 ```
+<<<<<<< HEAD
 
 ```ts [vitest.config.ts <Version>2.2.0</Version>]
+=======
+```ts [vitest.config.ts <Version>3.0.0</Version>]
+>>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -42,7 +50,11 @@ export default defineConfig({
 ```
 :::
 
+<<<<<<< HEAD
 即使某个文件夹中没有配置文件，Vitest 也会将 `packages` 文件夹中的每个文件夹视为单独的项目。自 Vitest 2.1 起，如果此 glob 模式匹配到任何文件，即使文件名中没有 `vitest` 也会被视为 Vitest 配置文件。
+=======
+Vitest will treat every folder in `packages` as a separate project even if it doesn't have a config file inside. If this glob pattern matches any file it will be considered a Vitest config even if it doesn't have a `vitest` in its name.
+>>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 
 ::: warning
 除非在工作区配置中明确指定，否则 Vitest 不会将根配置文件 `vitest.config` 视为工作区项目。因此，根配置只会影响全局选项，如 `reporters` 和 `coverage`。
@@ -55,8 +67,12 @@ export default defineConfig({
 ```ts [vitest.workspace.ts]
 export default ['packages/*/vitest.config.{e2e,unit}.ts']
 ```
+<<<<<<< HEAD
 
 ```ts [vitest.config.ts <Version>2.2.0</Version>]
+=======
+```ts [vitest.config.ts <Version>3.0.0</Version>]
+>>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -98,8 +114,12 @@ export default defineWorkspace([
   },
 ])
 ```
+<<<<<<< HEAD
 
 ```ts [vitest.config.ts <Version>2.2.0</Version>]
+=======
+```ts [vitest.config.ts <Version>3.0.0</Version>]
+>>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -141,8 +161,12 @@ export default defineConfig({
 ```json [vitest.workspace.json]
 ["packages/*"]
 ```
+<<<<<<< HEAD
 
 ```ts [vitest.config.ts <Version>2.2.0</Version>]
+=======
+```ts [vitest.config.ts <Version>3.0.0</Version>]
+>>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -156,8 +180,7 @@ export default defineConfig({
 
 工作区项目不支持所有配置属性。为了提高类型安全性，请在项目配置文件中使用 `defineProject` 方法而不是 `defineConfig` 方法：
 
-:::code-group
-```ts [packages/a/vitest.config.ts] twoslash
+```ts twoslash [packages/a/vitest.config.ts]
 // @errors: 2769
 import { defineProject } from 'vitest/config'
 
@@ -170,14 +193,17 @@ export default defineProject({
   },
 })
 ```
+<<<<<<< HEAD
 
 :::
+=======
+>>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 
 ## 运行测试
 
 要在工作区内运行测试，请在根目录 `package.json` 中定义一个脚本：
 
-```json
+```json [package.json]
 {
   "scripts": {
     "test": "vitest"
@@ -246,7 +272,6 @@ bun test --project e2e --project unit
 
 没有任何配置选项从根级别的配置文件继承。你可以创建一个共享的配置文件，并将其与项目配置文件合并：
 
-::: code-group
 ```ts [packages/a/vitest.config.ts]
 import { defineProject, mergeConfig } from 'vitest/config'
 import configShared from '../vitest.shared.js'
@@ -260,8 +285,11 @@ export default mergeConfig(
   })
 )
 ```
+<<<<<<< HEAD
 
 :::
+=======
+>>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 
 此外，在 `defineWorkspace` 层级，您可以使用 `extends` 选项来继承根级别的配置。所有选项将被合并。
 
@@ -286,7 +314,7 @@ export default defineWorkspace([
   },
 ])
 ```
-```ts [vitest.config.ts <Version>2.2.0</Version>]
+```ts [vitest.config.ts <Version>3.0.0</Version>]
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 

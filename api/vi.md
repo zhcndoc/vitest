@@ -32,9 +32,13 @@ Vitest 不会模拟 [setup file](/config/#setupfiles) 中导入的模块，因�
 
 如果定义了 `factory` 函数，所有导入都将返回其结果。Vitest 只调用一次 factory，并缓存所有后续导入的结果，直到 [`vi.unmock`](#vi-unmock) 或 [`vi.doUnmock`](#vi-dounmock) 被调用。
 
+<<<<<<< HEAD
 与 `jest` 不同，工厂可以是异步的。你可以使用 [`vi.importActual`](#vi-importactual)，或将工厂作为第一个参数传递的助手，并在其中获取原始模块。
 
 自 Vitest 2.1 起，您也可以用 `spy` 属性代替工厂函数来提供对象。如果 `spy` 属性为 `true`，Vitest 会像往常一样自动锁定模块，但不会覆盖导出的实现。如果您只想断言导出的方法被另一个方法正确调用，这将非常有用。
+=======
+You can also provide an object with a `spy` property instead of a factory function. If `spy` is `true`, then Vitest will automock the module as usual, but it won't override the implementation of exports. This is useful if you just want to assert that the exported method was called correctly by another method.
+>>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 
 ```ts
 import { calculator } from './src/calculator.ts'
@@ -137,8 +141,7 @@ vi.mock('./path/to/module.js', () => {
 
 如果在没有提供工厂或选项的测试文件中调用 `vi.mock` ，它会在 `__mocks__` 文件夹中找到一个文件作为模块使用：
 
-```ts
-// increment.test.js
+```ts [increment.test.js]
 import { vi } from 'vitest'
 
 // axios is a default export from `__mocks__/axios.js`
@@ -179,14 +182,13 @@ vi.doMock('./increment.js')
 
 :::
 
-```ts
-// ./increment.js
+```ts [increment.js]
 export function increment(number) {
   return number + 1
 }
 ```
 
-```ts
+```ts [increment.test.js]
 import { beforeEach, test } from 'vitest'
 import { increment } from './increment.js'
 
@@ -220,8 +222,7 @@ TypeScript 的类型助手。只返回传入的对象。
 
 当 `partial` 为 `true` 时，它将期望一个 `Partial<T>` 作为返回值。默认情况下，这只会让 TypeScript 认为第一层的值是模拟的。我们可以将 `{ deep: true }` 作为第二个参数传递给 TypeScript，告诉它整个对象都是模拟的（如果实际上是的话）。
 
-```ts
-// example.ts
+```ts [example.ts]
 export function add(x: number, y: number): number {
   return x + y
 }
@@ -231,8 +232,7 @@ export function fetchSomething(): Promise<Response> {
 }
 ```
 
-```ts
-// example.test.ts
+```ts [example.test.ts]
 import * as example from './example'
 
 vi.mock('./example')
@@ -281,14 +281,13 @@ vi.mock('./example.js', async () => {
 
 与 [`vi.unmock`](#vi-unmock) 相同，但不会移动到文件顶端。下一次导入模块时，将导入原始模块而非 mock。这不会解除先前导入的模块。
 
-```ts
-// ./increment.js
+```ts [increment.js]
 export function increment(number) {
   return number + 1
 }
 ```
 
-```ts
+```ts [increment.test.js]
 import { increment } from './increment.js'
 
 // increment is already mocked, because vi.mock is hoisted
@@ -407,6 +406,7 @@ expect(getApples).toHaveNthReturnedWith(2, 5)
 
 ### vi.clearAllMocks
 
+<<<<<<< HEAD
 将对所有 监听(spies) 调用 [`.mockClear()`](/api/mock#mockclear)。这将清除 mock 历史记录，但不会将其重置为默认实现。
 
 ### vi.resetAllMocks
@@ -416,6 +416,20 @@ expect(getApples).toHaveNthReturnedWith(2, 5)
 ### vi.restoreAllMocks
 
 将对所有 监听(spies) 调用 [`.mockRestore()`](/api/mock#mockrestore)。这将清除 mock 的历史记录，并将其重置为原来的实现。
+=======
+Calls [`.mockClear()`](/api/mock#mockclear) on all spies.
+This will clear mock history without affecting mock implementations.
+
+### vi.resetAllMocks
+
+Calls [`.mockReset()`](/api/mock#mockreset) on all spies.
+This will clear mock history and reset each mock's implementation to its original.
+
+### vi.restoreAllMocks
+
+Calls [`.mockRestore()`](/api/mock#mockrestore) on all spies.
+This will clear mock history, restore all original mock implementations, , and restore original descriptors of spied-on objects.
+>>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 
 ### vi.spyOn
 

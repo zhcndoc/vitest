@@ -75,8 +75,7 @@ Vitest 提供了两种不同的方式来帮助你扩展测试上下文。
 
 例如，我们首先使用两个固定装置创建 `myTest`，`todos` 和 `archive`。
 
-```ts
-// my-test.ts
+```ts [my-test.ts]
 import { test } from 'vitest'
 
 const todos = []
@@ -100,7 +99,7 @@ export const myTest = test.extend({
 
 然后我们就可以导入使用了。
 
-```ts
+```ts [my-test.test.ts]
 import { expect } from 'vitest'
 import { myTest } from './my-test.js'
 
@@ -183,7 +182,7 @@ test('works correctly')
 
 #### Default fixture
 
-Since Vitest 2.2, you can provide different values in different [projects](/guide/workspace). To enable this feature, pass down `{ injected: true }` to the options. If the key is not specified in the [project configuration](/config/#provide), then the default value will be used.
+Since Vitest 3, you can provide different values in different [projects](/guide/workspace). To enable this feature, pass down `{ injected: true }` to the options. If the key is not specified in the [project configuration](/config/#provide), then the default value will be used.
 
 :::code-group
 ```ts [fixtures.test.ts]

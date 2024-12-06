@@ -1,9 +1,13 @@
 ---
-title: Why Browser Mode? | Browser Mode
+title: Why Browser Mode | Browser Mode
 outline: deep
 ---
 
+<<<<<<< HEAD
 # 为什么选择浏览器模式?
+=======
+# Why Browser Mode
+>>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 
 ## 动机
 
