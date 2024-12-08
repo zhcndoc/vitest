@@ -200,7 +200,13 @@ await asyncMock() // throws Error<'Async error'>
 function mockReset(): MockInstance<T>
 ```
 
-执行与 `mockClear` 相同的操作，并将内部实现设置为空函数（调用时返回 `undefined`）。这也将重置所有“一次性”实现。这对于完全将模拟对象重置为其默认状态非常有用。
+执行 `mockClear` 的功能，并重置内部实现为原始函数。
+这也将重置所有“一次性”实现。
+
+需要注意一下，重置来自 `vi.fn()` 的模拟将把实现设置为返回 `undefined` 的空函数。
+重置来自 `vi.fn(impl)` 的模拟将把实现恢复为 `impl` 。
+
+这在我们想要将模拟重置为其原始状态时非常有用。
 
 要在每个测试之前自动调用此方法，请在配置中启用 [`mockReset`](/config/#mockreset) 设置。
 
@@ -210,9 +216,10 @@ function mockReset(): MockInstance<T>
 function mockRestore(): MockInstance<T>
 ```
 
-执行与 `mockReset` 相同的操作，并将内部实现恢复为原始函数。
+执行 `mockReset` 所做的操作，并恢复被 spied 对象的原始描述符。
 
-注意，恢复使用 `vi.fn()` 创建的模拟对象将把实现设置为返回 `undefined` 的空函数。恢复使用 `vi.fn(impl)` 创建的模拟对象将把实现恢复为 `impl`。
+需要注意一下，从 `vi.fn()` 恢复的模拟将把实现设置为返回 `undefined` 的空函数。
+从 `vi.fn(impl)` 恢复的模拟将把实现恢复为 `impl` 。
 
 要在每个测试之前自动调用此方法，请在配置中启用 [`restoreMocks`](/config/#restoremocks) 设置。
 
@@ -368,7 +375,6 @@ const results: MockResult<ReturnType<T>>[]
 
 - `'return'` - 函数返回时没有抛出。
 - `'throw'` - 函数抛出了一个值。
-
 
 `value` 属性包含返回值或抛出的错误。如果函数返回一个 `Promise`，那么即使Promise rejected，`result` 也将始终为 `'return'`。
 
