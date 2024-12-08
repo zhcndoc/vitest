@@ -201,15 +201,7 @@ export default defineConfig({
 ```
 :::
 
-<<<<<<< HEAD
-::: tip
-`react` 不需要插件就能工作，但 `preact` 需要 [extra configuration](https://preactjs.com/guide/v10/getting-started/#create-a-vite-powered-preact-app) 才能使用别名
-:::
-
-如果需要使用基于 Node 的运行程序运行某些测试，可以定义一个 [workspace](/guide/workspace) 文件，为不同的测试策略分别配置：
-=======
-If you need to run some tests using Node-based runner, you can define a [workspace](/guide/workspace) file with separate configurations for different testing strategies:
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
+如果我们需要使用基于 Node 的运行器来运行一些测试，可以定义一个 [工作区](/guide/workspace) 文件，其中包含不同测试策略的独立配置：
 
 {#workspace-config}
 
@@ -310,11 +302,7 @@ Vitest 中的浏览器选项取决于provider。如果在配置文件中传递 `
 
 ## TypeScript
 
-<<<<<<< HEAD
-默认情况下，TypeScript 不识别 providers 选项和额外的 `expect` 属性。如果我们不使用任何 providers ，请确保在我们的测试、 [setup 文件](/config/#setupfile)或 [config 文件](/config/file)中引用了 `@vitest/browser/matchers` ，以便获取额外的 `expect` 定义。如果我们使用自定义 providers ，请确保在同一文件中添加 `@vitest/browser/providers/playwright` 或 `@vitest/browser/providers/webdriverio` ，以便 TypeScript 能够识别自定义选项的定义：
-=======
-By default, TypeScript doesn't recognize providers options and extra `expect` properties. If you don't use any providers, make sure the `@vitest/browser/matchers` is referenced somewhere in your tests, [setup file](/config/#setupfile) or a [config file](/config/) to pick up the extra `expect` definitions. If you are using custom providers, make sure to add `@vitest/browser/providers/playwright` or `@vitest/browser/providers/webdriverio` to the same file so TypeScript can pick up definitions for custom options:
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
+默认情况下，TypeScript 不识别 providers 选项和额外的 `expect` 属性。如果我们不使用任何 providers ，请确保在我们的测试、[setup 文件](/config/#setupfile) 或 [config 文件](/config/) 中的某处引用了 `@vitest/browser/matchers`，以获取额外的 `expect` 定义。如果我们使用自定义 providers ，请确保在同一文件中添加 `@vitest/browser/providers/playwright` 或 `@vitest/browser/providers/webdriverio`，以便 TypeScript 能够识别自定义选项的定义：
 
 ::: code-group
 ```ts [default]
@@ -385,11 +373,7 @@ npx vitest --browser.name=chrome --browser.headless
 
 headless 模式是浏览器模式下可用的另一个选项。在 headless 模式下，浏览器在没有用户界面的情况下在后台运行，这对于运行自动化测试非常有用。Vitest 中的 headless 选项可以设置为布尔值以启用或禁用 headless 模式。
 
-<<<<<<< HEAD
-使用 headless 模式时，Vitest 不会自动打开用户界面。如果想继续使用用户界面，但又想 headless 运行测试，可以安装 [`@vitest/ui`](/guide/ui) 包，并在运行 Vitest 时传递 --ui 标志。
-=======
-When using headless mode, Vitest won't open the UI automatically. If you want to continue using the UI but have tests run headlessly, you can install the [`@vitest/ui`](/guide/ui) package and pass the `--ui` flag when running Vitest.
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
+在使用 headless 模式时，Vitest 不会自动打开用户界面。如果我们希望继续使用用户界面，同时让测试以 headless 模式运行，我们可以安装`[@vitest/ui](/guide/ui)`包，并在运行Vitest时传递`--ui`标志。
 
 这是启用 headless 模式的示例配置：
 

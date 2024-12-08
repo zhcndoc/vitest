@@ -395,11 +395,7 @@ High and low watermarks for functions in the format of `<high>,<low>`
 - **CLI:** `--pool <pool>`
 - **Config:** [pool](/config/#pool)
 
-<<<<<<< HEAD
 如果未在浏览器中运行，则指定 pool (默认值: `threads`)
-=======
-Specify pool, if not running in the browser (default: `forks`)
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 
 ### poolOptions.threads.isolate
 
@@ -686,9 +682,6 @@ VM forks pool 的内存限制。如果你观察到内存泄漏问题，可以尝
 - **CLI:** `--diff.aAnnotation <annotation>`
 - **Config:** [diff.aAnnotation](/config/#diff-aannotation)
 
-<<<<<<< HEAD
-用于生成差异界面的差异配置的路径
-=======
 Annotation for expected lines (default: `Expected`)
 
 ### diff.aIndicator
@@ -774,7 +767,6 @@ Number of lines to show before and after each change (default: `0`)
 - **Config:** [diff.truncateAnnotation](/config/#diff-truncateannotation)
 
 Annotation for truncated lines (default: `... Diff result is truncated`)
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 
 ### exclude
 
@@ -851,11 +843,7 @@ Annotation for truncated lines (default: `... Diff result is truncated`)
 - **CLI:** `--slowTestThreshold <threshold>`
 - **Config:** [slowTestThreshold](/config/#slowtestthreshold)
 
-<<<<<<< HEAD
 测试速度慢的阈值（以毫秒为单位）（默认值：`300`）
-=======
-Threshold in milliseconds for a test or suite to be considered slow (default: `300`)
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 
 ### teardownTimeout
 

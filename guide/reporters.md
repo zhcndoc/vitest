@@ -27,7 +27,6 @@ export default defineConfig({
 
 某些报告器可以通过传递附加选项进行自定义。具体选项将在下面的章节中介绍。
 
-
 ```ts
 export default defineConfig({
   test: {
@@ -384,11 +383,7 @@ JSON 报告示例:
 ```
 
 ::: info
-<<<<<<< HEAD
-自 Vitest 2.2 版本起，如果启用了代码覆盖率功能，JSON 报告器会在 `coverageMap` 中包含覆盖率信息。
-=======
-Since Vitest 3, the JSON reporter includes coverage information in `coverageMap` if coverage is enabled.
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
+自Vitest 3起，如果启用了代码覆盖率功能，JSON 报告器会在 `coverageMap` 中包含覆盖率信息。
 :::
 
 ### HTML 报告器

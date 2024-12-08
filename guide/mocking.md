@@ -4,21 +4,13 @@ title: 模拟对象 | 指南
 
 # 模拟对象
 
-<<<<<<< HEAD
-在编写测试时，你可能会因为时间问题，需要创建内部或外部服务的 “假” 版本，这通常被称为 **对象模拟** 操作。Vitest 通过 **vi** 提供了一些实用的函数用于解决这个问题。你可以使用 `import { vi } from 'vitest'` 或者 **全局配置** 进行访问它 (当 **启用** [全局配置](/config/#globals) 时)。
-=======
-When writing tests it's only a matter of time before you need to create a "fake" version of an internal — or external — service. This is commonly referred to as **mocking**. Vitest provides utility functions to help you out through its `vi` helper. You can import it from `vitest` or access it globally if [`global` configuration](/config/#globals) is enabled.
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
+在编写测试时，迟早会需要创建一个内部或外部服务的 "fake" 版本。这通常被称为**mocking**。Vitest 通过其 `vi` 辅助工具提供了实用函数来帮助您。我们可以从 `vitest` 中导入它，或者如果启用了 [`global` 配置](/config/#globals)，也可以全局访问它。
 
 ::: warning
 不要忘记在每次测试运行前后清除或恢复模拟对象，以撤消运行测试时模拟对象状态的更改！有关更多信息，请参阅 [`mockReset`](/api/mock.html#mockreset) 文档。
 :::
 
-<<<<<<< HEAD
-如果你想从头开始，请查看 [API 部分](/api/#vi) 的 vi 部分，或者继续跟着文档深入了解一下这个对象模拟的世界。
-=======
-If you are not familliar with `vi.fn`, `vi.mock` or `vi.spyOn` methods, check the [API section](/api/vi) first.
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
+如果我们不熟悉 `vi.fn`、`vi.mock` 或 `vi.spyOn` 方法，请先查看[API部分](/api/vi)。
 
 ## 日期
 
@@ -192,11 +184,7 @@ export default defineConfig({
       '$app/forms': resolve('./mocks/forms.js'),
     },
   },
-<<<<<<< HEAD
-}
-=======
 })
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 ```
 
 2. 提供解析虚拟模块的插件
@@ -210,18 +198,11 @@ export default defineConfig({
       resolveId(id) {
         if (id === '$app/forms') {
           return 'virtual:$app/forms'
-<<<<<<< HEAD
-      },
-    },
-  ],
-}
-=======
         }
       },
     },
   ],
 })
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 ```
 
 第二种方法的好处是可以动态创建不同的虚拟入口点。如果将多个虚拟模块重定向到一个文件中，那么所有这些模块都将受到 `vi.mock` 的影响，因此请确保使用唯一的标识符。
@@ -460,7 +441,7 @@ Mock Service Worker (MSW) 的工作原理是拦截测试请求，让我们可以
 ```js
 import { afterAll, afterEach, beforeAll } from 'vitest'
 import { setupServer } from 'msw/node'
-import { graphql, http, HttpResponse } from 'msw'
+import { HttpResponse, graphql, http } from 'msw'
 
 const posts = [
   {
@@ -499,7 +480,6 @@ afterEach(() => server.resetHandlers())
 ```
 
 > 使用 `onUnhandleRequest: 'error'` 配置服务器可以确保即使某个请求没有相应的请求处理程序，也会抛出错误。
-
 
 ### 了解更多
 
@@ -682,24 +662,12 @@ expect(nameSpy).toHaveBeenCalledTimes(1)
 
 我想…
 
-<<<<<<< HEAD
-### 模拟导出变量
-```js
-// some-path.js
-export const getter = 'variable'
-```
-
-```ts
-// some-path.test.ts
-import * as exports from './some-path.js'
-=======
 ### Mock exported variables
 ```js [example.js]
 export const getter = 'variable'
 ```
 ```ts [example.test.ts]
 import * as exports from './example.js'
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 
 vi.spyOn(exports, 'getter', 'get').mockReturnValue('mocked')
 ```
@@ -725,28 +693,18 @@ export function method() {}
 ```
 
 ```ts
-<<<<<<< HEAD
-import { method } from './some-path.js'
-vi.mock('./some-path.js', () => ({
-  method: vi.fn(),
-=======
 import { method } from './example.js'
 
 vi.mock('./example.js', () => ({
   method: vi.fn()
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 }))
 ```
 
 2. `vi.spyOn` 的示例：
 
 ```ts
-<<<<<<< HEAD
-import * as exports from './some-path.js'
-=======
 import * as exports from './example.js'
 
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 vi.spyOn(exports, 'method').mockImplementation(() => {})
 ```
 
@@ -754,13 +712,8 @@ vi.spyOn(exports, 'method').mockImplementation(() => {})
 
 1. `vi.mock` 和 `.prototype` 的示例:
 
-<<<<<<< HEAD
-```ts
-// ./some-path.ts
-=======
 1. Example with `vi.mock` and `.prototype`:
 ```ts [example.js]
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 export class SomeClass {}
 ```
 

@@ -190,12 +190,7 @@ Vitest 还提供了一种方式，可以运行与你的代码实现放在一起�
 
 这使得测试与实现共享相同的闭包，并且能够在不导出的情况下针对私有状态进行测试。同时，它也使开发更加接近反馈循环。
 
-<<<<<<< HEAD
-```ts
-// src/index.ts
-=======
 ```ts [src/index.ts]
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 // the implementation
 export function add(...args: number[]): number {
   return args.reduce((a, b) => a + b, 0)
@@ -268,7 +263,6 @@ vitest --merge-reports --reporter=junit --coverage.reporter=text
 ```
 
 了解更多信息 [`性能优化 | 分片`](/guide/improving-performance#sharding)
-
 
 ## 环境变量
 

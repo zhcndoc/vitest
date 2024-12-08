@@ -16,11 +16,7 @@ Vitest 提供 [`environment`](/config/#environment) 选项以在特定环境中�
 ::: info
 当使用 `jsdom` 或 `happy-dom` 环境时，Vitest 遵循与 Vite 在导入 [CSS](https://vitejs.dev/guide/features.html#css) 和 [assets](https://vitejs.dev/guide/features.html#static-assets) 时相同的规则。如果导入外部依赖时出现 `unknown extension .css`错误，则需要将所有软件包添加到 [`server.deps.external`](/config/#server-deps-external)，手动内联整个导入链。例如，如果错误发生在以下导入链中的`package-3`：`source code -> package-1 -> package-2 -> package-3`，则需要将所有三个软件包添加到 `server.deps.external`。
 
-<<<<<<< HEAD
-自 Vitest 2.0.4 起，外部依赖关系中 CSS 和 assets 的 `require` 会自动解析。
-=======
-The `require` of CSS and assets inside the external dependencies are resolved automatically.
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
+外部依赖中的CSS和资源文件的 `require` 调用会自动解析。
 :::
 
 ::: warning

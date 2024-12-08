@@ -15,15 +15,8 @@ Vitest 还提供了一种方式，可以运行与你的代码实现放在一起�
 
 首先，在 `if (import.meta.vitest)` 代码块内写一些测试代码并放在文件的末尾，例如:
 
-<<<<<<< HEAD
-```ts
-// src/index.ts
-
-// 函数实现
-=======
 ```ts [src/index.ts]
 // the implementation
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 export function add(...args: number[]) {
   return args.reduce((a, b) => a + b, 0)
 }
@@ -90,12 +83,8 @@ export default defineBuildConfig({
 })
 ```
 
-<<<<<<< HEAD
-了解更多：[unbuild](https://github.com/unjs/unbuild)
-=======
-Learn more: [unbuild](https://github.com/unjs/unbuild)
+了解更多: [unbuild](https://github.com/unjs/unbuild)
 :::
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 
 ::: details Rollup
 ```ts [rollup.config.js]
@@ -112,14 +101,9 @@ export default {
 }
 ```
 
-<<<<<<< HEAD
 了解更多：[Rollup](https://rollupjs.org/)
 
 </details>
-=======
-Learn more: [Rollup](https://rollupjs.org/)
-:::
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 
 ## TypeScript
 

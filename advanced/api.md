@@ -103,7 +103,6 @@ Vitest 实例需要当前的测试模式。它可以是以下之一：
 
 你可以使用 `start` 方法运行测试或者基准测试。你还可以传递一个字符串数组以筛选测试文件。
 
-
 ### `provide`
 
 Vitest 提供了 `provide` 方法，它是 `vitest.getRootTestProject().provide` 的简写形式。通过这个方法，你可以将值从主线程传递到测试中。所有值在存储之前都会通过 `structuredClone` 进行检查，但值本身不会被克隆。
@@ -148,11 +147,7 @@ export default function setup({ provide }) {
 
 ## TestProject <Version>3.0.0</Version> {#testproject}
 
-<<<<<<< HEAD
-- **别名**: `WorkspaceProject` before 2.2.0
-=======
-- **Alias**: `WorkspaceProject` before 3.0.0
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
+- **别名**: `WorkspaceProject` before 3.0.0
 
 ### name
 
@@ -226,7 +221,6 @@ vitest.config === vitest.projects[0].globalConfig
 
 此值仅在测试运行于浏览器中时才会被设置。如果启用了 `browser`，但测试尚未运行，这将为 `undefined`。如果您需要检查项目是否支持浏览器测试，请使用 `project.isBrowserSupported()` 方法。
 
-
 ::: warning
 这个浏览器API尚在实验阶段，并不遵循语义化（SemVer）版本控制。浏览器API将会独立于其他API进行标准化。
 :::
@@ -249,7 +243,6 @@ import { inject } from 'vitest'
 const value = inject('key')
 ```
 :::
-
 
 这些值可以动态提供。在测试中提供的值将在下一次运行时更新。
 
@@ -278,8 +271,8 @@ const context = project.getProvidedContext()
 创建一个测试规范，该规范可用于 `vitest.runFiles`。规范将测试文件限定在特定的 `project` 和（可选的）`pool` 中。
 
 ```ts
-import { createVitest } from 'vitest/node'
 import { resolve } from 'node:path/posix'
+import { createVitest } from 'vitest/node'
 
 const vitest = await createVitest('test')
 const project = vitest.projects[0]
@@ -336,8 +329,8 @@ Vitest 使用 [fast-glob](https://www.npmjs.com/package/fast-glob) 来查找测�
 此方法还接受第二个参数，即源代码。这用于验证文件是否为源代码中的测试。如果我们需要多次为多个项目调用此方法，建议先读取文件一次，然后直接传递源代码。
 
 ```ts
-import { createVitest } from 'vitest/node'
 import { resolve } from 'node:path/posix'
+import { createVitest } from 'vitest/node'
 
 const vitest = await createVitest('test')
 const project = vitest.projects[0]

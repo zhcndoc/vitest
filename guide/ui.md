@@ -30,11 +30,7 @@ export default defineConfig({
   test: {
     reporters: ['html'],
   },
-<<<<<<< HEAD
-}
-=======
 })
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 ```
 
 你可以在 Vitest UI 中查看覆盖率报告：查看 [Vitest UI 覆盖率](/guide/coverage#vitest-ui) 了解更多详情。

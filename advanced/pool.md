@@ -27,15 +27,11 @@ export default defineConfig({
         customProperty: true,
       },
     },
-<<<<<<< HEAD
-    // 还可以为文件子集指定池
-    poolMatchGlobs: [['**/*.custom.test.ts', './my-custom-pool.ts']],
-=======
   },
 })
 ```
 
-If you need to run tests in different pools, use the [workspace](/guide/workspace) feature:
+如果我们在不同 pools 中运行测试，可以使用 [workspace](/guide/workspace) 功能:
 
 ```ts [vitest.config.ts]
 export default defineConfig({
@@ -48,13 +44,12 @@ export default defineConfig({
         },
       },
     ],
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
   },
 })
 ```
 
 ::: info
-The `workspace` field was introduced in Vitest 3. To define a workspace in [Vitest <3](https://v2.vitest.dev/), create a separate `vitest.workspace.ts` file.
+workspace`字段是在 Vitest 3 中引入的。在 [Vitest 3 之前的版本](https://v2.vitest.dev/)中定义工作区，需要创建一个单独的 `vitest.workspace.ts` 文件。
 :::
 
 ## API
@@ -87,7 +82,7 @@ Vitest 会等到 `runTests` 执行完毕后才结束运行（即只有在 `runTe
 ```ts
 import { createBirpc } from 'birpc'
 import { parse, stringify } from 'flatted'
-import { createMethodsRPC, TestProject } from 'vitest/node'
+import { TestProject, createMethodsRPC } from 'vitest/node'
 
 function createRpc(project: TestProject, wss: WebSocketServer) {
   return createBirpc(

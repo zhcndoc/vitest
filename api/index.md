@@ -969,16 +969,6 @@ import { describe, test } from 'vitest'
 
 // or describe('suite', { shuffle: true }, ...)
 describe.shuffle('suite', () => {
-<<<<<<< HEAD
-  test('random test 1', async () => {
-    /* ... */
-  })
-  test('random test 2', async () => {
-    /* ... */
-  })
-  test('random test 3', async () => {
-    /* ... */
-=======
   test('random test 1', async () => { /* ... */ })
   test('random test 2', async () => { /* ... */ })
   test('random test 3', async () => { /* ... */ })
@@ -993,7 +983,6 @@ describe.shuffle('suite', () => {
   describe('not random', { shuffle: false }, () => {
     test('in order 5.1', async () => { /* ... */ })
     test('in order 5.2', async () => { /* ... */ })
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
   })
 })
 // order depends on sequence.seed option in config (Date.now() by default)
@@ -1199,11 +1188,7 @@ Vitest 提供了一些 hooks，你可以在 _测试执行期间_ 调用这些钩
 
 ### onTestFinished {#ontestfinished}
 
-<<<<<<< HEAD
-这个 hook 总是在测试运行结束后调用。它在 `afterEach` 之后被调用，因为它们会影响测试结果。它接收一个包含当前测试结果的 `TaskResult` 。
-=======
-This hook is always called after the test has finished running. It is called after `afterEach` hooks since they can influence the test result. It receives an `ExtendedContext` object like `beforeEach` and `afterEach`.
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
+这个 hook 总是在测试运行完毕后被调用。它在 `afterEach` 之后被调用，因为 `afterEach` 可能会影响测试结果。它接收一个类似于 `beforeEach` 和 `afterEach` 的 `ExtendedContext` 对象。
 
 ```ts {1,5}
 import { onTestFinished, test } from 'vitest'
@@ -1257,11 +1242,7 @@ test('performs an organization query', async () => {
 
 ### onTestFailed
 
-<<<<<<< HEAD
-只有在测试失败后才会调用这个 hook 。它在 `afterEach` 之后被调用，因为它们会影响测试结果。它将接收一个包含当前测试结果的 `TaskResult` 。这个 hook 对调试非常有用。
-=======
-This hook is called only after the test has failed. It is called after `afterEach` hooks since they can influence the test result. It receives an `ExtendedContext` object like `beforeEach` and `afterEach`. This hook is useful for debugging.
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
+此 hook 仅在测试失败后被调用。由于 `afterEach` 可能会影响测试结果，因此它在 `afterEach` 之后被调用。它接收一个类似于 `beforeEach` 和 `afterEach` 的 `ExtendedContext` 对象。这个 hook 对于调试非常有用。
 
 ```ts {1,5-7}
 import { onTestFailed, test } from 'vitest'

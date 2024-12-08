@@ -3,15 +3,11 @@ import { withPwa } from '@vite-pwa/vitepress'
 import type { DefaultTheme } from 'vitepress'
 import { defineConfig } from 'vitepress'
 import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
-<<<<<<< HEAD
-import { version } from '../package.json'
-=======
 import {
   groupIconMdPlugin,
   groupIconVitePlugin,
 } from 'vitepress-plugin-group-icons'
-import { version } from '../../package.json'
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
+import { version } from '../package.json'
 import { teamMembers } from './contributors'
 import {
   bluesky,
@@ -148,45 +144,20 @@ export default ({ mode }: { mode: string }) => {
       },
 
       nav: [
-<<<<<<< HEAD
-        { text: '指南', link: '/guide/', activeMatch: '^/guide/(?!browser)' },
-        { text: 'API', link: '/api/', activeMatch: '^/api/' },
+        { text: '指南 & API', link: '/guide/', activeMatch: '^/guide/(?!browser)' },
         { text: '配置', link: '/config/', activeMatch: '^/config/' },
         { text: '浏览器模式', link: '/guide/browser', activeMatch: '^/guide/browser/' },
-        { text: '高级 API', link: '/advanced/api', activeMatch: '^/advanced/' },
-=======
-        { text: 'Guide & API', link: '/guide/', activeMatch: '^/(guide|api)/(?!browser)' },
-        { text: 'Config', link: '/config/', activeMatch: '^/config/' },
-        { text: 'Browser Mode', link: '/guide/browser', activeMatch: '^/guide/browser/' },
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
         {
           text: '相关连接',
           items: [
             {
-<<<<<<< HEAD
-              items: [
-                {
-                  text: '团队',
-                  link: '/team',
-                },
-              ],
-=======
-              text: 'Advanced API',
+              text: '高级 API',
               link: '/advanced/api',
               activeMatch: '^/advanced/',
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
             },
             {
-              items: [
-                {
-                  text: 'Mastodon',
-                  link: mastodon,
-                },
-                {
-                  text: 'Discord 聊天室',
-                  link: discord,
-                },
-              ],
+              text: '团队',
+              link: '/team',
             },
           ],
         },
@@ -232,161 +203,6 @@ export default ({ mode }: { mode: string }) => {
       sidebar: {
         '/guide/browser': [
           {
-<<<<<<< HEAD
-            text: 'Why Browser Mode?',
-            link: '/guide/browser/why',
-            docFooterText: 'Why Browser Mode? | Browser Mode',
-          },
-          {
-            text: 'Getting Started',
-            link: '/guide/browser/',
-            docFooterText: 'Getting Started | Browser Mode',
-          },
-          {
-            text: 'Context API',
-            link: '/guide/browser/context',
-            docFooterText: 'Context API | Browser Mode',
-          },
-          {
-            text: 'Interactivity API',
-            link: '/guide/browser/interactivity-api',
-            docFooterText: 'Interactivity API | Browser Mode',
-          },
-          {
-            text: 'Locators',
-            link: '/guide/browser/locators',
-            docFooterText: 'Locators | Browser Mode',
-          },
-          {
-            text: 'Assertion API',
-            link: '/guide/browser/assertion-api',
-            docFooterText: 'Assertion API | Browser Mode',
-          },
-          {
-            text: 'Commands API',
-            link: '/guide/browser/commands',
-            docFooterText: 'Commands | Browser Mode',
-          },
-        ],
-        // TODO: bring sidebar of apis and config back
-        '/advanced': [
-          {
-            text: '高级 API',
-            items: [
-              {
-                text: 'API',
-                items: [
-
-                  {
-                    text: 'Vitest Node API',
-                    link: '/advanced/api',
-                  },
-                  {
-                    text: 'Runner API',
-                    link: '/advanced/runner',
-                  },
-                  {
-                    text: 'Task Metadata',
-                    link: '/advanced/metadata',
-                  },
-                ],
-              },
-              {
-                text: 'Guides',
-                items: [
-                  {
-                    text: 'Running Tests',
-                    link: '/advanced/guide/tests',
-                  },
-                  {
-                    text: 'Extending Reporters',
-                    link: '/advanced/reporters',
-                  },
-                  {
-                    text: 'Custom Pool',
-                    link: '/advanced/pool',
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-        '/guide/': [
-          {
-            text: '指南',
-            items: [
-              {
-                text: '简介',
-                link: '/guide/why',
-              },
-              {
-                text: '快速起步',
-                link: '/guide/',
-              },
-              {
-                text: '主要功能',
-                link: '/guide/features',
-              },
-              {
-                text: '工作空间',
-                link: '/guide/workspace',
-              },
-              {
-                text: '命令行界面',
-                link: '/guide/cli',
-              },
-              {
-                text: '测试筛选',
-                link: '/guide/filtering',
-              },
-              {
-                text: '报告器',
-                link: '/guide/reporters',
-              },
-              {
-                text: '测试覆盖率',
-                link: '/guide/coverage',
-              },
-              {
-                text: '测试快照',
-                link: '/guide/snapshot',
-              },
-              {
-                text: '模拟对象',
-                link: '/guide/mocking',
-              },
-              {
-                text: '类型测试',
-                link: '/guide/testing-types',
-              },
-              {
-                text: 'Vitest UI',
-                link: '/guide/ui',
-              },
-              {
-                text: '源码内联测试',
-                link: '/guide/in-source',
-              },
-              {
-                text: '测试上下文',
-                link: '/guide/test-context',
-              },
-              {
-                text: '测试环境',
-                link: '/guide/environment',
-              },
-              {
-                text: '扩展断言',
-                link: '/guide/extending-matchers',
-              },
-              {
-                text: 'IDE 插件',
-                link: '/guide/ide',
-              },
-              {
-                text: '调试',
-                link: '/guide/debugging',
-=======
             text: 'Introduction',
             collapsed: false,
             items: [
@@ -500,77 +316,11 @@ export default ({ mode }: { mode: string }) => {
               {
                 text: 'Advanced API',
                 link: '/advanced/api',
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
               },
               {
                 text: '与其他测试框架对比',
                 link: '/guide/comparisons',
               },
-<<<<<<< HEAD
-              {
-                text: '迁移指南',
-                link: '/guide/migration',
-              },
-              {
-                text: '常见错误',
-                link: '/guide/common-errors',
-              },
-              {
-                text: '性能测试分析',
-                link: '/guide/profiling-test-performance',
-              },
-              {
-                text: '性能优化',
-                link: '/guide/improving-performance',
-              },
-            ],
-          },
-          {
-            text: 'API',
-            items: [
-              {
-                text: 'Test API Reference',
-                link: '/api/',
-              },
-              {
-                text: 'Mock Functions',
-                link: '/api/mock',
-              },
-              {
-                text: 'Vi Utility',
-                link: '/api/vi',
-              },
-              {
-                text: 'Expect',
-                link: '/api/expect',
-              },
-              {
-                text: 'ExpectTypeOf',
-                link: '/api/expect-typeof',
-              },
-              {
-                text: 'Assert',
-                link: '/api/assert',
-              },
-              {
-                text: 'AssertType',
-                link: '/api/assert-type',
-              },
-            ],
-          },
-          {
-            text: '配置',
-            items: [
-              {
-                text: '配置文件',
-                link: '/config/file',
-              },
-              {
-                text: '配置索引',
-                link: '/config/',
-              },
-=======
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
             ],
           },
         ],
@@ -585,11 +335,11 @@ function footer(): DefaultTheme.SidebarItem {
   return {
     items: [
       {
-        text: 'Config Reference',
+        text: '配置索引',
         link: '/config/',
       },
       {
-        text: 'Test API Reference',
+        text: 'Test API 索引',
         link: '/api/',
       },
     ],
@@ -599,19 +349,19 @@ function footer(): DefaultTheme.SidebarItem {
 function introduction(): DefaultTheme.SidebarItem[] {
   return [
     {
-      text: 'Why Vitest',
+      text: '简介',
       link: '/guide/why',
     },
     {
-      text: 'Getting Started',
+      text: '快速起步',
       link: '/guide/',
     },
     {
-      text: 'Features',
+      text: '主要功能',
       link: '/guide/features',
     },
     {
-      text: 'Config Reference',
+      text: '配置索引',
       link: '/config/',
     },
   ]
@@ -620,35 +370,35 @@ function introduction(): DefaultTheme.SidebarItem[] {
 function guide(): DefaultTheme.SidebarItem[] {
   return [
     {
-      text: 'CLI',
+      text: '命令行界面',
       link: '/guide/cli',
     },
     {
-      text: 'Test Filtering',
+      text: '测试筛选',
       link: '/guide/filtering',
     },
     {
-      text: 'Workspace',
+      text: '工作空间',
       link: '/guide/workspace',
     },
     {
-      text: 'Reporters',
+      text: '报告器',
       link: '/guide/reporters',
     },
     {
-      text: 'Coverage',
+      text: '测试覆盖率',
       link: '/guide/coverage',
     },
     {
-      text: 'Snapshot',
+      text: '测试快照',
       link: '/guide/snapshot',
     },
     {
-      text: 'Mocking',
+      text: '模拟对象',
       link: '/guide/mocking',
     },
     {
-      text: 'Testing Types',
+      text: '类型测试',
       link: '/guide/testing-types',
     },
     {
@@ -656,35 +406,35 @@ function guide(): DefaultTheme.SidebarItem[] {
       link: '/guide/ui',
     },
     {
-      text: 'In-Source Testing',
+      text: '源码内联测试',
       link: '/guide/in-source',
     },
     {
-      text: 'Test Context',
+      text: '测试上下文',
       link: '/guide/test-context',
     },
     {
-      text: 'Environment',
+      text: '测试环境',
       link: '/guide/environment',
     },
     {
-      text: 'Extending Matchers',
+      text: '扩展断言(Matchers)',
       link: '/guide/extending-matchers',
     },
     {
-      text: 'IDE Integration',
+      text: 'IDE 插件',
       link: '/guide/ide',
     },
     {
-      text: 'Debugging',
+      text: '调试',
       link: '/guide/debugging',
     },
     {
-      text: 'Migration Guide',
+      text: '迁移指南',
       link: '/guide/migration',
     },
     {
-      text: 'Common Errors',
+      text: '常见错误',
       link: '/guide/common-errors',
     },
     {
@@ -692,11 +442,11 @@ function guide(): DefaultTheme.SidebarItem[] {
       collapsed: false,
       items: [
         {
-          text: 'Profiling Test Performance',
+          text: '性能测试分析',
           link: '/guide/profiling-test-performance',
         },
         {
-          text: 'Improving Performance',
+          text: '性能优化',
           link: '/guide/improving-performance',
         },
       ],

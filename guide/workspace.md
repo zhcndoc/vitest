@@ -16,13 +16,7 @@ Vitest 提供了在单个 Vitest 进程中定义多个项目配置的方法。�
 
 工作区必须在其根目录中包含一个 `vitest.workspace` 或 `vitest.projects` 文件（位于与我们的根配置文件相同的文件夹中，或者如果不存在，则位于工作目录中）。请注意，`projects` 只是一个别名，不会改变此功能的行为或语义。Vitest 支持此文件的 `ts`、`js` 和 `json` 扩展名。
 
-<<<<<<< HEAD
-自 Vitest 2.2 起，我们还可以在根配置中定义工作区。在这种情况下，如果存在，Vitest 将忽略根目录中的 `vitest.workspace` 文件。
-
->>>>>>> 7cf8024e91c803287732c5382e03cccd9608b915
-=======
-Since Vitest 3, you can also define a workspace in the root config. In this case, Vitest will ignore the `vitest.workspace` file in the root, if one exists.
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
+自Vitest 3起，我们也可以在根配置文件中定义工作区。在这种情况下，如果存在，Vitest将忽略根目录下的 `vitest.workspace` 文件。
 
 ::: tip NAMING
 :::
@@ -34,12 +28,7 @@ Since Vitest 3, you can also define a workspace in the root config. In this case
 ```ts [vitest.workspace.ts]
 export default ['packages/*']
 ```
-<<<<<<< HEAD
-
-```ts [vitest.config.ts <Version>2.2.0</Version>]
-=======
 ```ts [vitest.config.ts <Version>3.0.0</Version>]
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -50,11 +39,7 @@ export default defineConfig({
 ```
 :::
 
-<<<<<<< HEAD
-即使某个文件夹中没有配置文件，Vitest 也会将 `packages` 文件夹中的每个文件夹视为单独的项目。自 Vitest 2.1 起，如果此 glob 模式匹配到任何文件，即使文件名中没有 `vitest` 也会被视为 Vitest 配置文件。
-=======
-Vitest will treat every folder in `packages` as a separate project even if it doesn't have a config file inside. If this glob pattern matches any file it will be considered a Vitest config even if it doesn't have a `vitest` in its name.
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
+Vitest 会将 `packages` 中的每个文件夹视为一个独立的项目，即使它里面没有配置文件。如果这个全局模式匹配到任何文件，即使文件名中没有 `vitest`，也会被视作 Vitest 的配置文件。
 
 ::: warning
 除非在工作区配置中明确指定，否则 Vitest 不会将根配置文件 `vitest.config` 视为工作区项目。因此，根配置只会影响全局选项，如 `reporters` 和 `coverage`。
@@ -67,12 +52,7 @@ Vitest will treat every folder in `packages` as a separate project even if it do
 ```ts [vitest.workspace.ts]
 export default ['packages/*/vitest.config.{e2e,unit}.ts']
 ```
-<<<<<<< HEAD
-
-```ts [vitest.config.ts <Version>2.2.0</Version>]
-=======
 ```ts [vitest.config.ts <Version>3.0.0</Version>]
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -114,12 +94,7 @@ export default defineWorkspace([
   },
 ])
 ```
-<<<<<<< HEAD
-
-```ts [vitest.config.ts <Version>2.2.0</Version>]
-=======
 ```ts [vitest.config.ts <Version>3.0.0</Version>]
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -161,12 +136,7 @@ export default defineConfig({
 ```json [vitest.workspace.json]
 ["packages/*"]
 ```
-<<<<<<< HEAD
-
-```ts [vitest.config.ts <Version>2.2.0</Version>]
-=======
 ```ts [vitest.config.ts <Version>3.0.0</Version>]
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -193,11 +163,6 @@ export default defineProject({
   },
 })
 ```
-<<<<<<< HEAD
-
-:::
-=======
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 
 ## 运行测试
 
@@ -356,5 +321,3 @@ export default defineConfig({
 ::: tip
 所有不支持在项目配置中使用的配置选项，在 ["Config"](/config/) 指南中以 <NonProjectOption /> 标记。
 :::
-
-

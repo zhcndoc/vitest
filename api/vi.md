@@ -29,7 +29,6 @@ import { vi } from 'vitest'
 Vitest 不会模拟 [setup file](/config/#setupfiles) 中导入的模块，因为这些模块在运行测试文件时已被缓存。我们可以在 [`vi.hoisted`](#vi-hoisted) 中调用 [`vi.resetModules()`](#vi-resetmodules) ，在运行测试文件前清除所有模块缓存。
 :::
 
-
 如果定义了 `factory` 函数，所有导入都将返回其结果。Vitest 只调用一次 factory，并缓存所有后续导入的结果，直到 [`vi.unmock`](#vi-unmock) 或 [`vi.doUnmock`](#vi-dounmock) 被调用。
 
 <<<<<<< HEAD
@@ -57,9 +56,9 @@ Vitest 还在 `vi.mock` 和 `vi.doMock` 方法中支持 module promise 而非字
 
 ```ts twoslash
 // @filename: ./path/to/module.js
-export declare function total(...numbers: number[]): number
 // @filename: test.js
 import { vi } from 'vitest'
+export declare function total(...numbers: number[]): number
 // ---cut---
 vi.mock(import('./path/to/module.js'), async (importOriginal) => {
   const mod = await importOriginal() // type is inferred
@@ -406,30 +405,18 @@ expect(getApples).toHaveNthReturnedWith(2, 5)
 
 ### vi.clearAllMocks
 
-<<<<<<< HEAD
-将对所有 监听(spies) 调用 [`.mockClear()`](/api/mock#mockclear)。这将清除 mock 历史记录，但不会将其重置为默认实现。
+对所有 spies 调用 [`.mockClear()`](/api/mock#mockclear)。
+这将清除模拟的历史记录，但不影响模拟的实现。
 
 ### vi.resetAllMocks
 
-将对所有 监听(spies) 调用 [`.mockReset()`](/api/mock#mockreset)。这将清除 mock 历史记录，并将其重置为空函数（将返回 `undefined` ）。
+对所有 spies 调用 [`.mockReset()`](/api/mock#mockreset)。
+这将清除模拟的历史记录，并将每个模拟的实现重置为其原始状态。
 
 ### vi.restoreAllMocks
 
-将对所有 监听(spies) 调用 [`.mockRestore()`](/api/mock#mockrestore)。这将清除 mock 的历史记录，并将其重置为原来的实现。
-=======
-Calls [`.mockClear()`](/api/mock#mockclear) on all spies.
-This will clear mock history without affecting mock implementations.
-
-### vi.resetAllMocks
-
-Calls [`.mockReset()`](/api/mock#mockreset) on all spies.
-This will clear mock history and reset each mock's implementation to its original.
-
-### vi.restoreAllMocks
-
-Calls [`.mockRestore()`](/api/mock#mockrestore) on all spies.
-This will clear mock history, restore all original mock implementations, , and restore original descriptors of spied-on objects.
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
+对所有 spies 调用 [`.mockRestore()`](/api/mock#mockrestore)。
+这将清除模拟的历史记录，恢复所有原始模拟实现，并恢复被监视对象的原始描述符。
 
 ### vi.spyOn
 
