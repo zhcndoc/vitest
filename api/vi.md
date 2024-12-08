@@ -48,15 +48,9 @@ expect(calculator).toHaveReturned(3)
 ```
 Vitest 还在 `vi.mock` 和 `vi.doMock` 方法中支持 module promise 而非字符串，以获得更好的集成开发环境支持。当文件被移动时，路径会被更新，`importOriginal` 也会自动继承类型。使用此签名还将强制工厂返回类型与原始模块兼容（但每次导出都是可选的）。
 
-```ts twoslash
-// @filename: ./path/to/module.js
-// @filename: test.js
-import { vi } from 'vitest'
-export declare function total(...numbers: number[]): number
-// ---cut---
+```ts
 vi.mock(import('./path/to/module.js'), async (importOriginal) => {
   const mod = await importOriginal() // type is inferred
-  //    ^?
   return {
     ...mod,
     // replace some exports
