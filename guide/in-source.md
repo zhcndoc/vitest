@@ -103,7 +103,7 @@ export default {
 
 了解更多：[Rollup](https://rollupjs.org/)
 
-</details>
+:::
 
 ## TypeScript
 
