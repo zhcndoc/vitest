@@ -31,13 +31,7 @@ Vitest 不会模拟 [setup file](/config/#setupfiles) 中导入的模块，因�
 
 如果定义了 `factory` 函数，所有导入都将返回其结果。Vitest 只调用一次 factory，并缓存所有后续导入的结果，直到 [`vi.unmock`](#vi-unmock) 或 [`vi.doUnmock`](#vi-dounmock) 被调用。
 
-<<<<<<< HEAD
-与 `jest` 不同，工厂可以是异步的。你可以使用 [`vi.importActual`](#vi-importactual)，或将工厂作为第一个参数传递的助手，并在其中获取原始模块。
-
-自 Vitest 2.1 起，您也可以用 `spy` 属性代替工厂函数来提供对象。如果 `spy` 属性为 `true`，Vitest 会像往常一样自动锁定模块，但不会覆盖导出的实现。如果您只想断言导出的方法被另一个方法正确调用，这将非常有用。
-=======
-You can also provide an object with a `spy` property instead of a factory function. If `spy` is `true`, then Vitest will automock the module as usual, but it won't override the implementation of exports. This is useful if you just want to assert that the exported method was called correctly by another method.
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
+我们还可以提供一个具有 `spy` 属性的对象，而不是工厂函数。如果 `spy` 为 `true`，则 Vitest 将照常自动模拟模块，但不会覆盖导出的实现。如果我们只想断言导出的方法已被另一种方法正确调用，这将非常有用。
 
 ```ts
 import { calculator } from './src/calculator.ts'

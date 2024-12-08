@@ -250,11 +250,6 @@ export default mergeConfig(
   })
 )
 ```
-<<<<<<< HEAD
-
-:::
-=======
->>>>>>> d029e69687f16385e256ba43586ae3b4e55a4fb5
 
 此外，在 `defineWorkspace` 层级，您可以使用 `extends` 选项来继承根级别的配置。所有选项将被合并。
 
