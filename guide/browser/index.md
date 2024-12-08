@@ -399,7 +399,35 @@ npx vitest --browser.name=chrome --browser.headless
 
 ## Examples
 
+<<<<<<< HEAD
 Vitest 提供的软件包可为多个流行框架呈现开箱即用的组件：
+=======
+By default, you don't need any external packages to work with the Browser Mode:
+
+```js [example.test.js]
+import { expect, test } from 'vitest'
+import { page } from '@vitest/browser/context'
+import { render } from './my-render-function.js'
+
+test('properly handles form inputs', async () => {
+  render() // mount DOM elements
+
+  // Asserts initial state.
+  await expect.element(page.getByText('Hi, my name is Alice')).toBeInTheDocument()
+
+  // Get the input DOM node by querying the associated label.
+  const usernameInput = page.getByLabelText(/username/i)
+
+  // Type the name into the input. This already validates that the input
+  // is filled correctly, no need to check the value manually.
+  await usernameInput.fill('Bob')
+
+  await expect.element(page.getByText('Hi, my name is Bob')).toBeInTheDocument()
+})
+```
+
+However, Vitest also provides packages to render components for several popular frameworks out of the box:
+>>>>>>> 6d837efe6ab62e54a0cdf50d10c8ece42cb8e04a
 
 - [`vitest-browser-vue`](https://github.com/vitest-dev/vitest-browser-vue) 渲染 [vue](https://vuejs.org) 组件
 - [`vitest-browser-svelte`](https://github.com/vitest-dev/vitest-browser-svelte) 渲染 [svelte](https://svelte.dev) 组件
@@ -487,6 +515,8 @@ Vitest 并不支持所有开箱即用的框架，但您可以使用外部工具�
 - [`@testing-library/preact`](https://testing-library.com/docs/preact-testing-library/intro) 渲染 [preact](https://preactjs.com) 组件
 - [`@solidjs/testing-library`](https://testing-library.com/docs/solid-testing-library/intro) 渲染 [solid](https://www.solidjs.com) 组件
 - [`@marko/testing-library`](https://testing-library.com/docs/marko-testing-library/intro) 渲染 [marko](https://markojs.com) 组件
+
+You can also see more examples in [`browser-examples`](https://github.com/vitest-tests/browser-examples) repository.
 
 ::: warning
 `testing-library` 提供了一个软件包 `@testing-library/user-event`。我们不建议直接使用它，因为它会模拟事件而非实际触发事件--相反，请使用从 `@vitest/browser/context`导入的 [`userEvent`](/guide/browser/interactivity-api)，它在引擎盖下使用 Chrome DevTools 协议或 Webdriver（取决于provider）。
