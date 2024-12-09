@@ -399,10 +399,7 @@ npx vitest --browser.name=chrome --browser.headless
 
 ## Examples
 
-<<<<<<< HEAD
-Vitest 提供的软件包可为多个流行框架呈现开箱即用的组件：
-=======
-By default, you don't need any external packages to work with the Browser Mode:
+一般情况下，我们不需要任何依赖来使用浏览器模式：
 
 ```js [example.test.js]
 import { expect, test } from 'vitest'
@@ -426,8 +423,7 @@ test('properly handles form inputs', async () => {
 })
 ```
 
-However, Vitest also provides packages to render components for several popular frameworks out of the box:
->>>>>>> 6d837efe6ab62e54a0cdf50d10c8ece42cb8e04a
+但是，Vitest 提供了用于渲染几个流行框架的组件的依赖包：
 
 - [`vitest-browser-vue`](https://github.com/vitest-dev/vitest-browser-vue) 渲染 [vue](https://vuejs.org) 组件
 - [`vitest-browser-svelte`](https://github.com/vitest-dev/vitest-browser-svelte) 渲染 [svelte](https://svelte.dev) 组件
