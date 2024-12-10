@@ -1,6 +1,14 @@
 # 扩展默认报告器 (Extending Reporters)
 
+<<<<<<< HEAD
 你可以从 `vitest/reporters` 导入报告器并扩展它们以创建你的自定义报告器。
+=======
+::: warning
+This is an advanced API. If you just want to configure built-in reporters, read the ["Reporters"](/guide/reporters) guide.
+:::
+
+You can import reporters from `vitest/reporters` and extend them to create your custom reporters.
+>>>>>>> 3158871632d11ca43bea7c2f8c72bc95feac15cb
 
 ## 扩展内置报告器 (Extending Built-in Reporters)
 
@@ -56,8 +64,12 @@ export default defineConfig({
 
 ## 报告的任务(Reported Tasks)
 
+<<<<<<< HEAD
 ::: warning
 这是一个试验性 API。破坏性更改可能不会跟进 SemVer。使用时请使用 Vitest 的版本。
+=======
+Instead of using the tasks that reporters receive, it is recommended to use the Reported Tasks API instead.
+>>>>>>> 3158871632d11ca43bea7c2f8c72bc95feac15cb
 
 你可以通过调用 `vitest.state.getReportedEntity(runnerTask)` 访问此 API：
 
@@ -68,16 +80,16 @@ import type { RunnerTestFile } from 'vitest'
 import type { Reporter, TestModule } from 'vitest/reporters'
 
 class MyReporter implements Reporter {
-  ctx!: Vitest
+  private vitest!: Vitest
 
-  onInit(ctx: Vitest) {
-    this.ctx = ctx
+  onInit(vitest: Vitest) {
+    this.vitest = vitest
   }
 
   onFinished(files: RunnerTestFile[]) {
-    for (const fileTask of files) {
+    for (const file of files) {
       // note that the old task implementation uses "file" instead of "module"
-      const testModule = this.ctx.state.getReportedEntity(fileTask) as TestModule
+      const testModule = this.vitest.state.getReportedEntity(file) as TestModule
       for (const task of testModule.children) {
         //                          ^?
         console.log('finished', task.type, task.fullName)
@@ -86,6 +98,7 @@ class MyReporter implements Reporter {
   }
 }
 ```
+<<<<<<< HEAD
 :::
 
 ### TestCase
@@ -380,6 +393,8 @@ function onFileCollected(testModule: TestModule): void {
   }
 }
 ```
+=======
+>>>>>>> 3158871632d11ca43bea7c2f8c72bc95feac15cb
 
 ## 导出报告器 (Exported Reporters)
 

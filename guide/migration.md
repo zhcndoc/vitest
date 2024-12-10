@@ -5,7 +5,11 @@ outline: deep
 
 # 迁移指南
 
+<<<<<<< HEAD
 ## 迁移到 Vitest 3.0
+=======
+## Migrating to Vitest 3.0 {#vitest-3}
+>>>>>>> 3158871632d11ca43bea7c2f8c72bc95feac15cb
 
 ### Test Options as a Third Argument
 
@@ -29,9 +33,13 @@ test('validation works', () => {
 }, 1000) // Ok ✅
 ```
 
-### `Custom` Type is Deprecated <Badge type="warning">experimental API</Badge> {#custom-type-is-deprecated}
+### `Custom` Type is Deprecated <Badge type="danger">API</Badge> {#custom-type-is-deprecated}
 
+<<<<<<< HEAD
 `Custom` 类型现在等同于 `Test` 类型。需要注意一下，Vitest 在 2.1 版本中更新了公共类型，并将导出的名称更改为 `RunnerCustomCase` 和 `RunnerTestCase`。
+=======
+The `Custom` type is now an alias for the `Test` type. Note that Vitest updated the public types in 2.1 and changed exported names to `RunnerCustomCase` and `RunnerTestCase`:
+>>>>>>> 3158871632d11ca43bea7c2f8c72bc95feac15cb
 
 ```ts
 import {
@@ -42,11 +50,25 @@ import {
 
 如果我们正在使用 `getCurrentSuite().custom()`，返回的任务的 `type` 现在等于 `'test'`。`Custom` 类型将在 Vitest 4 中被移除。
 
+### The `WorkspaceSpec` Type is No Longer Used <Badge type="danger">API</Badge> {#the-workspacespec-type-is-no-longer-used}
+
+In the public API this type was used in custom [sequencers](/config/#sequence-sequencer) before. Please, migrate to [`TestSpecification`](/advanced/api/test-specification) instead.
+
 ### `onTestFinished` and `onTestFailed` Now Receive a Context
 
 [`onTestFinished`](/api/#ontestfinished) 和 [`onTestFailed`](/api/#ontestfailed) 钩子之前接收测试结果作为第一个参数。现在，它们像 `beforeEach` 和 `afterEach` 一样，接收一个测试上下文。
 
+<<<<<<< HEAD
 ## 迁移到 Vitest 2.0
+=======
+### Changes to `resolveConfig` Type Signature <Badge type="danger">API</Badge> {#changes-to-resolveconfig-type-signature}
+
+The [`resolveConfig`](/advanced/api/#resolveconfig) is now more useful. Instead of accepting already resolved Vite config, it now accepts a user config and returns resolved config.
+
+This function is not used internally and exposed exclusively as a public API.
+
+## Migrating to Vitest 2.0 {#vitest-2}
+>>>>>>> 3158871632d11ca43bea7c2f8c72bc95feac15cb
 
 ### 默认数据池为 `forks`
 
@@ -329,7 +351,11 @@ export default defineConfig({
 
 但是，在使用 `--pool=forks` 时，无法模拟 `process.nextTick` 。如果需要模拟 `process.nextTick` ，请使用不同的 `--pool` 选项。
 
+<<<<<<< HEAD
 ## 从 Jest 迁移
+=======
+## Migrating from Jest {#jest}
+>>>>>>> 3158871632d11ca43bea7c2f8c72bc95feac15cb
 
 Vitest 设计了与 Jest 兼容的 API ，方便你从 Jest 的迁移尽可能简单。尽管做出了这些努力，你仍然可能会遇到以下差异：
 

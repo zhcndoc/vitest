@@ -31,11 +31,25 @@ $ vitest basic/foo.test.ts:10
 ```
 
 ::: warning
+<<<<<<< HEAD
 请注意，我们需要提供完整的文件名，并指明确切的行号，也就是说，我们不能简单地进行如下操作：
+=======
+Note that Vitest requires the full filename for this feature to work. It can be relative to the current working directory or an absolute file path.
+>>>>>>> 3158871632d11ca43bea7c2f8c72bc95feac15cb
 
 ```bash
-$ vitest foo:10
-$ vitest basic/foo.test.ts:10-25
+$ vitest basic/foo.js:10 # ✅
+$ vitest ./basic/foo.js:10 # ✅
+$ vitest /users/project/basic/foo.js:10 # ✅
+$ vitest foo:10 # ❌
+$ vitest ./basic/foo:10 # ❌
+```
+
+At the moment Vitest also doesn't support ranges:
+
+```bash
+$ vitest basic/foo.test.ts:10, basic/foo.test.ts:25 # ✅
+$ vitest basic/foo.test.ts:10-25 # ❌
 ```
 :::
 
