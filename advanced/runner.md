@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 # 运行器 API
-=======
-# Runner API
->>>>>>> 3158871632d11ca43bea7c2f8c72bc95feac15cb
 
 ::: warning 注意
 这是高级 API。如果你只需要[运行测试](/guide/)，你可能不需要这个。它主要被库的作者使用。
@@ -88,49 +84,30 @@ export interface VitestRunner {
    */
   onAfterRunFiles?: (files: File[]) => unknown
   /**
-<<<<<<< HEAD
-   * 这个方法被用于 "test" 和 "custom" 处理程序。
-   * 你可以在 "setupFiles" 中使用 "beforeAll" 来定义自定义上下文，而不是使用 runner。
-   * 更多信息请参考：https://vitest.dev/advanced/runner.html#your-task-function
-   */
-  extendTaskContext?: <T extends Test | Custom>(
-    context: TaskContext<T>
-  ) => TaskContext<T>
-  /**
-   * 当导入某些文件时被调用。在收集测试和导入设置文件时都可能会被调用。.
-   */
-  importFile: (filepath: string, source: VitestRunnerImportSource) => unknown
-  /**
-   * 公开可用的配置.
-=======
-   * Called when new context for a test is defined. Useful, if you want to add custom properties to the context.
-   * If you only want to define custom context with a runner, consider using "beforeAll" in "setupFiles" instead.
+   * 当定义了测试的新上下文时调用。如果你想要向上下文中添加自定义属性，这将非常有用。
+   * 如果你只是想通过运行器定义自定义上下文，建议在 `setupFiles` 中使用 `beforeAll`。
    */
   extendTaskContext?: (context: TestContext) => TestContext
   /**
-   * Called when certain files are imported. Can be called in two situations: to collect tests and to import setup files.
+   * 在导入某些文件时调用。可以在两种情况下调用：收集测试和导入设置文件。
    */
   importFile: (filepath: string, source: VitestRunnerImportSource) => unknown
   /**
-   * Function that is called when the runner attempts to get the value when `test.extend` is used with `{ injected: true }`
+   * 当运行器尝试获取值时调用的函数，此时 `test.extend` 是与 `{ injected: true }` 一起使用的。
    */
   injectValue?: (key: string) => unknown
   /**
-   * Publicly available configuration.
->>>>>>> 3158871632d11ca43bea7c2f8c72bc95feac15cb
+   * 公开可用的配置。
    */
   config: VitestRunnerConfig
   /**
-   * The name of the current pool. Can affect how stack trace is inferred on the server side.
+   * 当前池的名称。可能会影响服务器端如何推断堆栈跟踪。
    */
   pool?: string
 }
 ```
 
-<<<<<<< HEAD
-当初始化这个类时，Vitest 会传递 Vitest 配置，你应该将它作为一个 `config` 属性暴露出来。
-=======
-When initiating this class, Vitest passes down Vitest config, - you should expose it as a `config` property:
+在初始化此类时，Vitest 会传递 Vitest 配置，你应该将其作为 `config` 属性暴露出来：
 
 ```ts [runner.ts]
 import type { RunnerTestFile } from 'vitest'
@@ -151,15 +128,11 @@ class CustomRunner extends VitestTestRunner implements VitestRunner {
 
 export default CustomRunner
 ```
->>>>>>> 3158871632d11ca43bea7c2f8c72bc95feac15cb
 
-::: warning 注意
+::: warning
 Vitest 还会将 `ViteNodeRunner` 的实例作为 `__vitest_executor` 属性注入。你可以使用它来处理 `importFile` 方法中的文件（这是 `TestRunner` 和 `BenchmarkRunner` 的默认行为）。
 
-<<<<<<< HEAD
-`ViteNodeRunner` 暴露了 `executeId` 方法，用于在适用于 Vite 的环境中导入测试文件。这意味着它将在运行时解析导入并转换文件内容，以便 Node 能够理解它。
-=======
-`ViteNodeRunner` exposes `executeId` method, which is used to import test files in a Vite-friendly environment. Meaning, it will resolve imports and transform file content at runtime so that Node can understand it:
+`ViteNodeRunner` 暴露了 `executeId` 方法，该方法用于在友好的 Vite 环境中导入测试文件。这意味着它会在运行时解析导入并转换文件内容，以便 Node 能够理解。
 
 ```ts
 export default class Runner {
@@ -171,55 +144,51 @@ export default class Runner {
 :::
 
 ::: warning
-If you don't have a custom runner or didn't define `runTest` method, Vitest will try to retrieve a task automatically. If you didn't add a function with `setFn`, it will fail.
->>>>>>> 3158871632d11ca43bea7c2f8c72bc95feac15cb
+如果你没有自定义运行器或没有定义 `runTest` 方法，Vitest 将尝试自动检索任务。如果你没有使用 `setFn` 添加函数，这将会失败。
 :::
 
-::: tip 提示
+::: tip
 快照支持和其他功能是依赖于测试运行器的。如果你想保留这些功能，可以从 `vitest/runners` 导入 `VitestTestRunner` 并将你的测试运行器继承该类。它还暴露了 `BenchmarkNodeRunner`，如果你想扩展基准测试功能的话也可以继承它。
 :::
 
 ## 你的任务函数
 
-<<<<<<< HEAD
-你可以通过扩展 `Vitest` 的任务系统来添加你自己的任务。一个任务是一个对象，是套件的一部分。它会自动通过 `suite.task` 方法添加到当前套件中：
-=======
 ::: warning
-The "Runner Tasks API" is experimental and should primarily be used only in the test runtime. Vitest also exposes the ["Reported Tasks API"](/advanced/api/test-module), which should be preferred when working in the main thread (inside the reporter, for example).
+“Runner Tasks API” 是实验性的，主要应在测试运行时使用。Vitest 还暴露了 [“Reported Tasks API”](/advanced/api/test-module)，在主线程中工作时（例如在报告器内部）应优先使用。
 
-The team is currently discussing if "Runner Tasks" should be replaced by "Reported Tasks" in the future.
+团队目前正在讨论未来是否应将“Runner Tasks”替换为“Reported Tasks”。
 :::
 
-Suites and tests are called `tasks` internally. Vitest runner initiates a `File` task before collecting any tests - this is a superset of `Suite` with a few additional properties. It is available on every task (including `File`) as a `file` property.
+套件和测试在内部被称为 `tasks`。Vitest 运行器在收集任何测试之前会启动一个 `File` 任务——这是 `Suite` 的超集，并带有几个附加属性。它作为 `file` 属性在每个任务（包括 `File`）上都可用。
 
 ```ts
 interface File extends Suite {
   /**
-   * The name of the pool that the file belongs to.
+   * 文件所属的池的名称。
    * @default 'forks'
    */
   pool?: string
   /**
-   * The path to the file in UNIX format.
+   * 文件的 UNIX 格式路径。
    */
   filepath: string
   /**
-   * The name of the workspace project the file belongs to.
+   * 文件所属的工作区项目的名称。
    */
   projectName: string | undefined
   /**
-   * The time it took to collect all tests in the file.
-   * This time also includes importing all the file dependencies.
+   * 收集文件中所有测试所花费的时间。
+   * 这个时间还包括导入所有文件依赖。
    */
   collectDuration?: number
   /**
-   * The time it took to import the setup file.
+   * 导入设置文件所花费的时间。
    */
   setupDuration?: number
 }
 ```
 
-Every suite has a `tasks` property that is populated during collection phase. It is useful to traverse the task tree from the top down.
+每个套件都有一个在收集阶段填充的 `tasks` 属性。从上到下遍历任务树时，这一属性非常有用。
 
 ```ts
 interface Suite extends TaskBase {
@@ -235,86 +204,83 @@ interface Suite extends TaskBase {
 }
 ```
 
-Every task has a `suite` property that references a suite it is located in. If `test` or `describe` are initiated at the top level, they will not have a `suite` property (it will **not** be equal to `file`!). `File` also never has a `suite` property. It is useful to travers the tasks from the bottom up.
+每个任务都有一个引用其所在套件的 `suite` 属性。如果 `test` 或 `describe` 在顶级被初始化，它们将不会有 `suite` 属性（它 **不会** 等于 `file`！）。`File` 也永远不会有一个 `suite` 属性。从下往上遍历任务时，这一属性非常有用。
 
 ```ts
 interface Test<ExtraContext = object> extends TaskBase {
   type: 'test'
   /**
-   * Test context that will be passed to the test function.
+   * 将传递给测试函数的测试上下文。
    */
   context: TestContext & ExtraContext
   /**
-   * File task. It's the root task of the file.
+   * 文件任务。它是文件的根任务。
    */
   file: File
   /**
-   * Whether the task was skipped by calling `t.skip()`.
+   * 任务是否通过调用 `t.skip()` 被跳过。
    */
   pending?: boolean
   /**
-   * Whether the task should succeed if it fails. If the task fails, it will be marked as passed.
+   * 任务失败时是否应视为成功。如果任务失败，它将被标记为通过。
    */
   fails?: boolean
   /**
-   * Store promises (from async expects) to wait for them before finishing the test
+   * 存储承诺（来自异步期望）以在完成测试前等待它们。
    */
   promises?: Promise<any>[]
 }
 ```
 
-Every task can have a `result` field. Suites can only have this field if an error thrown within a suite callback or `beforeAll`/`afterAll` callbacks prevents them from collecting tests. Tests always have this field after their callbacks are called - the `state` and `errors` fields are present depending on the outcome. If an error was thrown in `beforeEach` or `afterEach` callbacks, the thrown error will be present in `task.result.errors`.
+每个任务都可以有一个 `result` 字段。只有当在套件回调或 `beforeAll`/`afterAll` 回调中抛出错误，阻止了测试的收集时，套件才会有这个字段。测试在它们的回调被调用后总是有这个字段——`state` 和 `errors` 字段根据结果的存在与否而存在。如果在 `beforeEach` 或 `afterEach` 回调中抛出了错误，抛出的错误将出现在 `task.result.errors` 中。
 
 ```ts
 export interface TaskResult {
   /**
-   * State of the task. Inherits the `task.mode` during collection.
-   * When the task has finished, it will be changed to `pass` or `fail`.
-   * - **pass**: task ran successfully
-   * - **fail**: task failed
+   * 任务的状态。在收集期间继承 `task.mode`。
+   * 当任务完成时，其状态将变为 `pass` 或 `fail`。
+   * - **pass**: 任务成功运行
+   * - **fail**: 任务失败
    */
   state: TaskState
   /**
-   * Errors that occurred during the task execution. It is possible to have several errors
-   * if `expect.soft()` failed multiple times.
+   * 在任务执行期间发生的错误。可能存在多个错误。
+   * 如果 `expect.soft()` 多次失败。
    */
   errors?: ErrorWithDiff[]
   /**
-   * How long in milliseconds the task took to run.
+   * 任务运行所花费的时间（以毫秒为单位）。
    */
   duration?: number
   /**
-   * Time in milliseconds when the task started running.
+   * 任务开始运行的时间（以毫秒为单位）。
    */
   startTime?: number
   /**
-   * Heap size in bytes after the task finished.
-   * Only available if `logHeapUsage` option is set and `process.memoryUsage` is defined.
+   * 任务完成后堆的大小（以bytes为单位）。
+   * 仅在设置了 `logHeapUsage` 选项且 `process.memoryUsage` 已定义时可用。
    */
   heap?: number
   /**
-   * State of related to this task hooks. Useful during reporting.
+   * 与该任务相关的钩子状态。在报告期间非常有用。
    */
   hooks?: Partial<Record<'afterAll' | 'beforeAll' | 'beforeEach' | 'afterEach', TaskState>>
   /**
-   * The amount of times the task was retried. The task is retried only if it
-   * failed and `retry` option is set.
+   * 任务重试的次数。只有在任务失败且设置了 `retry` 选项时才会进行重试。
    */
   retryCount?: number
   /**
-   * The amount of times the task was repeated. The task is repeated only if
-   * `repeats` option is set. This number also contains `retryCount`.
+   * 任务重复的次数。只有在设置了 `repeats` 选项时才会重复任务。此数字也包括 `retryCount`。
    */
   repeatCount?: number
 }
 ```
 
-## Your Task Function
+## 你的任务函数
 
-Vitest exposes `createTaskCollector` utility to create your own `test` method. It behaves the same way as a test, but calls a custom method during collection.
+Vitest 提供了 `createTaskCollector` 工具来创建您自己的 `test` 方法。它的行为与测试相同，但在收集期间会调用自定义方法。
 
-A task is an object that is part of a suite. It is automatically added to the current suite with a `suite.task` method:
->>>>>>> 3158871632d11ca43bea7c2f8c72bc95feac15cb
+任务是套件的一部分对象。它会通过 `suite.task` 方法自动添加到当前套件中：
 
 ```js [custom.js]
 import { createTaskCollector, getCurrentSuite } from 'vitest/suite'
@@ -369,14 +335,3 @@ describe('take care of the garden', () => {
 ```bash
 vitest ./garden/tasks.test.js
 ```
-<<<<<<< HEAD
-
-::: warning 注意
-如果你没有定义自定义运行器，也没有定义 `runTest` 方法，Vitest 将会尝试自动获取任务。如果你没有使用 `setFn` 添加一个函数，这个过程会失败。
-:::
-
-::: tip 提示
-自定义任务系统支持钩子和上下文。如果你想支持属性链式调用（如 `only`、`skip` 和你自己的定制属性），你可以从 `vitest/suite` 导入 `createChainable` 并用它包装你的函数。如果你决定这样做，你需要将 `custom` 作为 `custom.call(this)` 来调用。
-:::
-=======
->>>>>>> 3158871632d11ca43bea7c2f8c72bc95feac15cb

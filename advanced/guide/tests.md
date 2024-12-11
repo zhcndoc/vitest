@@ -29,24 +29,15 @@ for (const testModule of testModules) {
 }
 ```
 
-<<<<<<< HEAD
-::: tip 提示
-[`TestModule`](/advanced/reporters#TestModule), [`TestSuite`](/advanced/reporters#TestSuite) 和 [`TestCase`](/advanced/reporters#TestCase) API 不再是实验性的，从 Vitest 2.1 开始遵循 SemVer。
-=======
 ::: tip
-[`TestModule`](/advanced/api/test-module), [`TestSuite`](/advanced/api/test-suite) and [`TestCase`](/advanced/api/test-case) APIs are not experimental and follow SemVer since Vitest 2.1.
->>>>>>> 3158871632d11ca43bea7c2f8c72bc95feac15cb
+[`TestModule`](/advanced/api/test-module), [`TestSuite`](/advanced/api/test-suite) 和 [`TestCase`](/advanced/api/test-case) API 从 Vitest 2.1 开始不再是实验性的，并且遵循 SemVer。
 :::
 
 ## `createVitest`
 
-<<<<<<< HEAD
-`createVitest` 方法不会验证是否已安装所需的软件包。此方法也不遵循 `config.standalone` 或 `config.mergeReports`。即使 `watch` 被禁用，Vitest 也不会自动关闭。
-=======
-Creates a [Vitest](/advanced/api/vitest) instances without running tests.
+创建一个 [Vitest](/advanced/api/vitest) 实例而不运行测试。
 
-`createVitest` method doesn't validate that required packages are installed. It also doesn't respect `config.standalone` or `config.mergeReports`. Vitest won't be closed automatically even if `watch` is disabled.
->>>>>>> 3158871632d11ca43bea7c2f8c72bc95feac15cb
+`createVitest` 方法不会验证是否已安装所需的软件包。此方法也不遵循 `config.standalone` 或 `config.mergeReports`。即使 `watch` 被禁用，Vitest 也不会自动关闭。
 
 ```ts
 import { createVitest } from 'vitest/node'
@@ -66,15 +57,6 @@ vitest.onClose(() => {})
 vitest.onTestsRerun((files) => {})
 
 try {
-<<<<<<< HEAD
-  // 如果测试执行失败，process.exitCode 将被设置为 1
-  await vitest.start(['my-filter'])
-}
-catch (err) {
-  // 可能会抛出
-  // "FilesNotFoundError" 如果没有找到文件
-  // "GitNotFoundError" 如果启用了 `--changed` 并且存储库未初始化
-=======
   // this will set process.exitCode to 1 if tests failed,
   // and won't close the process automatically
   await vitest.start(['my-filter'])
@@ -83,16 +65,15 @@ catch (err) {
   // this can throw
   // "FilesNotFoundError" if no files were found
   // "GitNotFoundError" with `--changed` and repository is not initialized
->>>>>>> 3158871632d11ca43bea7c2f8c72bc95feac15cb
 }
 finally {
   await vitest.close()
 }
 ```
 
-If you intend to keep the `Vitest` instance, make sure to at least call [`init`](/advanced/api/vitest#init). This will initialise reporters and the coverage provider, but won't run any tests. It is also recommended to enable the `watch` mode even if you don't intend to use the Vitest watcher, but want to keep the instance running. Vitest relies on this flag for some of its features to work correctly in a continous process.
+如果你打算保留 `Vitest` 实例，请确保至少调用 [`init`](/advanced/api/vitest#init)。这将初始化报告器和覆盖率提供者，但不会运行任何测试。即使你不打算使用 Vitest 监视器，但希望保持实例运行，也建议启用 `watch` 模式。Vitest 依赖于这个标志，以确保某些功能在持续过程中正常工作。
 
-After reporters are initialised, use [`runTestSpecifications`](/advanced/api/vitest#runtestspecifications) or [`rerunTestSpecifications`](/advanced/api/vitest#reruntestspecifications) to run tests if manual run is required:
+报告器初始化后，如果需要手动运行测试，可以使用 [`runTestSpecifications`](/advanced/api/vitest#runtestspecifications) 或 [`rerunTestSpecifications`](/advanced/api/vitest#reruntestspecifications) 来运行测试。
 
 ```ts
 watcher.on('change', async (file) => {
@@ -107,9 +88,9 @@ watcher.on('change', async (file) => {
 ```
 
 ::: warning
-The example above shows a potential usecase if you disable the default watcher behaviour. By default, Vitest already reruns tests if files change.
+上述示例展示了如果你禁用默认监视器行为的一个潜在用例。默认情况下，Vitest 在文件发生变化时已经会重新运行测试。
 
-Also note that `getModuleSpecifications` will not resolve test files unless they were already processed by `globTestSpecifications`. If the file was just created, use `project.matchesGlobPattern` instead:
+另外请注意，`getModuleSpecifications` 不会解析测试文件，除非这些文件已经通过 `globTestSpecifications` 处理过。如果文件刚刚创建，应使用 `project.matchesGlobPattern`：
 
 ```ts
 watcher.on('add', async (file) => {
@@ -127,7 +108,7 @@ watcher.on('add', async (file) => {
 ```
 :::
 
-In cases where you need to disable the watcher, you can pass down `server.watch: null` since Vite 5.3 or `server.watch: { ignored: ['*/*'] }` to a Vite config:
+如果你需要禁用监视器，可以从 Vite 5.3 开始传递 `server.watch: null`，或者在 Vite 配置中传递 `server.watch: { ignored: ['*/*'] }`：
 
 ```ts
 await createVitest(

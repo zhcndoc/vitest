@@ -432,10 +432,7 @@ test('stocks are not the same', () => {
 ```
 
 :::warning
-<<<<<<< HEAD
-不会对 `Error` 对象执行 _deep equality_ 。只有 Error 的 `message` 属性才被视为相等。要自定义相等以检查 `message` 以外的属性，请使用 [`expect.addEqualityTesters`](#expect-addequalitytesters)。要测试是否抛出了错误，需要使用 [`toThrowError`](#tothrowerror) 断言。
-=======
-For `Error` objects, non-enumerable properties such as `name`, `message`, `cause` and `AggregateError.errors` are also compared. For `Error.cause`, the comparison is done asymmetrically:
+对于 `Error` 对象，非可枚举属性如 `name`、`message`、`cause` 和 `AggregateError.errors` 也会进行比较。对于 `Error.cause`，比较是不对称的：
 
 ```ts
 // success
@@ -445,8 +442,7 @@ expect(new Error('hi', { cause: 'x' })).toEqual(new Error('hi'))
 expect(new Error('hi')).toEqual(new Error('hi', { cause: 'x' }))
 ```
 
-To test if something was thrown, use [`toThrowError`](#tothrowerror) assertion.
->>>>>>> 3158871632d11ca43bea7c2f8c72bc95feac15cb
+要测试是否抛出了某个异常，请使用 [`toThrowError`](#tothrowerror) 断言。
 :::
 
 ## toStrictEqual
@@ -664,14 +660,9 @@ test('the number of elements must match exactly', () => {
 
 我们可以提供一个可选参数来测试是否抛出了特定的错误：
 
-<<<<<<< HEAD
-- 正则表达式 (regular expression) ：错误消息与模式匹配
-- 字符串 (string) ：错误消息包含子字符串
-=======
-- `RegExp`: error message matches the pattern
-- `string`: error message includes the substring
-- `Error`, `AsymmetricMatcher`: compare with a received object similar to `toEqual(received)`
->>>>>>> 3158871632d11ca43bea7c2f8c72bc95feac15cb
+- `RegExp`: 错误消息匹配该模式
+- `string`: 错误消息包含该子字符串
+- `Error`, `AsymmetricMatcher`: 与接收到的对象进行比较，类似于 `toEqual(received)`
 
 :::tip
 必须将代码包装在一个函数中，否则错误将无法被捕获，测试将失败。
