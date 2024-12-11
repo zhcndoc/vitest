@@ -82,7 +82,7 @@ test('element exists', async () => {
 ```
 
 ::: warning
-`expect.poll` 使得每次断言都变为异步，因此我们需要等待它。自 Vitest 2.2 起，如果我们忘记等待，测试将以警告失败，并提示我们应该这样做。
+`expect.poll` 使每个断言变为异步，因此我们需要等待它。自 Vitest 3 起，如果我们忘记等待，测试将以警告失败，提示我们需要这样做。
 
 `expect.poll` 不适用于多个匹配器：
 
@@ -466,7 +466,7 @@ test('structurally the same, but semantically different', () => {
 
 - **类型:** `(received: string) => Awaitable<void>`
 
-`toContain` 断言实际值是否在数组中。`toContain` 还可以检查一个字符串是否是另一个字符串的子串。自 Vitest 1.0 起，如果我们需要在类似浏览器的环境中运行测试，此断言还可以检查类是否包含在 `classList` 中，或一个元素是否包含在另一个元素中。
+`toContain` 断言实际值是否在数组中。`toContain` 还可以检查一个字符串是否是另一个字符串的子串。如果你在类似浏览器的环境中运行测试，这个断言还可以检查类是否包含在 `classList` 中，或者一个元素是否在另一个元素内部。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -878,7 +878,7 @@ test('spy function', () => {
 })
 ```
 
-## toHaveBeenCalledBefore <Version>2.2.0</Version> {#tohavebeencalledbefore}
+## toHaveBeenCalledBefore <Version>3.0.0</Version> {#tohavebeencalledbefore}
 
 - **类型**: `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => Awaitable<void>`
 
@@ -897,7 +897,7 @@ test('calls mock1 before mock2', () => {
 })
 ```
 
-## toHaveBeenCalledAfter <Version>2.2.0</Version> {#tohavebeencalledafter}
+## toHaveBeenCalledAfter <Version>3.0.0</Version> {#tohavebeencalledafter}
 
 - **类型**: `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => Awaitable<void>`
 
@@ -916,7 +916,7 @@ test('calls mock1 after mock2', () => {
 })
 ```
 
-## toHaveBeenCalledExactlyOnceWith <Version>2.2.0</Version> {#tohavebeencalledexactlyoncewith}
+## toHaveBeenCalledExactlyOnceWith <Version>3.0.0</Version> {#tohavebeencalledexactlyoncewith}
 
 - **类型**: `(...args: any[]) => Awaitable<void>`
 
@@ -1250,7 +1250,7 @@ test('buyApples returns new stock id', async () => {
 :::warning
 如果断言没有被异步等待，那么我们将得到一个误报测试，这个测试每次都能通过。为了确保断言确实被调用，我们可以尝试使用 [`expect.assertions(number)`](#expect-assertions)。
 
-自 Vitest 2.2 起，如果一个方法没有被异步等待，Vitest 会在测试结束时显示警告。在 Vitest 3 中，如果断言没有被异步等待，测试将被标记为 "failed" 。
+自 Vitest 3 起，如果一个方法没有被等待（await），Vitest 会在测试结束时显示警告。到了 Vitest 4 ，如果断言没有被等待，测试将被标记为 "failed" 。
 :::
 
 ## rejects
@@ -1281,7 +1281,7 @@ test('buyApples throws an error when no id provided', async () => {
 :::warning
 如果断言没有被等待执行，那么我们将得到一个误报测试，这个测试每次都能通过。为了确保断言实际上被调用了，我们可以尝试使用 [`expect.assertions(number)`](#expect-assertions)。
 
-从 Vitest 2.2 版本开始，如果一个方法没有被等待执行，Vitest 会在测试结束时显示一个警告。在 Vitest 3 版本中，如果断言没有被等待执行，测试将被标记为 "failed"。
+自 Vitest 3 起，若方法未被异步等待（ await ），Vitest 将在测试结束时显示警告。而在 Vitest 4 中，若断言未被异步等待，则测试将被标记为 "failed" 。
 :::
 
 ## expect.assertions

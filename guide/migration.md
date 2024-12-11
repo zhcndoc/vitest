@@ -5,8 +5,48 @@ outline: deep
 
 # 迁移指南
 
-## 迁移到 Vitest 2.0
+## 迁移到 Vitest 3.0
 
+### Test Options as a Third Argument
+
+Vitest 3.0 如果我们将一个对象作为第三个参数传递给 `test` 或 `describe` 函数，会打印一条警告：
+
+```ts
+test('validation works', () => {
+  // ...
+}, { retry: 3 }) // [!code --]
+
+test('validation works', { retry: 3 }, () => { // [!code ++]
+  // ...
+})
+```
+
+Vitest 4.0 如果第三个参数是对象，将会抛出一个错误。需要注意一下，超时时间（timeout number）并没有被弃用。
+
+```ts
+test('validation works', () => {
+  // ...
+}, 1000) // Ok ✅
+```
+
+### `Custom` Type is Deprecated <Badge type="warning">experimental API</Badge> {#custom-type-is-deprecated}
+
+`Custom` 类型现在等同于 `Test` 类型。需要注意一下，Vitest 在 2.1 版本中更新了公共类型，并将导出的名称更改为 `RunnerCustomCase` 和 `RunnerTestCase`。
+
+```ts
+import {
+  RunnerCustomCase, // [!code --]
+  RunnerTestCase, // [!code ++]
+} from 'vitest'
+```
+
+如果我们正在使用 `getCurrentSuite().custom()`，返回的任务的 `type` 现在等于 `'test'`。`Custom` 类型将在 Vitest 4 中被移除。
+
+### `onTestFinished` and `onTestFailed` Now Receive a Context
+
+[`onTestFinished`](/api/#ontestfinished) 和 [`onTestFailed`](/api/#ontestfailed) 钩子之前接收测试结果作为第一个参数。现在，它们像 `beforeEach` 和 `afterEach` 一样，接收一个测试上下文。
+
+## 迁移到 Vitest 2.0
 
 ### 默认数据池为 `forks`
 
@@ -143,7 +183,6 @@ Vitest 浏览器模式在测试周期内发生了很多变化。您可以在[Git
 - 检查 `c8` 覆盖率（使用 coverage-v8 代替）
 - 从 `vitest` 导出 `SnapshotEnvironment` - 改为从 `vitest/snapshot` 导入
 - 删除 `SpyInstance` 改用 `MockInstance`
-
 
 ## 迁移到 Vitest 1.0
 
@@ -300,6 +339,13 @@ Jest 默认启用[全局 API](https://jestjs.io/zh-Hans/docs/api)。然而 Vites
 
 如果你决定禁用全局 API，请注意像 [`testing-library`](https://testing-library.com/) 这样的通用库不会自动运行 DOM [cleanup](https://testing-library.com/docs/svelte-testing-library/api/#cleanup)。
 
+### `spy.mockReset`
+
+Jest 的 [`mockReset`](https://jestjs.io/docs/mock-function-api#mockfnmockreset) 方法会将模拟函数的实现替换为一个返回 `undefined` 的空函数。
+
+而 Vitest 的 [`mockReset`](/api/mock#mockreset) 方法会将模拟函数的实现重置为其原始实现。
+也就是说，通过 `vi.fn(impl)` 创建的模拟，使用 `mockReset` 将会把模拟的实现重置回 `impl`。
+
 ### 模拟模块
 
 在 Jest 中模拟一个模块时，工厂参数的返回值是默认导出。在 Vitest 中，工厂参数必须返回一个明确定义了每个导出的对象。例如，下面的 `jest.mock` 必须更新如下：
@@ -397,8 +443,9 @@ Vitest 没有等效于 `jest` 的命名空间，因此你需要直接从 `Vitest
 
 ```ts
 // [!code --]
-let fn: jest.Mock<(name: string) => number> // [!code --]
-import type { Mock } from 'vitest' // [!code ++]
+// [!code --]
+import type { Mock } from 'vitest'
+let fn: jest.Mock<(name: string) => number> // [!code ++]
 let fn: Mock<(name: string) => number> // [!code ++]
 ```
 

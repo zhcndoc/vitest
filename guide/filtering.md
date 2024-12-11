@@ -24,6 +24,21 @@ basic/foo.test.ts
 
 你还可以使用 `-t, --testNamePattern <pattern>` 选项按全名过滤测试。当你想按文件内定义的名称而不是文件名本身进行过滤时，这将非常有用。
 
+自 Vitest 3 起，也可以通过文件名和行号来指定测试：
+
+```bash
+$ vitest basic/foo.test.ts:10
+```
+
+::: warning
+请注意，我们需要提供完整的文件名，并指明确切的行号，也就是说，我们不能简单地进行如下操作：
+
+```bash
+$ vitest foo:10
+$ vitest basic/foo.test.ts:10-25
+```
+:::
+
 ## 指定超时阈值
 
 你可以选择将超时阈值（以毫秒为单位）作为第三个参数传递给测试。默认值为 [5 秒](/config/#testtimeout)。

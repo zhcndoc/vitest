@@ -149,7 +149,7 @@ export const myCommand: BrowserCommand<[string, number]> = async (
 ```
 
 ::: tip
-如果我们在使用 TypeScript，不要忘记在我们的 [setup 文件](/config/#setupfile)或 [config 文件](/config/file)中引用 `@vitest/browser/providers/playwright` ，以便在配置以及 `userEvent` 和 `page` 选项中获得自动补全功能。
+如果我们使用的是 TypeScript ，请不要忘记在我们的 [setup 文件](/config/#setupfile)或 [config 文件](/config/) 中引用 `@vitest/browser/providers/playwright` ，以便在配置以及 `userEvent` 和 `page` 选项中获得自动补全功能。
 
 ```ts
 /// <reference types="@vitest/browser/providers/playwright" />
@@ -165,7 +165,7 @@ Vitest 在上下文对象上公开了一些 `webdriverio` 特有属性。
 Vitest 通过在调用命令前调用 `browser.switchToFrame` 自动将 `webdriver` 上下文切换到测试 iframe，因此 `$` 和 `$` 方法将引用 iframe 内的元素，而不是 orchestrator 中的元素，但非 Webdriver API 仍将引用 parent frame 上下文。
 
 ::: tip
-如果我们在使用 TypeScript ，不要忘记在 [setup 文件](/config/#setupfile)中引用 `@vitest/browser/providers/webdriverio` ，以获得自动补全功能：
+如果我们使用的是 TypeScript，请记得在您的 [setup 文件](/config/#setupfile)或 [config 文件](/config/)中引用 `@vitest/browser/providers/webdriverio` ，以便获得自动补全功能。
 
 ```ts
 /// <reference types="@vitest/browser/providers/webdriverio" />

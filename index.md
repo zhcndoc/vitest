@@ -3,7 +3,7 @@ layout: home
 sidebar: false
 
 title: Vitest 中文文档
-titleTemplate: ':title - 下一代原生支持 Vite 的测试框架'
+titleTemplate: ':title - 由 Vite 驱动的下一代测试框架'
 
 hero:
   name: Vitest

@@ -44,21 +44,19 @@ Vitest 需要 Vite >=v5.0.0 和 Node >=v18.0.0
 
 如果在 `package.json` 中安装一份 `vitest` 的副本，可以使用上面列出的方法之一。然而，如果更倾向于直接运行 `vitest` ，可以使用 `npx vitest`（ `npx` 是会随着 npm 和 Node.js 一起被安装）。
 
-`npx` 将执行指定的命令。在默认情况下，`npx` 首先会检查命令是否存在于本地项目的 `node_modules/.bin` 中。如果没有找到，`npx` 将在系统的 $PATH 中查找并执行它。如果两个位置都没有找到命令，`npx` 将在执行前安装它。
+`npx` 是一个命令行工具，用于执行指定的命令。默认情况下，`npx` 会首先检查本地项目的二进制文件中是否存在该命令。如果在那里没有找到，`npx` 会在系统的 `$PATH` 中查找并执行该命令（如果找到的话）。如果两个位置都没有找到该命令，`npx` 会在执行之前将其安装在临时位置。
 
 ## 编写测试
 
 例如，我们将编写一个简单的测试来验证将两个数字相加的函数的输出。
 
-```js
-// sum.js
+``` js [sum.js]
 export function sum(a, b) {
   return a + b
 }
 ```
 
-```js
-// sum.test.js
+``` js [sum.test.js]
 import { expect, test } from 'vitest'
 import { sum } from './sum.js'
 
@@ -73,7 +71,7 @@ test('adds 1 + 2 to equal 3', () => {
 
 接下来，为了执行测试，请将以下部分添加到你的 `package.json` 文件中：
 
-```json
+```json [package.json]
 {
   "scripts": {
     "test": "vitest"
@@ -111,7 +109,7 @@ Vitest 支持与 Vite 相同的配置文件扩展名：`.js`、`.mjs`、`.cjs`�
 
 如果你不使用 Vite 作为构建工具，你可以使用配置文件中的 `test` 属性来配置 Vitest：
 
-```ts
+```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -127,7 +125,7 @@ export default defineConfig({
 
 如果你已经在使用 Vite，请在 Vite 配置中添加 `test` 属性。你还需要使用 [三斜杠指令](https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html#-reference-types-) 在你的配置文件的顶部引用。
 
-```ts
+```ts [vite.config.ts]
 /// <reference types="vitest" />
 import { defineConfig } from 'vite'
 
@@ -140,7 +138,7 @@ export default defineConfig({
 
 The `<reference types="vitest" />` 将在 Vitest 3 中停止工作，但您可以在 Vitest 2.1 中开始迁移到 `vitest/config`：
 
-```ts
+```ts [vite.config.ts]
 /// <reference types="vitest/config" />
 import { defineConfig } from 'vite'
 
@@ -185,7 +183,7 @@ export default defineConfig({
 
 使用 [Vitest Workspaces](/guide/workspace) 在同一项目中运行不同的项目配置。你可以在`vitest.workspace`文件中定义工作区的文件和文件夹列表。该文件支持 `js` / `ts` / `json` 扩展名。此功能非常适合配合 monorepo 使用。
 
-```ts
+```ts [vitest.workspace.ts]
 import { defineWorkspace } from 'vitest/config'
 
 export default defineWorkspace([
@@ -220,7 +218,7 @@ export default defineWorkspace([
 在安装了 Vitest 的项目中，你可以在 npm 脚本中使用 `vitest` 脚本，或者直接使用 `npx vitest` 运行它。 以下是脚手架 Vitest 项目中的默认 npm 脚本：
 
 <!-- prettier-ignore -->
-```json
+```json [package.json]
 {
   "scripts": {
     "test": "vitest",

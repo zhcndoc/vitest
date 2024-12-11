@@ -14,7 +14,7 @@ Vitest 在默认情况下以多种方式运行测试：
 
 你可以通过指定文件路径来提供自己的池：
 
-```ts
+```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -27,11 +27,30 @@ export default defineConfig({
         customProperty: true,
       },
     },
-    // 还可以为文件子集指定池
-    poolMatchGlobs: [['**/*.custom.test.ts', './my-custom-pool.ts']],
   },
 })
 ```
+
+如果我们在不同 pools 中运行测试，可以使用 [workspace](/guide/workspace) 功能:
+
+```ts [vitest.config.ts]
+export default defineConfig({
+  test: {
+    workspace: [
+      {
+        extends: true,
+        test: {
+          pool: 'threads',
+        },
+      },
+    ],
+  },
+})
+```
+
+::: info
+workspace`字段是在 Vitest 3 中引入的。在 [Vitest 3 之前的版本](https://v2.vitest.dev/)中定义工作区，需要创建一个单独的 `vitest.workspace.ts` 文件。
+:::
 
 ## API
 
@@ -63,7 +82,7 @@ Vitest 会等到 `runTests` 执行完毕后才结束运行（即只有在 `runTe
 ```ts
 import { createBirpc } from 'birpc'
 import { parse, stringify } from 'flatted'
-import { createMethodsRPC, TestProject } from 'vitest/node'
+import { TestProject, createMethodsRPC } from 'vitest/node'
 
 function createRpc(project: TestProject, wss: WebSocketServer) {
   return createBirpc(

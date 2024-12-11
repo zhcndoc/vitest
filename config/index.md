@@ -4,19 +4,18 @@ outline: deep
 
 # 配置索引
 
-## 配置
+如果我们正在使用 Vite 并且拥有一个 `vite.config` 文件，Vitest 会读取它来匹配我们的 Vite 应用的插件和设置。如果我们想要为测试配置不同的设置，或者我们的并不特别依赖于 Vite，您我们可以选择：
 
-`vitest` 将读取你的项目根目录的 `vite.config.ts` 文件以匹配插件并设置为你的 Vite 应用。如果想使用不同的配置进行测试，你可以：
+- 创建 `vitest.config.ts`，它将具有更高的优先级，并且会**覆盖** `vite.config.ts` 中的配置（Vitest 支持所有传统的 JS 和 TS 文件扩展名，但不支持 `json`） - 这意味着我们在 `vite.config` 中的所有选项将被**忽略**。
+- 向 CLI 传递 `--config` 选项，例如 `vitest --config ./path/to/vitest.config.ts`。
+- 使用 `process.env.VITEST` 或在 `defineConfig` 上的 `mode` 属性（如果没有用 `--mode` 覆盖，默认设置为 `test`/`benchmark`）来在 `vite.config.ts` 中有条件地应用不同的配置。
 
-- 创建 `vitest.config.ts`，优先级更高。
-- 将 `--config` 选项传递给 CLI，例如 `vitest --config ./path/to/vitest.config.ts` 。
-- 在 `defineConfig` 中使用 `process.env.VITEST` 或 `mode` 属性（默认值是 `test`）在 `vite.config.ts` 中有条件的应用不同的配置。
+要配置 Vitest 本身，请在我们的 Vite 配置中添加 `test` 属性。如果您是从 `vite` 本身导入 `defineConfig`，我们还需要在配置文件顶部使用[三斜杠指令](https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html#-reference-types-)添加对 Vitest 类型引用。
 
-要配置 `vitest` 本身，请在你的 Vite 配置中添加 `test` 属性。如果你使用 `vite` 的 `defineConfig` 你还需要将 [三斜线指令](https://www.tslang.cn/docs/handbook/triple-slash-directives.html#-reference-types-) 写在配置文件的顶部。
+::: details Open Config Examples
+使用 `vite` 中的 `defineConfig` 时使用以下步骤：
 
-使用 `vite` 的 `defineConfig` 可以参考下面的格式：
-
-```ts
+```ts [vite.config.js]
 /// <reference types="vitest" />
 import { defineConfig } from 'vite'
 
@@ -27,9 +26,22 @@ export default defineConfig({
 })
 ```
 
-使用 `vitest/config` 中的 `defineConfig` 可以参考下面的格式：
+`<reference types="vitest" />` 将在 Vitest 4 中停止工作，但我们已经可以开始迁移到 `vitest/config`：
 
-```ts
+```ts [vite.config.js]
+/// <reference types="vitest/config" />
+import { defineConfig } from 'vite'
+
+export default defineConfig({
+  test: {
+    // ... Specify options here.
+  },
+})
+```
+
+使用 `vitest/config` 中的 `defineConfig` 时应遵循以下步骤：
+
+```ts [vitest.config.js]
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -39,9 +51,9 @@ export default defineConfig({
 })
 ```
 
-如果有需要，你可以获取到 Vitest 的默认选项以扩展它们：
+我们可以检索 Vitest 的默认选项，以便在需要时扩展它们：
 
-```ts
+```ts [vitest.config.js]
 import { configDefaults, defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -51,54 +63,40 @@ export default defineConfig({
 })
 ```
 
-## 选项
+当使用单独的 `vitest.config.js` 时，我们还可以根据需要从另一个配置文件扩展 Vite 的选项：
 
-当使用单独的 `vitest.config.js` 时，如果需要，你还可以从另一个配置文件扩展 Vite 的选项：
-
-```ts
+```ts [vitest.config.js]
 import { defineConfig, mergeConfig } from 'vitest/config'
 import viteConfig from './vite.config'
 
-export default mergeConfig(
-  viteConfig,
+export default mergeConfig(viteConfig, defineConfig({
+  test: {
+    exclude: ['packages/template/*'],
+  },
+}))
+```
+
+如果我们的 Vite 配置定义为一个函数，我们可以像这样定义配置：
+
+```ts [vitest.config.js]
+import { defineConfig, mergeConfig } from 'vitest/config'
+import viteConfig from './vite.config'
+
+export default defineConfig(configEnv => mergeConfig(
+  viteConfig(configEnv),
   defineConfig({
     test: {
       exclude: ['packages/template/*'],
     },
   })
-)
+))
 ```
-
-::: warning
-`mergeConfig` helper 在 Vitest v0.30.0 之后可用。如果使用低版本，你可以直接从 `vite` 导入它。
 :::
 
-如果你的 vite 配置被定义为一个函数，可以像这样定义配置：
+::: warning
+本页上列出的 _所有选项_ 都位于配置内的 `test` 属性内：
 
-```ts
-import { defineConfig, mergeConfig } from 'vitest/config'
-import viteConfig from './vite.config'
-
-export default defineConfig(configEnv =>
-  mergeConfig(
-    viteConfig(configEnv),
-    defineConfig({
-      test: {
-        exclude: ['packages/template/*'],
-      },
-    })
-  )
-)
-```
-
-## 配置选项
-
-:::tip
-除了以下选项，你还可以使用 [Vite](https://vitejs.dev/config/) 中的任何配置选项。 例如，`define` 定义全局变量，或 `resolve.alias` 定义别名。
-
-*此处列出的*所有选项都位于配置中的 `test` 属性上：
-
-```ts
+```ts [vitest.config.js]
 export default defineConfig({
   test: {
     exclude: [],
@@ -106,10 +104,9 @@ export default defineConfig({
 })
 ```
 
-:::
+由于 Vitest 使用 Vite 的配置，我们也可以使用 [Vite](https://vitejs.dev/config/) 中的任何配置选项。例如，使用 `define` 来定义全局变量，或者使用 `resolve.alias` 来定义别名——这些选项应该在顶级定义，而不是在 `test` 属性内部。
 
-::: tip
-所有不支持在 [workspace](/guide/workspace) 项目配置中的配置选项都会有 <NonProjectOption /> 标记。
+不支持在[工作区](/guide/workspace)项目配置中的配置选项旁边会有 <NonProjectOption /> 标志。
 :::
 
 ### include
@@ -443,7 +440,6 @@ Vitest 使用 Vite SSR 基元来运行测试，这有[一定的缺陷](https://v
 默认情况下，`vitest` 不显式提供全局 API。如果你更倾向于使用类似 jest 中的全局 API，可以将 `--globals` 选项传递给 CLI 或在配置中添加 `globals: true`。
 
 ```ts
-// vitest.config.ts
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -455,8 +451,7 @@ export default defineConfig({
 
 为了可以让全局 API 支持 TypeScript，请将 `vitest/globals` 添加到 `tsconfig.json` 中的 `types` 选项中
 
-```json
-// tsconfig.json
+```json [tsconfig.json]
 {
   "compilerOptions": {
     "types": ["vitest/globals"]
@@ -466,8 +461,7 @@ export default defineConfig({
 
 如果你已经在项目中使用 [`unplugin-auto-import`](https://github.com/antfu/unplugin-auto-import)，你也可以直接用它来自动导入这些 API。
 
-```ts
-// vitest.config.ts
+```ts [vitest.config.js]
 import { defineConfig } from 'vitest/config'
 import AutoImport from 'unplugin-auto-import/vite'
 
@@ -537,7 +531,7 @@ test('use jsdom in this test file', () => {
 
 从 0.23.0 开始，你还可以定义自定义环境。 当使用非内置环境时，Vitest 将尝试加载包 `vitest-environment-${name}`。 该包应导出一个具有 `Environment` 属性的对象：
 
-```ts
+```ts [environment.js]
 import type { Environment } from 'vitest'
 
 export default <Environment>{
@@ -559,7 +553,7 @@ Vitest 还通过 `vitest/environments` 入口导出 `builtinEnvironments`，以�
 ::: tip
 jsdom 环境变量导出了等同于当前[JSDOM](https://github.com/jsdom/jsdom) 的 `jsdom` 全局变量实例。如果你想让 TypeScript 识别它，可以在使用此环境时将 `vitest/jsdom`添加到 `tsconfig.json` 中：
 
-```json
+```json [tsconfig.json]
 {
   "compilerOptions": {
     "types": ["vitest/jsdom"]
@@ -580,6 +574,28 @@ jsdom 环境变量导出了等同于当前[JSDOM](https://github.com/jsdom/jsdom
 
 - **类型:** `[string, EnvironmentName][]`
 - **默认值:** `[]`
+
+::: danger DEPRECATED
+此 API 在 Vitest 3 中已弃用。请使用 [workspace](/guide/workspace) 来定义不同的配置。
+
+```ts
+export default defineConfig({
+  test: {
+    environmentMatchGlobs: [ // [!code --]
+      ['./*.jsdom.test.ts', 'jsdom'], // [!code --]
+    ], // [!code --]
+    workspace: [ // [!code ++]
+      { // [!code ++]
+        extends: true, // [!code ++]
+        test: { // [!code ++]
+          environment: 'jsdom', // [!code ++]
+        }, // [!code ++]
+      }, // [!code ++]
+    ], // [!code ++]
+  },
+})
+```
+:::
 
 基于 globs 自动匹配执行环境。将使用第一个匹配项。
 
@@ -605,6 +621,28 @@ export default defineConfig({
 
 - **类型:** `[string, 'threads' | 'forks' | 'vmThreads' | 'vmForks' | 'typescript'][]`
 - **默认值:** `[]`
+
+::: danger DEPRECATED
+此 API 在 Vitest 3 中已被弃用。请使用 [workspace](/guide/workspace) 来定义不同的配置：
+
+```ts
+export default defineConfig({
+  test: {
+    poolMatchGlobs: [ // [!code --]
+      ['./*.threads.test.ts', 'threads'], // [!code --]
+    ], // [!code --]
+    workspace: [ // [!code ++]
+      { // [!code ++]
+        test: { // [!code ++]
+          extends: true, // [!code ++]
+          pool: 'threads', // [!code ++]
+        }, // [!code ++]
+      }, // [!code ++]
+    ], // [!code ++]
+  },
+})
+```
+:::
 
 基于 globs 模式来匹配运行池中的测试并运行，将使用第一个匹配项。
 
@@ -1108,7 +1146,7 @@ export default defineConfig({
   },
 })
 ```
-```ts [my.test.js]
+```ts [api.test.js]
 import { expect, inject, test } from 'vitest'
 
 test('api key is defined', () => {
@@ -1124,9 +1162,7 @@ test('api key is defined', () => {
 ::: tip
 如果使用的是 TypeScript，则需要增强 `ProvidedContext` 类型，以实现类型安全访问：
 
-```ts
-// vitest.shims.d.ts
-
+```ts [vitest.shims.d.ts]
 declare module 'vitest' {
   export interface ProvidedContext {
     API_KEY: string
@@ -1156,10 +1192,22 @@ export {}
 请注意，全局设置在不同的全局范围内运行，因此你的测试无法访问此处定义的变量。悬停，从 1.0.0 开始，你可以通过 [`provide`](#provide) 方法将可序列化数据传递给测试：
 
 :::code-group
+```ts [example.test.js]
+import { inject } from 'vitest'
 
-```js [globalSetup.js]
-export default function setup(project) {
+inject('wsPort') === 3000
+```
+```ts [globalSetup.ts <Version>3.0.0</Version>]
+import type { TestProject } from 'vitest/node'
+
+export default function setup(project: TestProject) {
   project.provide('wsPort', 3000)
+}
+
+declare module 'vitest' {
+  export interface ProvidedContext {
+    wsPort: number
+  }
 }
 ```
 ```ts [globalSetup.ts <Version>2.0.0</Version>]
@@ -1175,30 +1223,10 @@ declare module 'vitest' {
   }
 }
 ```
-```ts [globalSetup.ts <Version>2.2.0</Version>]
-import type { TestProject } from 'vitest/node'
-
-export default function setup(project: TestProject) {
-  project.provide('wsPort', 3000)
-}
-
-declare module 'vitest' {
-  export interface ProvidedContext {
-    wsPort: number
-  }
-}
-```
-```ts [example.test.js]
-import { inject } from 'vitest'
-
-inject('wsPort') === 3000
-```
-
 :::
+自 Vitest  3起，我们可以定义一个自定义回调函数，在 Vitest 重新运行测试时被调用。如果该函数是异步的，运行器将在执行测试前等待其完成。请注意，您不能像 `{ onTestsRerun }` 那样解构 `project` ，因为它依赖于上下文环境。
 
-自 Vitest 2.2.0 起，可以定义一个自定义回调函数，在 Vitest 重新运行测试时被调用。如果该函数是异步的，测试运行器将等待其完成后再执行测试。请注意，我们不能像 `{ onTestsRerun }` 那样解构 `project` ，因为它依赖于上下文。
-
-```ts
+```ts [globalSetup.ts]
 import type { TestProject } from 'vitest/node'
 
 export default function setup(project: TestProject) {
@@ -1736,7 +1764,7 @@ test('doNotRun', () => {
 - **默认值:** `false`
 - **命令行终端:** `--browser`, `--browser.enabled=false`
 
-默认情况下在浏览器中运行所有测试。可以用 [`poolMatchGlobs`](#poolmatchglobs) 选项覆盖。
+默认在浏览器内运行所有测试。
 
 #### browser&#46;name
 
@@ -1765,11 +1793,10 @@ test('doNotRun', () => {
 
 在单独的 iframe 中运行每个测试。
 
-#### browser.testerHtmlPath
+#### browser.testerHtmlPath <Version>2.1.4</Version> {#browser-testerhtmlpath}
 
 - **Type:** `string`
 - **Default:** `@vitest/browser/tester.html`
-- **Version:** Since Vitest 2.1.4
 
 A path to the HTML entry point. Can be relative to the root of the project. This file will be processed with [`transformIndexHtml`](https://vite.dev/guide/api-plugin#transformindexhtml) hook.
 
@@ -1813,6 +1840,8 @@ export interface BrowserProvider {
 调用 `provider.initialize` 时将传递给提供程序的选项。
 
 ```ts
+import { defineConfig } from 'vitest/config'
+
 export default defineConfig({
   test: {
     browser: {
@@ -1827,7 +1856,7 @@ export default defineConfig({
 ```
 
 ::: tip
-为了在使用内置提供者时获得更好的类型安全性，我们应该在[配置文件](/config/file)中引用这些类型之一（针对所使用的提供）：
+为了在使用内置提供程序时获得更好的类型安全性，我们应该在 [config 文件](/config/) 中引用以下类型之一（对于我们正在使用的提供程序）：
 
 ```ts
 /// <reference types="@vitest/browser/providers/playwright" />
@@ -1937,21 +1966,24 @@ export interface BrowserScript {
 - **类型:** `boolean`
 - **默认值:** `false`
 
-是否在每次测试前对所有监听(Spy)调用 [`.mockClear()`](/api/mock#mockclear)。这将清除模拟历史记录，但不会将其实现重置为默认值。
+每次测试前，都会对所有 spies 调用 [`.mockClear()`](/api/mock#mockclear)。
+这将清除模拟历史记录，而不会影响模拟实现。
 
 ### mockReset
 
 - **类型:** `boolean`
 - **默认值:** `false`
 
-是否在每次测试之前对所有监听(Spy)调用 [`.mockReset()`](/api/mock#mockreset)。 这将清除模拟历史并将其实现重置为空函数（将返回`undefined`）。
+每次测试前，都会对所有 spies 调用 [`.mockReset()`](/api/mock#mockreset)。
+这将清除模拟历史记录，并将每个实现重置为原始状态。
 
 ### restoreMocks
 
 - **类型:** `boolean`
 - **默认值:** `false`
 
-是否在每次测试之前对所有监听(Spy)调用 [`.mockRestore()`](/api/#mockrestore)。 这将清除模拟历史并将其实现重置为原始历史。
+每次测试前，都会对所有 spies 调用 [`.mockRestore()`](/api/mock#mockrestore)。
+这将清除模拟历史记录，将每个实现恢复为原始实现，并恢复被监视对象的原始描述符。
 
 ### unstubEnvs {#unstubenvs}
 
@@ -2431,8 +2463,7 @@ export default defineConfig({
 
 例如，作为一个配置对象：
 
-:::code-group
-```ts [vitest.config.js]
+```ts
 import { defineConfig } from 'vitest/config'
 import c from 'picocolors'
 
@@ -2442,11 +2473,10 @@ export default defineConfig({
       aIndicator: c.bold('--'),
       bIndicator: c.bold('++'),
       omitAnnotationLines: true,
-    }
-  }
+    },
+  },
 })
 ```
-:::
 
 Or as a module:
 
@@ -2528,7 +2558,7 @@ Print basic prototype `Object` and `Array` in diff output
 #### fakeTimers.toFake
 
 - **类型:** `('setTimeout' | 'clearTimeout' | 'setImmediate' | 'clearImmediate' | 'setInterval' | 'clearInterval' | 'Date' | 'nextTick' | 'hrtime' | 'requestAnimationFrame' | 'cancelAnimationFrame' | 'requestIdleCallback' | 'cancelIdleCallback' | 'performance' | 'queueMicrotask')[]`
-- **默认值:** `['setTimeout', 'clearTimeout', 'setImmediate', 'clearImmediate', 'setInterval', 'clearInterval', 'Date']`
+- **默认值:** everything available globally except `nextTick`
 
 包含要伪造的全局方法和 API 名称的数组。
 
@@ -2572,7 +2602,7 @@ Print basic prototype `Object` and `Array` in diff output
 
 相对于[root](#root) 的 [workspace](/guide/workspace) 配置文件的路径。
 
-Since Vitest 2.2, you can also define the workspace array in the root config. If the `workspace` is defined in the config manually, Vitest will ignore the `vitest.workspace` file in the root.
+Since Vitest 3, you can also define the workspace array in the root config. If the `workspace` is defined in the config manually, Vitest will ignore the `vitest.workspace` file in the root.
 
 ### isolate
 
