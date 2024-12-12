@@ -19,6 +19,31 @@ vitest foobar
 
 将仅运行路径中包含 `foobar` 的测试文件。 此过滤器仅检查包含，不支持正则表达式或 glob 模式（除非你的终端在 Vitest 接收过滤器之前对其进行处理）。
 
+Since Vitest 3, you can also specify the test by filename and line number:
+
+```bash
+$ vitest basic/foo.test.ts:10
+```
+
+::: warning
+Note that Vitest requires the full filename for this feature to work. It can be relative to the current working directory or an absolute file path.
+
+```bash
+$ vitest basic/foo.js:10 # ✅
+$ vitest ./basic/foo.js:10 # ✅
+$ vitest /users/project/basic/foo.js:10 # ✅
+$ vitest foo:10 # ❌
+$ vitest ./basic/foo:10 # ❌
+```
+
+At the moment Vitest also doesn't support ranges:
+
+```bash
+$ vitest basic/foo.test.ts:10, basic/foo.test.ts:25 # ✅
+$ vitest basic/foo.test.ts:10-25 # ❌
+```
+:::
+
 ### `vitest run`
 
 在没有监听模式的情况下执行单次运行。

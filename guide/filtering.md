@@ -31,11 +31,21 @@ $ vitest basic/foo.test.ts:10
 ```
 
 ::: warning
-请注意，我们需要提供完整的文件名，并指明确切的行号，也就是说，我们不能简单地进行如下操作：
+请注意，Vitest 需要完整的文件名才能使此功能正常工作。文件名可以是相对于当前工作目录的路径，也可以是绝对文件路径。
 
 ```bash
-$ vitest foo:10
-$ vitest basic/foo.test.ts:10-25
+$ vitest basic/foo.js:10 # ✅
+$ vitest ./basic/foo.js:10 # ✅
+$ vitest /users/project/basic/foo.js:10 # ✅
+$ vitest foo:10 # ❌
+$ vitest ./basic/foo:10 # ❌
+```
+
+At the moment Vitest also doesn't support ranges:
+
+```bash
+$ vitest basic/foo.test.ts:10, basic/foo.test.ts:25 # ✅
+$ vitest basic/foo.test.ts:10-25 # ❌
 ```
 :::
 

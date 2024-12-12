@@ -1,7 +1,7 @@
 # Custom Pool
 
 ::: warning
-这是高级 API。如果你只想要[运行测试](/guide/)，你可能不需要这个。它主要被库的作者使用。
+这是一个高级且非常底层的 API。如果你只是想 [运行测试](/guide/)，你可能不需要这个。它主要由库作者使用。
 :::
 
 Vitest 在默认情况下以多种方式运行测试：
@@ -49,7 +49,7 @@ export default defineConfig({
 ```
 
 ::: info
-workspace`字段是在 Vitest 3 中引入的。在 [Vitest 3 之前的版本](https://v2.vitest.dev/)中定义工作区，需要创建一个单独的 `vitest.workspace.ts` 文件。
+`workspace` 字段是在 Vitest 3 中引入的。在 [Vitest 2](https://v2.vitest.dev/) 中定义工作区，需要创建一个单独的 `vitest.workspace.ts` 文件。
 :::
 
 ## API
@@ -57,7 +57,7 @@ workspace`字段是在 Vitest 3 中引入的。在 [Vitest 3 之前的版本](ht
 在 `pool` 选项中指定的文件应该导出一个函数（可以是异步的），该函数接受 `Vitest` 接口作为其第一个选项。这个函数需要返回一个与 `ProcessPool` 接口匹配的对象：
 
 ```ts
-import { ProcessPool, TestSpecification } from 'vitest/node'
+import type { ProcessPool, TestSpecification } from 'vitest/node'
 
 export interface ProcessPool {
   name: string
@@ -69,9 +69,9 @@ export interface ProcessPool {
 
 这个函数只会被调用一次（除非服务器配置被更新），通常最好在这个函数内初始化测试所需的一切，并在调用 `runTests` 时重复使用它。
 
-Vitest 在安排运行新测试时调用 `runTest`。如果 `files` 为空，将不会调用它。第一个参数是一个元组数组：第一个元素是对工作区项目的引用，第二个元素是测试文件的绝对路径。在调用 `runTests` 之前，文件将使用 [`sequencer`](/config/#sequence.sequencer) 进行排序。可能（但不太可能）会有相同的文件出现两次，但它们将始终属于不同的项目 - 这是通过 [`vitest.workspace.ts`](/guide/workspace) 配置实现的。
+Vitest 在安排运行新测试时调用 `runTest`。如果 `files` 为空，将不会调用它。第一个参数是一个 [TestSpecifications](/advanced/api/test-specification) 数组。在调用 `runTests` 之前，文件将使用 [`sequencer`](/config/#sequence-sequencer) 进行排序。可能（但不太可能）会有相同的文件出现两次，但它们将始终属于不同的项目 - 这是通过 [`vitest.workspace.ts`](/guide/workspace) 配置实现的。
 
-Vitest 会等到 `runTests` 执行完毕后才结束运行（即只有在 `runTests` 解决后才会触发 [`onFinished`](/guide/reporters)）。
+Vitest 会等到 `runTests` 执行完毕后才结束运行（即只有在 `runTests` 解决后才会触发 [`onFinished`](/advanced/reporters)）。
 
 如果你正在使用自定义池，需要自行提供测试文件及其结果 - 可以参考 [`vitest.state`](https://github.com/vitest-dev/vitest/blob/main/packages/vitest/src/node/state.ts)（最重要的是 `collectFiles` 和 `updateTasks`）。Vitest 使用 `@vitest/runner` 包中的 `startTests` 函数来执行这些操作。
 
@@ -97,16 +97,4 @@ function createRpc(project: TestProject, wss: WebSocketServer) {
 }
 ```
 
-为了确保收集每个测试，你可以调用 `ctx.state.collectFiles` 并将其交给 Vitest 报告器：
-
-```ts
-async function runTests(project: TestProject, tests: string[]) {
-  // ... running tests, put into "files" and "tasks"
-  const methods = createMethodsRPC(project)
-  await methods.onCollected(files)
-  // 大多数报告都依赖于在 `onTaskUpdate` 中更新结果
-  await methods.onTaskUpdate(tasks)
-}
-```
-
-可以在 [pool/custom-pool.ts](https://github.com/vitest-dev/vitest/blob/main/test/run/pool-custom-fixtures/pool/custom-pool.ts) 中看到一个简单的示例。
+你可以查看一个从头开始制作的简单池示例，该池不运行测试，而是将它们标记为已收集：[pool/custom-pool.ts](https://github.com/vitest-dev/vitest/blob/main/test/cli/fixtures/custom-pool/pool/custom-pool.ts)。
