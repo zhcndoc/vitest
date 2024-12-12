@@ -60,7 +60,7 @@ export default ({ mode }: { mode: string }) => {
           {
             name: 'author',
             content: `${teamMembers
-              .map((c) => c.name)
+              .map(c => c.name)
               .join(', ')} and ${vitestName} contributors`,
           },
         ],
@@ -85,7 +85,7 @@ export default ({ mode }: { mode: string }) => {
           {
             rel: 'preload',
             as: 'style',
-            onload: "this.onload=null;this.rel='stylesheet'",
+            onload: 'this.onload=null;this.rel=\'stylesheet\'',
             href: font,
           },
         ],
@@ -109,14 +109,14 @@ export default ({ mode }: { mode: string }) => {
         plugins: [
           groupIconVitePlugin({
             customIcon: {
-              CLI: 'vscode-icons:file-type-shell',
+              "CLI": 'vscode-icons:file-type-shell',
               'vitest.workspace': 'vscode-icons:file-type-vitest',
               'vitest.config': 'vscode-icons:file-type-vitest',
               '.spec.ts': 'vscode-icons:file-type-testts',
               '.test.ts': 'vscode-icons:file-type-testts',
               '.spec.js': 'vscode-icons:file-type-testjs',
               '.test.js': 'vscode-icons:file-type-testjs',
-              marko: 'vscode-icons:file-type-marko',
+              "marko": 'vscode-icons:file-type-marko',
             },
           }),
         ],
@@ -305,7 +305,7 @@ export default ({ mode }: { mode: string }) => {
             },
             {
               items: [
-                ...footer(),
+                ...footer().items,
                 {
                   text: 'Node API Reference',
                   link: '/advanced/api/',
