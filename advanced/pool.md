@@ -1,11 +1,7 @@
 # Custom Pool
 
 ::: warning
-<<<<<<< HEAD
-这是高级 API。如果你只想要[运行测试](/guide/)，你可能不需要这个。它主要被库的作者使用。
-=======
-This is an advanced and very low-level API. If you just want to [run tests](/guide/), you probably don't need this. It is primarily used by library authors.
->>>>>>> 3158871632d11ca43bea7c2f8c72bc95feac15cb
+这是一个高级且非常底层的 API。如果你只是想 [运行测试](/guide/)，你可能不需要这个。它主要由库作者使用。
 :::
 
 Vitest 在默认情况下以多种方式运行测试：
@@ -53,11 +49,7 @@ export default defineConfig({
 ```
 
 ::: info
-<<<<<<< HEAD
-workspace`字段是在 Vitest 3 中引入的。在 [Vitest 3 之前的版本](https://v2.vitest.dev/)中定义工作区，需要创建一个单独的 `vitest.workspace.ts` 文件。
-=======
-The `workspace` field was introduced in Vitest 3. To define a workspace in [Vitest 2](https://v2.vitest.dev/), create a separate `vitest.workspace.ts` file.
->>>>>>> 3158871632d11ca43bea7c2f8c72bc95feac15cb
+`workspace` 字段是在 Vitest 3 中引入的。在 [Vitest 2](https://v2.vitest.dev/) 中定义工作区，需要创建一个单独的 `vitest.workspace.ts` 文件。
 :::
 
 ## API
@@ -77,15 +69,9 @@ export interface ProcessPool {
 
 这个函数只会被调用一次（除非服务器配置被更新），通常最好在这个函数内初始化测试所需的一切，并在调用 `runTests` 时重复使用它。
 
-<<<<<<< HEAD
-Vitest 在安排运行新测试时调用 `runTest`。如果 `files` 为空，将不会调用它。第一个参数是一个元组数组：第一个元素是对工作区项目的引用，第二个元素是测试文件的绝对路径。在调用 `runTests` 之前，文件将使用 [`sequencer`](/config/#sequence.sequencer) 进行排序。可能（但不太可能）会有相同的文件出现两次，但它们将始终属于不同的项目 - 这是通过 [`vitest.workspace.ts`](/guide/workspace) 配置实现的。
+Vitest 在安排运行新测试时调用 `runTest`。如果 `files` 为空，将不会调用它。第一个参数是一个 [TestSpecifications](/advanced/api/test-specification) 数组。在调用 `runTests` 之前，文件将使用 [`sequencer`](/config/#sequence-sequencer) 进行排序。可能（但不太可能）会有相同的文件出现两次，但它们将始终属于不同的项目 - 这是通过 [`vitest.workspace.ts`](/guide/workspace) 配置实现的。
 
-Vitest 会等到 `runTests` 执行完毕后才结束运行（即只有在 `runTests` 解决后才会触发 [`onFinished`](/guide/reporters)）。
-=======
-Vitest calls `runTest` when new tests are scheduled to run. It will not call it if `files` is empty. The first argument is an array of [TestSpecifications](/advanced/api/test-specification). Files are sorted using [`sequencer`](/config/#sequence-sequencer) before `runTests` is called. It's possible (but unlikely) to have the same file twice, but it will always have a different project - this is implemented via [`vitest.workspace.ts`](/guide/workspace) configuration.
-
-Vitest will wait until `runTests` is executed before finishing a run (i.e., it will emit [`onFinished`](/advanced/reporters) only after `runTests` is resolved).
->>>>>>> 3158871632d11ca43bea7c2f8c72bc95feac15cb
+Vitest 会等到 `runTests` 执行完毕后才结束运行（即只有在 `runTests` 解决后才会触发 [`onFinished`](/advanced/reporters)）。
 
 如果你正在使用自定义池，需要自行提供测试文件及其结果 - 可以参考 [`vitest.state`](https://github.com/vitest-dev/vitest/blob/main/packages/vitest/src/node/state.ts)（最重要的是 `collectFiles` 和 `updateTasks`）。Vitest 使用 `@vitest/runner` 包中的 `startTests` 函数来执行这些操作。
 
@@ -111,20 +97,4 @@ function createRpc(project: TestProject, wss: WebSocketServer) {
 }
 ```
 
-<<<<<<< HEAD
-为了确保收集每个测试，你可以调用 `ctx.state.collectFiles` 并将其交给 Vitest 报告器：
-
-```ts
-async function runTests(project: TestProject, tests: string[]) {
-  // ... running tests, put into "files" and "tasks"
-  const methods = createMethodsRPC(project)
-  await methods.onCollected(files)
-  // 大多数报告都依赖于在 `onTaskUpdate` 中更新结果
-  await methods.onTaskUpdate(tasks)
-}
-```
-
-可以在 [pool/custom-pool.ts](https://github.com/vitest-dev/vitest/blob/main/test/run/pool-custom-fixtures/pool/custom-pool.ts) 中看到一个简单的示例。
-=======
-You can see a simple example of a pool made from scratch that doesn't run tests but marks them as collected in [pool/custom-pool.ts](https://github.com/vitest-dev/vitest/blob/main/test/cli/fixtures/custom-pool/pool/custom-pool.ts).
->>>>>>> 3158871632d11ca43bea7c2f8c72bc95feac15cb
+你可以查看一个从头开始制作的简单池示例，该池不运行测试，而是将它们标记为已收集：[pool/custom-pool.ts](https://github.com/vitest-dev/vitest/blob/main/test/cli/fixtures/custom-pool/pool/custom-pool.ts)。
