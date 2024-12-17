@@ -136,6 +136,12 @@ export default defineConfig({
 
 当定义时，Vitest 将运行所有包含 `import.meta.vitest` 的匹配文件。
 
+### name
+
+- **Type:** `string`
+
+Assign a custom name to the test project or Vitest process. The name will be visible in the CLI and available in the Node.js API via [`project.name`](/advanced/api/test-project#name).
+
 ### server {#server}
 
 - **类型:** `{ sourcemap?, deps?, ... }`
@@ -2538,7 +2544,7 @@ Expand all common lines.
 #### diff.printBasicPrototype
 
 - **Type**: `boolean`
-- **Default**: `true`
+- **Default**: `false`
 
 Print basic prototype `Object` and `Array` in diff output
 

@@ -887,6 +887,13 @@ Annotation for truncated lines (default: `... Diff result is truncated`)
 
  始终打印控制台堆栈跟踪
 
+### includeTaskLocation
+
+- **CLI:** `--includeTaskLocation`
+- **Config:** [includeTaskLocation](/config/#includetasklocation)
+
+Collect test and suite locations in the `location` property
+
 ### run
 
 - **CLI:** `--run`

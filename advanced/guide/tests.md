@@ -25,15 +25,17 @@ const vitest = await startVitest(
 )
 const testModules = vitest.state.getTestModules()
 for (const testModule of testModules) {
-  console.log(testModule.moduleId, 'results', testModule.result())
+  console.log(testModule.moduleId, testModule.ok() ? 'passed' : 'failed')
 }
 ```
 
-::: tip 提示
-[`TestModule`](/advanced/reporters#TestModule), [`TestSuite`](/advanced/reporters#TestSuite) 和 [`TestCase`](/advanced/reporters#TestCase) API 不再是实验性的，从 Vitest 2.1 开始遵循 SemVer。
+::: tip
+[`TestModule`](/advanced/api/test-module), [`TestSuite`](/advanced/api/test-suite) 和 [`TestCase`](/advanced/api/test-case) API 从 Vitest 2.1 开始不再是实验性的，并且遵循 SemVer。
 :::
 
 ## `createVitest`
+
+创建一个 [Vitest](/advanced/api/vitest) 实例而不运行测试。
 
 `createVitest` 方法不会验证是否已安装所需的软件包。此方法也不遵循 `config.standalone` 或 `config.mergeReports`。即使 `watch` 被禁用，Vitest 也不会自动关闭。
 
@@ -55,15 +57,75 @@ vitest.onClose(() => {})
 vitest.onTestsRerun((files) => {})
 
 try {
-  // 如果测试执行失败，process.exitCode 将被设置为 1
+  // this will set process.exitCode to 1 if tests failed,
+  // and won't close the process automatically
   await vitest.start(['my-filter'])
 }
 catch (err) {
-  // 可能会抛出
-  // "FilesNotFoundError" 如果没有找到文件
-  // "GitNotFoundError" 如果启用了 `--changed` 并且存储库未初始化
+  // this can throw
+  // "FilesNotFoundError" if no files were found
+  // "GitNotFoundError" with `--changed` and repository is not initialized
 }
 finally {
   await vitest.close()
 }
+```
+
+如果你打算保留 `Vitest` 实例，请确保至少调用 [`init`](/advanced/api/vitest#init)。这将初始化报告器和覆盖率提供者，但不会运行任何测试。即使你不打算使用 Vitest 监视器，但希望保持实例运行，也建议启用 `watch` 模式。Vitest 依赖于这个标志，以确保某些功能在持续过程中正常工作。
+
+报告器初始化后，如果需要手动运行测试，可以使用 [`runTestSpecifications`](/advanced/api/vitest#runtestspecifications) 或 [`rerunTestSpecifications`](/advanced/api/vitest#reruntestspecifications) 来运行测试。
+
+```ts
+watcher.on('change', async (file) => {
+  const specifications = vitest.getModuleSpecifications(file)
+  if (specifications.length) {
+    vitest.invalidateFile(file)
+    // you can use runTestSpecifications if "reporter.onWatcher*" hooks
+    // should not be invoked
+    await vitest.rerunTestSpecifications(specifications)
+  }
+})
+```
+
+::: warning
+上述示例展示了如果你禁用默认监视器行为的一个潜在用例。默认情况下，Vitest 在文件发生变化时已经会重新运行测试。
+
+另外请注意，`getModuleSpecifications` 不会解析测试文件，除非这些文件已经通过 `globTestSpecifications` 处理过。如果文件刚刚创建，应使用 `project.matchesGlobPattern`：
+
+```ts
+watcher.on('add', async (file) => {
+  const specifications = []
+  for (const project of vitest.projects) {
+    if (project.matchesGlobPattern(file)) {
+      specifications.push(project.createSpecification(file))
+    }
+  }
+
+  if (specifications.length) {
+    await vitest.rerunTestSpecifications(specifications)
+  }
+})
+```
+:::
+
+如果你需要禁用监视器，可以从 Vite 5.3 开始传递 `server.watch: null`，或者在 Vite 配置中传递 `server.watch: { ignored: ['*/*'] }`：
+
+```ts
+await createVitest(
+  'test',
+  {},
+  {
+    plugins: [
+      {
+        name: 'stop-watcher',
+        async configureServer(server) {
+          await server.watcher.close()
+        }
+      }
+    ],
+    server: {
+      watch: null,
+    },
+  }
+)
 ```

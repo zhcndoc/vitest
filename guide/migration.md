@@ -5,7 +5,7 @@ outline: deep
 
 # 迁移指南
 
-## 迁移到 Vitest 3.0
+## 迁移到 Vitest 3.0 {#vitest-3}
 
 ### Test Options as a Third Argument
 
@@ -29,7 +29,7 @@ test('validation works', () => {
 }, 1000) // Ok ✅
 ```
 
-### `Custom` Type is Deprecated <Badge type="warning">experimental API</Badge> {#custom-type-is-deprecated}
+### `Custom` Type is Deprecated <Badge type="danger">API</Badge> {#custom-type-is-deprecated}
 
 `Custom` 类型现在等同于 `Test` 类型。需要注意一下，Vitest 在 2.1 版本中更新了公共类型，并将导出的名称更改为 `RunnerCustomCase` 和 `RunnerTestCase`。
 
@@ -42,11 +42,21 @@ import {
 
 如果我们正在使用 `getCurrentSuite().custom()`，返回的任务的 `type` 现在等于 `'test'`。`Custom` 类型将在 Vitest 4 中被移除。
 
+### The `WorkspaceSpec` Type is No Longer Used <Badge type="danger">API</Badge> {#the-workspacespec-type-is-no-longer-used}
+
+在公共 API 中，此类型之前用于自定义 [sequencers](/config/#sequence-sequencer)。请迁移到 [`TestSpecification`](/advanced/api/test-specification)。
+
 ### `onTestFinished` and `onTestFailed` Now Receive a Context
 
 [`onTestFinished`](/api/#ontestfinished) 和 [`onTestFailed`](/api/#ontestfailed) 钩子之前接收测试结果作为第一个参数。现在，它们像 `beforeEach` 和 `afterEach` 一样，接收一个测试上下文。
 
-## 迁移到 Vitest 2.0
+### Changes to `resolveConfig` Type Signature <Badge type="danger">API</Badge> {#changes-to-resolveconfig-type-signature}
+
+[`resolveConfig`](/advanced/api/#resolveconfig) 现在更加有用。它不再接受已经解析的 Vite 配置，而是接受用户配置并返回解析后的配置。
+
+此函数不用于内部，仅作为公共 API 暴露。
+
+## Migrating to Vitest 2.0 {#vitest-2}
 
 ### 默认数据池为 `forks`
 
@@ -329,7 +339,7 @@ export default defineConfig({
 
 但是，在使用 `--pool=forks` 时，无法模拟 `process.nextTick` 。如果需要模拟 `process.nextTick` ，请使用不同的 `--pool` 选项。
 
-## 从 Jest 迁移
+## 从 Jest 迁移 {#jest}
 
 Vitest 设计了与 Jest 兼容的 API ，方便你从 Jest 的迁移尽可能简单。尽管做出了这些努力，你仍然可能会遇到以下差异：
 
