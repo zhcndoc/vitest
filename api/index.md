@@ -152,7 +152,11 @@ test.skipIf(isDev)('prod only test', () => {
 ```
 
 ::: warning
+<<<<<<< HEAD
 在将 Vitest 用作[类型检查器](/guide/testing-types)时，不能使用此语法。
+=======
+You cannot use this syntax when using Vitest as [type checker](/guide/testing-types).
+>>>>>>> a237ba4370744b3e72a3043f6b2e9fb64902947d
 :::
 
 ### test.runIf
@@ -173,7 +177,11 @@ test.runIf(isDev)('dev only test', () => {
 ```
 
 ::: warning
+<<<<<<< HEAD
 在将 Vitest 用作[类型检查器](/guide/testing-types)时，不能使用此语法。
+=======
+You cannot use this syntax when using Vitest as [type checker](/guide/testing-types).
+>>>>>>> a237ba4370744b3e72a3043f6b2e9fb64902947d
 :::
 
 ### test.only
@@ -247,7 +255,11 @@ test.concurrent('test 2', async ({ expect }) => {
 ```
 
 ::: warning
+<<<<<<< HEAD
 在将 Vitest 用作[类型检查器](/guide/testing-types)时，不能使用此语法。
+=======
+You cannot use this syntax when using Vitest as [type checker](/guide/testing-types).
+>>>>>>> a237ba4370744b3e72a3043f6b2e9fb64902947d
 :::
 
 ### test.sequential
@@ -323,7 +335,11 @@ test.fails('fail test', async () => {
 ```
 
 ::: warning
+<<<<<<< HEAD
 在将 Vitest 用作[类型检查器](/guide/testing-types)时，不能使用此语法。
+=======
+You cannot use this syntax when using Vitest as [type checker](/guide/testing-types).
+>>>>>>> a237ba4370744b3e72a3043f6b2e9fb64902947d
 :::
 
 ### test.each
@@ -425,7 +441,11 @@ Vitest 使用 chai `format` 方法处理 `$values`。如果数值太短，可以
 :::
 
 ::: warning
+<<<<<<< HEAD
 在将 Vitest 用作[类型检查器](/guide/testing-types)时，不能使用此语法。
+=======
+You cannot use this syntax when using Vitest as [type checker](/guide/testing-types).
+>>>>>>> a237ba4370744b3e72a3043f6b2e9fb64902947d
 :::
 
 ### test.for
@@ -842,7 +862,11 @@ describe.runIf(isDev)('dev only test suite', () => {
 ```
 
 ::: warning
+<<<<<<< HEAD
 将 Vitest 用作[类型检查器](/guide/testing-types)时，你不能使用此语法。
+=======
+You cannot use this syntax when using Vitest as [type checker](/guide/testing-types).
+>>>>>>> a237ba4370744b3e72a3043f6b2e9fb64902947d
 :::
 
 ### describe.only
@@ -927,7 +951,11 @@ describe.concurrent('suite', () => {
 ```
 
 ::: warning
+<<<<<<< HEAD
 在将 Vitest 用作[类型检查器](/guide/testing-types)时，不能使用此语法。
+=======
+You cannot use this syntax when using Vitest as [type checker](/guide/testing-types).
+>>>>>>> a237ba4370744b3e72a3043f6b2e9fb64902947d
 :::
 
 ### describe.sequential
@@ -991,7 +1019,11 @@ describe.shuffle('suite', () => {
 `.skip`、`.only`和`.todo`适用于随机测试套件。
 
 ::: warning
+<<<<<<< HEAD
 在将 Vitest 用作[类型检查器](/guide/testing-types)时，不能使用此语法。
+=======
+You cannot use this syntax when using Vitest as [type checker](/guide/testing-types).
+>>>>>>> a237ba4370744b3e72a3043f6b2e9fb64902947d
 :::
 
 ### describe.todo
@@ -1056,7 +1088,11 @@ describe.each`
 ```
 
 ::: warning
+<<<<<<< HEAD
 在将 Vitest 用作[类型检查器](/guide/testing-types)时，不能使用此语法。
+=======
+You cannot use this syntax when using Vitest as [type checker](/guide/testing-types).
+>>>>>>> a237ba4370744b3e72a3043f6b2e9fb64902947d
 :::
 
 ## Setup and Teardown
