@@ -1488,7 +1488,26 @@ Vitest 会自动将测试文件的 `include` 模式添加到 `coverage.exclude` 
 
 #### coverage.thresholds
 
-覆盖范围阈值选项
+覆盖率阈值选项。
+
+如果将阈值设置为正数，则将其解释为所需的最小覆盖率百分比。例如，将行阈值设置为 `90` 意味着必须覆盖 90% 的行。
+
+如果将阈值设置为负数，则将其视为允许的最大未覆盖项数量。例如，将行阈值设置为 `-10` 意味着未覆盖的行数不得超过 10 行。
+
+<!-- eslint-skip -->
+```ts
+{
+  coverage: {
+    thresholds: {
+      // Requires 90% function coverage
+      functions: 90,
+
+      // Require that no more than 10 lines are uncovered
+      lines: -10,
+    }
+  }
+}
+```
 
 ##### coverage.thresholds.lines
 
@@ -1497,7 +1516,6 @@ Vitest 会自动将测试文件的 `include` 模式添加到 `coverage.exclude` 
 - **命令行终端:** `--coverage.thresholds.lines=<number>`
 
 lines 的全局阈值。
-更多信息请查看 [istanbul documentation](https://github.com/istanbuljs/nyc#coverage-thresholds)。
 
 ##### coverage.thresholds.functions
 
@@ -1506,7 +1524,6 @@ lines 的全局阈值。
 - **命令行终端:** `--coverage.thresholds.functions=<number>`
 
 functions 的全局阈值。
-更多信息请查看 [istanbul documentation](https://github.com/istanbuljs/nyc#coverage-thresholds)。
 
 ##### coverage.thresholds.branches
 
@@ -1515,7 +1532,6 @@ functions 的全局阈值。
 - **命令行终端:** `--coverage.thresholds.branches=<number>`
 
 branches 的全局阈值。
-更多信息请查看 [istanbul documentation](https://github.com/istanbuljs/nyc#coverage-thresholds)。
 
 ##### coverage.thresholds.statements
 
@@ -1524,7 +1540,6 @@ branches 的全局阈值。
 - **命令行终端:** `--coverage.thresholds.statements=<number>`
 
 statements 的全局阈值。
-更多信息请查看 [istanbul documentation](https://github.com/istanbuljs/nyc#coverage-thresholds)。
 
 ##### coverage.thresholds.perFile
 
@@ -1542,7 +1557,7 @@ statements 的全局阈值。
 - **可用的测试提供者:** `'v8' | 'istanbul'`
 - **命令行终端:** `--coverage.thresholds.autoUpdate=<boolean>`
 
-如果当前覆盖率高于配置的阈值时，将所有阈值 `lines` 、`functions` 、`branches` 和 `statements` 更新到配置文件中。
+如果当前覆盖率优于配置的阈值时，将所有阈值 `lines`、`functions`、`branches` 和 `statements` 更新到配置文件中。
 此选项有助于在覆盖率提高时保持阈值不变。
 
 ##### coverage.thresholds.100
@@ -1564,8 +1579,8 @@ statements 的全局阈值。
 设置与 glob 模式匹配的文件的阈值。
 
 ::: tip NOTE
-Vitest counts all files, including those covered by glob-patterns, into the global coverage thresholds.
-This is different from Jest behavior.
+Vitest 会将所有文件，包括那些被 glob 模式覆盖的文件，计入全局覆盖率阈值。
+这与 Jest 的行为不同。
 :::
 
 <!-- eslint-skip -->
