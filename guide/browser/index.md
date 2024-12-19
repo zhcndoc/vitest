@@ -8,7 +8,7 @@ outline: deep
 此页面提供有关 Vitest API 中实验性浏览器模式功能的信息，该功能允许你在浏览器中本地运行测试，提供对窗口和文档等浏览器全局变量的访问。此功能目前正在开发中，API 未来可能会更改。
 
 ::: tip
-If you are looking for documentation for `expect`, `vi` or any general API like workspaces or type testing, refer to the ["Getting Started" guide](/guide/).
+如果你正在寻找关于 `expect`、`vi` 或任何通用 API（如工作区或类型测试）的文档，请参阅 ["入门指南"](./guide/)。
 :::
 
 <img alt="Vitest UI" img-light src="/ui-browser-1-light.png">
@@ -206,8 +206,7 @@ import { defineWorkspace } from 'vitest/config'
 export default defineWorkspace([
   {
     test: {
-      // an example of file based convention,
-      // you don't have to follow it
+      // 文件约定的示例，你不必遵循它。
       include: [
         'tests/unit/**/*.{test,spec}.ts',
         'tests/**/*.unit.{test,spec}.ts',
@@ -218,8 +217,7 @@ export default defineWorkspace([
   },
   {
     test: {
-      // an example of file based convention,
-      // you don't have to follow it
+      // 文件约定的示例，你不必遵循它。
       include: [
         'tests/browser/**/*.{test,spec}.ts',
         'tests/**/*.browser.{test,spec}.ts',
@@ -409,14 +407,13 @@ import { render } from './my-render-function.js'
 test('properly handles form inputs', async () => {
   render() // mount DOM elements
 
-  // Asserts initial state.
+  // 断言初始状态。
   await expect.element(page.getByText('Hi, my name is Alice')).toBeInTheDocument()
 
-  // Get the input DOM node by querying the associated label.
+  // 通过查询关联的标签获取输入的 DOM 节点。
   const usernameInput = page.getByLabelText(/username/i)
 
-  // Type the name into the input. This already validates that the input
-  // is filled correctly, no need to check the value manually.
+  // 将名称输入到输入框中。这已经验证了输入框中的值是正确的，无需手动检查其值。
   await usernameInput.fill('Bob')
 
   await expect.element(page.getByText('Hi, my name is Bob')).toBeInTheDocument()
@@ -456,14 +453,13 @@ import Component from './Component.vue'
 test('properly handles v-model', async () => {
   const screen = render(Component)
 
-  // Asserts initial state.
+  // 断言初始状态。
   await expect.element(screen.getByText('Hi, my name is Alice')).toBeInTheDocument()
 
-  // Get the input DOM node by querying the associated label.
+  // 通过查询关联的标签获取输入的 DOM 节点。
   const usernameInput = screen.getByLabelText(/username/i)
 
-  // Type the name into the input. This already validates that the input
-  // is filled correctly, no need to check the value manually.
+  // 将名称输入到输入框中。这已经验证了输入框中的值是正确的，无需手动检查其值。
   await usernameInput.fill('Bob')
 
   await expect.element(screen.getByText('Hi, my name is Bob')).toBeInTheDocument()
@@ -490,14 +486,14 @@ import { render } from 'vitest-browser-react'
 import Fetch from './fetch'
 
 test('loads and displays greeting', async () => {
-  // Render a React element into the DOM
+  // 将一个 React 元素渲染到 DOM 中。
   const screen = render(<Fetch url="/greeting" />)
 
   await screen.getByText('Load Greeting').click()
-  // wait before throwing an error if it cannot find an element
+  // 如果找不到元素，则等待一段时间后再抛出错误。
   const heading = screen.getByRole('heading')
 
-  // assert that the alert message is correct
+  // 断言警告消息是正确的。
   await expect.element(heading).toHaveTextContent('hello there')
   await expect.element(screen.getByRole('button')).toBeDisabled()
 })
@@ -538,12 +534,11 @@ test('shows the children when the checkbox is checked', async () => {
 
   const screen = page.elementLocator(baseElement)
 
-  // .query() will return the element or null if it cannot be found.
-  // .element() will return the element or throw an error if it cannot be found.
+  // .query() 将返回找到的元素或在未找到时返回 null。
+  // .element() 会返回该元素，如果找不到该元素则会抛出错误。
   expect(screen.getByText(testMessage).query()).not.toBeInTheDocument()
 
-  // The queries can accept a regex to make your selectors more
-  // resilient to content tweaks and changes.
+  // 查询可以接受正则表达式，使选择器更能适应内容的调整和变化。
   await screen.getByLabelText(/show/i).click()
 
   await expect.element(screen.getByText(testMessage)).toBeInTheDocument()
