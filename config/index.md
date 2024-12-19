@@ -1557,8 +1557,8 @@ statements 的全局阈值。
 - **可用的测试提供者:** `'v8' | 'istanbul'`
 - **命令行终端:** `--coverage.thresholds.autoUpdate=<boolean>`
 
-当当前覆盖率优于配置的阈值时，将所有阈值 `lines`、`functions`、`branches` 和 `statements` 更新到配置文件中。
-此选项有助于在覆盖率提高时维护阈值。
+如果当前覆盖率优于配置的阈值时，将所有阈值 `lines`、`functions`、`branches` 和 `statements` 更新到配置文件中。
+此选项有助于在覆盖率提高时保持阈值不变。
 
 ##### coverage.thresholds.100
 
