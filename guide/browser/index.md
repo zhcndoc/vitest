@@ -206,7 +206,8 @@ import { defineWorkspace } from 'vitest/config'
 export default defineWorkspace([
   {
     test: {
-      // 文件约定的示例，你不必遵循它。
+      // 文件约定的示例，
+      // 你不必遵循它。
       include: [
         'tests/unit/**/*.{test,spec}.ts',
         'tests/**/*.unit.{test,spec}.ts',
@@ -217,7 +218,8 @@ export default defineWorkspace([
   },
   {
     test: {
-      // 文件约定的示例，你不必遵循它。
+      // 文件约定的示例，
+      // 你不必遵循它。
       include: [
         'tests/browser/**/*.{test,spec}.ts',
         'tests/**/*.browser.{test,spec}.ts',
@@ -413,7 +415,8 @@ test('properly handles form inputs', async () => {
   // 通过查询关联的标签获取输入的 DOM 节点。
   const usernameInput = page.getByLabelText(/username/i)
 
-  // 将名称输入到输入框中。这已经验证了输入框中的值是正确的，无需手动检查其值。
+  // 将名称输入到输入框中。
+  // 这已经验证了输入框中的值是正确的，无需手动检查其值。
   await usernameInput.fill('Bob')
 
   await expect.element(page.getByText('Hi, my name is Bob')).toBeInTheDocument()
@@ -459,7 +462,8 @@ test('properly handles v-model', async () => {
   // 通过查询关联的标签获取输入的 DOM 节点。
   const usernameInput = screen.getByLabelText(/username/i)
 
-  // 将名称输入到输入框中。这已经验证了输入框中的值是正确的，无需手动检查其值。
+  // 将名称输入到输入框中。
+  // 这已经验证了输入框中的值是正确的，无需手动检查其值。
   await usernameInput.fill('Bob')
 
   await expect.element(screen.getByText('Hi, my name is Bob')).toBeInTheDocument()
@@ -538,7 +542,8 @@ test('shows the children when the checkbox is checked', async () => {
   // .element() 会返回该元素，如果找不到该元素则会抛出错误。
   expect(screen.getByText(testMessage).query()).not.toBeInTheDocument()
 
-  // 查询可以接受正则表达式，使选择器更能适应内容的调整和变化。
+  // 查询可以接受正则表达式，
+  // 使选择器更能适应内容的调整和变化。
   await screen.getByLabelText(/show/i).click()
 
   await expect.element(screen.getByText(testMessage)).toBeInTheDocument()
