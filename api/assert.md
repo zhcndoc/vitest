@@ -1995,12 +1995,17 @@ Asserts that a `modifier` increases a numeric `object`'s `property` or a `modifi
 ```ts
 import { assert, test } from 'vitest'
 
-test('assert.increases', () => {
+test('assert.increasesBy', () => {
   const obj = { val: 10 }
+<<<<<<< HEAD
   function fn() {
     obj.val += 10
   }
   assert.increases(fn, obj, 'val', 10)
+=======
+  function fn() { obj.val += 10 };
+  assert.increasesBy(fn, obj, 'val', 10)
+>>>>>>> a67deffff50ad3a51a23476a5f6be4e3acca5c77
 })
 ```
 
