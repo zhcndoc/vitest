@@ -29,6 +29,31 @@ test('validation works', () => {
 }, 1000) // Ok ✅
 ```
 
+### `browser.name` 和 `browser.providerOptions` 已弃用
+
+[`browser.name`](/guide/browser/config#browser-name) 和 [`browser.providerOptions`](/guide/browser/config#browser-provideroptions) 都将在 Vitest 4 中删除。请使用新的 [`browser.instances`](/guide/browser/config#browser-instances) 选项来代替它们：
+
+```ts
+export default defineConfig({
+  test: {
+    browser: {
+      name: 'chromium', // [!code --]
+      providerOptions: { // [!code --]
+        launch: { devtools: true }, // [!code --]
+      }, // [!code --]
+      instances: [ // [!code ++]
+        { // [!code ++]
+          browser: 'chromium', // [!code ++]
+          launch: { devtools: true }, // [!code ++]
+        }, // [!code ++]
+      ], // [!code ++]
+    },
+  },
+})
+```
+
+使用新的 `browser.instances` 字段，我们还可以指定多个浏览器配置。
+
 ### `Custom` Type is Deprecated <Badge type="danger">API</Badge> {#custom-type-is-deprecated}
 
 `Custom` 类型现在等同于 `Test` 类型。需要注意一下，Vitest 在 2.1 版本中更新了公共类型，并将导出的名称更改为 `RunnerCustomCase` 和 `RunnerTestCase`。
