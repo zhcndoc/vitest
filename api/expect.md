@@ -312,9 +312,9 @@ test('getApplesCount has some unusual side effects...', () => {
 
 ## toBeOneOf
 
-- **Type:** `(sample: Array<any>) => any`
+- **类型:** `(sample: Array<any>) => any`
 
-`toBeOneOf` asserts if a value matches any of the values in the provided array.
+`toBeOneOf` 断言某个值是否与所提供数组中的任何值匹配。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -324,7 +324,7 @@ test('fruit is one of the allowed values', () => {
 })
 ```
 
-The asymmetric matcher is particularly useful when testing optional properties that could be either `null` or `undefined`:
+非对称匹配器在测试中为可能是 `null` 或 `undefined` 的可选属性时特别有用：
 
 ```ts
 test('optional properties can be null or undefined', () => {
@@ -343,7 +343,7 @@ test('optional properties can be null or undefined', () => {
 ```
 
 :::tip
-You can use `expect.not` with this matcher to ensure a value does NOT match any of the provided options.
+我们可以将 `expect.not` 与此 matcher 一起使用，以确保值与任何提供的选项不匹配。
 :::
 
 ## toBeTypeOf
