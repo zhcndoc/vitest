@@ -29,9 +29,9 @@ test('validation works', () => {
 }, 1000) // Ok ✅
 ```
 
-### `browser.name` and `browser.providerOptions` are Deprecated
+### `browser.name` 和 `browser.providerOptions` 已弃用
 
-Both [`browser.name`](/guide/browser/config#browser-name) and [`browser.providerOptions`](/guide/browser/config#browser-provideroptions) will be removed in Vitest 4. Instead of them, use the new [`browser.instances`](/guide/browser/config#browser-instances) option:
+[`browser.name`](/guide/browser/config#browser-name) 和 [`browser.providerOptions`](/guide/browser/config#browser-provideroptions) 都将在 Vitest 4 中删除。请使用新的 [`browser.instances`](/guide/browser/config#browser-instances) 选项来代替它们：
 
 ```ts
 export default defineConfig({
@@ -52,7 +52,7 @@ export default defineConfig({
 })
 ```
 
-With the new `browser.instances` field you can also specify multiple browser configurations.
+使用新的 `browser.instances` 字段，我们还可以指定多个浏览器配置。
 
 ### `Custom` Type is Deprecated <Badge type="danger">API</Badge> {#custom-type-is-deprecated}
 
