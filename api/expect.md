@@ -310,6 +310,42 @@ test('getApplesCount has some unusual side effects...', () => {
 })
 ```
 
+## toBeOneOf
+
+- **类型:** `(sample: Array<any>) => any`
+
+`toBeOneOf` 断言某个值是否与所提供数组中的任何值匹配。
+
+```ts
+import { expect, test } from 'vitest'
+
+test('fruit is one of the allowed values', () => {
+  expect(fruit).toBeOneOf(['apple', 'banana', 'orange'])
+})
+```
+
+非对称匹配器在测试中为可能是 `null` 或 `undefined` 的可选属性时特别有用：
+
+```ts
+test('optional properties can be null or undefined', () => {
+  const user = {
+    firstName: 'John',
+    middleName: undefined,
+    lastName: 'Doe'
+  }
+
+  expect(user).toEqual({
+    firstName: expect.any(String),
+    middleName: expect.toBeOneOf([expect.any(String), undefined]),
+    lastName: expect.any(String),
+  })
+})
+```
+
+:::tip
+我们可以将 `expect.not` 与此 matcher 一起使用，以确保值与任何提供的选项不匹配。
+:::
+
 ## toBeTypeOf
 
 - **类型:** `(c: 'bigint' | 'boolean' | 'function' | 'number' | 'object' | 'string' | 'symbol' | 'undefined') => Awaitable<void>`
