@@ -20,15 +20,10 @@ ndb npm run test
 ```
 
 :::tip
-<<<<<<< HEAD
-在调试测试时，你可能使用 `--test-timeout` CLI 参数来防止测试在断点处停止时超时。
-=======
-When debugging tests you might want to use following options:
+在调试测试时，你可能需要使用以下选项：
 
-- [`--test-timeout=0`](/guide/cli#testtimeout) to prevent tests from timing out when stopping at breakpoints
-- [`--no-file-parallelism`](/guide/cli#fileparallelism) to prevent test files from running parallel
-
->>>>>>> 19b0a4337b6dcae4c9e5f1792b087e8323194ec1
+- [`--test-timeout=0`](/guide/cli#testtimeout) 以防止测试在断点处停止时超时
+- [`--no-file-parallelism`](/guide/cli#fileparallelism) 以防止测试文件并行运行
 :::
 
 ## VS Code
