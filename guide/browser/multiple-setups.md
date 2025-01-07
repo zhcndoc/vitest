@@ -1,12 +1,12 @@
-# Multiple Setups
+# 多种设置
 
-Since Vitest 3, you can specify several different browser setups using the new [`browser.instances`](/guide/browser/config#browser-instances) option.
+自 Vitest 3 起，你可以使用新的 [`browser.instances`](/guide/browser/config#browser-instances) 选项来指定多个不同的浏览器设置。
 
-The main advatage of using the `browser.instances` over the [workspace](/guide/workspace) is improved caching. Every project will use the same Vite server meaning the file transform and [dependency pre-bundling](https://vite.dev/guide/dep-pre-bundling.html) has to happen only once.
+使用 `browser.instances` 的主要优势在于改进了缓存。每个项目将使用同一个 Vite 服务器，这意味着文件转换和[依赖预打包](https://vite.dev/guide/dep-pre-bundling.html)只需要进行一次。
 
-## Several Browsers
+## 多个浏览器
 
-You can use the `browser.instances` field to specify options for different browsers. For example, if you want to run the same tests in different browsers, the minimal configuration will look like this:
+你可以使用 `browser.instances` 字段来为不同的浏览器指定选项。例如，如果你想在不同的浏览器中运行相同的测试，最小配置将如下所示：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
@@ -26,9 +26,9 @@ export default defineConfig({
 })
 ```
 
-## Different Setups
+## 不同的设置
 
-You can also specify different config options independently from the browser (although, the instances _can_ also have `browser` fields):
+你还可以独立于浏览器指定不同的配置选项（尽管，实例也可以有 `browser` 字段）：
 
 ::: code-group
 ```ts [vitest.config.ts]
@@ -70,15 +70,15 @@ test('ratio works', () => {
 ```
 :::
 
-In this example Vitest will run all tests in `chromium` browser, but execute a `'./ratio-setup.ts'` file only in the first configuration and inject a different `ratio` value depending on the [`provide` field](/config/#provide).
+在这个例子中，Vitest 将在 `chromium` 浏览器中运行所有测试，但仅在第一个配置中执行 `'./ratio-setup.ts'` 文件，并根据 [`provide` 字段](/config/#provide) 注入不同的 `ratio` 值。
 
 ::: warning
-Note that you need to define the custom `name` value if you are using the same browser name because Vitest will assign the `browser` as the project name otherwise.
+请注意，如果你使用相同的浏览器名称，则需要定义自定义的 `name` 值，因为否则 Vitest 会将 `browser` 作为项目名称。
 :::
 
-## Filtering
+## 过滤
 
-You can filter what projects to run with the [`--project` flag](/guide/cli#project). Vitest will automatically assign the browser name as a project name if it is not assigned manually. If the root config already has a name, Vitest will merge them: `custom` -> `custom (browser)`.
+你可以使用 [`--project` 标志](/guide/cli#project) 来过滤要运行的项目。如果未手动分配项目名称，Vitest 会自动将浏览器名称作为项目名称。如果根配置已经有一个名称，Vitest 会将它们合并：`custom` -> `custom (browser)`。
 
 ```shell
 $ vitest --project=chromium
@@ -117,7 +117,7 @@ export default defineConfig({
 :::
 
 ::: warning
-Vitest cannot run multiple instances that have `headless` mode set to `false` (the default behaviour). During development, you can select what project to run in your terminal:
+Vitest 无法运行多个将 `headless` 模式设置为 `false`（默认行为）的实例。在开发过程中，你可以在终端中选择要运行的项目：
 
 ```shell
 ? Found multiple projects that run browser tests in headed mode: "chromium", "firefox".
@@ -128,7 +128,7 @@ start tests with --browser=name or --project=name flag. › - Use arrow-keys. Re
     firefox
 ```
 
-If you have several non-headless projects in CI (i.e. the `headless: false` is set manually in the config and not overriden in  CI env), Vitest will fail the run and won't start any tests.
+如果你在 CI 中有多个非无头模式的项目（即在配置中手动设置了 `headless: false` 且未在 CI 环境中覆盖），Vitest 将会终止运行并且不会启动任何测试。
 
-The ability to run tests in headless mode is not affected by this. You can still run all instances in parallel as long as they don't have `headless: false`.
+这一限制不影响在无头模式下运行测试的能力。只要实例没有设置 `headless: false`，你仍然可以并行运行所有实例。
 :::
