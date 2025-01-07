@@ -479,7 +479,11 @@ afterAll(() => server.close())
 afterEach(() => server.resetHandlers())
 ```
 
+<<<<<<< HEAD
 > 使用 `onUnhandleRequest: 'error'` 配置服务器可以确保即使某个请求没有相应的请求处理程序，也会抛出错误。
+=======
+> Configuring the server with `onUnhandledRequest: 'error'` ensures that an error is thrown whenever there is a request that does not have a corresponding request handler.
+>>>>>>> 9424d225d38946632ed6ee68933f140b826cde9e
 
 ### 了解更多
 
