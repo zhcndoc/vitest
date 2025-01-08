@@ -1,8 +1,8 @@
 # TestModule
 
-The `TestModule` class represents a single module in a single project. This class is only available in the main thread. Refer to the ["Runner API"](/advanced/runner#tasks) if you are working with runtime tasks.
+`TestModule` 类表示项目中的单个模块。此类仅在主线程中可用。如果你正在处理运行时任务，请参阅 [“Runner API”](/advanced/runner#tasks)。
 
-The `TestModule` instance always has a `type` property with the value of `module`. You can use it to distinguish between different task types:
+`TestModule` 实例始终具有一个 `type` 属性，其值为 `module`。你可以使用它来区分不同的任务类型：
 
 ```ts
 if (task.type === 'module') {
@@ -10,10 +10,10 @@ if (task.type === 'module') {
 }
 ```
 
-The `TestModule` inherits all methods and properties from the [`TestSuite`](/advanced/api/test-module). This guide will only list methods and properties unique to the `TestModule`
+`TestModule` 继承了 [`TestSuite`](/advanced/api/test-suite) 的所有方法和属性。本指南将仅列出 `TestModule` 独有的方法和属性。
 
 ::: warning
-We are planning to introduce a new Reporter API that will be using this API by default. For now, the Reporter API uses [runner tasks](/advanced/runner#tasks), but you can still access `TestModule` via `vitest.state.getReportedEntity` method:
+我们计划引入一个新的 Reporter API，默认将使用此 API。目前，Reporter API 使用 [runner tasks](/advanced/runner#tasks)，但你仍然可以通过 `vitest.state.getReportedEntity` 方法访问 `TestModule`：
 
 ```ts
 import type { RunnerTestFile, TestModule, Vitest } from 'vitest/node'
@@ -37,7 +37,7 @@ class Reporter {
 
 ## moduleId
 
-This is usually an absolute unix file path (even on Windows). It can be a virtual id if the file is not on the disk. This value corresponds to Vite's `ModuleGraph` id.
+这通常是一个绝对的 Unix 文件路径（即使在 Windows 上也是如此）。如果文件不在磁盘上，它可以是一个虚拟 ID。此值对应于 Vite 的 `ModuleGraph` ID。
 
 ## diagnostic
 
@@ -45,7 +45,7 @@ This is usually an absolute unix file path (even on Windows). It can be a virtua
 function diagnostic(): ModuleDiagnostic
 ```
 
-Useful information about the module like duration, memory usage, etc. If the module was not executed yet, all diagnostic values will return `0`.
+关于模块的有用信息，例如持续时间、内存使用等。如果模块尚未执行，所有诊断值将返回 `0`。
 
 ```ts
 interface ModuleDiagnostic {
