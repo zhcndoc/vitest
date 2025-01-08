@@ -117,9 +117,9 @@ function tripleClick(
 ): Promise<void>
 ```
 
-Triggers a triple click event on an element. Since there is no `tripleclick` in browser api, this method will fire three click events in a row, and so you must check [click event detail](https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event#usage_notes) to filter the event: `evt.detail === 3`.
+在元素上触发三连击事件。由于浏览器 API 中没有 `tripleclick`，此方法会连续触发三次点击事件，因此你必须检查 [点击事件的 detail 属性](https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event#usage_notes) 来过滤事件：`evt.detail === 3`。
 
-Please refer to your provider's documentation for detailed explanation about how this method works.
+请参阅你的提供商文档以获取有关此方法工作原理的详细说明。
 
 ```ts
 import { page, userEvent } from '@vitest/browser/context'
@@ -141,11 +141,11 @@ test('triggers a triple click on an element', async () => {
 })
 ```
 
-References:
+相关链接：
 
-- [Playwright `locator.click` API](https://playwright.dev/docs/api/class-locator#locator-click): implemented via `click` with `clickCount: 3` .
-- [WebdriverIO `browser.action` API](https://webdriver.io/docs/api/browser/action/): implemented via actions api with `move` plus three `down + up + pause` events in a row
-- [testing-library `tripleClick` API](https://testing-library.com/docs/user-event/convenience/#tripleClick)
+- [Playwright `locator.click` API](https://playwright.dev/docs/api/class-locator#locator-click)：通过 `click` 方法并设置 `clickCount: 3` 来实现。
+- [WebdriverIO `browser.action` API](https://webdriver.io/docs/api/browser/action/)：通过动作 API 实现，包含 `move` 操作加上连续的三个 `down + up + pause` 事件。
+- [testing-library `tripleClick` API](https://testing-library.com/docs/user-event/convenience/#tripleClick)：通过 `tripleClick` 方法实现。
 
 ## userEvent.fill
 
@@ -181,7 +181,7 @@ test('update input', async () => {
 在不需要输入特殊字符或对按键事件进行细粒度控制的情况下，我们建议使用此 API 而不是 [`userEvent.type`](#userevent-type)。
 :::
 
-References:
+相关链接：
 
 - [Playwright `locator.fill` API](https://playwright.dev/docs/api/class-locator#locator-fill)
 - [WebdriverIO `element.setValue` API](https://webdriver.io/docs/api/element/setValue)
@@ -195,7 +195,7 @@ function keyboard(text: string): Promise<void>
 
 通过 `userEvent.keyboard` 可以触发键盘输入。如果任何输入有焦点，它就会在该输入中键入字符。否则，它将触发当前焦点元素（如果没有焦点元素，则为 `document.body`）上的键盘事件。
 
-This API supports [user-event `keyboard` syntax](https://testing-library.com/docs/user-event/keyboard).
+此 API 支持 [user-event `keyboard` 语法](https://testing-library.com/docs/user-event/keyboard)。
 
 ```ts
 import { userEvent } from '@vitest/browser/context'
@@ -209,7 +209,7 @@ test('trigger keystrokes', async () => {
 })
 ```
 
-References:
+相关链接：
 
 - [Playwright `Keyboard` API](https://playwright.dev/docs/api/class-keyboard)
 - [WebdriverIO `action('key')` API](https://webdriver.io/docs/api/browser/action#key-input-source)
@@ -241,7 +241,7 @@ test('tab works', async () => {
 })
 ```
 
-References:
+相关链接：
 
 - [Playwright `Keyboard` API](https://playwright.dev/docs/api/class-keyboard)
 - [WebdriverIO `action('key')` API](https://webdriver.io/docs/api/browser/action#key-input-source)
@@ -283,7 +283,7 @@ test('update input', async () => {
 Vitest 没有像 `input.type` 那样在定位器上公开 `.type` 方法，因为它的存在只是为了与 `userEvent` 库兼容。请考虑使用 `.fill`，因为它更快。
 :::
 
-References:
+相关链接：
 
 - [Playwright `locator.press` API](https://playwright.dev/docs/api/class-locator#locator-press)
 - [WebdriverIO `action('key')` API](https://webdriver.io/docs/api/browser/action#key-input-source)
@@ -314,7 +314,7 @@ test('clears input', async () => {
 })
 ```
 
-References:
+相关链接：
 
 - [Playwright `locator.clear` API](https://playwright.dev/docs/api/class-locator#locator-clear)
 - [WebdriverIO `element.clearValue` API](https://webdriver.io/docs/api/element/clearValue)
@@ -371,7 +371,7 @@ test('clears input', async () => {
 `webdriverio` provider 不支持选择多个元素，因为它不提供选择多个元素的 API。
 :::
 
-References:
+相关链接：
 
 - [Playwright `locator.selectOption` API](https://playwright.dev/docs/api/class-locator#locator-select-option)
 - [WebdriverIO `element.selectByIndex` API](https://webdriver.io/docs/api/element/selectByIndex)
@@ -406,7 +406,7 @@ test('hovers logo element', async () => {
 })
 ```
 
-References:
+相关链接：
 
 - [Playwright `locator.hover` API](https://playwright.dev/docs/api/class-locator#locator-hover)
 - [WebdriverIO `element.moveTo` API](https://webdriver.io/docs/api/element/moveTo/)
@@ -439,7 +439,7 @@ test('unhover logo element', async () => {
 })
 ```
 
-References:
+相关链接：
 
 - [Playwright `locator.hover` API](https://playwright.dev/docs/api/class-locator#locator-hover)
 - [WebdriverIO `element.moveTo` API](https://webdriver.io/docs/api/element/moveTo/)
@@ -477,7 +477,7 @@ test('can upload a file', async () => {
 `webdriverio` provider 仅在 `chrome` 和 `edge` 浏览器中支持该命令。目前也只支持字符串类型。
 :::
 
-References:
+相关链接：
 
 - [Playwright `locator.setInputFiles` API](https://playwright.dev/docs/api/class-locator#locator-set-input-files)
 - [WebdriverIO `browser.uploadFile` API](https://webdriver.io/docs/api/browser/uploadFile)
@@ -514,7 +514,7 @@ test('drag and drop works', async () => {
  `preview` provider不支持此 API。
 :::
 
-References:
+相关链接：
 
 - [Playwright `frame.dragAndDrop` API](https://playwright.dev/docs/api/class-frame#frame-drag-and-drop)
 - [WebdriverIO `element.dragAndDrop` API](https://webdriver.io/docs/api/element/dragAndDrop/)
@@ -525,7 +525,7 @@ References:
 function copy(): Promise<void>
 ```
 
-Copy the selected text to the clipboard.
+将选中的文本复制到剪贴板。
 
 ```js
 import { page, userEvent } from '@vitest/browser/context'
@@ -548,7 +548,7 @@ test('copy and paste', async () => {
 })
 ```
 
-References:
+相关链接：
 
 - [testing-library `copy` API](https://testing-library.com/docs/user-event/convenience/#copy)
 
@@ -558,7 +558,7 @@ References:
 function cut(): Promise<void>
 ```
 
-Cut the selected text to the clipboard.
+将选中的文本剪切到剪贴板。
 
 ```js
 import { page, userEvent } from '@vitest/browser/context'
@@ -581,7 +581,7 @@ test('copy and paste', async () => {
 })
 ```
 
-References:
+相关链接：
 
 - [testing-library `cut` API](https://testing-library.com/docs/user-event/clipboard#cut)
 
@@ -591,8 +591,8 @@ References:
 function paste(): Promise<void>
 ```
 
-Paste the text from the clipboard. See [`userEvent.copy`](#userevent-copy) and [`userEvent.cut`](#userevent-cut) for usage examples.
+将文本从剪贴板粘贴。请参阅 [`userEvent.copy`](#userevent-copy) 和 [`userEvent.cut`](#userevent-cut) 以获取使用示例。
 
-References:
+相关链接：
 
 - [testing-library `paste` API](https://testing-library.com/docs/user-event/clipboard#paste)
