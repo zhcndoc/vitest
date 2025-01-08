@@ -937,11 +937,7 @@ callFunctionWithSideEffect()
 + const { value } = await import('./some/module.js')
 ```
 
-<<<<<<< HEAD
-运行 `vitest` 时，可以使用 `vi.hoisted` 方法自动完成此操作。
-=======
-When running `vitest`, you can do this automatically by using `vi.hoisted` method. Under the hood, Vitest will convert static imports into dynamic ones with preserved live-bindings.
->>>>>>> 9424d225d38946632ed6ee68933f140b826cde9e
+在运行 `vitest` 时，可以使用 `vi.hoisted` 方法自动完成此操作。在内部，Vitest 会将静态导入转换为动态导入，并保留实时绑定。
 
 ```diff
 - callFunctionWithSideEffect()
@@ -949,11 +945,8 @@ import { value } from './some/module.js'
 + vi.hoisted(() => callFunctionWithSideEffect())
 ```
 
-<<<<<<< HEAD
-该方法返回从工厂返回的值。 如果我们需要轻松访问本地定义的变量，可以在我们的 `vi.mock` 工厂中使用该值：
-=======
 ::: warning IMPORTS ARE NOT AVAILABLE
-Running code before the imports means that you cannot access imported variables because they are not defined yet:
+在导入之前运行代码意味着你无法访问导入的变量，因为它们尚未定义：
 
 ```ts
 import { value } from './some/module.js'
@@ -961,13 +954,13 @@ import { value } from './some/module.js'
 vi.hoisted(() => { value }) // throws an error // [!code warning]
 ```
 
-This code will produce an error:
+此代码将产生错误：
 
 ```
 Cannot access '__vi_import_0__' before initialization
 ```
 
-If you need to access a variable from another module inside of `vi.hoisted`, use dynamic import:
+如果你需要在 `vi.hoisted` 中访问另一个模块中的变量，请使用动态导入：
 
 ```ts
 await vi.hoisted(async () => {
@@ -975,11 +968,10 @@ await vi.hoisted(async () => {
 })
 ```
 
-However, it is discourage to import anything inside of `vi.hoisted` because imports are already hoisted - if you need to execute something before the tests are running, just execute it in the imported module itself.
+然而，不建议在 `vi.hoisted` 中导入任何内容，因为导入已经被提升。如果你需要在测试运行之前执行某些操作，只需在导入的模块本身中执行即可。
 :::
 
-This method returns the value that was returned from the factory. You can use that value in your `vi.mock` factories if you need easy access to locally defined variables:
->>>>>>> 9424d225d38946632ed6ee68933f140b826cde9e
+此方法返回工厂函数返回的值。如果你需要访问本地定义的变量，可以在你的 `vi.mock` 工厂中使用该值：
 
 ```ts
 import { expect, vi } from 'vitest'
