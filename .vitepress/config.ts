@@ -145,7 +145,7 @@ export default ({ mode }: { mode: string }) => {
         { text: '配置', link: '/config/', activeMatch: '^/config/' },
         { text: '浏览器模式', link: '/guide/browser', activeMatch: '^/guide/browser/' },
         {
-          text: '相关连接',
+          text: '相关链接',
           items: [
             {
               text: '高级 API',
