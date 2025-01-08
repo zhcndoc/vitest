@@ -1,11 +1,11 @@
 # TestCollection
 
-`TestCollection` represents a collection of top-level [suites](/advanced/api/test-suite) and [tests](/advanced/api/test-case) in a suite or a module. It also provides useful methods to iterate over itself.
+`TestCollection` 表示套件或模块中顶级 [suite](/advanced/api/test-suite) 和 [test](/advanced/api/test-case) 的集合。它还提供了有用的方法来迭代自身。
 
 ::: info
-Most methods return an iterator instead of an array for better performance in case you don't need every item in the collection. If you prefer working with array, you can spread the iterator: `[...children.allSuites()]`.
+大多数方法返回迭代器而不是数组，以在你不需使用集合中的每个项目时提高性能。如果你更喜欢使用数组，可以展开迭代器：`[...children.allSuites()]`。
 
-Also note that the collection itself is an iterator:
+另外请注意，集合本身也是一个迭代器：
 
 ```ts
 for (const child of module.children) {
@@ -16,10 +16,10 @@ for (const child of module.children) {
 
 ## size
 
-The number of tests and suites in the collection.
+集合中的测试和套件数量。
 
 ::: warning
-This number includes only tests and suites at the top-level, it doesn't include nested suites and tests.
+此数量仅包括顶级的测试和套件，不包括嵌套的套件和测试。
 :::
 
 ## at
@@ -28,7 +28,7 @@ This number includes only tests and suites at the top-level, it doesn't include 
 function at(index: number): TestCase | TestSuite | undefined
 ```
 
-Returns the test or suite at a specific index. This method accepts negative indexes.
+返回位于特定索引处的测试或套件。此方法接受负数索引。
 
 ## array
 
@@ -36,7 +36,7 @@ Returns the test or suite at a specific index. This method accepts negative inde
 function array(): (TestCase | TestSuite)[]
 ```
 
-The same collection but as an array. This is useful if you want to use `Array` methods like `map` and `filter` that are not supported by the `TaskCollection` implementation.
+相同的集合，但以数组形式返回。如果你想要使用 `map` 和 `filter` 等 `Array` 方法，而这些方法不受 `TaskCollection` 实现的支持时，这将非常有用。
 
 ## allSuites
 
@@ -44,7 +44,7 @@ The same collection but as an array. This is useful if you want to use `Array` m
 function allSuites(): Generator<TestSuite, undefined, void>
 ```
 
-Filters all suites that are part of this collection and its children.
+过滤出属于此集合及其子集的所有套件。
 
 ```ts
 for (const suite of module.children.allSuites()) {
@@ -62,7 +62,7 @@ function allTests(
 ): Generator<TestCase, undefined, void>
 ```
 
-Filters all tests that are part of this collection and its children.
+过滤出属于此集合及其子集的所有测试。
 
 ```ts
 for (const test of module.children.allTests()) {
@@ -72,7 +72,7 @@ for (const test of module.children.allTests()) {
 }
 ```
 
-You can pass down a `state` value to filter tests by the state.
+你可以传递一个 `state` 值来根据状态过滤测试。
 
 ## tests
 
@@ -82,7 +82,7 @@ function tests(
 ): Generator<TestCase, undefined, void>
 ```
 
-Filters only the tests that are part of this collection. You can pass down a `state` value to filter tests by the state.
+仅过滤属于此集合的测试。你可以传递一个 `state` 值来根据状态过滤测试。
 
 ## suites
 
@@ -90,4 +90,4 @@ Filters only the tests that are part of this collection. You can pass down a `st
 function suites(): Generator<TestSuite, undefined, void>
 ```
 
-Filters only the suites that are part of this collection.
+仅过滤属于此集合的套件。
