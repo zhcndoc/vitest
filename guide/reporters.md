@@ -532,8 +532,13 @@ export default defineConfig({
 
 ### Blob Reporter
 
+<<<<<<< HEAD
 将测试结果存储在计算机上，以便以后可以使用 [`--merge-reports`](/guide/cli#merge-reports) 命令进行合并。
 默认情况下，将所有结果存储在 `.vitest-reports` 文件夹中，但可以用 `--outputFile` 或 `--outputFile.blob` 标志覆盖。
+=======
+Stores test results on the machine so they can be later merged using [`--merge-reports`](/guide/cli#merge-reports) command.
+By default, stores all results in `.vitest-reports` folder, but can be overridden with `--outputFile` or `--outputFile.blob` flags.
+>>>>>>> 658c5b32434bdff1eb68247b26ea2ca7951fe2a8
 
 ```bash
 npx vitest --reporter=blob --outputFile=reports/blob-1.json

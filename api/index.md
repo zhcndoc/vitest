@@ -1180,7 +1180,11 @@ afterAll(async () => {
 
 ## Test Hooks
 
+<<<<<<< HEAD
 Vitest 提供了一些 hooks，你可以在 _测试执行期间_ 调用这些钩子，以便在测试运行结束后清理状态。
+=======
+Vitest provides a few hooks that you can call _during_ the test execution to cleanup the state when the test has finished running.
+>>>>>>> 658c5b32434bdff1eb68247b26ea2ca7951fe2a8
 
 ::: warning
 如果在测试体之外调用这些 hooks ，则会出错。

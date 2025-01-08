@@ -10,7 +10,11 @@ title: 模拟对象 | 指南
 不要忘记在每次测试运行前后清除或恢复模拟对象，以撤消运行测试时模拟对象状态的更改！有关更多信息，请参阅 [`mockReset`](/api/mock.html#mockreset) 文档。
 :::
 
+<<<<<<< HEAD
 如果我们不熟悉 `vi.fn`、`vi.mock` 或 `vi.spyOn` 方法，请先查看[API部分](/api/vi)。
+=======
+If you are not familiar with `vi.fn`, `vi.mock` or `vi.spyOn` methods, check the [API section](/api/vi) first.
+>>>>>>> 658c5b32434bdff1eb68247b26ea2ca7951fe2a8
 
 ## 日期
 

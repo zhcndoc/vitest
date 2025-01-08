@@ -8,8 +8,13 @@
 
 Vitest 公开了两种启动 Vitest 的方法：
 
+<<<<<<< HEAD
 - `startVitest` 启动 Vitest，验证所需软件包是否已安装并立即运行测试
 - `createVitest` 仅启动 Vitest，不运行任何测试
+=======
+- `startVitest` initiates Vitest, validates the packages are installed and runs tests immediately
+- `createVitest` only initiates Vitest and doesn't run any tests
+>>>>>>> 658c5b32434bdff1eb68247b26ea2ca7951fe2a8
 
 ## `startVitest`
 

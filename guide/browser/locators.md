@@ -65,7 +65,11 @@ await page.getByRole('button', { name: /submit/i }).click()
 
 - `exact: boolean`
 
+<<<<<<< HEAD
   `name` 是否精确匹配：区分大小写且完全匹配字符串。默认情况下禁用此选项。如果 `name` 是正则表达式，则忽略此选项。请注意，精确匹配仍然会修剪空白字符。
+=======
+  Whether the `name` is matched exactly: case-sensitive and whole-string. Disabled by default. This option is ignored if `name` is a regular expression. Note that exact match still trims whitespace.
+>>>>>>> 658c5b32434bdff1eb68247b26ea2ca7951fe2a8
 
   ```tsx
   <button>Hello World</button>
@@ -213,7 +217,11 @@ page.getByAltText('non existing alt text') // ❌
 
 - `exact: boolean`
 
+<<<<<<< HEAD
   `text` 是否精确匹配：区分大小写且完全匹配字符串。默认情况下禁用此选项。如果 `text` 是正则表达式，则忽略此选项。请注意，精确匹配仍然会修剪空白字符。
+=======
+  Whether the `text` is matched exactly: case-sensitive and whole-string. Disabled by default. This option is ignored if `text` is a regular expression. Note that exact match still trims whitespace.
+>>>>>>> 658c5b32434bdff1eb68247b26ea2ca7951fe2a8
 
 #### See also
 
@@ -228,7 +236,11 @@ function getByLabelText(
 ): Locator
 ```
 
+<<<<<<< HEAD
 创建一个能够找到具有关联标签的元素的定位器。
+=======
+Creates a locator capable of finding an element that has an associated label.
+>>>>>>> 658c5b32434bdff1eb68247b26ea2ca7951fe2a8
 
 `page.getByLabelText('Username')` 定位器将在以下示例中找到所有的输入元素：
 
@@ -260,7 +272,11 @@ function getByLabelText(
 
 - `exact: boolean`
 
+<<<<<<< HEAD
   `text` 是否精确匹配：区分大小写且完全匹配字符串。默认情况下禁用此选项。如果 `text` 是正则表达式，则忽略此选项。请注意，精确匹配仍然会修剪空白字符。
+=======
+  Whether the `text` is matched exactly: case-sensitive and whole-string. Disabled by default. This option is ignored if `text` is a regular expression. Note that exact match still trims whitespace.
+>>>>>>> 658c5b32434bdff1eb68247b26ea2ca7951fe2a8
 
 #### See also
 
@@ -292,7 +308,11 @@ page.getByPlaceholder('not found') // ❌
 
 - `exact: boolean`
 
+<<<<<<< HEAD
   `text` 是否精确匹配：区分大小写且完全匹配字符串。默认情况下禁用此选项。如果 `text` 是正则表达式，则忽略此选项。请注意，精确匹配仍然会修剪空白字符。
+=======
+  Whether the `text` is matched exactly: case-sensitive and whole-string. Disabled by default. This option is ignored if `text` is a regular expression. Note that exact match still trims whitespace.
+>>>>>>> 658c5b32434bdff1eb68247b26ea2ca7951fe2a8
 
 #### See also
 
@@ -324,7 +344,11 @@ page.getByText('about', { exact: true }) // ❌
 
 - `exact: boolean`
 
+<<<<<<< HEAD
   `text` 是否精确匹配：区分大小写且完全匹配字符串。默认情况下禁用此选项。如果 `text` 是正则表达式，则忽略此选项。请注意，精确匹配仍然会修剪空白字符。
+=======
+  Whether the `text` is matched exactly: case-sensitive and whole-string. Disabled by default. This option is ignored if `text` is a regular expression. Note that exact match still trims whitespace.
+>>>>>>> 658c5b32434bdff1eb68247b26ea2ca7951fe2a8
 
 #### See also
 
@@ -352,7 +376,11 @@ page.getByTitle('Create') // ❌
 
 - `exact: boolean`
 
+<<<<<<< HEAD
   `text` 是否精确匹配：区分大小写且完全匹配字符串。默认情况下禁用此选项。如果 `text` 是正则表达式，则忽略此选项。请注意，精确匹配仍然会修剪空白字符。
+=======
+  Whether the `text` is matched exactly: case-sensitive and whole-string. Disabled by default. This option is ignored if `text` is a regular expression. Note that exact match still trims whitespace.
+>>>>>>> 658c5b32434bdff1eb68247b26ea2ca7951fe2a8
 
 #### See also
 
@@ -659,7 +687,11 @@ function query(): Element | null
 
 此方法返回与定位器选择器匹配的单个元素，如果没有找到元素则返回 `null`。
 
+<<<<<<< HEAD
 如果多个元素匹配该选择器，此方法将抛出错误。如果你需要所有匹配的 DOM 元素，可以使用 [`.elements()`](#elements)；如果你需要匹配选择器的定位器数组，可以使用 [`.all()`](#all)。
+=======
+If multiple elements match the selector, this method will throw an error.  Use [`.elements()`](#elements) when you need all matching DOM Elements or [`.all()`](#all) if you need an array of locators matching the selector.
+>>>>>>> 658c5b32434bdff1eb68247b26ea2ca7951fe2a8
 
 考虑以下 DOM 结构：
 
