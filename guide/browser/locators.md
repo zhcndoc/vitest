@@ -187,8 +187,8 @@ await page.getByRole('button', { name: /submit/i }).click()
 
 ##### See also
 
-- [List of ARIA roles at MDN](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles)
-- [List of ARIA roles at w3.org](https://www.w3.org/TR/wai-aria-1.2/#role_definitions)
+- [MDN 上的 ARIA 角色列表](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles)
+- [w3.org 上的 ARIA 角色列表](https://www.w3.org/TR/wai-aria-1.2/#role_definitions)
 - [testing-library's `ByRole`](https://testing-library.com/docs/queries/byrole/)
 
 ## getByAltText
@@ -468,7 +468,7 @@ import { page } from '@vitest/browser/context'
 await page.getByRole('img', { name: 'Rose' }).click()
 ```
 
-- [See more at `userEvent.click`](/guide/browser/interactivity-api#userevent-click)
+- [更多内容请参阅 `userEvent.click`](/guide/browser/interactivity-api#userevent-click)
 
 ### dblClick
 
@@ -484,7 +484,7 @@ import { page } from '@vitest/browser/context'
 await page.getByRole('img', { name: 'Rose' }).dblClick()
 ```
 
-- [See more at `userEvent.dblClick`](/guide/browser/interactivity-api#userevent-dblclick)
+- [更多内容请参阅 `userEvent.dblClick`](/guide/browser/interactivity-api#userevent-dblclick)
 
 ### tripleClick
 
@@ -500,7 +500,7 @@ import { page } from '@vitest/browser/context'
 await page.getByRole('img', { name: 'Rose' }).tripleClick()
 ```
 
-- [See more at `userEvent.tripleClick`](/guide/browser/interactivity-api#userevent-tripleclick)
+- [更多内容请参阅 `userEvent.tripleClick`](/guide/browser/interactivity-api#userevent-tripleclick)
 
 ### clear
 
@@ -516,7 +516,7 @@ import { page } from '@vitest/browser/context'
 await page.getByRole('textbox', { name: 'Full Name' }).clear()
 ```
 
-- [See more at `userEvent.clear`](/guide/browser/interactivity-api#userevent-clear)
+- [更多内容请参阅 `userEvent.clear`](/guide/browser/interactivity-api#userevent-clear)
 
 ### hover
 
@@ -532,7 +532,7 @@ import { page } from '@vitest/browser/context'
 await page.getByRole('img', { name: 'Rose' }).hover()
 ```
 
-- [See more at `userEvent.hover`](/guide/browser/interactivity-api#userevent-hover)
+- [更多内容请参阅 `userEvent.hover`](/guide/browser/interactivity-api#userevent-hover)
 
 ### unhover
 
@@ -548,7 +548,7 @@ import { page } from '@vitest/browser/context'
 await page.getByRole('img', { name: 'Rose' }).unhover()
 ```
 
-- [See more at `userEvent.unhover`](/guide/browser/interactivity-api#userevent-unhover)
+- [更多内容请参阅 `userEvent.unhover`](/guide/browser/interactivity-api#userevent-unhover)
 
 ### fill
 
@@ -564,7 +564,7 @@ import { page } from '@vitest/browser/context'
 await page.getByRole('input', { name: 'Full Name' }).fill('Mr. Bean')
 ```
 
-- [See more at `userEvent.fill`](/guide/browser/interactivity-api#userevent-fill)
+- [更多内容请参阅 `userEvent.fill`](/guide/browser/interactivity-api#userevent-fill)
 
 ### dropTo
 
@@ -586,7 +586,7 @@ const france = page.getByText('France')
 await paris.dropTo(france)
 ```
 
-- [See more at `userEvent.dragAndDrop`](/guide/browser/interactivity-api#userevent-draganddrop)
+- [更多内容请参阅 `userEvent.dragAndDrop`](/guide/browser/interactivity-api#userevent-draganddrop)
 
 ### selectOptions
 
@@ -618,7 +618,7 @@ await languages.selectOptions([
 ])
 ```
 
-- [See more at `userEvent.selectOptions`](/guide/browser/interactivity-api#userevent-selectoptions)
+- [更多内容请参阅 `userEvent.selectOptions`](/guide/browser/interactivity-api#userevent-selectoptions)
 
 ### screenshot
 
@@ -668,7 +668,7 @@ function query(): Element | null
 <div>Hello</div>
 ```
 
-These locators will not throw an error:
+这些定位器将不会抛出错误：
 
 ```ts
 page.getByText('Hello World').query() // ✅ HTMLDivElement
