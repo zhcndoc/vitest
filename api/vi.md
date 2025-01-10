@@ -588,11 +588,7 @@ IntersectionObserver === undefined
 
 ## Fake Timers
 
-<<<<<<< HEAD
 本节介绍如何使用 [fake timers](/guide/mocking#%E8%AE%A1%E6%97%B6%E5%99%A8) 。
-=======
-This sections describes how to work with [fake timers](/guide/mocking#timers).
->>>>>>> 658c5b32434bdff1eb68247b26ea2ca7951fe2a8
 
 ### vi.advanceTimersByTime
 
