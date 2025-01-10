@@ -1,8 +1,8 @@
 # TestCase
 
-The `TestCase` class represents a single test. This class is only available in the main thread. Refer to the ["Runner API"](/advanced/runner#tasks) if you are working with runtime tasks.
+`TestCase` 类表示单个测试。此类仅在主线程中可用。如果您正在处理运行时任务，请参阅[“Runner API”](/advanced/runner#tasks)。
 
-The `TestCase` instance always has a `type` property with the value of `test`. You can use it to distinguish between different task types:
+`TestCase` 实例始终有一个值为 `test` 的 `type` 属性。您可以使用它来区分不同的任务类型：
 
 ```ts
 if (task.type === 'test') {
@@ -11,7 +11,7 @@ if (task.type === 'test') {
 ```
 
 ::: warning
-We are planning to introduce a new Reporter API that will be using this API by default. For now, the Reporter API uses [runner tasks](/advanced/runner#tasks), but you can still access `TestCase` via `vitest.state.getReportedEntity` method:
+我们计划引入一个新的 Reporter API，默认将使用此 API。目前，Reporter API 使用 [runner tasks](/advanced/runner#tasks)，但您仍然可以通过 `vitest.state.getReportedEntity` 方法访问 `TestCase`：
 
 ```ts
 import type { RunnerTestFile, TestModule, Vitest } from 'vitest/node'
@@ -37,15 +37,15 @@ class Reporter {
 
 ## project
 
-This references the [`TestProject`](/advanced/api/test-project) that the test belongs to.
+这引用了测试所属的 [`TestProject`](/advanced/api/test-project)。
 
 ## module
 
-This is a direct reference to the [`TestModule`](/advanced/api/test-module) where the test is defined.
+这是对定义测试的 [`TestModule`](/advanced/api/test-module) 的直接引用。
 
 ## name
 
-This is a test name that was passed to the `test` function.
+这是传递给 `test` 函数的测试名称。
 
 ```ts
 import { test } from 'vitest'
@@ -58,7 +58,7 @@ test('the validation works correctly', () => {
 
 ## fullName
 
-The name of the test including all parent suites separated with `>` symbol. This test has a full name "the validation logic > the validation works correctly":
+包括所有父套件并用 `>` 符号分隔的测试名称。此测试的完整名称为 "the validation logic > the validation works correctly"：
 
 ```ts
 import { describe, test } from 'vitest'
@@ -74,9 +74,9 @@ describe('the validation logic', () => {
 
 ## id
 
-This is test's unique identifier. This ID is deterministic and will be the same for the same test across multiple runs. The ID is based on the [project](/advanced/api/test-project) name, module ID and test order.
+这是测试的唯一标识符。此 ID 是确定性的，在多次运行中相同的测试将具有相同的 ID。ID 基于 [project](/advanced/api/test-project) 名称、模块 ID 和测试顺序。
 
-The ID looks like this:
+ID 的格式如下：
 
 ```
 1223128da3_0_0
@@ -86,7 +86,7 @@ The ID looks like this:
 ```
 
 ::: tip
-You can generate file hash with `generateFileHash` function from `vitest/node` which is available since Vitest 3:
+你可以使用 `vitest/node` 中的 `generateFileHash` 函数来生成文件哈希，该函数自 Vitest 3 起可用：
 
 ```ts
 import { generateFileHash } from 'vitest/node'
@@ -99,14 +99,14 @@ const hash = generateFileHash(
 :::
 
 ::: danger
-Don't try to parse the ID. It can have a minus at the start: `-1223128da3_0_0_0`.
+不要尝试解析 ID。它可能以连字符开头，例如：`-1223128da3_0_0_0`。
 :::
 
 ## location
 
-The location in the module where the test was defined. Locations are collected only if [`includeTaskLocation`](/config/#includetasklocation) is enabled in the config. Note that this option is automatically enabled if `--reporter=html`, `--ui` or `--browser` flags are used.
+测试在模块中定义的位置。只有在配置中启用了 [`includeTaskLocation`](/config/#includetasklocation) 时才会收集位置信息。请注意，如果使用了 `--reporter=html`、`--ui` 或 `--browser` 参数，此选项会自动启用。
 
-The location of this test will be equal to `{ line: 3, column: 1 }`:
+此测试的位置将等于 `{ line: 3, column: 1 }`：
 
 ```ts:line-numbers {3}
 import { test } from 'vitest'
@@ -118,7 +118,7 @@ test('the validation works correctly', () => {
 
 ## parent
 
-Parent [suite](/advanced/api/test-suite). If the test was called directly inside the [module](/advanced/api/test-module), the parent will be the module itself.
+父级 [suite](/advanced/api/test-suite)。如果测试是直接在 [模块](/advanced/api/test-module) 内调用的，则父级将是模块本身。
 
 ## options
 
@@ -133,7 +133,7 @@ interface TaskOptions {
 }
 ```
 
-The options that test was collected with.
+收集测试时使用的选项。
 
 ## ok
 
@@ -141,7 +141,7 @@ The options that test was collected with.
 function ok(): boolean
 ```
 
-Checks if the test did not fail the suite. If the test is not finished yet or was skipped, it will return `true`.
+检查测试是否未使套件失败。如果测试尚未完成或被跳过，它将返回 `true`。
 
 ## skipped
 
@@ -149,7 +149,7 @@ Checks if the test did not fail the suite. If the test is not finished yet or wa
 function skipped(): boolean
 ```
 
-Checks if the test was skipped during collection or dynamically with `ctx.skip()`.
+检查测试是否在收集期间或通过 `ctx.skip()` 动态跳过。
 
 ## meta
 
@@ -157,7 +157,7 @@ Checks if the test was skipped during collection or dynamically with `ctx.skip()
 function meta(): TaskMeta
 ```
 
-Custom metadata that was attached to the test during its execution. The meta can be attached by assigning a property to the `ctx.task.meta` object during a test run:
+在测试执行期间附加的自定义元数据。可以通过在测试运行期间将属性赋值给 `ctx.task.meta` 对象来附加元数据：
 
 ```ts {3,6}
 import { test } from 'vitest'
@@ -169,7 +169,7 @@ test('the validation works correctly', ({ task }) => {
 })
 ```
 
-If the test did not finish running yet, the meta will be an empty object.
+如果测试尚未完成运行，元数据将是一个空对象。
 
 ## result
 
@@ -177,9 +177,9 @@ If the test did not finish running yet, the meta will be an empty object.
 function result(): TestResult | undefined
 ```
 
-Test results. It will be `undefined` if test is skipped during collection, not finished yet or was just collected.
+测试结果。如果测试在收集期间被跳过、尚未完成或只是被收集，则结果将为 `undefined`。
 
-If the test was skipped, the return value will be `TestResultSkipped`:
+如果测试被跳过，返回值将是 `TestResultSkipped`：
 
 ```ts
 interface TestResultSkipped {
@@ -200,10 +200,10 @@ interface TestResultSkipped {
 ```
 
 ::: tip
-If the test was skipped because another test has `only` flag, the `options.mode` will be equal to `skip`.
+如果测试因为其他测试有 `only` 标志而被跳过，则 `options.mode` 将等于 `skip`。
 :::
 
-If the test failed, the return value will be `TestResultFailed`:
+如果测试失败，返回值将是 `TestResultFailed`：
 
 ```ts
 interface TestResultFailed {
@@ -218,7 +218,7 @@ interface TestResultFailed {
 }
 ```
 
-If the test passed, the retunr value will be `TestResultPassed`:
+如果测试通过，返回值将是 `TestResultPassed`：
 
 ```ts
 interface TestResultPassed {
@@ -234,7 +234,7 @@ interface TestResultPassed {
 ```
 
 ::: warning
-Note that the test with `passed` state can still have errors attached - this can happen if `retry` was triggered at least once.
+请注意，状态为 `passed` 的测试仍可能附带有错误——如果 `retry` 至少触发了一次，这种情况就可能发生。
 :::
 
 ## diagnostic
@@ -243,7 +243,7 @@ Note that the test with `passed` state can still have errors attached - this can
 function diagnostic(): TestDiagnostic | undefined
 ```
 
-Useful information about the test like duration, memory usage, etc:
+有关测试的有用信息，例如持续时间、内存使用等：
 
 ```ts
 interface TestDiagnostic {
