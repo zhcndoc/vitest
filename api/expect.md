@@ -1238,11 +1238,7 @@ test('spy function resolves bananas on a last call', async () => {
 
 - **Type**: `(time: number, returnValue: any) => Awaitable<void>`
 
-<<<<<<< HEAD
-您可以调用此断言来检查函数在上次调用时是否已成功解析某个值。需要将 spy 函数传递给`expect`。
-=======
-You can call this assertion to check if a function has successfully resolved a certain value on a specific invocation. Requires a spy function to be passed to `expect`.
->>>>>>> 658c5b32434bdff1eb68247b26ea2ca7951fe2a8
+您可以调用此断言来检查函数在特定调用中是否成功解析了某个值。需要将一个间谍函数（spy function）传递给 `expect`。
 
 如果函数返回了一个 promise，但尚未 resolved，则将会失败。
 
