@@ -126,7 +126,7 @@ export default defineConfig({
 
 ### 默认启用 V8 覆盖的 `coverage.ignoreEmptyLines`
 
-将 `coverage.ignoreEmptyLines` 的默认值改为 `true`。此更改将对用户的代码覆盖率报告产生重大影响。使用覆盖率阈值的项目很可能需要在此之后调整这些值。此更改仅影响默认的 `coverage.provider.'v8'`： 'v8'`.
+将 `coverage.ignoreEmptyLines` 的默认值改为 `true`。此更改将对用户的代码覆盖率报告产生重大影响。使用覆盖率阈值的项目很可能需要在此之后调整这些值。此更改仅影响 `coverage.provider` 为 `'v8'` 时的默认设置.
 
 ### 不再有`watchExclude`选项
 
