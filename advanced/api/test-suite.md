@@ -1,8 +1,8 @@
 # TestSuite
 
-The `TestSuite` class represents a single suite. This class is only available in the main thread. Refer to the ["Runner API"](/advanced/runner#tasks) if you are working with runtime tasks.
+`TestSuite` 类表示一个单一的套件。此类仅在主线程中可用。如果你正在处理运行时任务，请参阅 [“Runner API”](/advanced/runner#tasks)。
 
-The `TestSuite` instance always has a `type` property with the value of `suite`. You can use it to distinguish between different task types:
+`TestSuite` 实例始终具有一个 `type` 属性，其值为 `suite`。你可以使用它来区分不同的任务类型：
 
 ```ts
 if (task.type === 'suite') {
@@ -11,7 +11,7 @@ if (task.type === 'suite') {
 ```
 
 ::: warning
-We are planning to introduce a new Reporter API that will be using this API by default. For now, the Reporter API uses [runner tasks](/advanced/runner#tasks), but you can still access `TestSuite` via `vitest.state.getReportedEntity` method:
+我们计划引入一个新的 Reporter API，默认将使用此 API。目前，Reporter API 使用 [runner tasks](/advanced/runner#tasks)，但你仍然可以通过 `vitest.state.getReportedEntity` 方法访问 `TestSuite`：
 
 ```ts
 import type { RunnerTestFile, TestModule, Vitest } from 'vitest/node'
@@ -37,15 +37,15 @@ class Reporter {
 
 ## project
 
-This references the [`TestProject`](/advanced/api/test-project) that the test belongs to.
+这引用了测试所属的 [`TestProject`](/advanced/api/test-project)。
 
 ## module
 
-This is a direct reference to the [`TestModule`](/advanced/api/test-module) where the test is defined.
+这是对定义测试的 [`TestModule`](/advanced/api/test-module) 的直接引用。
 
 ## name
 
-This is a suite name that was passed to the `describe` function.
+这是传递给 `describe` 函数的套件名称。
 
 ```ts
 import { describe } from 'vitest'
@@ -58,7 +58,7 @@ describe('the validation logic', () => {
 
 ## fullName
 
-The name of the suite including all parent suites separated with `>` symbol. This suite has a full name "the validation logic > validating cities":
+包括所有父级套件名称并用 `>` 符号分隔的套件名称。此套件的完整名称为 "the validation logic > validating cities"：
 
 ```ts
 import { describe, test } from 'vitest'
@@ -74,9 +74,9 @@ describe('the validation logic', () => {
 
 ## id
 
-This is suite's unique identifier. This ID is deterministic and will be the same for the same suite across multiple runs. The ID is based on the [project](/advanced/api/test-project) name, module ID and suite order.
+这是套件的唯一标识符。此 ID 是确定性的，在多次运行中相同的套件将具有相同的 ID。ID 基于 [项目](/advanced/api/test-project) 名称、模块 ID 和套件顺序。
 
-The ID looks like this:
+ID 的格式如下：
 
 ```
 1223128da3_0_0_0
@@ -87,7 +87,7 @@ The ID looks like this:
 ```
 
 ::: tip
-You can generate file hash with `generateFileHash` function from `vitest/node` which is available since Vitest 3:
+你可以使用 `vitest/node` 中的 `generateFileHash` 函数生成文件哈希，该函数自 Vitest 3 起可用：
 
 ```ts
 import { generateFileHash } from 'vitest/node'
@@ -100,14 +100,14 @@ const hash = generateFileHash(
 :::
 
 ::: danger
-Don't try to parse the ID. It can have a minus at the start: `-1223128da3_0_0_0`.
+不要尝试解析 ID。它可能以减号开头，例如：`-1223128da3_0_0_0`。
 :::
 
 ## location
 
-The location in the module where the suite was defined. Locations are collected only if [`includeTaskLocation`](/config/#includetasklocation) is enabled in the config. Note that this option is automatically enabled if `--reporter=html`, `--ui` or `--browser` flags are used.
+套件在模块中定义的位置。仅当配置中启用了 [`includeTaskLocation`](/config/#includetasklocation) 时才会收集位置信息。请注意，如果使用了 `--reporter=html`、`--ui` 或 `--browser` 标志，此选项会自动启用。
 
-The location of this suite will be equal to `{ line: 3, column: 1 }`:
+此套件的位置将等于 `{ line: 3, column: 1 }`：
 
 ```ts:line-numbers {3}
 import { describe } from 'vitest'
@@ -119,7 +119,7 @@ describe('the validation works correctly', () => {
 
 ## parent
 
-Parent suite. If the suite was called directly inside the [module](/advanced/api/test-module), the parent will be the module itself.
+父级套件。如果套件是在 [模块](/advanced/api/test-module) 内直接调用的，则父级将是模块本身。
 
 ## options
 
@@ -134,11 +134,11 @@ interface TaskOptions {
 }
 ```
 
-The options that suite was collected with.
+收集套件时使用的选项。
 
 ## children
 
-This is a [collection](/advanced/api/test-collection) of all suites and tests inside the current suite.
+这是当前套件内所有套件和测试的 [集合](/advanced/api/test-collection)。
 
 ```ts
 for (const task of suite.children) {
@@ -153,7 +153,7 @@ for (const task of suite.children) {
 ```
 
 ::: warning
-Note that `suite.children` will only iterate the first level of nesting, it won't go deeper.
+请注意，`suite.children` 只会迭代第一层嵌套，不会深入更多层次。
 :::
 
 ## ok
@@ -162,7 +162,7 @@ Note that `suite.children` will only iterate the first level of nesting, it won'
 function ok(): boolean
 ```
 
-Checks if the suite has any failed tests. This will also return `false` if suite failed during collection. In that case, check the [`errors()`](#errors) for thrown errors.
+检查套件中是否有任何失败的测试。如果套件在收集过程中失败，这也将返回 `false`。在这种情况下，请检查 [`errors()`](#errors) 以获取抛出的错误。
 
 ## skipped
 
@@ -170,7 +170,7 @@ Checks if the suite has any failed tests. This will also return `false` if suite
 function skipped(): boolean
 ```
 
-Checks if the suite was skipped during collection.
+检查套件在收集过程中是否被跳过。
 
 ## errors
 
@@ -178,7 +178,7 @@ Checks if the suite was skipped during collection.
 function errors(): TestError[]
 ```
 
-Errors that happened outside of the test run during collection, like syntax errors.
+在收集过程中发生的、测试运行之外的错误，例如语法错误。
 
 ```ts {4}
 import { describe } from 'vitest'
@@ -189,5 +189,5 @@ describe('collection failed', () => {
 ```
 
 ::: warning
-Note that errors are serialized into simple object: `instanceof Error` will always return `false`.
+请注意，错误被序列化为简单对象：`instanceof Error` 始终返回 `false`。
 :::
