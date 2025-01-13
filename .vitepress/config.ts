@@ -457,7 +457,7 @@ function guide(): DefaultTheme.SidebarItem[] {
       link: '/guide/workspace',
     },
     {
-      text: '报告期「Reporters」',
+      text: '报告器「Reporters」',
       link: '/guide/reporters',
     },
     {
