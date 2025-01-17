@@ -264,7 +264,11 @@ Vitest 中的浏览器选项取决于provider。如果在配置文件中传递 `
 
 ## TypeScript
 
+<<<<<<< HEAD
 默认情况下，TypeScript 不识别 providers 选项和额外的 `expect` 属性。如果我们不使用任何 providers ，请确保在我们的测试、[setup 文件](/config/#setupfile) 或 [config 文件](/config/) 中的某处引用了 `@vitest/browser/matchers`，以获取额外的 `expect` 定义。如果我们使用自定义 providers ，请确保在同一文件中添加 `@vitest/browser/providers/playwright` 或 `@vitest/browser/providers/webdriverio`，以便 TypeScript 能够识别自定义选项的定义：
+=======
+By default, TypeScript doesn't recognize providers options and extra `expect` properties. If you don't use any providers, make sure the `@vitest/browser/matchers` is referenced somewhere in your tests, [setup file](/config/#setupfiles) or a [config file](/config/) to pick up the extra `expect` definitions. If you are using custom providers, make sure to add `@vitest/browser/providers/playwright` or `@vitest/browser/providers/webdriverio` to the same file so TypeScript can pick up definitions for custom options:
+>>>>>>> 59be9167059ae81c6da89e2926e136b892b8177a
 
 ::: code-group
 ```ts [default]
