@@ -1,14 +1,14 @@
 # 扩展默认报告器 (Extending Reporters)
 
 ::: warning
-这是一个高级 API。如果你只是想配置内置报告器，请阅读 ["Reporters"](/guide/reporters) 指南。
+这是一个高级 API。如果我们只是想配置内置报告器，请阅读 [Reporters](/guide/reporters) 指南。
 :::
 
-你可以从 `vitest/reporters` 导入报告器并扩展它们来创建自定义报告器。
+我们可以从 `vitest/reporters` 导入报告器并扩展它们来创建自定义报告器。
 
 ## 扩展内置报告器 (Extending Built-in Reporters)
 
-一般来说，你不需要从头开始创建报告器。`vitest` 附带了几个可以扩展的默认报告程序。
+一般来说，我们不需要从头开始创建报告器。`vitest` 附带了几个可以扩展的默认报告程序。
 
 ```ts
 import { DefaultReporter } from 'vitest/reporters'
@@ -18,7 +18,7 @@ export default class MyDefaultReporter extends DefaultReporter {
 }
 ```
 
-当然，你可以从头开始创建报告器。只需扩展 `BaseReporter` 类并实现你需要的方法即可。
+当然，我们可以从头开始创建报告器。只需扩展 `BaseReporter` 类并实现我们需要的方法即可。
 
 这是自定义报告器的示例：
 
@@ -36,7 +36,7 @@ export default class CustomReporter extends BaseReporter {
 或者实现 `Reporter` 接口：
 
 ```ts [custom-reporter.js]
-import { Reporter } from 'vitest/reporters'
+import type { Reporter } from 'vitest/node'
 
 export default class CustomReporter implements Reporter {
   onCollected() {
@@ -45,7 +45,7 @@ export default class CustomReporter implements Reporter {
 }
 ```
 
-然后你可以在 `vitest.config.ts` 文件中使用自定义报告器：
+然后我们可以在 `vitest.config.ts` 文件中使用自定义报告器：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
@@ -62,13 +62,10 @@ export default defineConfig({
 
 建议使用 Reported Tasks API，而不是使用报告器接收到的任务。
 
-你可以通过调用 `vitest.state.getReportedEntity(runnerTask)` 访问此 API：
+我们可以通过调用 `vitest.state.getReportedEntity(runnerTask)` 访问此 API：
 
 ```ts twoslash
-// @noErrors
-import type { Vitest } from 'vitest/node'
-import type { RunnerTestFile } from 'vitest'
-import type { Reporter, TestModule } from 'vitest/reporters'
+import type { Reporter, RunnerTestFile, TestModule, Vitest } from 'vitest/node'
 
 class MyReporter implements Reporter {
   private vitest!: Vitest
@@ -92,7 +89,7 @@ class MyReporter implements Reporter {
 
 ## 导出报告器 (Exported Reporters)
 
-`vitest` 附带了一些[内置报告器](/guide/reporters)，你可以开箱即用。
+`vitest` 附带了一些[内置报告器](/guide/reporters)，我们可以开箱即用。
 
 ### 内置报告器:
 

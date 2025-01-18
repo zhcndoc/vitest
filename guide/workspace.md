@@ -42,7 +42,7 @@ export default defineConfig({
 Vitest 会将 `packages` 中的每个文件夹视为一个独立的项目，即使它里面没有配置文件。如果这个全局模式匹配到任何文件，即使文件名中没有 `vitest`，也会被视作 Vitest 的配置文件。
 
 ::: warning
-除非在工作区配置中明确指定，否则 Vitest 不会将根配置文件 `vitest.config` 视为工作区项目。因此，根配置只会影响全局选项，如 `reporters` 和 `coverage`。
+Vitest 不会将根目录下的 `vitest.config` 文件视为工作区项目，除非在工作区配置中明确指定。因此，根配置只会影响全局选项，例如 `reporters` 和 `coverage`。请注意，Vitest 将始终运行根配置文件中指定的某些插件钩子，例如 `apply`、`config`、`configResolved` 或 `configureServer`。Vitest 还使用相同的插件来执行全局设置、工作区文件和自定义覆盖率提供者。
 :::
 
 你还可以使用项目的配置文件引用项目：
@@ -235,7 +235,7 @@ bun test --project e2e --project unit
 
 ## 配置
 
-没有任何配置选项从根级别的配置文件继承。你可以创建一个共享的配置文件，并将其与项目配置文件合并：
+即使工作区是在根级配置文件中定义的，而不是在单独的 `vitest.workspace` 文件中定义的，也不会从根级配置文件中继承任何配置选项。我们可以创建一个共享配置文件，并手动将其与项目配置合并：
 
 ```ts [packages/a/vitest.config.ts]
 import { defineProject, mergeConfig } from 'vitest/config'
@@ -251,7 +251,7 @@ export default mergeConfig(
 )
 ```
 
-此外，在 `defineWorkspace` 层级，您可以使用 `extends` 选项来继承根级别的配置。所有选项将被合并。
+此外，在 `defineWorkspace` 层级，我们可以使用 `extends` 选项来继承根级别的配置。所有选项将被合并。
 
 ::: code-group
 ```ts [vitest.workspace.ts]
@@ -275,8 +275,8 @@ export default defineWorkspace([
 ])
 ```
 ```ts [vitest.config.ts <Version>3.0.0</Version>]
-import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   plugins: [react()],
