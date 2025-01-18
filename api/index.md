@@ -39,7 +39,7 @@ interface TestOptions {
 
 :::
 
-大多数选项都支持点语法和对象语法，允许您使用您喜欢的任何样式。
+大多数选项都支持点语法和对象语法，允许我们使用我们喜欢的任何样式。
 
 :::code-group
 ```ts [dot-syntax]
@@ -1009,16 +1009,12 @@ describe.todo('unimplemented suite')
 
 - **类型:** `(cases: ReadonlyArray<T>, ...args: any[]): (name: string | Function, fn: (...args: T[]) => void, options?: number | TestOptions) => void`
 
-<<<<<<< HEAD
-如果有多个测试依赖于相同的数据，请使用 `describe.each` 。
-=======
 ::: tip
-While `describe.each` is provided for Jest compatibility,
-Vitest also has [`describe.for`](#describe-for) which simplifies argument types and aligns with [`test.for`](#test-for).
+虽然 `describe.each` 是为了兼容 Jest 提供的，
+但 Vitest 也有 [`describe.for`](#describe-for)，它简化了参数类型并与 [`test.for`](#test-for) 保持一致。
 :::
 
-Use `describe.each` if you have more than one test that depends on the same data.
->>>>>>> 59be9167059ae81c6da89e2926e136b892b8177a
+如果我们有多个依赖于相同数据的测试，请使用 `describe.each`。
 
 ```ts
 import { describe, expect, test } from 'vitest'
@@ -1277,13 +1273,10 @@ test('performs an organization query', async () => {
 ```
 
 ::: tip
-<<<<<<< HEAD
-该钩子总是以相反顺序调用，不受 [`sequence.hooks`](/config/#sequence-hooks) 选项的影响。
-=======
-This hook is always called in reverse order and is not affected by [`sequence.hooks`](/config/#sequence-hooks) option.
+此 hook 始终以相反的顺序调用，并且不受 [`sequence.hooks`](/config/#sequence-hooks) 选项的影响。
 
 <!-- TODO: should it be called? https://github.com/vitest-dev/vitest/pull/7069 -->
-Note that this hook is not called if test was skipped with a dynamic `ctx.skip()` call:
+请注意，如果测试是通过动态 `ctx.skip()` 调用跳过的，则不会调用此钩子。:
 
 ```ts{2}
 test('skipped dynamically', (t) => {
@@ -1291,7 +1284,6 @@ test('skipped dynamically', (t) => {
   t.skip()
 })
 ```
->>>>>>> 59be9167059ae81c6da89e2926e136b892b8177a
 :::
 
 ### onTestFailed
