@@ -46,7 +46,7 @@ _January 17, 2025_
 
 如果你之前没有使用过 Vitest，我们建议你先阅读[入门指南](/guide/)和[特性指南](/guide/features)。
 
-我们衷心感谢超过 [550 位 Vitest Core 的贡献者]((https://github.com/vitest-dev/vitest/graphs/contributors))，以及 Vitest 集成、工具和翻译的维护者和贡献者，他们帮助我们开发了这个新的主要版本。我们鼓励你参与进来，帮助我们为整个生态系统改进 Vitest。请在我们的[贡献指南](https://github.com/vitest-dev/vitest/blob/main/CONTRIBUTING.md)中了解更多信息。
+我们衷心感谢超过 [550 位 Vitest Core 的贡献者](https://github.com/vitest-dev/vitest/graphs/contributors)，以及 Vitest 集成、工具和翻译的维护者和贡献者，他们帮助我们开发了这个新的主要版本。我们鼓励你参与进来，帮助我们为整个生态系统改进 Vitest。请在我们的[贡献指南](https://github.com/vitest-dev/vitest/blob/main/CONTRIBUTING.md)中了解更多信息。
 
 如果你要开始参与，我们建议你帮助[分类问题](https://github.com/vitest-dev/vitest/issues)、[审查 PR](https://github.com/vitest-dev/vitest/pulls)、基于开放的问题发送包含失败测试的 PR，并在 [Discussions](https://github.com/vitest-dev/vitest/discussions) 和 Vitest Land 的帮助论坛中[帮助其他人](https://discord.com/channels/917386801235247114/1057959614160851024)。如果你想与我们交流，请加入我们的 [Discord 社区](http://chat.vitest.dev/)，并在 [#contributing 频道](https://discord.com/channels/917386801235247114/1057959614160851024)上打个招呼。
 
