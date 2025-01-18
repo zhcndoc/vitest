@@ -4,13 +4,13 @@ outline: deep
 
 # 配置索引
 
-如果我们正在使用 Vite 并且拥有一个 `vite.config` 文件，Vitest 会读取它来匹配我们的 Vite 应用的插件和设置。如果我们想要为测试配置不同的设置，或者我们的并不特别依赖于 Vite，您我们可以选择：
+如果我们正在使用 Vite 并且拥有一个 `vite.config` 文件，Vitest 会读取它来匹配我们的 Vite 应用的插件和设置。如果我们想要为测试配置不同的设置，或者我们的并不特别依赖于 Vite，我们我们可以选择：
 
 - 创建 `vitest.config.ts`，它将具有更高的优先级，并且会**覆盖** `vite.config.ts` 中的配置（Vitest 支持所有传统的 JS 和 TS 文件扩展名，但不支持 `json`） - 这意味着我们在 `vite.config` 中的所有选项将被**忽略**。
 - 向 CLI 传递 `--config` 选项，例如 `vitest --config ./path/to/vitest.config.ts`。
 - 使用 `process.env.VITEST` 或在 `defineConfig` 上的 `mode` 属性（如果没有用 `--mode` 覆盖，默认设置为 `test`/`benchmark`）来在 `vite.config.ts` 中有条件地应用不同的配置。
 
-要配置 Vitest 本身，请在我们的 Vite 配置中添加 `test` 属性。如果您是从 `vite` 本身导入 `defineConfig`，我们还需要在配置文件顶部使用[三斜杠指令](https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html#-reference-types-)添加对 Vitest 类型引用。
+要配置 Vitest 本身，请在我们的 Vite 配置中添加 `test` 属性。如果我们是从 `vite` 本身导入 `defineConfig`，我们还需要在配置文件顶部使用[三斜杠指令](https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html#-reference-types-)添加对 Vitest 类型引用。
 
 ::: details Open Config Examples
 使用 `vite` 中的 `defineConfig` 时使用以下步骤：
@@ -434,7 +434,7 @@ Vitest 使用 Vite SSR 基元来运行测试，这有[一定的缺陷](https://v
 
 1. 别名只影响由[inlined](#server-deps-inline)模块直接用`import`关键字导入的模块（默认情况下所有源代码都是内联的）。
 2. Vitest 不支持对 `require` 调用进行别名。
-3. 如果您要别名外部依赖（例如，`react` -> `preact`），您可能需要别名实际的 `node_modules` 包，以使其适用于外部依赖。[Yarn](https://classic.yarnpkg.com/en/docs/cli/add/#toc-yarn-add-alias) 和 [pnpm](https://pnpm.io/aliases/) 都支持通过 `npm:` 前缀进行别名。
+3. 如果我们要别名外部依赖（例如，`react` -> `preact`），我们可能需要别名实际的 `node_modules` 包，以使其适用于外部依赖。[Yarn](https://classic.yarnpkg.com/en/docs/cli/add/#toc-yarn-add-alias) 和 [pnpm](https://pnpm.io/aliases/) 都支持通过 `npm:` 前缀进行别名。
    :::
 
 ### globals
@@ -700,7 +700,7 @@ export default defineConfig({
 - **命令行终端:** `--dir=<path>`
 - **默认值:** same as `root`
 
-扫描测试文件的基本目录。如果您的根目录覆盖整个项目，您可以指定此选项以加快测试发现速度
+扫描测试文件的基本目录。如果我们的根目录覆盖整个项目，我们可以指定此选项以加快测试发现速度
 
 ### reporters<NonProjectOption />
 
@@ -1230,7 +1230,7 @@ declare module 'vitest' {
 }
 ```
 :::
-自 Vitest  3起，我们可以定义一个自定义回调函数，在 Vitest 重新运行测试时被调用。如果该函数是异步的，运行器将在执行测试前等待其完成。请注意，您不能像 `{ onTestsRerun }` 那样解构 `project` ，因为它依赖于上下文环境。
+自 Vitest  3起，我们可以定义一个自定义回调函数，在 Vitest 重新运行测试时被调用。如果该函数是异步的，运行器将在执行测试前等待其完成。请注意，我们不能像 `{ onTestsRerun }` 那样解构 `project` ，因为它依赖于上下文环境。
 
 ```ts [globalSetup.ts]
 import type { TestProject } from 'vitest/node'
@@ -1259,7 +1259,7 @@ test('execute a script', async () => {
 ```
 
 :::tip 提醒
-请确保您的文件没有被 [`server.watch.ignored`](https://vitejs.dev/config/server-options.html#server-watch)排除在外。
+请确保我们的文件没有被 [`server.watch.ignored`](https://vitejs.dev/config/server-options.html#server-watch)排除在外。
 :::
 
 ### coverage<NonProjectOption />
@@ -1357,12 +1357,8 @@ export default defineConfig({
 ```
 
 ::: tip NOTE
-<<<<<<< HEAD
-Vitest 会自动将测试文件的 `include` 模式添加到 `coverage.exclude` 的默认值中。
-=======
-Vitest automatically adds test files `include` patterns to the `coverage.exclude`.
-It's not possible to show coverage of test files.
->>>>>>> 59be9167059ae81c6da89e2926e136b892b8177a
+Vitest 会自动将测试文件的 `include` 模式添加到 `coverage.exclude` 中。
+无法显示测试文件的覆盖率。
 :::
 
 #### coverage.all
@@ -1992,7 +1988,7 @@ export default defineConfig({
 })
 ```
 
-您可以使用 `process.env.VITEST` 来限制目录，使其仅用于 Vitest：
+我们可以使用 `process.env.VITEST` 来限制目录，使其仅用于 Vitest：
 
 ```ts
 import { defineConfig } from 'vitest/config'
@@ -2441,11 +2437,11 @@ Since Vitest 3, you can also define the workspace array in the root config. If t
 - **类型:** `boolean`
 - **默认值:** `false`
 
-Vitest API 在 [reporters](#reporters) 中接收任务时是否应包含`location`属性。如果您有大量测试，这可能会导致性能小幅下降。
+Vitest API 在 [reporters](#reporters) 中接收任务时是否应包含`location`属性。如果我们有大量测试，这可能会导致性能小幅下降。
 
 `location` 属性的 `列` 和 `行` 值与原始文件中的 `test` 或 `describe` 位置相对应。
 
-如果您没有明确禁用该选项，并且在运行 Vitest 时使用了该选项，则该选项将自动启用：
+如果我们没有明确禁用该选项，并且在运行 Vitest 时使用了该选项，则该选项将自动启用：
 - [Vitest UI](/guide/ui)
 - 或使用不带 [headless](/guide/browser/#headless) 模式的 [浏览器模式](/guide/browser/)
 - 或使用[HTML 报告器](/guide/reporters#html-reporter)
@@ -2500,14 +2496,14 @@ export interface SnapshotEnvironment {
 与每次测试开始时调用 [`expect.hasAssertions()`](/api/expect#expect-hasassertions) 相同。这可确保不会意外通过任何测试。
 
 ::: tip
-这仅适用于 Vitest 的`expect`。如果您使用`assert`或`.should`断言，它们将不计算在内，并且您的测试将因缺少 expect 断言而失败。
+这仅适用于 Vitest 的`expect`。如果我们使用`assert`或`.should`断言，它们将不计算在内，并且我们的测试将因缺少 expect 断言而失败。
 
-您可以通过调用 `vi.setConfig({ expect: { requireAssertions: false } })` 来更改此值。该配置将应用于每个后续 `expect` 调用，直到手动调用 `vi.resetConfig`。
+我们可以通过调用 `vi.setConfig({ expect: { requireAssertions: false } })` 来更改此值。该配置将应用于每个后续 `expect` 调用，直到手动调用 `vi.resetConfig`。
 :::
 
 #### expect.poll
 
-[`expect.poll`](/api/expect#poll) 的全局配置选项。这些选项与您可以传递给 `expect.poll(condition, options)` 的选项相同。
+[`expect.poll`](/api/expect#poll) 的全局配置选项。这些选项与我们可以传递给 `expect.poll(condition, options)` 的选项相同。
 
 ##### expect.poll.interval
 
