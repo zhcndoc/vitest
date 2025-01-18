@@ -1,6 +1,6 @@
-# Browser Config Reference
+# 浏览器配置参考
 
-You can change the browser configuration by updating the `test.browser` field in your [config file](/config/). An example of a simple config file:
+我们可以通过更新 [配置文件](/config/) 中的 `test.browser` 字段来更改浏览器配置。一个简单的配置文件示例如下：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
@@ -21,10 +21,10 @@ export default defineConfig({
 })
 ```
 
-Please, refer to the ["Config Reference"](/config/) article for different config examples.
+请参阅 ["配置参考"](/config/) 文章以获取不同的配置示例。
 
 ::: warning
-_All listed options_ on this page are located within a `test` property inside the configuration:
+此页面上列出的 _所有选项_ 都位于配置中的 `test` 属性内：
 
 ```ts [vitest.config.js]
 export default defineConfig({
@@ -37,24 +37,24 @@ export default defineConfig({
 
 ## browser.enabled
 
-- **Type:** `boolean`
-- **Default:** `false`
+- **类型:** `boolean`
+- **默认值:** `false`
 - **CLI:** `--browser`, `--browser.enabled=false`
 
-Run all tests inside a browser by default. Note that `--browser` only works if you have at least one [`browser.instances`](#browser-instances) item.
+默认情况下在浏览器中运行所有测试。请注意，`--browser` 仅在我们至少有一个 [`browser.instances`](#browser-instances) 项时有效。
 
 ## browser.instances
 
-- **Type:** `BrowserConfig`
-- **Default:** `[{ browser: name }]`
+- **类型:** `BrowserConfig`
+- **默认值:** `[{ browser: name }]`
 
-Defines multiple browser setups. Every config has to have at least a `browser` field. The config supports your providers configurations:
+定义多个浏览器设置。每个配置必须至少有一个 `browser` 字段。配置支持我们的提供者配置：
 
-- [Configuring Playwright](/guide/browser/playwright)
-- [Configuring WebdriverIO](/guide/browser/webdriverio)
+- [配置 Playwright](/guide/browser/playwright)
+- [配置 WebdriverIO](/guide/browser/webdriverio)
 
 ::: tip
-To have a better type safety when using built-in providers, you should reference one of these types (for provider that you are using) in your [config file](/config/):
+为了在使用内置提供者时获得更好的类型安全性，我们应该在 [配置文件](/config/) 中引用以下类型之一（针对我们使用的提供者）：
 
 ```ts
 /// <reference types="@vitest/browser/providers/playwright" />
@@ -62,10 +62,10 @@ To have a better type safety when using built-in providers, you should reference
 ```
 :::
 
-In addition to that, you can also specify most of the [project options](/config/) (not marked with a <NonProjectOption /> icon) and some of the `browser` options like `browser.testerHtmlPath`.
+除此之外，我们还可以指定大多数 [项目选项](/config/)（未标记为 <NonProjectOption /> 图标的选项）和一些 `browser` 选项，例如 `browser.testerHtmlPath`。
 
 ::: warning
-Every browser config inherits options from the root config:
+每个浏览器配置都从根配置继承选项：
 
 ```ts{3,9} [vitest.config.ts]
 export default defineConfig({
@@ -76,9 +76,9 @@ export default defineConfig({
       testerHtmlPath: './custom-path.html',
       instances: [
         {
-          // will have both setup files: "root" and "browser"
+          // 将同时具有 "root" 和 "browser" 的设置文件
           setupFile: ['./browser-setup-file.js'],
-          // implicitly has "testerHtmlPath" from the root config // [!code warning]
+          // 隐式具有根配置中的 "testerHtmlPath" // [!code warning]
           // testerHtmlPath: './custom-path.html', // [!code warning]
         },
       ],
@@ -87,12 +87,12 @@ export default defineConfig({
 })
 ```
 
-During development, Vitest supports only one [non-headless](#browser-headless) configuration. You can limit the headed project yourself by specifying `headless: false` in the config, or by providing the `--browser.headless=false` flag, or by filtering projects with `--project=chromium` flag.
+在开发过程中，Vitest 仅支持一个 [非无头](#browser-headless) 配置。我们可以通过在配置中指定 `headless: false`，或提供 `--browser.headless=false` 标志，或使用 `--project=chromium` 标志过滤项目来限制有头项目。
 
-For more examples, refer to the ["Multiple Setups" guide](/guide/browser/multiple-setups).
+有关更多示例，请参阅 ["多设置" 指南](/guide/browser/multiple-setups)。
 :::
 
-List of available `browser` options:
+可用的 `browser` 选项列表：
 
 - [`browser.headless`](#browser-headless)
 - [`browser.locators`](#browser-locators)
@@ -101,66 +101,66 @@ List of available `browser` options:
 - [`browser.screenshotDirectory`](#browser-screenshotdirectory)
 - [`browser.screenshotFailures`](#browser-screenshotfailures)
 
-By default, Vitest creates an array with a single element which uses the [`browser.name`](#browser-name) field as a `browser`. Note that this behaviour will be removed with Vitest 4.
+默认情况下，Vitest 创建一个包含单个元素的数组，该元素使用 [`browser.name`](#browser-name) 字段作为 `browser`。请注意，此行为将在 Vitest 4 中移除。
 
-Under the hood, Vitest transforms these instances into separate [test projects](/advanced/api/test-project) sharing a single Vite server for better caching performance.
+在底层，Vitest 将这些实例转换为共享单个 Vite 服务器的单独 [测试项目](/advanced/api/test-project)，以获得更好的缓存性能。
 
-## browser&#46;name <Badge type="danger">deprecated</Badge> {#browser-name}
+## browser&#46;name <Badge type="danger">已弃用</Badge> {#browser-name}
 
-- **Type:** `string`
+- **类型:** `string`
 - **CLI:** `--browser=safari`
 
 ::: danger
-This API is deprecated an will be removed in Vitest 4. Please, use [`browser.instances`](#browser-instances) option instead.
+此 API 已弃用，并将在 Vitest 4 中移除。请改用 [`browser.instances`](#browser-instances) 选项。
 :::
 
-Run all tests in a specific browser. Possible options in different providers:
+在特定浏览器中运行所有测试。不同提供者中的可能选项：
 
 - `webdriverio`: `firefox`, `chrome`, `edge`, `safari`
 - `playwright`: `firefox`, `webkit`, `chromium`
-- custom: any string that will be passed to the provider
+- 自定义：任何将传递给提供者的字符串
 
 ## browser.headless
 
-- **Type:** `boolean`
-- **Default:** `process.env.CI`
+- **类型:** `boolean`
+- **默认值:** `process.env.CI`
 - **CLI:** `--browser.headless`, `--browser.headless=false`
 
-Run the browser in a `headless` mode. If you are running Vitest in CI, it will be enabled by default.
+在 `headless` 模式下运行浏览器。如果我们在 CI 中运行 Vitest，则默认启用此模式。
 
 ## browser.isolate
 
-- **Type:** `boolean`
-- **Default:** `true`
+- **类型:** `boolean`
+- **默认值:** `true`
 - **CLI:** `--browser.isolate`, `--browser.isolate=false`
 
-Run every test in a separate iframe.
+在单独的 iframe 中运行每个测试。
 
 ## browser.testerHtmlPath
 
-- **Type:** `string`
+- **类型:** `string`
 
-A path to the HTML entry point. Can be relative to the root of the project. This file will be processed with [`transformIndexHtml`](https://vite.dev/guide/api-plugin#transformindexhtml) hook.
+HTML 入口点的路径。可以是相对于项目根目录的路径。此文件将通过 [`transformIndexHtml`](https://vite.dev/guide/api-plugin#transformindexhtml) 钩子进行处理。
 
 ## browser.api
 
-- **Type:** `number | { port?, strictPort?, host? }`
-- **Default:** `63315`
+- **类型:** `number | { port?, strictPort?, host? }`
+- **默认值:** `63315`
 - **CLI:** `--browser.api=63315`, `--browser.api.port=1234, --browser.api.host=example.com`
 
-Configure options for Vite server that serves code in the browser. Does not affect [`test.api`](#api) option. By default, Vitest assigns port `63315` to avoid conflicts with the development server, allowing you to run both in parallel.
+配置为浏览器提供代码的 Vite 服务器的选项。不影响 [`test.api`](#api) 选项。默认情况下，Vitest 分配端口 `63315` 以避免与开发服务器冲突，允许我们同时运行两者。
 
-## browser.provider <Badge type="warning">experimental</Badge> {#browser-provider}
+## browser.provider <Badge type="warning">实验性</Badge> {#browser-provider}
 
-- **Type:** `'webdriverio' | 'playwright' | 'preview' | string`
-- **Default:** `'preview'`
+- **类型:** `'webdriverio' | 'playwright' | 'preview' | string`
+- **默认值:** `'preview'`
 - **CLI:** `--browser.provider=playwright`
 
-::: danger ADVANCED API
-The provider API is highly experimental and can change between patches. If you just need to run tests in a browser, use the [`browser.instances`](#browser-instances) option instead.
+::: danger 高级 API
+提供者 API 是高度实验性的，可能会在补丁之间发生变化。如果我们只需要在浏览器中运行测试，请改用 [`browser.instances`](#browser-instances) 选项。
 :::
 
-Path to a provider that will be used when running browser tests. Vitest provides three providers which are `preview` (default), `webdriverio` and `playwright`. Custom providers should be exported using `default` export and have this shape:
+运行浏览器测试时使用的提供者路径。Vitest 提供了三个提供者，分别是 `preview`（默认）、`webdriverio` 和 `playwright`。自定义提供者应使用 `default` 导出，并具有以下形状：
 
 ```ts
 export interface BrowserProvider {
@@ -173,22 +173,22 @@ export interface BrowserProvider {
   openPage: (sessionId: string, url: string, beforeNavigate?: () => Promise<void>) => Promise<void>
   getCDPSession?: (sessionId: string) => Promise<CDPSession>
   close: () => Awaitable<void>
-  initialize(
+  initialize: (
     ctx: TestProject,
     options: BrowserProviderInitializationOptions
-  ): Awaitable<void>
+  ) => Awaitable<void>
 }
 ```
 
-## browser.providerOptions <Badge type="danger">deprecated</Badge> {#browser-provideroptions}
+## browser.providerOptions <Badge type="danger">已弃用</Badge> {#browser-provideroptions}
 
-- **Type:** `BrowserProviderOptions`
+- **类型:** `BrowserProviderOptions`
 
 ::: danger
-This API is deprecated an will be removed in Vitest 4. Please, use [`browser.instances`](#browser-instances) option instead.
+此 API 已弃用，并将在 Vitest 4 中移除。请改用 [`browser.instances`](#browser-instances) 选项。
 :::
 
-Options that will be passed down to provider when calling `provider.initialize`.
+调用 `provider.initialize` 时传递给提供者的选项。
 
 ```ts
 import { defineConfig } from 'vitest/config'
@@ -207,7 +207,7 @@ export default defineConfig({
 ```
 
 ::: tip
-To have a better type safety when using built-in providers, you should reference one of these types (for provider that you are using) in your [config file](/config/):
+为了在使用内置提供者时获得更好的类型安全性，我们应该在 [配置文件](/config/) 中引用以下类型之一（针对我们使用的提供者）：
 
 ```ts
 /// <reference types="@vitest/browser/providers/playwright" />
@@ -217,78 +217,78 @@ To have a better type safety when using built-in providers, you should reference
 
 ## browser.ui
 
-- **Type:** `boolean`
-- **Default:** `!isCI`
+- **类型:** `boolean`
+- **默认值:** `!isCI`
 - **CLI:** `--browser.ui=false`
 
-Should Vitest UI be injected into the page. By default, injects UI iframe during development.
+是否应将 Vitest UI 注入页面。默认情况下，在开发期间注入 UI iframe。
 
 ## browser.viewport
 
-- **Type:** `{ width, height }`
-- **Default:** `414x896`
+- **类型:** `{ width, height }`
+- **默认值:** `414x896`
 
-Default iframe's viewport.
+默认 iframe 的视口。
 
 ## browser.locators
 
-Options for built-in [browser locators](/guide/browser/locators).
+内置 [浏览器定位器](/guide/browser/locators) 的选项。
 
 ### browser.locators.testIdAttribute
 
-- **Type:** `string`
-- **Default:** `data-testid`
+- **类型:** `string`
+- **默认值:** `data-testid`
 
-Attribute used to find elements with `getByTestId` locator.
+用于通过 `getByTestId` 定位器查找元素的属性。
 
 ## browser.screenshotDirectory
 
-- **Type:** `string`
-- **Default:** `__snapshots__` in the test file directory
+- **类型:** `string`
+- **默认值:** 测试文件目录中的 `__snapshots__`
 
-Path to the screenshots directory relative to the `root`.
+相对于 `root` 的屏幕截图目录路径。
 
 ## browser.screenshotFailures
 
-- **Type:** `boolean`
-- **Default:** `!browser.ui`
+- **类型:** `boolean`
+- **默认值:** `!browser.ui`
 
-Should Vitest take screenshots if the test fails.
+如果测试失败，Vitest 是否应截取屏幕截图。
 
 ## browser.orchestratorScripts
 
-- **Type:** `BrowserScript[]`
-- **Default:** `[]`
+- **类型:** `BrowserScript[]`
+- **默认值:** `[]`
 
-Custom scripts that should be injected into the orchestrator HTML before test iframes are initiated. This HTML document only sets up iframes and doesn't actually import your code.
+在测试 iframe 初始化之前应注入到编排器 HTML 中的自定义脚本。此 HTML 文档仅设置 iframe，并不实际导入我们的代码。
 
-The script `src` and `content` will be processed by Vite plugins. Script should be provided in the following shape:
+脚本的 `src` 和 `content` 将由 Vite 插件处理。脚本应提供以下形状：
 
 ```ts
 export interface BrowserScript {
   /**
-   * If "content" is provided and type is "module", this will be its identifier.
+   * 如果提供了 "content" 并且类型为 "module"，则这将是其标识符。
    *
-   * If you are using TypeScript, you can add `.ts` extension here for example.
+   * 如果我们使用的是 TypeScript，可以在此处添加 `.ts` 扩展名。
    * @default `injected-${index}.js`
    */
   id?: string
   /**
-   * JavaScript content to be injected. This string is processed by Vite plugins if type is "module".
+   * 要注入的 JavaScript 内容。如果类型为 "module"，则此字符串由 Vite 插件处理。
    *
-   * You can use `id` to give Vite a hint about the file extension.
+   * 我们可以使用 `id` 为 Vite 提供文件扩展名的提示。
    */
   content?: string
   /**
-   * Path to the script. This value is resolved by Vite so it can be a node module or a file path.
+   * 脚本的路径。此值由 Vite 解析，因此它可以是节点模块或文件路径。
    */
   src?: string
   /**
-   * If the script should be loaded asynchronously.
+   * 脚本是否应异步加载。
    */
   async?: boolean
   /**
-   * Script type.
+   * 脚本类型。
    * @default 'module'
    */
   type?: string
@@ -297,31 +297,31 @@ export interface BrowserScript {
 
 ## browser.testerScripts
 
-- **Type:** `BrowserScript[]`
-- **Default:** `[]`
+- **类型:** `BrowserScript[]`
+- **默认值:** `[]`
 
 ::: danger
-This API is deprecated an will be removed in Vitest 4. Please, use [`browser.testerHtmlPath`](#browser-testerhtmlpath) field instead.
+此 API 已弃用，并将在 Vitest 4 中移除。请改用 [`browser.testerHtmlPath`](#browser-testerhtmlpath) 字段。
 :::
 
-Custom scripts that should be injected into the tester HTML before the tests environment is initiated. This is useful to inject polyfills required for Vitest browser implementation. It is recommended to use [`setupFiles`](#setupfiles) in almost all cases instead of this.
+在测试环境初始化之前应注入到测试器 HTML 中的自定义脚本。这对于注入 Vitest 浏览器实现所需的 polyfill 非常有用。在几乎所有情况下，建议使用 [`setupFiles`](#setupfiles) 代替此选项。
 
-The script `src` and `content` will be processed by Vite plugins.
+脚本的 `src` 和 `content` 将由 Vite 插件处理。
 
 ## browser.commands
 
-- **Type:** `Record<string, BrowserCommand>`
-- **Default:** `{ readFile, writeFile, ... }`
+- **类型:** `Record<string, BrowserCommand>`
+- **默认值:** `{ readFile, writeFile, ... }`
 
-Custom [commands](/guide/browser/commands) that can be imported during browser tests from `@vitest/browser/commands`.
+可以从 `@vitest/browser/commands` 导入的自定义 [命令](/guide/browser/commands)。
 
 ## browser.connectTimeout
 
-- **Type:** `number`
-- **Default:** `60_000`
+- **类型:** `number`
+- **默认值:** `60_000`
 
-The timeout in milliseconds. If connection to the browser takes longer, the test suite will fail.
+超时时间（以毫秒为单位）。如果连接到浏览器的时间超过此时间，测试套件将失败。
 
 ::: info
-This is the time it should take for the browser to establish the WebSocket connection with the Vitest server. In normal circumstances, this timeout should never be reached.
+这是浏览器与 Vitest 服务器建立 WebSocket 连接所需的时间。在正常情况下，此超时不应被触发。
 :::

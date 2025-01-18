@@ -35,7 +35,7 @@ bunx vitest init browser
 
 ### 手动安装
 
-您也可以手动安装软件包。默认情况下，浏览器模式不需要任何额外的 E2E provider 就能在本地运行测试，因为它会复用你现有的浏览器。
+我们也可以手动安装软件包。默认情况下，浏览器模式不需要任何额外的 E2E provider 就能在本地运行测试，因为它会复用你现有的浏览器。
 
 ::: code-group
 ```bash [npm]
@@ -53,7 +53,7 @@ bun add -D vitest @vitest/browser
 :::
 
 ::: warning
-不过，要在 CI 中运行测试，您需要安装 [`playwright`](https://npmjs.com/package/playwright) 或 [`webdriverio`](https://www.npmjs.com/package/webdriverio) 。我们还建议在本地测试时切换到这两个选项中的一个，而不是使用默认的 `preview` 提供程序，因为它依赖于模拟事件而不是使用 Chrome DevTools 协议。
+不过，要在 CI 中运行测试，我们需要安装 [`playwright`](https://npmjs.com/package/playwright) 或 [`webdriverio`](https://www.npmjs.com/package/webdriverio) 。我们还建议在本地测试时切换到这两个选项中的一个，而不是使用默认的 `preview` 提供程序，因为它依赖于模拟事件而不是使用 Chrome DevTools 协议。
 
 如果我们尚未使用这些工具中的任何一个，我们建议从 Playwright 开始，因为它支持并行执行，这可以使我们的测试运行得更快。此外，Playwright 使用的是 [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/) ，通常比 WebDriver 更快。
 
@@ -76,7 +76,7 @@ bun add -D vitest @vitest/browser playwright
 ```
 == WebdriverIO
 
-[WebdriverIO](https://www.npmjs.com/package/webdriverio) 允许您使用 WebDriver 协议在本地运行测试。
+[WebdriverIO](https://www.npmjs.com/package/webdriverio) 允许我们使用 WebDriver 协议在本地运行测试。
 
 ::: code-group
 ```bash [npm]
@@ -116,15 +116,15 @@ export default defineConfig({
 ::: info
 Vitest 默认分配端口号 `63315` 以避免与开发服务器冲突，允许我们同时并行运行两者。我们可以通过 [`browser.api`](/config/#browser-api) 选项来更改这个端口号。
 
-自 Vitest 2.1.5 版本起，命令行界面（CLI）不再自动打印 Vite 的 URL。当您在观察模式下运行时，可以通过按 "b" 键来打印 URL。
+自 Vitest 2.1.5 版本起，命令行界面（CLI）不再自动打印 Vite 的 URL。当我们在观察模式下运行时，可以通过按 "b" 键来打印 URL。
 :::
 
 如果之前未使用过 Vite，请确保已安装框架插件并在配置中指定。有些框架可能需要额外配置才能运行，请查看其 Vite 相关文档以确定。
 
 ::: code-group
 ```ts [react]
-import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   plugins: [react()],
@@ -140,8 +140,8 @@ export default defineConfig({
 })
 ```
 ```ts [vue]
-import { defineConfig } from 'vitest/config'
 import vue from '@vitejs/plugin-vue'
+import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   plugins: [vue()],
@@ -157,8 +157,8 @@ export default defineConfig({
 })
 ```
 ```ts [svelte]
-import { defineConfig } from 'vitest/config'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
+import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   plugins: [svelte()],
@@ -174,8 +174,8 @@ export default defineConfig({
 })
 ```
 ```ts [solid]
-import { defineConfig } from 'vitest/config'
 import solidPlugin from 'vite-plugin-solid'
+import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   plugins: [solidPlugin()],
@@ -191,8 +191,8 @@ export default defineConfig({
 })
 ```
 ```ts [marko]
-import { defineConfig } from 'vitest/config'
 import marko from '@marko/vite'
+import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   plugins: [marko()],
@@ -264,11 +264,7 @@ Vitest 中的浏览器选项取决于provider。如果在配置文件中传递 `
 
 ## TypeScript
 
-<<<<<<< HEAD
-默认情况下，TypeScript 不识别 providers 选项和额外的 `expect` 属性。如果我们不使用任何 providers ，请确保在我们的测试、[setup 文件](/config/#setupfile) 或 [config 文件](/config/) 中的某处引用了 `@vitest/browser/matchers`，以获取额外的 `expect` 定义。如果我们使用自定义 providers ，请确保在同一文件中添加 `@vitest/browser/providers/playwright` 或 `@vitest/browser/providers/webdriverio`，以便 TypeScript 能够识别自定义选项的定义：
-=======
-By default, TypeScript doesn't recognize providers options and extra `expect` properties. If you don't use any providers, make sure the `@vitest/browser/matchers` is referenced somewhere in your tests, [setup file](/config/#setupfiles) or a [config file](/config/) to pick up the extra `expect` definitions. If you are using custom providers, make sure to add `@vitest/browser/providers/playwright` or `@vitest/browser/providers/webdriverio` to the same file so TypeScript can pick up definitions for custom options:
->>>>>>> 59be9167059ae81c6da89e2926e136b892b8177a
+默认情况下，TypeScript 无法识别 providers 选项和额外的 `expect` 属性。如果我们不使用任何 providers ，请确保在测试、[设置文件](/config/#setupfiles) 或 [配置文件](/config/) 中引用 `@vitest/browser/matchers`，以获取额外的 `expect` 定义。如果我们使用自定义 providers ，请确保在同一文件中添加 `@vitest/browser/providers/playwright` 或 `@vitest/browser/providers/webdriverio`，以便 TypeScript 可以获取自定义选项的定义：
 
 ::: code-group
 ```ts [default]
@@ -310,7 +306,7 @@ By default, TypeScript doesn't recognize providers options and extra `expect` pr
 
 ## 浏览器兼容性
 
-Vitest 使用 [Vite dev server](https://cn.vitejs.dev/guide/#browser-support) 来运行您的测试，因此我们只支持 [`esbuild.target`](https://cn.vitejs.dev/config/shared-options#esbuild)选项（默认为 `esnext`）中指定的功能。
+Vitest 使用 [Vite dev server](https://cn.vitejs.dev/guide/#browser-support) 来运行我们的测试，因此我们只支持 [`esbuild.target`](https://cn.vitejs.dev/config/shared-options#esbuild)选项（默认为 `esnext`）中指定的功能。
 
 默认情况下，Vite 的目标浏览器支持本地 [ES Modules](https://caniuse.com/es6-module)、本地 [ESM dynamic import](https://caniuse.com/es6-module-dynamic-import) 和 [`import.meta`](https://caniuse.com/mdn-javascript_operators_import_meta)。此外，我们还利用 [`BroadcastChannel`](https://caniuse.com/?search=BroadcastChannel)在 iframe 之间进行通信：
 
@@ -333,7 +329,7 @@ npx vitest --browser=chrome
 npx vitest --browser.headless
 ```
 
-默认情况下，Vitest 会自动打开浏览器用户界面进行开发。您的测试将在中间的 iframe 中运行。您可以通过选择首选尺寸、在测试中调用 `page.viewport` 或在 [the config](/config/#browser-viewport) 中设置默认值来配置视口。
+默认情况下，Vitest 会自动打开浏览器用户界面进行开发。我们的测试将在中间的 iframe 中运行。我们可以通过选择首选尺寸、在测试中调用 `page.viewport` 或在 [the config](/config/#browser-viewport) 中设置默认值来配置视口。
 
 ## Headless
 
@@ -365,7 +361,7 @@ npx vitest --browser.headless
 在这种情况下，Vitest 将使用 Chrome 浏览器以 headless 模式运行。
 
 ::: warning
-默认情况下Headless模式不可用。您需要使用 [`playwright`](https://npmjs.com/package/playwright) 或 [`webdriverio`](https://www.npmjs.com/package/webdriverio) 提供程序来启用此功能。
+默认情况下Headless模式不可用。我们需要使用 [`playwright`](https://npmjs.com/package/playwright) 或 [`webdriverio`](https://www.npmjs.com/package/webdriverio) 提供程序来启用此功能。
 :::
 
 ## Examples
@@ -373,8 +369,8 @@ npx vitest --browser.headless
 一般情况下，我们不需要任何依赖来使用浏览器模式：
 
 ```js [example.test.js]
-import { expect, test } from 'vitest'
 import { page } from '@vitest/browser/context'
+import { expect, test } from 'vitest'
 import { render } from './my-render-function.js'
 
 test('properly handles form inputs', async () => {
@@ -400,17 +396,17 @@ test('properly handles form inputs', async () => {
 - [`vitest-browser-svelte`](https://github.com/vitest-dev/vitest-browser-svelte) 渲染 [svelte](https://svelte.dev) 组件
 - [`vitest-browser-react`](https://github.com/vitest-dev/vitest-browser-react) 渲染 [react](https://react.dev) 组件
 
-如果您的框架没有包含此功能，请随意创建自己的软件包--它是框架渲染器和 `page.elementLocator` API 的简单封装。我们将在本页添加指向它的链接。请确保它的名称以 `vitest-browser-` 开头。
+如果我们的框架没有包含此功能，请随意创建自己的软件包--它是框架渲染器和 `page.elementLocator` API 的简单封装。我们将在本页添加指向它的链接。请确保它的名称以 `vitest-browser-` 开头。
 
 除了使用 `@testing-library/your-framework` 渲染组件和查询元素外，你还需要进行断言。Vitest 捆绑了 [`@testing-library/jest-dom`](https://github.com/testing-library/jest-dom)库，可提供各种开箱即用的 DOM 断言。更多信息请参阅 [Assertions API](/guide/browser/assertion-api)。
 
 ```ts
-import { expect } from 'vitest'
 import { page } from '@vitest/browser/context'
+import { expect } from 'vitest'
 // element is rendered correctly
 await expect.element(page.getByText('Hello World')).toBeInTheDocument()
 ```
-Vitest 公开了一个[Context API](/guide/browser/context)，其中包含一小套在测试中可能有用的实用程序。例如，如果您需要进行交互，如点击元素或在输入框中输入文本，您可以使用 `@vitest/browser/context` 中的 `userEvent`。更多信息请参阅 [Interactivity API](/guide/browser/interactivity-api)。
+Vitest 公开了一个[Context API](/guide/browser/context)，其中包含一小套在测试中可能有用的实用程序。例如，如果我们需要进行交互，如点击元素或在输入框中输入文本，我们可以使用 `@vitest/browser/context` 中的 `userEvent`。更多信息请参阅 [Interactivity API](/guide/browser/interactivity-api)。
 
 ```ts
 import { page, userEvent } from '@vitest/browser/context'
@@ -441,8 +437,8 @@ test('properly handles v-model', async () => {
 })
 ```
 ```ts [svelte]
-import { render } from 'vitest-browser-svelte'
 import { expect, test } from 'vitest'
+import { render } from 'vitest-browser-svelte'
 
 import Greeter from './greeter.svelte'
 
@@ -475,7 +471,7 @@ test('loads and displays greeting', async () => {
 ```
 :::
 
-Vitest 并不支持所有开箱即用的框架，但您可以使用外部工具来运行这些框架的测试。我们还鼓励社区创建他们自己的 `vitest-browser` 封装程序，如果您有这样的封装程序，请随时将其添加到上述示例中。
+Vitest 并不支持所有开箱即用的框架，但我们可以使用外部工具来运行这些框架的测试。我们还鼓励社区创建他们自己的 `vitest-browser` 封装程序，如果我们有这样的封装程序，请随时将其添加到上述示例中。
 
 对于不支持的框架，我们建议使用 `testing-library` 软件包：
 
@@ -494,9 +490,9 @@ Vitest 并不支持所有开箱即用的框架，但您可以使用外部工具�
 // based on @testing-library/preact example
 // https://testing-library.com/docs/preact-testing-library/example
 
-import { h } from 'preact'
-import { page } from '@vitest/browser/context'
 import { render } from '@testing-library/preact'
+import { page } from '@vitest/browser/context'
+import { h } from 'preact'
 
 import HiddenMessage from '../hidden-message'
 

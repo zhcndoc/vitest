@@ -10,7 +10,7 @@ head:
       content: website
   - - meta
     - property: og:title
-      content: Announcing Vitest 3.0
+      content: Vitest 3.0 发布了!
   - - meta
     - property: og:image
       content: https://vitest.dev/og-vitest-3.jpg
@@ -25,7 +25,7 @@ head:
       content: summary_large_image
 ---
 
-# Vitest 3.0 is out!
+# Vitest 3.0 发布了!
 
 _January 17, 2025_
 
