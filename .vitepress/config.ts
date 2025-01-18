@@ -109,15 +109,6 @@ export default ({ mode }: { mode: string }) => {
 
       search: {
         provider: 'local',
-      /* provider: 'algolia',
-      options: {
-        appId: 'ZTF29HGJ69',
-        apiKey: '9c3ced6fed60d2670bb36ab7e8bed8bc',
-        indexName: 'vitest',
-        // searchParameters: {
-        //   facetFilters: ['tags:en'],
-        // },
-      }, */
       },
 
       carbonAds: {
@@ -150,22 +141,18 @@ export default ({ mode }: { mode: string }) => {
               activeMatch: '^/advanced/',
             },
             {
-<<<<<<< HEAD
-              text: '团队',
-              link: '/team',
-=======
               items: [
                 {
-                  text: 'Blog',
+                  text: '博客',
                   link: '/blog',
                 },
                 {
-                  text: 'Team',
+                  text: '团队',
                   link: '/team',
                 },
               ],
->>>>>>> 59be9167059ae81c6da89e2926e136b892b8177a
             },
+
           ],
         },
         {
