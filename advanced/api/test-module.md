@@ -10,34 +10,8 @@ if (task.type === 'module') {
 }
 ```
 
-<<<<<<< HEAD
-`TestModule` 继承了 [`TestSuite`](/advanced/api/test-suite) 的所有方法和属性。本指南将仅列出 `TestModule` 独有的方法和属性。
-
-::: warning
-我们计划引入一个新的 Reporter API，默认将使用此 API。目前，Reporter API 使用 [runner tasks](/advanced/runner#tasks)，但你仍然可以通过 `vitest.state.getReportedEntity` 方法访问 `TestModule`：
-
-```ts
-import type { RunnerTestFile, TestModule, Vitest } from 'vitest/node'
-
-class Reporter {
-  private vitest!: Vitest
-
-  onInit(vitest: Vitest) {
-    this.vitest = vitest
-  }
-
-  onFinished(files: RunnerTestFile[]) {
-    for (const file of files) {
-      const testModule = this.vitest.state.getReportedEntity(file) as TestModule
-      console.log(testModule) // TestModule
-    }
-  }
-}
-```
-=======
-::: warning Extending Suite Methods
-The `TestModule` class inherits all methods and properties from the [`TestSuite`](/advanced/api/test-suite). This guide will only list methods and properties unique to the `TestModule`.
->>>>>>> 59be9167059ae81c6da89e2926e136b892b8177a
+::: warning 扩展 Suite 的方法
+`TestModule` 类继承了 [`TestSuite`](/advanced/api/test-suite) 的所有方法和属性。本指南将列出 `TestModule` 独有的方法和属性。
 :::
 
 ## moduleId
@@ -56,7 +30,7 @@ The `TestModule` class inherits all methods and properties from the [`TestSuite`
 function state(): TestModuleState
 ```
 
-Works the same way as [`testSuite.state()`](/advanced/api/test-suite#state), but can also return `queued` if module wasn't executed yet.
+与 [`testSuite.state()`](/advanced/api/test-suite#state) 的工作方式相同，但如果模块尚未执行，还可以返回 `queued`。
 
 ## diagnostic
 

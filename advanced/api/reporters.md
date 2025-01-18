@@ -1,10 +1,10 @@
-# Reporters
+# 报告器 「Reporters」
 
 ::: warning
-This is an advanced API. If you just want to configure built-in reporters, read the ["Reporters"](/guide/reporters) guide.
+这是一个高级 API。如果我们只想配置内置的报告器，请阅读 ["Reporters"](/guide/reporters) 指南。
 :::
 
-Vitest has its own test run lifecycle. These are represented by reporter's methods:
+Vitest 拥有自己的测试运行生命周期。这些生命周期通过报告器的方法来表示：
 
 - [`onInit`](#oninit)
 - [`onTestRunStart`](#ontestrunstart)
@@ -26,11 +26,11 @@ Vitest has its own test run lifecycle. These are represented by reporter's metho
   - [`onTestModuleEnd`](#ontestmoduleend)
 - [`onTestRunEnd`](#ontestrunend)
 
-Tests and suites within a single module will be reported in order unless they were skipped. All skipped tests are reported at the end of suite/module.
+除非被跳过，否则单个模块中的测试和 reporters 将按顺序报告。所有跳过的测试将在 reporters /模块的末尾报告。
 
-Note that since test modules can run in parallel, Vitest will report them in parallel.
+请注意，由于测试模块可以并行运行，Vitest 将并行报告它们。
 
-This guide lists all supported reporter methods. However, don't forget that instead of creating your own reporter, you can [extend existing one](/advanced/reporters) instead:
+本指南列出了所有支持的报告器方法。不过，别忘了，与其创建自己的 报告器 ，我们可以[扩展现有的报告器](/advanced/reporters)：
 
 ```ts [custom-reporter.js]
 import { BaseReporter } from 'vitest/reporters'
@@ -49,15 +49,15 @@ export default class CustomReporter extends BaseReporter {
 function onInit(vitest: Vitest): Awaitable<void>
 ```
 
-This method is called when [Vitest](/advanced/api/vitest) was initiated or started, but before the tests were filtered.
+当 [Vitest](/advanced/api/vitest) 初始化或启动时，但在测试被过滤之前，会调用此方法。
 
 ::: info
-Internally this method is called inside [`vitest.start`](/advanced/api/vitest#start), [`vitest.init`](/advanced/api/vitest#init) or [`vitest.mergeReports`](/advanced/api/vitest#mergereports). If you are using programmatic API, make sure to call either one dependning on your needs before calling [`vitest.runTestSpecifications`](/advanced/api/vitest#runtestspecifications), for example. Built-in CLI will always run methods in correct order.
+在内部，此方法在 [`vitest.start`](/advanced/api/vitest#start)、[`vitest.init`](/advanced/api/vitest#init) 或 [`vitest.mergeReports`](/advanced/api/vitest#mergereports) 中调用。如果我们使用的是编程式 API，请确保根据需要在调用 [`vitest.runTestSpecifications`](/advanced/api/vitest#runtestspecifications) 之前调用其中之一。内置的 CLI 将始终按正确顺序运行方法。
 :::
 
-Note that you can also get access to `vitest` instance from test cases, suites and test modules via a [`project`](/advanced/api/test-project) property, but it might also be useful to store a reference to `vitest` in this method.
+请注意，我们还可以通过 [`project`](/advanced/api/test-project) 属性从测试用例、套件和测试模块中访问 `vitest` 实例，但在此方法中存储对 `vitest` 的引用也可能有用。
 
-::: details Example
+::: details 示例
 ```ts
 import type { Reporter, TestSpecification, Vitest } from 'vitest/node'
 
@@ -81,13 +81,13 @@ export default new MyReporter()
 ```
 :::
 
-## onBrowserInit <Badge type="warning">experimental</Badge> {#onbrowserinit}
+## onBrowserInit <Badge type="warning">实验性</Badge> {#onbrowserinit}
 
 ```ts
 function onBrowserInit(project: TestProject): Awaitable<void>
 ```
 
-This method is called when the browser instance is initiated. It receives an instance of the project for which the browser is initiated. `project.browser` will always be defined when this method is called.
+当浏览器实例初始化时调用此方法。它接收为其初始化浏览器的项目的实例。调用此方法时，`project.browser` 将始终被定义。
 
 ## onTestRunStart
 
@@ -97,11 +97,11 @@ function onTestRunStart(
 ): Awaitable<void>
 ```
 
-This method is called when a new test run has started. It receives an array of [test specifications](/advanced/api/test-specification) scheduled to run. This array is readonly and available only for information purposes.
+当新的测试运行开始时调用此方法。它接收计划运行的 [测试规范](/advanced/api/test-specification) 数组。此数组是只读的，仅用于信息目的。
 
-If Vitest didn't find any test files to run, this event will be invoked with an empty array, and then [`onTestRunEnd`](#ontestrunend) will be called immediately after.
+如果 Vitest 没有找到任何要运行的测试文件，此事件将以空数组调用，然后 [`onTestRunEnd`](#ontestrunend) 将立即被调用。
 
-::: details Example
+::: details 示例
 ```ts
 import type { Reporter, TestSpecification } from 'vitest/node'
 
@@ -115,8 +115,8 @@ export default new MyReporter()
 ```
 :::
 
-::: tip DEPRECATION NOTICE
-This method was added in Vitest 3, replacing `onPathsCollected` and `onSpecsCollected`, both of which are now deprecated.
+::: tip 弃用通知
+此方法在 Vitest 3 中添加，取代了 `onPathsCollected` 和 `onSpecsCollected`，这两个方法现在已被弃用。
 :::
 
 ## onTestRunEnd
@@ -129,21 +129,21 @@ function onTestRunEnd(
 ): Awaitable<void>
 ```
 
-This method is called after all tests have finished running and the coverage merged all reports, if it's enabled. Note that you can get the coverage information in [`onCoverage`](#oncoverage) hook.
+当所有测试完成运行并且覆盖率合并了所有报告（如果启用）时调用此方法。请注意，我们可以在 [`onCoverage`](#oncoverage) 钩子中获取覆盖率信息。
 
-It receives a readonly list of test modules. You can iterate over it via a [`testModule.children`](/advanced/api/test-collection) property to report the state and errors, if any.
+它接收一个只读的测试模块列表。我们可以通过 [`testModule.children`](/advanced/api/test-collection) 属性遍历它以报告状态和错误（如果有）。
 
-The second argument is a readonly list of unhandled errors that Vitest wasn't able to attribute to any test. These can happen outside of the test run because of an error in a plugin, or inside the test run as a side-effect of a non-awaited function (for example, a timeout that threw an error after the test has finished running).
+第二个参数是 Vitest 无法归因于任何测试的未处理错误的只读列表。这些错误可能发生在测试运行之外，例如插件中的错误，或者在测试运行中作为未等待函数的副作用（例如，在测试完成后抛出错误的超时）。
 
-The third argument indicated why the test run was finished:
+第三个参数指示测试运行结束的原因：
 
-- `passed`: test run was finished normally and there are no errors
-- `failed`: test run has at least one error (due to a syntax error during collection or an actual error during test execution)
-- `interrupted`: test was interruped by [`vitest.cancelCurrentRun`](/advanced/api/vitest#cancelcurrentrun) call or `Ctrl+C` was pressed in the terminal (note that it's still possible to have failed tests in this case)
+- `passed`：测试运行正常结束，没有错误
+- `failed`：测试运行至少有一个错误（由于收集期间的语法错误或测试执行期间的实际错误）
+- `interrupted`：测试被 [`vitest.cancelCurrentRun`](/advanced/api/vitest#cancelcurrentrun) 调用中断，或者在终端中按下了 `Ctrl+C`（请注意，在这种情况下仍可能有失败的测试）
 
-If Vitest didn't find any test files to run, this event will be invoked with empty arrays of modules and errors, and the state will depend on the value of [`config.passWithNoTests`](/config/#passwithnotests).
+如果 Vitest 没有找到任何要运行的测试文件，此事件将以空的模块和错误数组调用，状态将取决于 [`config.passWithNoTests`](/config/#passwithnotests) 的值。
 
-::: details Example
+::: details 示例
 ```ts
 import type {
   Reporter,
@@ -163,8 +163,8 @@ class MyReporter implements Reporter {
       testModules.forEach(module => console.log(module.moduleId, 'succeeded'))
     }
     else if (reason === 'failed') {
-      // note that this will skip possible errors in suites
-      // you can get them from testSuite.errors()
+      // 注意，这将跳过套件中可能的错误
+      // 我们可以从 testSuite.errors() 中获取它们
       for (const testCase of testModules.children.allTests()) {
         if (testCase.result().state === 'failed') {
           console.log(testCase.fullName, 'in', testCase.module.moduleId, 'failed')
@@ -182,8 +182,8 @@ export default new MyReporter()
 ```
 :::
 
-::: tip DEPRECATION NOTICE
-This method was added in Vitest 3, replacing `onFinished`, which is now deprecated.
+::: tip 弃用通知
+此方法在 Vitest 3 中添加，取代了 `onFinished`，后者现在已被弃用。
 :::
 
 ## onCoverage
@@ -192,7 +192,7 @@ This method was added in Vitest 3, replacing `onFinished`, which is now deprecat
 function onCoverage(coverage: unknown): Awaitable<void>
 ```
 
-This hook is called after coverage results have been processed. Coverage provider's reporters are called after this hook. The typings of `coverage` depends on the `coverage.provider`. For Vitest's default built-in providers you can import the types from `istanbul-lib-coverage` package:
+当覆盖率结果处理完毕后调用此钩子。覆盖率提供者的报告器在此钩子之后调用。`coverage` 的类型取决于 `coverage.provider`。对于 Vitest 的默认内置提供者，我们可以从 `istanbul-lib-coverage` 包中导入类型：
 
 ```ts
 import type { CoverageMap } from 'istanbul-lib-coverage'
@@ -200,7 +200,7 @@ import type { CoverageMap } from 'istanbul-lib-coverage'
 declare function onCoverage(coverage: CoverageMap): Awaitable<void>
 ```
 
-If Vitest didn't perform any coverage, this hook is not called.
+如果 Vitest 没有执行任何覆盖率，则不会调用此钩子。
 
 ## onTestModuleQueued
 
@@ -208,7 +208,7 @@ If Vitest didn't perform any coverage, this hook is not called.
 function onTestModuleQueued(testModule: TestModule): Awaitable<void>
 ```
 
-This method is called right before Vitest imports the setup file and the test module itself. This means that `testModule` will have no [`children`](/advanced/api/test-suite#children) yet, but you can start reporting it as the next test to run.
+在 Vitest 导入设置文件和测试模块本身之前调用此方法。这意味着 `testModule` 还没有 [`children`](/advanced/api/test-suite#children)，但我们可以开始将其报告为下一个要运行的测试。
 
 ## onTestModuleCollected
 
@@ -216,7 +216,7 @@ This method is called right before Vitest imports the setup file and the test mo
 function onTestModuleCollected(testModule: TestModule): Awaitable<void>
 ```
 
-This method is called when all tests inside the file were collected, meaning [`testModule.children`](/advanced/api/test-suite#children) collection is populated, but tests don't have any results yet.
+当文件中的所有测试都被收集时调用此方法，这意味着 [`testModule.children`](/advanced/api/test-suite#children) 集合已填充，但测试还没有任何结果。
 
 ## onTestModuleStart
 
@@ -224,7 +224,7 @@ This method is called when all tests inside the file were collected, meaning [`t
 function onTestModuleStart(testModule: TestModule): Awaitable<void>
 ```
 
-This method is called right after [`onTestModuleCollected`](#ontestmodulecollected) unless Vitest runs in collection mode ([`vitest.collect()`](/advanced/api/vitest#collect) or `vitest collect` in the CLI), in this case it will not be called at all because there are no tests to run.
+在 [`onTestModuleCollected`](#ontestmodulecollected) 之后立即调用此方法，除非 Vitest 在收集模式下运行（[`vitest.collect()`](/advanced/api/vitest#collect) 或 CLI 中的 `vitest collect`），在这种情况下，根本不会调用它，因为没有要运行的测试。
 
 ## onTestModuleEnd
 
@@ -232,7 +232,7 @@ This method is called right after [`onTestModuleCollected`](#ontestmodulecollect
 function onTestModuleEnd(testModule: TestModule): Awaitable<void>
 ```
 
-This method is called when every test in the module finished running. This means, every test inside [`testModule.children`](/advanced/api/test-suite#children) will have a `test.result()` that is not equal to `pending`.
+当模块中的每个测试完成运行时调用此方法。这意味着 [`testModule.children`](/advanced/api/test-suite#children) 中的每个测试都将有一个不等于 `pending` 的 `test.result()`。
 
 ## onHookStart
 
@@ -240,19 +240,19 @@ This method is called when every test in the module finished running. This means
 function onHookStart(context: ReportedHookContext): Awaitable<void>
 ```
 
-This method is called when any of these hooks have started running:
+当以下任何钩子开始运行时调用此方法：
 
 - `beforeAll`
 - `afterAll`
 - `beforeEach`
 - `afterEach`
 
-If `beforeAll` or `afterAll` are started, the `entity` will be either [`TestSuite`](/advanced/api/test-suite) or [`TestModule`](/advanced/api/test-module).
+如果 `beforeAll` 或 `afterAll` 开始，`entity` 将是 [`TestSuite`](/advanced/api/test-suite) 或 [`TestModule`](/advanced/api/test-module)。
 
-If `beforeEach` or `afterEach` are started, the `entity` will always be [`TestCase`](/advanced/api/test-case).
+如果 `beforeEach` 或 `afterEach` 开始，`entity` 将始终是 [`TestCase`](/advanced/api/test-case)。
 
 ::: warning
-`onHookStart` method will not be called if the hook did not run during the test run.
+如果钩子在测试运行期间没有运行，则不会调用 `onHookStart` 方法。
 :::
 
 ## onHookEnd
@@ -261,19 +261,19 @@ If `beforeEach` or `afterEach` are started, the `entity` will always be [`TestCa
 function onHookEnd(context: ReportedHookContext): Awaitable<void>
 ```
 
-This method is called when any of these hooks have finished running:
+当以下任何钩子完成运行时调用此方法：
 
 - `beforeAll`
 - `afterAll`
 - `beforeEach`
 - `afterEach`
 
-If `beforeAll` or `afterAll` have finished, the `entity` will be either [`TestSuite`](/advanced/api/test-suite) or [`TestModule`](/advanced/api/test-module).
+如果 `beforeAll` 或 `afterAll` 完成，`entity` 将是 [`TestSuite`](/advanced/api/test-suite) 或 [`TestModule`](/advanced/api/test-module)。
 
-If `beforeEach` or `afterEach` have finished, the `entity` will always be [`TestCase`](/advanced/api/test-case).
+如果 `beforeEach` 或 `afterEach` 完成，`entity` 将始终是 [`TestCase`](/advanced/api/test-case)。
 
 ::: warning
-`onHookEnd` method will not be called if the hook did not run during the test run.
+如果钩子在测试运行期间没有运行，则不会调用 `onHookEnd` 方法。
 :::
 
 ## onTestSuiteReady
@@ -282,9 +282,9 @@ If `beforeEach` or `afterEach` have finished, the `entity` will always be [`Test
 function onTestSuiteReady(testSuite: TestSuite): Awaitable<void>
 ```
 
-This method is called before the suite starts to run its tests. This method is also called if the suite was skipped.
+在套件开始运行其测试之前调用此方法。如果套件被跳过，也会调用此方法。
 
-If the file doesn't have any suites, this method will not be called. Consider using `onTestModuleStart` to cover this use case.
+如果文件没有任何套件，则不会调用此方法。考虑使用 `onTestModuleStart` 来覆盖此用例。
 
 ## onTestSuiteResult
 
@@ -292,9 +292,9 @@ If the file doesn't have any suites, this method will not be called. Consider us
 function onTestSuiteResult(testSuite: TestSuite): Awaitable<void>
 ```
 
-This method is called after the suite has finished running tests. This method is also called if the suite was skipped.
+在套件完成运行测试后调用此方法。如果套件被跳过，也会调用此方法。
 
-If the file doesn't have any suites, this method will not be called. Consider using `onTestModuleEnd` to cover this use case.
+如果文件没有任何套件，则不会调用此方法。考虑使用 `onTestModuleEnd` 来覆盖此用例。
 
 ## onTestCaseReady
 
@@ -302,10 +302,10 @@ If the file doesn't have any suites, this method will not be called. Consider us
 function onTestCaseReady(testCase: TestCase): Awaitable<void>
 ```
 
-This method is called before the test starts to run or it was skipped. Note that `beforeEach` and `afterEach` hooks are considered part of the test because they can influence the result.
+在测试开始运行或被跳过之前调用此方法。请注意，`beforeEach` 和 `afterEach` 钩子被视为测试的一部分，因为它们可能会影响结果。
 
 ::: warning
-Notice that it's possible to have [`testCase.result()`](/advanced/api/test-case#result) with `passed` or `failed` state already when `onTestCaseReady` is called. This can happen if test was running too fast and both `onTestCaseReady` and `onTestCaseResult` were scheduled to run in the same microtask.
+请注意，当调用 `onTestCaseReady` 时，[`testCase.result()`](/advanced/api/test-case#result) 可能已经具有 `passed` 或 `failed` 状态。如果测试运行得太快，并且 `onTestCaseReady` 和 `onTestCaseResult` 被安排在同一微任务中运行，则可能发生这种情况。
 :::
 
 ## onTestCaseResult
@@ -314,6 +314,6 @@ Notice that it's possible to have [`testCase.result()`](/advanced/api/test-case#
 function onTestCaseResult(testCase: TestCase): Awaitable<void>
 ```
 
-This method is called when the test has finished running or was just skipped. Note that this will be called after the `afterEach` hook is finished, if there are any.
+当测试完成运行或刚刚被跳过时调用此方法。请注意，如果有 `afterEach` 钩子，这将在 `afterEach` 钩子完成后调用。
 
-At this point, [`testCase.result()`](/advanced/api/test-case#result) will have non-pending state.
+此时，[`testCase.result()`](/advanced/api/test-case#result) 将具有非挂起状态。

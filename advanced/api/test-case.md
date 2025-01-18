@@ -10,34 +10,6 @@ if (task.type === 'test') {
 }
 ```
 
-<<<<<<< HEAD
-::: warning
-我们计划引入一个新的 Reporter API，默认将使用此 API。目前，Reporter API 使用 [runner tasks](/advanced/runner#tasks)，但您仍然可以通过 `vitest.state.getReportedEntity` 方法访问 `TestCase`：
-
-```ts
-import type { RunnerTestFile, TestModule, Vitest } from 'vitest/node'
-
-class Reporter {
-  private vitest!: Vitest
-
-  onInit(vitest: Vitest) {
-    this.vitest = vitest
-  }
-
-  onFinished(files: RunnerTestFile[]) {
-    for (const file of files) {
-      const testModule = this.vitest.getReportedEntity(file) as TestModule
-      for (const test of testModule.children.allTests()) {
-        console.log(test) // TestCase
-      }
-    }
-  }
-}
-```
-:::
-
-=======
->>>>>>> 59be9167059ae81c6da89e2926e136b892b8177a
 ## project
 
 这引用了测试所属的 [`TestProject`](/advanced/api/test-project)。
@@ -147,17 +119,6 @@ function ok(): boolean
 
 检查测试是否未使套件失败。如果测试尚未完成或被跳过，它将返回 `true`。
 
-<<<<<<< HEAD
-## skipped
-
-```ts
-function skipped(): boolean
-```
-
-检查测试是否在收集期间或通过 `ctx.skip()` 动态跳过。
-
-=======
->>>>>>> 59be9167059ae81c6da89e2926e136b892b8177a
 ## meta
 
 ```ts
@@ -184,10 +145,7 @@ test('the validation works correctly', ({ task }) => {
 function result(): TestResult
 ```
 
-<<<<<<< HEAD
-测试结果。如果测试在收集期间被跳过、尚未完成或只是被收集，则结果将为 `undefined`。
-=======
-Test results. If test is not finished yet or was just collected, it will be equal to `TestResultPending`:
+测试结果。如果测试尚未完成或刚刚开始收集，等于 `TestResultPending` ：
 
 ```ts
 export interface TestResultPending {
@@ -201,7 +159,6 @@ export interface TestResultPending {
   readonly errors: undefined
 }
 ```
->>>>>>> 59be9167059ae81c6da89e2926e136b892b8177a
 
 如果测试被跳过，返回值将是 `TestResultSkipped`：
 
@@ -242,11 +199,7 @@ interface TestResultFailed {
 }
 ```
 
-<<<<<<< HEAD
 如果测试通过，返回值将是 `TestResultPassed`：
-=======
-If the test passed, the return value will be `TestResultPassed`:
->>>>>>> 59be9167059ae81c6da89e2926e136b892b8177a
 
 ```ts
 interface TestResultPassed {
@@ -309,5 +262,5 @@ interface TestDiagnostic {
 ```
 
 ::: info
-`diagnostic()` will return `undefined` if the test was not scheduled to run yet.
+如果测试尚未被安排运行，`diagnostic()` 将返回 `undefined`。
 :::
