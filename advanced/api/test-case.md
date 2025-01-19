@@ -10,31 +10,6 @@ if (task.type === 'test') {
 }
 ```
 
-::: warning
-我们计划引入一个新的 Reporter API，默认将使用此 API。目前，Reporter API 使用 [runner tasks](/advanced/runner#tasks)，但您仍然可以通过 `vitest.state.getReportedEntity` 方法访问 `TestCase`：
-
-```ts
-import type { RunnerTestFile, TestModule, Vitest } from 'vitest/node'
-
-class Reporter {
-  private vitest!: Vitest
-
-  onInit(vitest: Vitest) {
-    this.vitest = vitest
-  }
-
-  onFinished(files: RunnerTestFile[]) {
-    for (const file of files) {
-      const testModule = this.vitest.getReportedEntity(file) as TestModule
-      for (const test of testModule.children.allTests()) {
-        console.log(test) // TestCase
-      }
-    }
-  }
-}
-```
-:::
-
 ## project
 
 这引用了测试所属的 [`TestProject`](/advanced/api/test-project)。
@@ -124,12 +99,13 @@ test('the validation works correctly', () => {
 
 ```ts
 interface TaskOptions {
-  each: boolean | undefined
-  concurrent: boolean | undefined
-  shuffle: boolean | undefined
-  retry: number | undefined
-  repeats: number | undefined
-  mode: 'run' | 'only' | 'skip' | 'todo'
+  readonly each: boolean | undefined
+  readonly fails: boolean | undefined
+  readonly concurrent: boolean | undefined
+  readonly shuffle: boolean | undefined
+  readonly retry: number | undefined
+  readonly repeats: number | undefined
+  readonly mode: 'run' | 'only' | 'skip' | 'todo'
 }
 ```
 
@@ -142,14 +118,6 @@ function ok(): boolean
 ```
 
 检查测试是否未使套件失败。如果测试尚未完成或被跳过，它将返回 `true`。
-
-## skipped
-
-```ts
-function skipped(): boolean
-```
-
-检查测试是否在收集期间或通过 `ctx.skip()` 动态跳过。
 
 ## meta
 
@@ -174,10 +142,23 @@ test('the validation works correctly', ({ task }) => {
 ## result
 
 ```ts
-function result(): TestResult | undefined
+function result(): TestResult
 ```
 
-测试结果。如果测试在收集期间被跳过、尚未完成或只是被收集，则结果将为 `undefined`。
+测试结果。如果测试尚未完成或刚刚开始收集，等于 `TestResultPending` ：
+
+```ts
+export interface TestResultPending {
+  /**
+   * The test was collected, but didn't finish running yet.
+   */
+  readonly state: 'pending'
+  /**
+   * Pending tests have no errors.
+   */
+  readonly errors: undefined
+}
+```
 
 如果测试被跳过，返回值将是 `TestResultSkipped`：
 
@@ -187,15 +168,15 @@ interface TestResultSkipped {
    * The test was skipped with `skip` or `todo` flag.
    * You can see which one was used in the `options.mode` option.
    */
-  state: 'skipped'
+  readonly state: 'skipped'
   /**
    * Skipped tests have no errors.
    */
-  errors: undefined
+  readonly errors: undefined
   /**
    * A custom note passed down to `ctx.skip(note)`.
    */
-  note: string | undefined
+  readonly note: string | undefined
 }
 ```
 
@@ -210,11 +191,11 @@ interface TestResultFailed {
   /**
    * The test failed to execute.
    */
-  state: 'failed'
+  readonly state: 'failed'
   /**
    * Errors that were thrown during the test execution.
    */
-  errors: TestError[]
+  readonly errors: ReadonlyArray<TestError>
 }
 ```
 
@@ -225,11 +206,11 @@ interface TestResultPassed {
   /**
    * The test passed successfully.
    */
-  state: 'passed'
+  readonly state: 'passed'
   /**
    * Errors that were thrown during the test execution.
    */
-  errors: TestError[] | undefined
+  readonly errors: ReadonlyArray<TestError> | undefined
 }
 ```
 
@@ -250,32 +231,36 @@ interface TestDiagnostic {
   /**
    * If the duration of the test is above `slowTestThreshold`.
    */
-  slow: boolean
+  readonly slow: boolean
   /**
    * The amount of memory used by the test in bytes.
    * This value is only available if the test was executed with `logHeapUsage` flag.
    */
-  heap: number | undefined
+  readonly heap: number | undefined
   /**
    * The time it takes to execute the test in ms.
    */
-  duration: number
+  readonly duration: number
   /**
    * The time in ms when the test started.
    */
-  startTime: number
+  readonly startTime: number
   /**
    * The amount of times the test was retried.
    */
-  retryCount: number
+  readonly retryCount: number
   /**
    * The amount of times the test was repeated as configured by `repeats` option.
    * This value can be lower if the test failed during the repeat and no `retry` is configured.
    */
-  repeatCount: number
+  readonly repeatCount: number
   /**
    * If test passed on a second retry.
    */
-  flaky: boolean
+  readonly flaky: boolean
 }
 ```
+
+::: info
+如果测试尚未被安排运行，`diagnostic()` 将返回 `undefined`。
+:::

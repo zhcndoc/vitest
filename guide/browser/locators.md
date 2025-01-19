@@ -7,7 +7,7 @@ outline: [2, 3]
 
 定位器是元素或多个元素的表示。每个定位器由一个称为选择器的字符串定义。Vitest 通过提供方便的方法在后台生成这些选择器，从而抽象了选择器。
 
-定位器 API 使用了 [Playwright 定位器](https://playwright.dev/docs/api/class-locator)的一个分支，称为 [Ivya](https://npmjs.com/ivya)。然而，Vitest 将此 API 提供给每一个 [provider](/guide/browser/#provider-configuration)。
+定位器 API 使用了 [Playwright 的定位器](https://playwright.dev/docs/api/class-locator) 的一个分支，称为 [Ivya](https://npmjs.com/ivya)。然而，Vitest 将此 API 提供给每个 [provider](/guide/browser/config.html#browser-provider)。
 
 ## getByRole
 
@@ -793,8 +793,8 @@ const test: BrowserCommand<string> = function test(context, selector) {
 ```
 
 ```ts [example.test.ts]
-import { test } from 'vitest'
 import { commands, page } from '@vitest/browser/context'
+import { test } from 'vitest'
 
 test('works correctly', async () => {
   await commands.test(page.getByText('Hello').selector) // ✅

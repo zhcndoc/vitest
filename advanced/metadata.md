@@ -20,25 +20,22 @@ test('custom', ({ task }) => {
 })
 ```
 
-一旦测试完成，Vitest 将使用 RPC 将包含结果和 `meta` 的任务发送到 Node.js 进程。要拦截和处理此任务，你可以利用报告器实现中可用的 `onTaskUpdate` 方法：
+一旦测试完成，Vitest 将通过 RPC 向 Node.js 进程发送一个包含结果和 meta 的任务，然后在 onTestCaseResult 和其他可以访问任务的钩子中报告它。要处理此测试用例，我们可以在报告器实现中使用 onTestCaseResult 方法：
 
 ```ts [custom-reporter.js]
-export default {
-  // you can intercept packs if needed
-  onTaskUpdate(packs) {
-    const [id, result, meta] = packs[0]
-  },
-  // meta is located on every task inside "onFinished"
-  onFinished(files) {
-    files[0].meta.done === true
-    files[0].tasks[0].meta.custom === 'some-custom-handler'
-  },
-}
-```
+import type { Reporter, TestCase, TestModule } from 'vitest/node'
 
-::: warning
-如果短时间内完成多个测试，Vitest 可以同时发送多个任务。
-:::
+export default {
+  onTestCaseResult(testCase: TestCase) {
+    // custom === 'some-custom-handler' ✅
+    const { custom } = testCase.meta()
+  },
+  onTestRunEnd(testModule: TestModule) {
+    testModule.meta().done === true
+    testModule.children.at(0).meta().custom === 'some-custom-handler'
+  }
+} satisfies Reporter
+```
 
 ::: danger BEWARE
 Vitest 使用不同的方法与 Node.js 进程进行通信。
@@ -56,9 +53,11 @@ Vitest 使用不同的方法与 Node.js 进程进行通信。
 
 ```ts
 const vitest = await createVitest('test')
-await vitest.start()
-vitest.state.getFiles()[0].meta.done === true
-vitest.state.getFiles()[0].tasks[0].meta.custom === 'some-custom-handler'
+const { testModules } = await vitest.start()
+
+const testModule = testModules[0]
+testModule.meta().done === true
+testModule.children.at(0).meta().custom === 'some-custom-handler'
 ```
 
 使用 TypeScript 时，还可以扩展类型定义：

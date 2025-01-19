@@ -10,31 +10,6 @@ if (task.type === 'suite') {
 }
 ```
 
-::: warning
-我们计划引入一个新的 Reporter API，默认将使用此 API。目前，Reporter API 使用 [runner tasks](/advanced/runner#tasks)，但你仍然可以通过 `vitest.state.getReportedEntity` 方法访问 `TestSuite`：
-
-```ts
-import type { RunnerTestFile, TestModule, Vitest } from 'vitest/node'
-
-class Reporter {
-  private vitest!: Vitest
-
-  onInit(vitest: Vitest) {
-    this.vitest = vitest
-  }
-
-  onFinished(files: RunnerTestFile[]) {
-    for (const file of files) {
-      const testModule = this.vitest.state.getReportedEntity(file) as TestModule
-      for (const suite of testModule.children.allSuites()) {
-        console.log(suite) // TestSuite
-      }
-    }
-  }
-}
-```
-:::
-
 ## project
 
 这引用了测试所属的 [`TestProject`](/advanced/api/test-project)。
@@ -125,12 +100,13 @@ describe('the validation works correctly', () => {
 
 ```ts
 interface TaskOptions {
-  each: boolean | undefined
-  concurrent: boolean | undefined
-  shuffle: boolean | undefined
-  retry: number | undefined
-  repeats: number | undefined
-  mode: 'run' | 'only' | 'skip' | 'todo'
+  readonly each: boolean | undefined
+  readonly fails: boolean | undefined
+  readonly concurrent: boolean | undefined
+  readonly shuffle: boolean | undefined
+  readonly retry: number | undefined
+  readonly repeats: number | undefined
+  readonly mode: 'run' | 'only' | 'skip' | 'todo'
 }
 ```
 
@@ -153,7 +129,21 @@ for (const task of suite.children) {
 ```
 
 ::: warning
-请注意，`suite.children` 只会迭代第一层嵌套，不会深入更多层次。
+请注意，`suite.children` 只会遍历第一层嵌套，不会深入嵌套层次。如果我们需要遍历所有测试或套件，请使用 [`children.allTests()`](/advanced/api/test-collection#alltests) 或 [`children.allSuites()`](/advanced/api/test-collection#allsuites)。如果我们需要遍历所有内容，请使用递归函数。
+
+```ts
+function visit(collection: TestCollection) {
+  for (const task of collection) {
+    if (task.type === 'suite') {
+      // report a suite
+      visit(task.children)
+    }
+    else {
+      // report a test
+    }
+  }
+}
+```
 :::
 
 ## ok
@@ -164,13 +154,22 @@ function ok(): boolean
 
 检查套件中是否有任何失败的测试。如果套件在收集过程中失败，这也将返回 `false`。在这种情况下，请检查 [`errors()`](#errors) 以获取抛出的错误。
 
-## skipped
+## state
 
 ```ts
-function skipped(): boolean
+function state(): TestSuiteState
 ```
 
-检查套件在收集过程中是否被跳过。
+检查套件的运行状态。可能的返回值包括：
+
+- **pending**：此套件中的测试尚未完成运行。
+- **failed**：此套件中有失败的测试或无法收集测试。如果 [`errors()`](#errors) 不为空，则表示套件未能收集测试。
+- **passed**：此套件中的每个测试均已通过。
+- **skipped**：此套件在收集过程中被跳过。
+
+::: warning
+请注意，[测试模块](/advanced/api/test-module) 也有一个 `state` 方法，返回相同的值，但如果模块尚未执行，它还可以返回一个额外的 `queued` 状态。
+:::
 
 ## errors
 
@@ -189,5 +188,5 @@ describe('collection failed', () => {
 ```
 
 ::: warning
-请注意，错误被序列化为简单对象：`instanceof Error` 始终返回 `false`。
+请注意，错误会被序列化为简单对象：`instanceof Error` 将始终返回 `false`。
 :::

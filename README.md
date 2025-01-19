@@ -1,5 +1,35 @@
-## Vitest 中文文档
+<p align="center">
+<img src="https://user-images.githubusercontent.com/11247099/145112184-a9ff6727-661c-439d-9ada-963124a281f7.png" height="150">
+</p>
 
-本项目由[简中文档](https://www.zhcndoc.com/)社区提供镜像加速服务。
+<h1 align="center">
+Vitest
+</h1>
+<p align="center">
+由 Vite 提供支持的极速单元测试框架
+</p>
 
-上游仓库地址：https://github.com/vitest-dev/docs-cn
+<p align="center">
+<a href="https://cn.vitest.dev">中文文档</a> ｜ <a href="https://vitest.dev">英文文档</a>
+</p>
+
+<br>
+
+<p align="center">
+<a href="https://github.com/vitest-dev/vitest">代码仓库</a>
+</p>
+
+<br>
+<br>
+
+### 感谢
+
+[@elonehoo](https://github.com/elonehoo) - 发起与维护该文档翻译
+
+[@watonyweng](https://github.com/watonyweng)
+
+[@thinkasany](https://github.com/thinkasany)
+
+[@XieZongChen](https://github.com/XieZongChen)
+
+[@lxKylin](https://github.com/lxKylin)

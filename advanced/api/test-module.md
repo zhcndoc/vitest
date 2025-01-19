@@ -10,34 +10,27 @@ if (task.type === 'module') {
 }
 ```
 
-`TestModule` 继承了 [`TestSuite`](/advanced/api/test-suite) 的所有方法和属性。本指南将仅列出 `TestModule` 独有的方法和属性。
-
-::: warning
-我们计划引入一个新的 Reporter API，默认将使用此 API。目前，Reporter API 使用 [runner tasks](/advanced/runner#tasks)，但你仍然可以通过 `vitest.state.getReportedEntity` 方法访问 `TestModule`：
-
-```ts
-import type { RunnerTestFile, TestModule, Vitest } from 'vitest/node'
-
-class Reporter {
-  private vitest!: Vitest
-
-  onInit(vitest: Vitest) {
-    this.vitest = vitest
-  }
-
-  onFinished(files: RunnerTestFile[]) {
-    for (const file of files) {
-      const testModule = this.vitest.state.getReportedEntity(file) as TestModule
-      console.log(testModule) // TestModule
-    }
-  }
-}
-```
+::: warning 扩展 Suite 的方法
+`TestModule` 类继承了 [`TestSuite`](/advanced/api/test-suite) 的所有方法和属性。本指南将列出 `TestModule` 独有的方法和属性。
 :::
 
 ## moduleId
 
 这通常是一个绝对的 Unix 文件路径（即使在 Windows 上也是如此）。如果文件不在磁盘上，它可以是一个虚拟 ID。此值对应于 Vite 的 `ModuleGraph` ID。
+
+```ts
+'C:/Users/Documents/project/example.test.ts' // ✅
+'/Users/mac/project/example.test.ts' // ✅
+'C:\\Users\\Documents\\project\\example.test.ts' // ❌
+```
+
+## state
+
+```ts
+function state(): TestModuleState
+```
+
+与 [`testSuite.state()`](/advanced/api/test-suite#state) 的工作方式相同，但如果模块尚未执行，还可以返回 `queued`。
 
 ## diagnostic
 
@@ -52,23 +45,23 @@ interface ModuleDiagnostic {
   /**
    * The time it takes to import and initiate an environment.
    */
-  environmentSetupDuration: number
+  readonly environmentSetupDuration: number
   /**
    * The time it takes Vitest to setup test harness (runner, mocks, etc.).
    */
-  prepareDuration: number
+  readonly prepareDuration: number
   /**
    * The time it takes to import the test module.
    * This includes importing everything in the module and executing suite callbacks.
    */
-  collectDuration: number
+  readonly collectDuration: number
   /**
    * The time it takes to import the setup module.
    */
-  setupDuration: number
+  readonly setupDuration: number
   /**
    * Accumulated duration of all tests and hooks in the module.
    */
-  duration: number
+  readonly duration: number
 }
 ```

@@ -39,7 +39,7 @@ interface TestOptions {
 
 :::
 
-大多数选项都支持点语法和对象语法，允许您使用您喜欢的任何样式。
+大多数选项都支持点语法和对象语法，允许我们使用我们喜欢的任何样式。
 
 :::code-group
 ```ts [dot-syntax]
@@ -1009,7 +1009,12 @@ describe.todo('unimplemented suite')
 
 - **类型:** `(cases: ReadonlyArray<T>, ...args: any[]): (name: string | Function, fn: (...args: T[]) => void, options?: number | TestOptions) => void`
 
-如果有多个测试依赖于相同的数据，请使用 `describe.each` 。
+::: tip
+虽然 `describe.each` 是为了兼容 Jest 提供的，
+但 Vitest 也有 [`describe.for`](#describe-for)，它简化了参数类型并与 [`test.for`](#test-for) 保持一致。
+:::
+
+如果我们有多个依赖于相同数据的测试，请使用 `describe.each`。
 
 ```ts
 import { describe, expect, test } from 'vitest'
@@ -1058,6 +1063,37 @@ describe.each`
 ::: warning
 在将 Vitest 用作[类型检查器](/guide/testing-types)时，不能使用此语法。
 :::
+
+### describe.for
+
+- **Alias:** `suite.for`
+
+The difference from `describe.each` is how array case is provided in the arguments.
+Other non array case (including template string usage) works exactly same.
+
+```ts
+// `each` spreads array case
+describe.each([
+  [1, 1, 2],
+  [1, 2, 3],
+  [2, 1, 3],
+])('add(%i, %i) -> %i', (a, b, expected) => { // [!code --]
+  test('test', () => {
+    expect(a + b).toBe(expected)
+  })
+})
+
+// `for` doesn't spread array case
+describe.for([
+  [1, 1, 2],
+  [1, 2, 3],
+  [2, 1, 3],
+])('add(%i, %i) -> %i', ([a, b, expected]) => { // [!code ++]
+  test('test', () => {
+    expect(a + b).toBe(expected)
+  })
+})
+```
 
 ## Setup and Teardown
 
@@ -1237,7 +1273,17 @@ test('performs an organization query', async () => {
 ```
 
 ::: tip
-该钩子总是以相反顺序调用，不受 [`sequence.hooks`](/config/#sequence-hooks) 选项的影响。
+此 hook 始终以相反的顺序调用，并且不受 [`sequence.hooks`](/config/#sequence-hooks) 选项的影响。
+
+<!-- TODO: should it be called? https://github.com/vitest-dev/vitest/pull/7069 -->
+请注意，如果测试是通过动态 `ctx.skip()` 调用跳过的，则不会调用此钩子。:
+
+```ts{2}
+test('skipped dynamically', (t) => {
+  onTestFinished(() => {}) // not called
+  t.skip()
+})
+```
 :::
 
 ### onTestFailed
