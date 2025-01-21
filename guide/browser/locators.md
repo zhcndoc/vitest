@@ -393,7 +393,11 @@ page.getByTestId('non-existing-element') // ❌
 function nth(index: number): Locator
 ```
 
+<<<<<<< HEAD
 此方法返回一个新的定位器，仅匹配多元素查询结果中的特定索引。与 `elements()[n]` 不同，`nth` 定位器会重试，直到元素出现为止。
+=======
+This method returns a new locator that matches only a specific index within a multi-element query result. It's zero based, `nth(0)` selects the first element. Unlike `elements()[n]`, the `nth` locator will be retried until the element is present.
+>>>>>>> 47b762f6a2cb3df1e68a4f3acb0ff9003808afc9
 
 ```html
 <div aria-label="one"><input/><input/><input/></div>
