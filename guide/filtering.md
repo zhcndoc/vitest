@@ -41,7 +41,7 @@ $ vitest foo:10 # ❌
 $ vitest ./basic/foo:10 # ❌
 ```
 
-At the moment Vitest also doesn't support ranges:
+目前，Vitest 还不支持范围：
 
 ```bash
 $ vitest basic/foo.test.ts:10, basic/foo.test.ts:25 # ✅

@@ -56,7 +56,7 @@ export default defineConfig({
 
 ### `spy.mockReset` Now Restores the Original Implementation
 
-There was no good way to reset the spy to the original implementation without reaplying the spy. Now, `spy.mockReset` will reset the implementation function to the original one instead of a fake noop.
+之前没有好的方法在不重新应用 spy 的情况下将其重置为原始实现。现在，`spy.mockReset` 会将实现函数重置为原始函数，而不是假的 noop（空操作）。
 
 ```ts
 const foo = {
@@ -75,7 +75,7 @@ foo.bar() // 'Hello, world!' // [!code ++]
 
 ### `vi.spyOn` Reuses Mock if Method is Already Mocked
 
-Previously, Vitest would always assign a new spy when spying on an object. This caused errors with `mockRestore` because it would restore the spy to the previous spy instead of the original function:
+之前，Vitest 在监视对象时总会分配一个新的 spy。这会导致 `mockRestore` 出现错误，因为它会将 spy 恢复到之前的 spy，而不是原始函数：
 
 ```ts
 vi.spyOn(fooService, 'foo').mockImplementation(() => 'bar')
@@ -87,7 +87,7 @@ vi.isMockFunction(fooService.foo) // false // [!code ++]
 
 ### Fake Timers Defaults
 
-Vitest no longer provides default `fakeTimers.toFake` options. Now, Vitest will mock any timer-related API if it is available (except `nextTick`). Namely, `performance.now()` is now mocked when `vi.useFakeTimers` is called.
+Vitest 不再提供默认的 `fakeTimers.toFake` 选项。现在，如果存在任何与定时器相关的 API（除 `nextTick` 外），Vitest 都会对其进行模拟。具体来说，当调用 `vi.useFakeTimers` 时，`performance.now()` 也会被模拟。
 
 ```ts
 vi.useFakeTimers()
@@ -96,7 +96,7 @@ performance.now() // original // [!code --]
 performance.now() // fake // [!code ++]
 ```
 
-You can revert to the previous behaviour by specifying timers when calling `vi.useFakeTimers` or globally in the config:
+你可以通过在调用 `vi.useFakeTimers` 时或在全局配置中指定定时器来恢复到之前的行为：
 
 ```ts
 export default defineConfig({
@@ -110,14 +110,14 @@ export default defineConfig({
 
 ### More Strict Error Equality
 
-Vitest now checks more properties when comparing errors via `toEqual` or `toThrowError`. Vitest now compares `name`, `message`, `cause` and `AggregateError.errors`. For `Error.cause`, the comparison is done asymmetrically:
+现在，Vitest 在通过 `toEqual` 或 `toThrowError` 比较错误时会检查更多的属性。Vitest 会比较 `name`、`message`、`cause` 和 `AggregateError.errors`。对于 `Error.cause`，比较是不对称进行的：
 
 ```ts
 expect(new Error('hi', { cause: 'x' })).toEqual(new Error('hi')) // ✅
 expect(new Error('hi')).toEqual(new Error('hi', { cause: 'x' })) // ❌
 ```
 
-In addition to more properties check, Vitest now compares error prototypes. For example, if `TypeError` was thrown, the equality check should reference `TypeError`, not `Error`:
+除了检查更多的属性外，Vitest 现在还会比较错误原型。例如，如果抛出的是 `TypeError`，相等性检查应该引用 `TypeError`，而不是 `Error`：
 
 ```ts
 expect(() => {
@@ -127,7 +127,7 @@ expect(() => {
   .toThrowError(new TypeError('type error')) // [!code ++]
 ```
 
-See PR for more details: [#5876](https://github.com/vitest-dev/vitest/pull/5876).
+更多详情请参见 PR：[#5876](https://github.com/vitest-dev/vitest/pull/5876)。
 
 ### `Custom` Type is Deprecated <Badge type="danger">API</Badge> {#custom-type-is-deprecated}
 
@@ -152,9 +152,9 @@ import {
 
 ### Changes to the Snapshot API <Badge type="danger">API</Badge> {#changes-to-the-snapshot-api}
 
-The public Snapshot API in `@vitest/snapshot` was changed to support multiple states within a single run. See PR for more details: [#6817](https://github.com/vitest-dev/vitest/pull/6817)
+`@vitest/snapshot` 中的公共 Snapshot API 已更改，以支持在单次运行中处理多个状态。更多详情请参见 PR：[#6817](https://github.com/vitest-dev/vitest/pull/6817)。
 
-Note that this changes only affect developers using the Snapshot API directly. There were no changes to `.toMatchSnapshot` API.
+请注意，这些更改仅影响直接使用 Snapshot API 的开发者。`.toMatchSnapshot` API 没有任何变化。
 
 ### Changes to `resolveConfig` Type Signature <Badge type="danger">API</Badge> {#changes-to-resolveconfig-type-signature}
 
@@ -164,11 +164,11 @@ Note that this changes only affect developers using the Snapshot API directly. T
 
 ### Cleaned up `vitest/reporters` types <Badge type="danger">API</Badge> {#cleaned-up-vitest-reporters-types}
 
-The `vitest/reporters` entrypoint now only exports reporters implementations and options types. If you need access to `TestCase`/`TestSuite` and other task related types, import them additionally from `vitest/node`.
+`vitest/reporters` 入口现在仅导出报告器实现和选项类型。如果您需要访问 `TestCase`、`TestSuite` 以及其他与任务相关的类型，请另外从 `vitest/node` 中导入它们。
 
 ### Coverage ignores test files even when `coverage.excludes` is overwritten.
 
-It is no longer possible to include test files in coverage report by overwriting `coverage.excludes`. Test files are now always excluded.
+不再可以通过覆盖 `coverage.excludes` 来将测试文件包含在覆盖率报告中。测试文件现在总是被排除。
 
 ## Migrating to Vitest 2.0 {#vitest-2}
 
@@ -266,7 +266,7 @@ const mockAdd: Mock<typeof add> = vi.fn() // [!code ++]
 
 ### Accessing Resolved `mock.results`
 
-Previously Vitest resolved `mock.results` values if the function returned a Promise. Now there is a separate [`mock.settledResults`](/api/mock#mock-settledresults) property that populates only when the returned Promise is resolved or rejected.
+之前，Vitest 会在函数返回 Promise 时解析 `mock.results` 的值。现在，增加了一个独立的 [`mock.settledResults`](/api/mock#mock-settledresults) 属性，仅在返回的 Promise 被解析或拒绝时填充。
 
 ```ts
 const fn = vi.fn().mockResolvedValueOnce('result')
@@ -278,7 +278,7 @@ const result = fn.mock.results[0] // 'Promise<result>' // [!code ++]
 const settledResult = fn.mock.settledResults[0] // 'result'
 ```
 
-With this change, we also introduce new [`toHaveResolved*`](/api/expect#tohaveresolved) matchers similar to `toHaveReturned` to make migration easier if you used `toHaveReturned` before:
+通过这一更改，我们还引入了新的 [`toHaveResolved*`](/api/expect#tohaveresolved) 匹配器，类似于 `toHaveReturned`，以便如果您之前使用过 `toHaveReturned`，迁移会更加容易：
 
 ```ts
 const fn = vi.fn().mockResolvedValueOnce('result')
@@ -345,8 +345,6 @@ expect({ foo: 'bar' }).toMatchInlineSnapshot(`
 - `client.resetCurrent` 更名为 `client.finishCurrentRun` 。
 
 ### Pools 标准化 [#4172](https://github.com/vitest-dev/vitest/pull/4172)
-
-We removed a lot of configuration options to make it easier to configure the runner to your needs. Please, have a look at migration examples if you rely on `--threads` or other related flags.
 
 我们删除了大量配置选项，以便根据需要配置运行程序。如果你已经使用了 `--threads` 或其他相关标记，请查看迁移示例。
 
