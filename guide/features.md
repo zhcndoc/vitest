@@ -257,9 +257,9 @@ test('my types work properly', () => {
 使用 [`--shard`](/guide/cli#shard) 和 [`--reporter=blob`](/guide/reporters#blob-reporter)标志在不同的计算机上运行测试。可以使用 `--merge-reports` 命令在 CI 管道的末尾合并所有测试结果：
 
 ```bash
-vitest --shard=1/2 --reporter=blob
-vitest --shard=2/2 --reporter=blob
-vitest --merge-reports --reporter=junit --coverage.reporter=text
+vitest --shard=1/2 --reporter=blob --coverage
+vitest --shard=2/2 --reporter=blob --coverage
+vitest --merge-reports --reporter=junit --coverage
 ```
 
 了解更多信息 [`性能优化 | 分片`](/guide/improving-performance#sharding)

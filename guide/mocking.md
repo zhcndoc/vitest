@@ -431,7 +431,11 @@ it('can return a value multiple times', () => {
 
 ## 请求
 
+<<<<<<< HEAD
 因为 Vitest 运行在 Node 环境中，所以模拟网络请求是一件非常棘手的事情；由于没有办法使用 Web API，因此我们需要一些可以为我们模拟网络行为的包。推荐使用 [Mock Service Worker](https://mswjs.io/) 来进行这个操作。它可以模拟 `REST` 和 `GraphQL` 网络请求，并且与框架无关。
+=======
+Because Vitest runs in Node, mocking network requests is tricky; web APIs are not available, so we need something that will mimic network behavior for us. We recommend [Mock Service Worker](https://mswjs.io/) to accomplish this. It allows you to mock `http`, `WebSocket` and `GraphQL` network requests, and is framework agnostic.
+>>>>>>> 493735d031981dccdc8c1b9573d1208be51528a7
 
 Mock Service Worker (MSW) 的工作原理是拦截测试请求，让我们可以在不更改任何应用代码的情况下使用它。在浏览器中，它使用 [Service Worker API](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) 。在 Node.js 和 Vitest 中，它使用 [`@mswjs/interceptors`](https://github.com/mswjs/interceptors) 库。要了解有关 MSW 的更多信息，请阅读他们的 [introduction](https://mswjs.io/docs/) 。
 
@@ -439,10 +443,21 @@ Mock Service Worker (MSW) 的工作原理是拦截测试请求，让我们可以
 
 您可以像下面一样在您的 [setup file](/config/#setupfiles)
 
+<<<<<<< HEAD
 ```js
 import { afterAll, afterEach, beforeAll } from 'vitest'
 import { setupServer } from 'msw/node'
 import { HttpResponse, graphql, http } from 'msw'
+=======
+You can use it like below in your [setup file](/config/#setupfiles)
+
+::: code-group
+
+```js [HTTP Setup]
+import { afterAll, afterEach, beforeAll } from 'vitest'
+import { setupServer } from 'msw/node'
+import { http, HttpResponse } from 'msw'
+>>>>>>> 493735d031981dccdc8c1b9573d1208be51528a7
 
 const posts = [
   {
@@ -460,6 +475,7 @@ export const restHandlers = [
   }),
 ]
 
+<<<<<<< HEAD
 const graphqlHandlers = [
   graphql.query('ListPosts', () => {
     return HttpResponse.json({
@@ -469,10 +485,14 @@ const graphqlHandlers = [
 ]
 
 const server = setupServer(...restHandlers, ...graphqlHandlers)
+=======
+const server = setupServer(...restHandlers)
+>>>>>>> 493735d031981dccdc8c1b9573d1208be51528a7
 
 // 在所有测试之前启动服务器
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
 
+<<<<<<< HEAD
 // 所有测试后关闭服务器
 afterAll(() => server.close())
 
@@ -481,6 +501,81 @@ afterEach(() => server.resetHandlers())
 ```
 
 > 使用 `onUnhandleRequest: 'error'` 配置服务器可以确保即使某个请求没有相应的请求处理程序，也会抛出错误。
+=======
+// Close server after all tests
+afterAll(() => server.close())
+
+// Reset handlers after each test for test isolation
+afterEach(() => server.resetHandlers())
+```
+
+```js [GrapQL Setup]
+import { afterAll, afterEach, beforeAll } from 'vitest'
+import { setupServer } from 'msw/node'
+import { graphql, HttpResponse } from 'msw'
+
+const posts = [
+  {
+    userId: 1,
+    id: 1,
+    title: 'first post title',
+    body: 'first post body',
+  },
+  // ...
+]
+
+const graphqlHandlers = [
+  graphql.query('ListPosts', () => {
+    return HttpResponse.json({
+      data: { posts },
+    })
+  }),
+]
+
+const server = setupServer(...graphqlHandlers)
+
+// Start server before all tests
+beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
+
+// Close server after all tests
+afterAll(() => server.close())
+
+// Reset handlers after each test for test isolation
+afterEach(() => server.resetHandlers())
+```
+
+```js [WebSocket Setup]
+import { afterAll, afterEach, beforeAll } from 'vitest'
+import { setupServer } from 'msw/node'
+import { ws } from 'msw'
+
+const chat = ws.link('wss://chat.example.com')
+
+const wsHandlers = [
+  chat.addEventListener('connection', ({ client }) => {
+    client.addEventListener('message', (event) => {
+      console.log('Received message from client:', event.data)
+      // Echo the received message back to the client
+      client.send(`Server received: ${event.data}`)
+    })
+  }),
+]
+
+const server = setupServer(...wsHandlers)
+
+// Start server before all tests
+beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
+
+// Close server after all tests
+afterAll(() => server.close())
+
+// Reset handlers after each test for test isolation
+afterEach(() => server.resetHandlers())
+```
+:::
+
+> Configuring the server with `onUnhandledRequest: 'error'` ensures that an error is thrown whenever there is a request that does not have a corresponding request handler.
+>>>>>>> 493735d031981dccdc8c1b9573d1208be51528a7
 
 ### 了解更多
 
