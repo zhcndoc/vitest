@@ -26,7 +26,7 @@ $ vitest basic/foo.test.ts:10
 ```
 
 ::: warning
-Note that Vitest requires the full filename for this feature to work. It can be relative to the current working directory or an absolute file path.
+请注意，Vitest 需要完整的文件名才能使此功能正常工作。它可以是相对于当前工作目录的路径，也可以是绝对文件路径。
 
 ```bash
 $ vitest basic/foo.js:10 # ✅
@@ -36,7 +36,7 @@ $ vitest foo:10 # ❌
 $ vitest ./basic/foo:10 # ❌
 ```
 
-At the moment Vitest also doesn't support ranges:
+目前，Vitest 还不支持范围：
 
 ```bash
 $ vitest basic/foo.test.ts:10, basic/foo.test.ts:25 # ✅
