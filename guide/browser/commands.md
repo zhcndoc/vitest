@@ -108,7 +108,7 @@ test('custom command works correctly', async () => {
   expect(result).toEqual({ someValue: true })
 })
 
-// if you are using TypeScript, you can augment the module
+// 如果你使用 TypeScript，你可以扩展模块。
 declare module '@vitest/browser/context' {
   interface BrowserCommands {
     myCustomCommand: (arg1: string, arg2: string) => Promise<{
@@ -142,7 +142,7 @@ export const myCommand: BrowserCommand<[string, number]> = async (
   if (ctx.provider.name === 'playwright') {
     const element = await ctx.iframe.findByRole('alert')
     const screenshot = await element.screenshot()
-    // do something with the screenshot
+    // 对截图进行一些操作。
     return difference
   }
 }

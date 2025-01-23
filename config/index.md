@@ -140,7 +140,7 @@ export default defineConfig({
 
 - **Type:** `string`
 
-Assign a custom name to the test project or Vitest process. The name will be visible in the CLI and available in the Node.js API via [`project.name`](/advanced/api/test-project#name).
+为测试项目或 Vitest 进程分配一个自定义名称。该名称将在 CLI 中可见，并且可以通过 Node.js API 中的 [`project.name`](/advanced/api/test-project#name) 获取。
 
 ### server {#server}
 
@@ -407,11 +407,11 @@ export default defineConfig({
 例如:
 
 ```sh
-# save main branch's result
+# 保存主分支的结果。
 git checkout main
 vitest bench --outputJson main.json
 
-# change a branch and compare against main
+# 切换到另一个分支并与主分支进行比较。
 git checkout feature
 vitest bench --compare main.json
 ```
@@ -547,7 +547,7 @@ export default <Environment>{
     // custom setup
     return {
       teardown() {
-        // called after all tests with this env have been run
+        // 在所有使用此环境的测试运行完毕后调用。
       },
     }
   },
@@ -613,9 +613,9 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   test: {
     environmentMatchGlobs: [
-      // all tests in tests/dom will run in jsdom
+      // `tests/dom` 目录中的所有测试将在 jsdom 中运行。
       ['tests/dom/**', 'jsdom'],
-      // all tests in tests/ with .edge.test.ts will run in edge-runtime
+      // `tests/` 目录中所有以 `.edge.test.ts` 结尾的测试将在 edge-runtime 中运行。
       ['**/*.edge.test.ts', 'edge-runtime'],
       // ...
     ],
