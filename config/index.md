@@ -122,14 +122,9 @@ export default defineConfig({
 
 ### exclude
 
-<<<<<<< HEAD
 - **类型:** `string[]`
-- **默认值:** `['**/node_modules/**', '**/dist/**', '**/cypress/**', '**/.{idea,git,cache,output,temp}/**', '**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*']`
-=======
-- **Type:** `string[]`
-- **Default:** `['**/node_modules/**', '**/dist/**', '**/cypress/**', '**/.{idea,git,cache,output,temp}/**', '**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build,eslint,prettier}.config.*']`
-- **CLI:** `vitest --exclude "**/excluded-file"`
->>>>>>> c13fb9f84de7da920f30bcfbd5ccb5fe8d47ffb9
+- **默认值:** `['**/node_modules/**', '**/dist/**', '**/cypress/**', '**/.{idea,git,cache,output,temp}/**', '**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build,eslint,prettier}.config.*']`
+- **命令行终端:** `vitest --exclude "**/excluded-file"`
 
 匹配排除测试文件的 glob 规则。
 
