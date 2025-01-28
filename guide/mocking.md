@@ -431,18 +431,20 @@ it('can return a value multiple times', () => {
 
 ## 请求
 
-因为 Vitest 运行在 Node 环境中，所以模拟网络请求是一件非常棘手的事情；由于没有办法使用 Web API，因此我们需要一些可以为我们模拟网络行为的包。推荐使用 [Mock Service Worker](https://mswjs.io/) 来进行这个操作。它可以模拟 `REST` 和 `GraphQL` 网络请求，并且与框架无关。
+因为 Vitest 运行在 Node 环境中，所以模拟网络请求是一件非常棘手的事情；由于没有办法使用 Web API，因此我们需要一些可以为我们模拟网络行为的包。推荐使用 [Mock Service Worker](https://mswjs.io/) 来进行这个操作。它可以模拟 `http`、`WebSocket` 和 `GraphQL` 网络请求，并且与框架无关。
 
 Mock Service Worker (MSW) 的工作原理是拦截测试请求，让我们可以在不更改任何应用代码的情况下使用它。在浏览器中，它使用 [Service Worker API](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) 。在 Node.js 和 Vitest 中，它使用 [`@mswjs/interceptors`](https://github.com/mswjs/interceptors) 库。要了解有关 MSW 的更多信息，请阅读他们的 [introduction](https://mswjs.io/docs/) 。
 
 ### 配置
 
-您可以像下面一样在您的 [setup file](/config/#setupfiles)
+你可以像下面一样在你的 [setup file](/config/#setupfiles)
 
-```js
+::: code-group
+
+```js [HTTP Setup]
 import { afterAll, afterEach, beforeAll } from 'vitest'
 import { setupServer } from 'msw/node'
-import { HttpResponse, graphql, http } from 'msw'
+import { http, HttpResponse } from 'msw'
 
 const posts = [
   {
@@ -460,6 +462,33 @@ export const restHandlers = [
   }),
 ]
 
+const server = setupServer(...restHandlers)
+
+// 在所有测试之前启动服务器
+beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
+
+// 所有测试完成后关闭服务器
+afterAll(() => server.close())
+
+// 在每个测试后重置处理程序以实现测试隔离
+afterEach(() => server.resetHandlers())
+```
+
+```js [GrapQL Setup]
+import { afterAll, afterEach, beforeAll } from 'vitest'
+import { setupServer } from 'msw/node'
+import { graphql, HttpResponse } from 'msw'
+
+const posts = [
+  {
+    userId: 1,
+    id: 1,
+    title: 'first post title',
+    body: 'first post body',
+  },
+  // ...
+]
+
 const graphqlHandlers = [
   graphql.query('ListPosts', () => {
     return HttpResponse.json({
@@ -468,19 +497,49 @@ const graphqlHandlers = [
   }),
 ]
 
-const server = setupServer(...restHandlers, ...graphqlHandlers)
+const server = setupServer(...graphqlHandlers)
 
-// 在所有测试之前启动服务器
+// Start server before all tests
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
 
-// 所有测试后关闭服务器
+// Close server after all tests
 afterAll(() => server.close())
 
-// 每次测试后重置处理程序 `对测试隔离很重要`
+// Reset handlers after each test for test isolation
 afterEach(() => server.resetHandlers())
 ```
 
-> 使用 `onUnhandleRequest: 'error'` 配置服务器可以确保即使某个请求没有相应的请求处理程序，也会抛出错误。
+```js [WebSocket Setup]
+import { afterAll, afterEach, beforeAll } from 'vitest'
+import { setupServer } from 'msw/node'
+import { ws } from 'msw'
+
+const chat = ws.link('wss://chat.example.com')
+
+const wsHandlers = [
+  chat.addEventListener('connection', ({ client }) => {
+    client.addEventListener('message', (event) => {
+      console.log('Received message from client:', event.data)
+      // Echo the received message back to the client
+      client.send(`Server received: ${event.data}`)
+    })
+  }),
+]
+
+const server = setupServer(...wsHandlers)
+
+// Start server before all tests
+beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
+
+// Close server after all tests
+afterAll(() => server.close())
+
+// Reset handlers after each test for test isolation
+afterEach(() => server.resetHandlers())
+```
+:::
+
+> Configuring the server with `onUnhandledRequest: 'error'` ensures that an error is thrown whenever there is a request that does not have a corresponding request handler.
 
 ### 了解更多
 

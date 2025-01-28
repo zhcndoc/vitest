@@ -14,8 +14,8 @@ Vitest 通过 `@vitest/browser/context` 入口点公开上下文模块。从 2.0
 
 ```ts
 /**
- * Handler for user interactions. The support is implemented by the browser provider (`playwright` or `webdriverio`).
- * If used with `preview` provider, fallbacks to simulated events via `@testing-library/user-event`.
+ * 用于处理用户交互的处理器。支持由浏览器提供者（`playwright` 或 `webdriverio`）实现。
+ * 如果与 `preview` 提供者一起使用，则回退到通过 `@testing-library/user-event` 模拟的事件。
  * @experimental
  */
 export const userEvent: {
@@ -48,8 +48,8 @@ Commands API 的详细说明见[Commands API](/guide/browser/commands).
 
 ```ts
 /**
- * Available commands for the browser.
- * A shortcut to `server.commands`.
+ * 可用的浏览器命令。
+ * `server.commands` 的快捷方式。
  */
 export const commands: BrowserCommands
 ```
@@ -66,12 +66,12 @@ export const commands: BrowserCommands
 ```ts
 export const page: {
   /**
-   * Change the size of iframe's viewport.
+   * 更改 iframe 视口的大小。
    */
   viewport(width: number, height: number): Promise<void>
   /**
-   * Make a screenshot of the test iframe or a specific element.
-   * @returns Path to the screenshot file or path and base64.
+   * 对测试 iframe 或特定元素进行截图。
+   * @returns 截图文件的路径或路径和 base64 编码。
    */
   screenshot(options: Omit<ScreenshotOptions, 'base64'> & { base64: true }): Promise<{
     path: string
@@ -79,16 +79,16 @@ export const page: {
   }>
   screenshot(options?: ScreenshotOptions): Promise<string>
   /**
-   * Extend default `page` object with custom methods.
+   * 使用自定义方法扩展默认的 `page` 对象。
    */
   extend(methods: Partial<BrowserPage>): BrowserPage
   /**
-   * Wrap an HTML element in a `Locator`. When querying for elements, the search will always return this element.
+   * 将一个 HTML 元素包装在 `Locator` 中。在查询元素时，搜索将始终返回此元素。
    */
   elementLocator(element: Element): Locator
 
   /**
-   * Locator APIs. See its documentation for more details.
+   * Locator API。更多详细信息请参见其文档。
    */
   getByRole(role: ARIARole | string, options?: LocatorByRoleOptions): Locator
   getByLabelText(text: string | RegExp, options?: LocatorOptions): Locator
@@ -101,7 +101,7 @@ export const page: {
 ```
 
 ::: tip
-The `getBy*` API is explained at [Locators API](/guide/browser/locators).
+`getBy*` API 在 [Locators API](/guide/browser/locators) 中有详细说明。
 :::
 
 ## `cdp`

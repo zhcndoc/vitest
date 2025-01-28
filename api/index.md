@@ -117,7 +117,7 @@ myTest('add item', ({ todos }) => {
 import { assert, test } from 'vitest'
 
 test.skip('skipped test', () => {
-  // Test skipped, no error
+  // 测试被跳过，没有错误。
   assert.equal(Math.sqrt(4), 3)
 })
 ```
@@ -129,7 +129,7 @@ import { assert, test } from 'vitest'
 
 test('skipped test', (context) => {
   context.skip()
-  // Test skipped, no error
+  // 测试被跳过，没有错误。
   assert.equal(Math.sqrt(4), 3)
 })
 ```
@@ -147,7 +147,7 @@ import { assert, test } from 'vitest'
 const isDev = process.env.NODE_ENV === 'development'
 
 test.skipIf(isDev)('prod only test', () => {
-  // this test only runs in production
+  // 此测试仅在生产环境中运行。
 })
 ```
 
@@ -168,7 +168,7 @@ import { assert, test } from 'vitest'
 const isDev = process.env.NODE_ENV === 'development'
 
 test.runIf(isDev)('dev only test', () => {
-  // this test only runs in development
+  // 此测试仅在开发环境中运行。
 })
 ```
 
@@ -189,7 +189,7 @@ test.runIf(isDev)('dev only test', () => {
 import { assert, test } from 'vitest'
 
 test.only('test', () => {
-  // Only this test (and others marked with only) are run
+  // 只有此测试（以及其他标记为 `only` 的测试）会被运行。
   assert.equal(Math.sqrt(4), 2)
 })
 ```
@@ -212,7 +212,7 @@ test.only('test', () => {
 ```ts
 import { describe, test } from 'vitest'
 
-// The two tests marked with concurrent will be run in parallel
+// 标记为 `concurrent` 的两个测试将并行运行。
 describe('suite', () => {
   test('serial test', async () => {
     /* ... */
@@ -259,7 +259,7 @@ test.concurrent('test 2', async ({ expect }) => {
 ```ts
 import { describe, test } from 'vitest'
 
-// with config option { sequence: { concurrent: true } }
+// 使用配置选项 `{ sequence: { concurrent: true } }`
 test('concurrent test 1', async () => {
   /* ... */
 })
@@ -274,7 +274,7 @@ test.sequential('sequential test 2', async () => {
   /* ... */
 })
 
-// within concurrent suite
+// 在并发套件中
 describe.concurrent('suite', () => {
   test('concurrent test 1', async () => {
     /* ... */
@@ -300,7 +300,7 @@ describe.concurrent('suite', () => {
 使用 `test.todo` 来存根测试，以便稍后实施。测试报告中将显示一个条目，以便知道还有多少测试需要执行。
 
 ```ts
-// An entry will be shown in the report for this test
+// 此测试将在报告中显示一个条目。
 test.todo('unimplemented test')
 ```
 
@@ -358,7 +358,7 @@ test.each([
   expect(a + b).toBe(expected)
 })
 
-// this will return
+// 这将返回
 // ✓ add(1, 1) -> 2
 // ✓ add(1, 2) -> 3
 // ✓ add(2, 1) -> 3
@@ -375,7 +375,7 @@ test.each([
   expect(a + b).toBe(expected)
 })
 
-// this will return
+// 这将返回
 // ✓ add(1, 1) -> 2
 // ✓ add(1, 2) -> 3
 // ✓ add(2, 1) -> 3
@@ -395,7 +395,7 @@ test.each`
   expect(a.val + b).toBe(expected)
 })
 
-// this will return
+// 这将返回
 // ✓ add(1, b) -> 1b
 // ✓ add(2, b) -> 2b
 // ✓ add(3, b) -> 3b
@@ -438,7 +438,7 @@ Vitest 使用 chai `format` 方法处理 `$values`。如果数值太短，可以
 其他非数组情况（包括模板字符串的使用）完全相同。
 
 ```ts
-// `each` spreads array case
+// `each` 展开数组用例
 test.each([
   [1, 1, 2],
   [1, 2, 3],
@@ -447,7 +447,7 @@ test.each([
   expect(a + b).toBe(expected)
 })
 
-// `for` doesn't spread array case
+// `for` 不会展开数组用例
 test.for([
   [1, 1, 2],
   [1, 2, 3],
@@ -837,7 +837,7 @@ import { assert, describe, test } from 'vitest'
 const isDev = process.env.NODE_ENV === 'development'
 
 describe.runIf(isDev)('dev only test suite', () => {
-  // this test suite only runs in development
+  // 此测试套件仅在开发环境中运行。
 })
 ```
 
@@ -854,7 +854,7 @@ describe.runIf(isDev)('dev only test suite', () => {
 ```ts
 import { assert, describe, test } from 'vitest'
 
-// Only this suite (and others marked with only) are run
+// 只有此测试套件（以及其他标记为 `only` 的测试套件）会被运行。
 describe.only('suite', () => {
   test('sqrt', () => {
     assert.equal(Math.sqrt(4), 3)
@@ -862,7 +862,7 @@ describe.only('suite', () => {
 })
 
 describe('other suite', () => {
-  // ... will be skipped
+  // ... 将被跳过
 })
 ```
 
@@ -885,7 +885,7 @@ In order to do that run `vitest` with specific file containing the tests in ques
 ```ts
 import { describe, test } from 'vitest'
 
-// All suites and tests within this suite will be run in parallel
+// 此测试套件中的所有测试套件和测试将并行运行。
 describe.concurrent('suite', () => {
   test('concurrent test 1', async () => {
     /* ... */
@@ -967,25 +967,25 @@ Vitest 通过 CLI 标志 [`--sequence.shuffle`](/guide/cli) 或配置选项 [`se
 ```ts
 import { describe, test } from 'vitest'
 
-// or describe('suite', { shuffle: true }, ...)
+// 或 `describe('suite', { shuffle: true }, ...)`
 describe.shuffle('suite', () => {
   test('random test 1', async () => { /* ... */ })
   test('random test 2', async () => { /* ... */ })
   test('random test 3', async () => { /* ... */ })
 
-  // `shuffle` is inherited
+  // `shuffle` 是继承的
   describe('still random', () => {
     test('random 4.1', async () => { /* ... */ })
     test('random 4.2', async () => { /* ... */ })
   })
 
-  // disable shuffle inside
+  // 禁用内部的 shuffle
   describe('not random', { shuffle: false }, () => {
     test('in order 5.1', async () => { /* ... */ })
     test('in order 5.2', async () => { /* ... */ })
   })
 })
-// order depends on sequence.seed option in config (Date.now() by default)
+// 顺序取决于配置中的 `sequence.seed` 选项（默认为 `Date.now()`）
 ```
 
 `.skip`、`.only`和`.todo`适用于随机测试套件。
@@ -1001,7 +1001,7 @@ describe.shuffle('suite', () => {
 使用 `describe.todo` 来暂存待以后实施的套件。测试报告中会显示一个条目，这样就能知道还有多少测试需要执行。
 
 ```ts
-// An entry will be shown in the report for this suite
+// 此测试套件将在报告中显示一个条目。
 describe.todo('unimplemented suite')
 ```
 
@@ -1072,7 +1072,7 @@ The difference from `describe.each` is how array case is provided in the argumen
 Other non array case (including template string usage) works exactly same.
 
 ```ts
-// `each` spreads array case
+// `each` 展开数组用例
 describe.each([
   [1, 1, 2],
   [1, 2, 3],
@@ -1083,7 +1083,7 @@ describe.each([
   })
 })
 
-// `for` doesn't spread array case
+// `for` 不会展开数组用例
 describe.for([
   [1, 1, 2],
   [1, 2, 3],
@@ -1113,7 +1113,7 @@ describe.for([
 import { beforeEach } from 'vitest'
 
 beforeEach(async () => {
-  // Clear mocks and add some testing data after before each test run
+  // 在每个测试运行之前清除模拟并添加一些测试数据。
   await stopMocking()
   await addUser({ name: 'John' })
 })
@@ -1127,10 +1127,10 @@ beforeEach(async () => {
 import { beforeEach } from 'vitest'
 
 beforeEach(async () => {
-  // called once before each test run
+  // 在每个测试运行之前调用一次。
   await prepareSomething()
 
-  // clean up function, called once after each test run
+  // 清理函数，在每个测试运行之后调用一次。
   return async () => {
     await resetSomething()
   }
@@ -1150,7 +1150,7 @@ beforeEach(async () => {
 import { afterEach } from 'vitest'
 
 afterEach(async () => {
-  await clearTestingData() // clear testing data after each test run
+  await clearTestingData() // 在每个测试运行之后清除测试数据。
 })
 ```
 
@@ -1173,7 +1173,7 @@ Vitest 在 1.3.0 新增 [`onTestFinished`](#ontestfinished)。你可以在测试
 import { beforeAll } from 'vitest'
 
 beforeAll(async () => {
-  await startMocking() // called once before all tests run
+  await startMocking() // 在所有测试运行之前调用一次。
 })
 ```
 
@@ -1185,10 +1185,10 @@ beforeAll(async () => {
 import { beforeAll } from 'vitest'
 
 beforeAll(async () => {
-  // called once before all tests run
+  // 在所有测试运行之前调用一次。
   await startMocking()
 
-  // clean up function, called once after all tests run
+  // 清理函数，在所有测试运行之后调用一次。
   return async () => {
     await stopMocking()
   }
@@ -1208,7 +1208,7 @@ beforeAll(async () => {
 import { afterAll } from 'vitest'
 
 afterAll(async () => {
-  await stopMocking() // this method is called after all tests run
+  await stopMocking() // 此方法在所有测试运行之后被调用。
 })
 ```
 
