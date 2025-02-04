@@ -21,7 +21,11 @@ test('validation works', { retry: 3 }, () => { // [!code ++]
 })
 ```
 
+<<<<<<< HEAD
 Vitest 4.0 如果第三个参数是对象，将会抛出一个错误。需要注意一下，超时时间（timeout number）并没有被弃用。
+=======
+The next major version will throw an error if the third argument is an object. Note that the timeout number is not deprecated:
+>>>>>>> 171817f44c90fa4a42965dfdf62a7c9498e51da1
 
 ```ts
 test('validation works', () => {
@@ -132,6 +136,7 @@ expect(() => {
 ### `module` condition export is not resolved by default on Vite 6
 
 Vite 6 allows more flexible [`resolve.conditions`](https://vite.dev/config/shared-options#resolve-conditions) options and Vitest configures it to exclude `module` conditional export by default.
+See also [Vite 6 migration guide](https://v6.vite.dev/guide/migration.html#default-value-for-resolve-conditions) for the detail of Vite side changes.
 
 ### `Custom` Type is Deprecated <Badge type="danger">API</Badge> {#custom-type-is-deprecated}
 
