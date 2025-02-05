@@ -688,7 +688,7 @@ expect(frameRendered).toBe(true)
 
 - **类型**: `() => Date | null`
 
-返回使用 `setSystemTime` 设置的模拟当前日期。如果没有模拟日期，该方法将返回 `null` 。
+返回模拟的当前日期。如果没有模拟日期，该方法将返回 `null`。
 
 ### vi.getRealSystemTime
 
