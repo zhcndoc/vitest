@@ -21,11 +21,7 @@ test('validation works', { retry: 3 }, () => { // [!code ++]
 })
 ```
 
-<<<<<<< HEAD
-Vitest 4.0 如果第三个参数是对象，将会抛出一个错误。需要注意一下，超时时间（timeout number）并没有被弃用。
-=======
-The next major version will throw an error if the third argument is an object. Note that the timeout number is not deprecated:
->>>>>>> 171817f44c90fa4a42965dfdf62a7c9498e51da1
+下一个主要版本将在第三个参数是对象时抛出错误。请注意，超时时间（timeout number）并没有被弃用：
 
 ```ts
 test('validation works', () => {
