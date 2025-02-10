@@ -701,7 +701,19 @@ test('the number of elements must match exactly', () => {
 - `Error`, `AsymmetricMatcher`: 与接收到的对象进行比较，类似于 `toEqual(received)`
 
 :::tip
+<<<<<<< HEAD
 必须将代码包装在一个函数中，否则错误将无法被捕获，测试将失败。
+=======
+You must wrap the code in a function, otherwise the error will not be caught, and test will fail.
+
+This does not apply for async calls as [rejects](#rejects) correctly unwraps the promise:
+```ts
+test('expect rejects toThrow', async ({ expect }) => {
+  const promise = Promise.reject(new Error('Test'))
+  await expect(promise).rejects.toThrowError()
+})
+```
+>>>>>>> f1946fe32f098ba95577d1aeb881b4f132baac2f
 :::
 
 例如，如果我们想要测试 `getFruitStock('pineapples')` 是否会抛出错误，我们可以这样写：
