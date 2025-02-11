@@ -69,8 +69,8 @@ foo.bar() // 'Hello, mock!'
 
 foo.bar.mockReset()
 
-foo.bar() // undefined // [!code --]
-foo.bar() // 'Hello, world!' // [!code ++]
+foo.bar() // undefined [!code --]
+foo.bar() // 'Hello, world!' [!code ++]
 ```
 
 ### `vi.spyOn` Reuses Mock if Method is Already Mocked
@@ -81,8 +81,8 @@ foo.bar() // 'Hello, world!' // [!code ++]
 vi.spyOn(fooService, 'foo').mockImplementation(() => 'bar')
 vi.spyOn(fooService, 'foo').mockImplementation(() => 'bar')
 vi.restoreAllMocks()
-vi.isMockFunction(fooService.foo) // true // [!code --]
-vi.isMockFunction(fooService.foo) // false // [!code ++]
+vi.isMockFunction(fooService.foo) // true [!code --]
+vi.isMockFunction(fooService.foo) // false [!code ++]
 ```
 
 ### Fake Timers Defaults
@@ -92,8 +92,8 @@ Vitest 不再提供默认的 `fakeTimers.toFake` 选项。现在，如果存在�
 ```ts
 vi.useFakeTimers()
 
-performance.now() // original // [!code --]
-performance.now() // fake // [!code ++]
+performance.now() // original [!code --]
+performance.now() // fake [!code ++]
 ```
 
 你可以通过在调用 `vi.useFakeTimers` 时或在全局配置中指定定时器来恢复到之前的行为：
@@ -102,7 +102,15 @@ performance.now() // fake // [!code ++]
 export default defineConfig({
   test: {
     fakeTimers: {
-      toFake: ['setTimeout', 'clearTimeout', 'Date'], // [!code ++]
+      toFake: [ // [!code ++]
+        'setTimeout', // [!code ++]
+        'clearTimeout', // [!code ++]
+        'setInterval', // [!code ++]
+        'clearInterval', // [!code ++]
+        'setImmediate', // [!code ++]
+        'clearImmediate', // [!code ++]
+        'Date', // [!code ++]
+      ] // [!code ++]
     },
   },
 })
@@ -277,8 +285,8 @@ const mockAdd: Mock<typeof add> = vi.fn() // [!code ++]
 const fn = vi.fn().mockResolvedValueOnce('result')
 await fn()
 
-const result = fn.mock.results[0] // 'result' // [!code --]
-const result = fn.mock.results[0] // 'Promise<result>' // [!code ++]
+const result = fn.mock.results[0] // 'result' [!code --]
+const result = fn.mock.results[0] // 'Promise<result>' [!code ++]
 
 const settledResult = fn.mock.settledResults[0] // 'result'
 ```
@@ -531,14 +539,7 @@ Jest 导出各种 [`jasmine`](https://jasmine.github.io/) 全局 API (例如 `ja
 
 从 Vitest v0.10.0 开始，声明测试的回调样式被弃用。 你可以重写它们以使用 `async`/`await` 函数，或者使用 Promise 来模仿回调样式。
 
-```
-it('should work', (done) => {  // [!code --]
-it('should work', () => new Promise(done => { // [!code ++]
-  // ...
-  done()
-}) // [!code --]
-})) // [!code ++]
-```
+<!--@include: ./examples/promise-done.md-->
 
 ### 钩子
 
