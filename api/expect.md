@@ -702,6 +702,14 @@ test('the number of elements must match exactly', () => {
 
 :::tip
 必须将代码包装在一个函数中，否则错误将无法被捕获，测试将失败。
+
+这不适用于异步调用，因为 [rejects](#rejects) 正确地解开了 promise:
+```ts
+test('expect rejects toThrow', async ({ expect }) => {
+  const promise = Promise.reject(new Error('Test'))
+  await expect(promise).rejects.toThrowError()
+})
+```
 :::
 
 例如，如果我们想要测试 `getFruitStock('pineapples')` 是否会抛出错误，我们可以这样写：
