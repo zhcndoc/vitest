@@ -32,6 +32,10 @@ export default ({ mode }: { mode: string }) => {
     title: vitestName,
     titleTemplate: ':title - Vitest 中文文档',
     description: vitestDescription,
+    srcExclude: [
+      '**/guide/examples/*',
+      '**/guide/cli-generated.md',
+    ],
     locales: {
       root: {
         label: '简体中文',
