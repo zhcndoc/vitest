@@ -842,7 +842,13 @@ Vitest 提供的一组有用的辅助函数。
 
 等待回调成功执行。如果回调抛出错误或返回拒绝的承诺，它将继续等待，直到成功或超时。
 
+<<<<<<< HEAD
 这在需要等待某些异步操作完成时非常有用，例如，在启动服务器并需要等待其启动时。
+=======
+If options is set to a number, the effect is equivalent to setting `{ timeout: options }`.
+
+This is very useful when you need to wait for some asynchronous action to complete, for example, when you start a server and need to wait for it to start.
+>>>>>>> 7c25641f61110b9696fbd7b05aebb925327fdd67
 
 ```ts
 import { expect, test, vi } from 'vitest'
