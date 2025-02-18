@@ -2069,7 +2069,7 @@ Vitest 通常使用缓存对测试进行排序，因此长时间运行的测试�
 #### sequence.hooks
 
 - **类型**: `'stack' | 'list' | 'parallel'`
-- **默认值**: `'parallel'`
+- **默认值**: `'stack'`
 - **命令行终端**: `--sequence.hooks=<value>`
 
 更改钩子的执行顺序。
