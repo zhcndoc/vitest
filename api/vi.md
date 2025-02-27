@@ -817,7 +817,7 @@ vi.useRealTimers()
 
 ::: tip
 `vi.useFakeTimers()` 不再自动模拟 `process.nextTick` 。
-仍然可以通过在 `toFake` 参数中指定选项来模拟： `vi.useFakeTimers({ toFake: ['nextTick'] })` 。
+仍然可以通过在 `toFake` 参数中指定选项来模拟： `vi.useFakeTimers({ toFake: ['nextTick', 'queueMicrotask'] })` 。
 :::
 
 ### vi.isFakeTimers {#vi-isfaketimers}
