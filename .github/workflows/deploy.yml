@@ -22,7 +22,7 @@ jobs:
           node-version: 22
 
       - name: Build project
-        run: pnpm install && pnpm run build
+        run: pnpm install && pnpm run build-no-prefetch
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
