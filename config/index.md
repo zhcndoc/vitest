@@ -874,14 +874,14 @@ export default defineConfig({
 - **类型:** `number | string`
 - **默认值:** _available CPUs_
 
-最大分支数量或百分比。
+最大分支数量或百分比。你也可以使用 `VITEST_MAX_FORKS` 环境变量。
 
 ##### poolOptions.forks.minForks<NonProjectOption />
 
 - **类型:** `number | string`
 - **默认值:** _available CPUs_
 
-最小分支数量或百分比。
+最小分支数量或百分比。你也可以使用 `VITEST_MIN_FORKS` 环境变量。
 
 ##### poolOptions.forks.isolate
 
@@ -1017,14 +1017,14 @@ export default defineConfig({
 - **类型:** `number | string`
 - **默认值:** _available CPUs_
 
-最大线程数或百分比。也可以使用 `VITEST_MAX_FORKS` 环境变量。
+最大线程数或百分比。你也可以使用 `VITEST_MAX_FORKS` 环境变量。
 
 ##### poolOptions.vmForks.minForks<NonProjectOption />
 
 - **类型:** `number | string`
 - **默认值:** _available CPUs_
 
-最小线程数或百分比。也可以使用 `VITEST_MIN_FORKS` 环境变量。
+最小线程数或百分比。你也可以使用 `VITEST_MIN_FORKS` 环境变量。
 
 ##### poolOptions.vmForks.memoryLimit<NonProjectOption />
 
