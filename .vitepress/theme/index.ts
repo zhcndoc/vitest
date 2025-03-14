@@ -21,6 +21,14 @@ export default {
   Layout() {
     return h(DefaultTheme.Layout, null, {
       'home-features-after': () => h(HomePage),
+      'aside-outline-after': () => h('div', {
+        class: 'wwads-cn wwads-vertical',
+        'data-id': '354'
+      }),
+      'doc-footer-before': () => h('div', {
+        class: 'wwads-cn wwads-horizontal my-4 xl:!hidden',
+        'data-id': '354'
+      }),
     })
   },
   enhanceApp({ app }) {
