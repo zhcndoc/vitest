@@ -103,6 +103,7 @@ export default ({ mode }: { mode: string }) => {
               },
             }),
           ],
+      languages: ['js', 'jsx', 'ts', 'tsx'],
     },
     themeConfig: {
       logo: '/logo.svg',
@@ -342,7 +343,15 @@ export default ({ mode }: { mode: string }) => {
                 ],
               },
               {
+<<<<<<< HEAD
                 text: '运行器「Runner」 API',
+=======
+                text: 'Plugin API',
+                link: '/advanced/api/plugin',
+              },
+              {
+                text: 'Runner API',
+>>>>>>> 8c114323d7389495d09c1f8e137101ca70841c69
                 link: '/advanced/runner',
               },
               {

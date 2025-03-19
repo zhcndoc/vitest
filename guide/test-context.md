@@ -1,5 +1,10 @@
 ---
+<<<<<<< HEAD
 title: 测试上下文 | 指南
+=======
+title: Test Context | Guide
+outline: deep
+>>>>>>> 8c114323d7389495d09c1f8e137101ca70841c69
 ---
 
 # 测试上下文
@@ -155,7 +160,22 @@ myTest('', ({ todos }) => {})
 ```
 
 ::: warning
+<<<<<<< HEAD
 在固定装置中使用 `test.extend()` 时，需要始终使用对象解构模式 `{ todos }` 来访问固定装置函数和测试函数中的上下文。
+=======
+When using `test.extend()` with fixtures, you should always use the object destructuring pattern `{ todos }` to access context both in fixture function and test function.
+
+```ts
+myTest('context must be destructured', (context) => { // [!code --]
+  expect(context.todos.length).toBe(2)
+})
+
+myTest('context must be destructured', ({ todos }) => { // [!code ++]
+  expect(todos.length).toBe(2)
+})
+```
+
+>>>>>>> 8c114323d7389495d09c1f8e137101ca70841c69
 :::
 
 #### 自动化装置
@@ -232,6 +252,70 @@ export default defineWorkspace([
 ```
 :::
 
+#### Scoping Values to Suite <Version>3.1.0</Version> {#scoping-values-to-suite}
+
+Since Vitest 3.1, you can override context values per suite and its children by using the `test.scoped` API:
+
+```ts
+import { test as baseTest, describe, expect } from 'vitest'
+
+const test = baseTest.extend({
+  dependency: 'default',
+  dependant: ({ dependency }, use) => use({ dependency })
+})
+
+describe('use scoped values', () => {
+  test.scoped({ dependency: 'new' })
+
+  test('uses scoped value', ({ dependant }) => {
+    // `dependant` uses the new overriden value that is scoped
+    // to all tests in this suite
+    expect(dependant).toEqual({ dependency: 'new' })
+  })
+
+  describe('keeps using scoped value', () => {
+    test('uses scoped value', ({ dependant }) => {
+      // nested suite inherited the value
+      expect(dependant).toEqual({ dependency: 'new' })
+    })
+  })
+})
+
+test('keep using the default values', ({ dependant }) => {
+  // the `dependency` is using the default
+  // value outside of the suite with .scoped
+  expect(dependant).toEqual({ dependency: 'default' })
+})
+```
+
+This API is particularly useful if you have a context value that relies on a dynamic variable like a database connection:
+
+```ts
+const test = baseTest.extend<{
+  db: Database
+  schema: string
+}>({
+  db: async ({ schema }, use) => {
+    const db = await createDb({ schema })
+    await use(db)
+    await cleanup(db)
+  },
+  schema: '',
+})
+
+describe('one type of schema', () => {
+  test.scoped({ schema: 'schema-1' })
+
+  // ... tests
+})
+
+describe('another type of schema', () => {
+  test.scoped({ schema: 'schema-2' })
+
+  // ... tests
+})
+```
+
 #### TypeScript
 
 要为所有自定义上下文提供固定装置类型，你可以将固定装置类型作为泛型(generic)传递。
@@ -247,9 +331,9 @@ const myTest = test.extend<MyFixtures>({
   archive: [],
 })
 
-myTest('types are defined correctly', (context) => {
-  expectTypeOf(context.todos).toEqualTypeOf<number[]>()
-  expectTypeOf(context.archive).toEqualTypeOf<number[]>()
+myTest('types are defined correctly', ({ todos, archive }) => {
+  expectTypeOf(todos).toEqualTypeOf<number[]>()
+  expectTypeOf(archive).toEqualTypeOf<number[]>()
 })
 ```
 
