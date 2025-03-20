@@ -103,6 +103,7 @@ export default ({ mode }: { mode: string }) => {
               },
             }),
           ],
+      languages: ['js', 'jsx', 'ts', 'tsx'],
     },
     themeConfig: {
       logo: '/logo.svg',
@@ -340,6 +341,10 @@ export default ({ mode }: { mode: string }) => {
                     link: '/advanced/api/test-collection',
                   },
                 ],
+              },
+              {
+                text: '插件 API',
+                link: '/advanced/api/plugin',
               },
               {
                 text: '运行器「Runner」 API',

@@ -93,7 +93,7 @@ const testCase = vitest.state.getReportedEntity(task) // 新 API
 
 全局快照管理器。Vitest 使用 `snapshot.add` 方法跟踪所有快照。
 
-我们可以通过 `vitest.snapshot.summay` 属性获取快照的最新摘要。
+我们可以通过 `vitest.snapshot.summary` 属性获取快照的最新摘要。
 
 ## cache
 
@@ -130,7 +130,7 @@ function provide<T extends keyof ProvidedContext & string>(
 
 Vitest 公开了 `provide` 方法，它是 `vitest.getRootProject().provide` 的简写。通过此方法，我们可以从主线程传递值到测试中。所有值在存储之前都通过 `structuredClone` 进行检查，但值本身不会被克隆。
 
-要在测试中接收这些值，我们需要从 `vitest` 入口点导入 `inject` 方法：
+为了接收测试中的值，我们需要从 `vitest` 入口点导入 `inject` 方法：
 
 ```ts
 import { inject } from 'vitest'
@@ -155,7 +155,7 @@ declare module 'vitest' {
 ```
 
 ::: warning
-从技术上讲，`provide` 是 [`TestProject`](/advanced/api/test-project) 的方法，因此它仅限于特定项目。然而，所有项目都继承自核心项目的值，这使得 `vitest.provide` 成为传递值到测试的通用方式。
+从技术上讲，`provide` 是 [`TestProject`](/advanced/api/test-project) 的一种方法，因此它仅限于特定项目。但是，所有项目都会从根项目继承值，这使得 `vitest.provide` 成为将值传递给测试的通用方法。
 :::
 
 ## getProvidedContext
@@ -172,7 +172,7 @@ function getProvidedContext(): ProvidedContext
 function getProjectByName(name: string): TestProject
 ```
 
-此方法通过名称返回项目。类似于调用 `vitest.projects.find`。
+此方法通过名称返回项目。类似于调用 `vitest.projects.find` 。
 
 ::: warning
 如果项目不存在，此方法将返回根项目 - 请确保再次检查返回的项目是否是我们要找的项目。
@@ -297,7 +297,7 @@ function getModuleSpecifications(moduleId: string): TestSpecification[]
 function clearSpecificationsCache(moduleId?: string): void
 ```
 
-当调用 [`globTestSpecifications`](#globtestspecifications) 或 [`runTestSpecifications`](#runtestspecifications) 时，Vitest 会自动缓存每个文件的测试规范。此方法清除给定文件的缓存或整个缓存，具体取决于第一个参数。
+当调用 [`globTestSpecifications`](#globtestspecifications) 或 [`runTestSpecifications`](#runtestspecifications) 时，Vitest 会自动缓存每个文件的测试规范。此方法会根据第一个参数清除给定文件的缓存或整个缓存。
 
 ## runTestSpecifications
 
@@ -518,3 +518,13 @@ vitest.onFilterWatchedSpecification(specification =>
 ```
 
 Vitest 可以根据 `pool` 或 `locations` 选项为同一文件创建不同的规范，因此不要依赖引用。Vitest 还可以从 [`vitest.getModuleSpecifications`](#getmodulespecifications) 返回缓存的规范 - 缓存基于 `moduleId` 和 `pool`。请注意，[`project.createSpecification`](/advanced/api/test-project#createspecification) 总是返回一个新实例。
+
+## matchesProjectFilter <Version>3.1.0</Version> {#matchesprojectfilter}
+
+```ts
+function matchesProjectFilter(name: string): boolean
+```
+
+检查名称是否与当前 [项目过滤器](/guide/cli#project) 匹配。如果没有项目过滤器，则始终返回 `true` 。
+
+无法通过编程方式更改 `--project` CLI 选项。

@@ -52,6 +52,21 @@ function mockClear(): MockInstance<T>
 
 清除所有关于每次调用的信息。调用此方法后，`.mock` 上的所有属性将恢复到初始状态。这个方法不会重置实现。它适用于在不同断言之间清理 mock 对象。
 
+```ts
+const person = {
+  greet: (name: string) => `Hello ${name}`,
+}
+const spy = vi.spyOn(person, 'greet').mockImplementation(() => 'mocked')
+expect(person.greet('Alice')).toBe('mocked')
+expect(spy.mock.calls).toEqual([['Alice']])
+
+// clear call history but keep mock implementation
+spy.mockClear()
+expect(spy.mock.calls).toEqual([])
+expect(person.greet('Bob')).toBe('mocked')
+expect(spy.mock.calls).toEqual([['Bob']])
+```
+
 要在每个测试之前自动调用此方法，请在配置中启用 [`clearMocks`](/config/#clearmocks) 设置。
 
 ## mockName
@@ -200,9 +215,31 @@ await asyncMock() // throws Error<'Async error'>
 function mockReset(): MockInstance<T>
 ```
 
-执行与 `mockClear` 相同的操作，并将内部实现设置为空函数（调用时返回 undefined）。这也会重置所有 “once” 实现。它对于将 mock 完全重置为其默认状态很有用。
+执行 [`mockClear`](#mockClear) 所做的事情，并将内部实现重置为原始函数。
+这还会重置所有 "once" 实现。
 
-要在每个测试之前自动调用此方法，请在配置中启用 [`mockReset`](/config/#mockreset) 设置。
+请注意，从 `vi.fn()` 重置 mock 会将实现设置为返回 `undefined` 的空函数。
+从 `vi.fn(impl)` 重置 mock 会将实现 restore 为 `impl`。
+
+当我们想将模拟 restore 为其原始状态时，这很有用。
+
+```ts
+const person = {
+  greet: (name: string) => `Hello ${name}`,
+}
+const spy = vi.spyOn(person, 'greet').mockImplementation(() => 'mocked')
+expect(person.greet('Alice')).toBe('mocked')
+expect(spy.mock.calls).toEqual([['Alice']])
+
+// clear call history and reset implementation, but method is still spied
+spy.mockReset()
+expect(spy.mock.calls).toEqual([])
+expect(person.greet).toBe(spy)
+expect(person.greet('Bob')).toBe('Hello Bob')
+expect(spy.mock.calls).toEqual([['Bob']])
+```
+
+要在每个测试之前自动调用此方法，可以在配置中启用 [`mockReset`](/config/#mockreset) 设置。
 
 ## mockRestore
 
@@ -210,10 +247,26 @@ function mockReset(): MockInstance<T>
 function mockRestore(): MockInstance<T>
 ```
 
-执行与 `mockReset` 相同的操作，并将内部实现恢复为原始函数。
+执行与 [`mockReset`](#mockReset) 相同的操作，并将内部实现恢复为原始对象。
 
 需要注意一下，从 `vi.fn()` 恢复的模拟将把实现设置为返回 `undefined` 的空函数。
 从 `vi.fn(impl)` 恢复的模拟将把实现恢复为 `impl` 。
+
+```ts
+const person = {
+  greet: (name: string) => `Hello ${name}`,
+}
+const spy = vi.spyOn(person, 'greet').mockImplementation(() => 'mocked')
+expect(person.greet('Alice')).toBe('mocked')
+expect(spy.mock.calls).toEqual([['Alice']])
+
+// clear call history and restore spied object method
+spy.mockRestore()
+expect(spy.mock.calls).toEqual([])
+expect(person.greet).not.toBe(spy)
+expect(person.greet('Bob')).toBe('Hello Bob')
+expect(spy.mock.calls).toEqual([])
+```
 
 要在每个测试之前自动调用此方法，请在配置中启用 [`restoreMocks`](/config/#restoremocks) 设置。
 

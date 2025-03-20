@@ -79,7 +79,7 @@ export default {
 
 ### `vitest bench`
 
-仅运行 [基准](https://vitest.dev/guide/features.html#benchmarking-experimental) 测试，比较性能结果。
+仅运行 [benchmark](/guide/features.html#benchmarking) 测试，用于比较性能结果。
 
 ### `vitest init`
 
