@@ -134,7 +134,7 @@ test('skipped test', (context) => {
 })
 ```
 
-Since Vitest 3.1, if the condition is unknonwn, you can provide it to the `skip` method as the first arguments:
+自 Vitest 3.1 起，如果条件未知，我们可以将其作为第一个参数提供给 `skip` 方法：
 
 ```ts
 import { assert, test } from 'vitest'
