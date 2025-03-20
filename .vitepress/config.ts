@@ -343,15 +343,11 @@ export default ({ mode }: { mode: string }) => {
                 ],
               },
               {
-<<<<<<< HEAD
-                text: '运行器「Runner」 API',
-=======
-                text: 'Plugin API',
+                text: '插件 API',
                 link: '/advanced/api/plugin',
               },
               {
-                text: 'Runner API',
->>>>>>> 8c114323d7389495d09c1f8e137101ca70841c69
+                text: '运行器「Runner」 API',
                 link: '/advanced/runner',
               },
               {

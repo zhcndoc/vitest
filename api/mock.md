@@ -52,9 +52,6 @@ function mockClear(): MockInstance<T>
 
 清除所有关于每次调用的信息。调用此方法后，`.mock` 上的所有属性将恢复到初始状态。这个方法不会重置实现。它适用于在不同断言之间清理 mock 对象。
 
-<<<<<<< HEAD
-要在每个测试之前自动调用此方法，请在配置中启用 [`clearMocks`](/config/#clearmocks) 设置。
-=======
 ```ts
 const person = {
   greet: (name: string) => `Hello ${name}`,
@@ -70,8 +67,7 @@ expect(person.greet('Bob')).toBe('mocked')
 expect(spy.mock.calls).toEqual([['Bob']])
 ```
 
-To automatically call this method before each test, enable the [`clearMocks`](/config/#clearmocks) setting in the configuration.
->>>>>>> 8c114323d7389495d09c1f8e137101ca70841c69
+要在每个测试之前自动调用此方法，请在配置中启用 [`clearMocks`](/config/#clearmocks) 设置。
 
 ## mockName
 
@@ -219,18 +215,13 @@ await asyncMock() // throws Error<'Async error'>
 function mockReset(): MockInstance<T>
 ```
 
-<<<<<<< HEAD
-执行与 `mockClear` 相同的操作，并将内部实现设置为空函数（调用时返回 undefined）。这也会重置所有 “once” 实现。它对于将 mock 完全重置为其默认状态很有用。
+执行 [`mockClear`](#mockClear) 所做的事情，并将内部实现重置为原始函数。
+这还会重置所有 "once" 实现。
 
-要在每个测试之前自动调用此方法，请在配置中启用 [`mockReset`](/config/#mockreset) 设置。
-=======
-Does what [`mockClear`](#mockClear) does and resets inner implementation to the original function.
-This also resets all "once" implementations.
+请注意，从 `vi.fn()` 重置 mock 会将实现设置为返回 `undefined` 的空函数。
+从 `vi.fn(impl)` 重置 mock 会将实现 restore 为 `impl`。
 
-Note that resetting a mock from `vi.fn()` will set implementation to an empty function that returns `undefined`.
-resetting a mock from `vi.fn(impl)` will restore implementation to `impl`.
-
-This is useful when you want to reset a mock to its original state.
+当我们想将模拟 restore 为其原始状态时，这很有用。
 
 ```ts
 const person = {
@@ -248,8 +239,7 @@ expect(person.greet('Bob')).toBe('Hello Bob')
 expect(spy.mock.calls).toEqual([['Bob']])
 ```
 
-To automatically call this method before each test, enable the [`mockReset`](/config/#mockreset) setting in the configuration.
->>>>>>> 8c114323d7389495d09c1f8e137101ca70841c69
+要在每个测试之前自动调用此方法，可以在配置中启用 [`mockReset`](/config/#mockreset) 设置。
 
 ## mockRestore
 
@@ -257,18 +247,11 @@ To automatically call this method before each test, enable the [`mockReset`](/co
 function mockRestore(): MockInstance<T>
 ```
 
-<<<<<<< HEAD
-执行与 `mockReset` 相同的操作，并将内部实现恢复为原始函数。
-=======
-Does what [`mockReset`](#mockReset) does and restores original descriptors of spied-on objects.
->>>>>>> 8c114323d7389495d09c1f8e137101ca70841c69
+执行与 [`mockReset`](#mockReset) 相同的操作，并将内部实现恢复为原始对象。
 
 需要注意一下，从 `vi.fn()` 恢复的模拟将把实现设置为返回 `undefined` 的空函数。
 从 `vi.fn(impl)` 恢复的模拟将把实现恢复为 `impl` 。
 
-<<<<<<< HEAD
-要在每个测试之前自动调用此方法，请在配置中启用 [`restoreMocks`](/config/#restoremocks) 设置。
-=======
 ```ts
 const person = {
   greet: (name: string) => `Hello ${name}`,
@@ -285,8 +268,7 @@ expect(person.greet('Bob')).toBe('Hello Bob')
 expect(spy.mock.calls).toEqual([])
 ```
 
-To automatically call this method before each test, enable the [`restoreMocks`](/config/#restoremocks) setting in the configuration.
->>>>>>> 8c114323d7389495d09c1f8e137101ca70841c69
+要在每个测试之前自动调用此方法，请在配置中启用 [`restoreMocks`](/config/#restoremocks) 设置。
 
 ## mockResolvedValue
 

@@ -377,11 +377,7 @@ test.each([
 // ✓ add(2, 1) -> 3
 ```
 
-<<<<<<< HEAD
-如果使用对象作为参数，也可以使用前缀 `$` 访问对象属性：
-=======
-You can also access object properties and array elements with `$` prefix:
->>>>>>> 8c114323d7389495d09c1f8e137101ca70841c69
+我们还可以使用 `$` 前缀访问对象属性和数组元素：
 
 ```ts
 test.each([
@@ -391,10 +387,8 @@ test.each([
 ])('add($a, $b) -> $expected', ({ a, b, expected }) => {
   expect(a + b).toBe(expected)
 })
-<<<<<<< HEAD
-=======
 
-// this will return
+// 这将返回
 // ✓ add(1, 1) -> 2
 // ✓ add(1, 2) -> 3
 // ✓ add(2, 1) -> 3
@@ -406,12 +400,6 @@ test.each([
 ])('add($0, $1) -> $2', (a, b, expected) => {
   expect(a + b).toBe(expected)
 })
->>>>>>> 8c114323d7389495d09c1f8e137101ca70841c69
-
-// 这将返回
-// ✓ add(1, 1) -> 2
-// ✓ add(1, 2) -> 3
-// ✓ add(2, 1) -> 3
 ```
 
 如果使用对象作为参数，也可以使用 `.` 访问对象属性：

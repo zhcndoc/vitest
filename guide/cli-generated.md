@@ -76,11 +76,7 @@
 - **CLI:** `--silent [value]`
 - **Config:** [silent](/config/#silent)
 
-<<<<<<< HEAD
-测试中的静默控制台输出
-=======
-Silent console output from tests. Use `'passed-only'` to see logs from failing tests only.
->>>>>>> 8c114323d7389495d09c1f8e137101ca70841c69
+测试的静默控制台输出。使用 `'passed-only'` 仅查看失败测试的日志。
 
 ### hideSkippedTests
 

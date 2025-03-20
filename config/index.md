@@ -1094,21 +1094,13 @@ Vitest 关闭时等待关闭的默认超时时间，以毫秒为单位
 
 ### silent<NonProjectOption />
 
-<<<<<<< HEAD
-- **类型:** `boolean`
+- **类型:** `boolean | 'passed-only'`
 - **默认值:** `false`
 - **命令行终端:** `--silent`, `--silent=false`
 
 静默模式下启动测试。
-=======
-- **Type:** `boolean | 'passed-only'`
-- **Default:** `false`
-- **CLI:** `--silent`, `--silent=false`
 
-Silent console output from tests.
-
-Use `'passed-only'` to see logs from failing tests only. Logs from failing tests are printed after a test has finished.
->>>>>>> 8c114323d7389495d09c1f8e137101ca70841c69
+使用 `'passed-only'` 来查看失败测试的日志。失败测试的日志在测试完成后打印。
 
 ### setupFiles
 
