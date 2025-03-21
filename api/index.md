@@ -134,6 +134,18 @@ test('skipped test', (context) => {
 })
 ```
 
+自 Vitest 3.1 起，如果条件未知，我们可以将其作为第一个参数提供给 `skip` 方法：
+
+```ts
+import { assert, test } from 'vitest'
+
+test('skipped test', (context) => {
+  context.skip(Math.random() < 0.5, 'optional message')
+  // Test skipped, no error
+  assert.equal(Math.sqrt(4), 3)
+})
+```
+
 ### test.skipIf
 
 - **类型:** `(condition: any) => Test`
@@ -344,7 +356,8 @@ test.fails('fail test', async () => {
 - `%f`: floating point value
 - `%j`: json
 - `%o`: object
-- `%#`: index of the test case
+- `%#`: 0-based index of the test case
+- `%$`: 1-based index of the test case
 - `%%`: single percent sign ('%')
 
 ```ts
@@ -364,7 +377,7 @@ test.each([
 // ✓ add(2, 1) -> 3
 ```
 
-如果使用对象作为参数，也可以使用前缀 `$` 访问对象属性：
+我们还可以使用 `$` 前缀访问对象属性和数组元素：
 
 ```ts
 test.each([
@@ -379,6 +392,14 @@ test.each([
 // ✓ add(1, 1) -> 2
 // ✓ add(1, 2) -> 3
 // ✓ add(2, 1) -> 3
+
+test.each([
+  [1, 1, 2],
+  [1, 2, 3],
+  [2, 1, 3],
+])('add($0, $1) -> $2', (a, b, expected) => {
+  expect(a + b).toBe(expected)
+})
 ```
 
 如果使用对象作为参数，也可以使用 `.` 访问对象属性：

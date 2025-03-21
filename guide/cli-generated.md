@@ -73,10 +73,10 @@
 
 ### silent
 
-- **CLI:** `--silent`
+- **CLI:** `--silent [value]`
 - **Config:** [silent](/config/#silent)
 
-测试中的静默控制台输出
+测试的静默控制台输出。使用 `'passed-only'` 仅查看失败测试的日志。
 
 ### hideSkippedTests
 

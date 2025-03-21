@@ -3,7 +3,7 @@ title: Locators | Browser Mode
 outline: [2, 3]
 ---
 
-# 定位 <Version>2.1.0</Version>
+# 定位
 
 定位器是元素或多个元素的表示。每个定位器由一个称为选择器的字符串定义。Vitest 通过提供方便的方法在后台生成这些选择器，从而抽象了选择器。
 
@@ -381,7 +381,7 @@ page.getByTestId('non-existing-element') // ❌
 
 - `exact: boolean`
 
-  `text` 是否精确匹配：区分大小写且完全匹配字符串。默认情况下禁用此选项。如果 `text` 是正则表达式，则忽略此选项。请注意，精确匹配仍然会修剪空白字符。
+  `text` 是否精确匹配：区分大小写和整个字符串。默认情况下禁用此选项。如果 `text` 是正则表达式，则忽略此选项。请注意，精确匹配仍然会修剪空格。
 
 #### See also
 
@@ -450,6 +450,148 @@ function last(): Locator
 page.getByRole('textbox').last() // ✅
 ```
 
+## and
+
+```ts
+function and(locator: Locator): Locator
+```
+
+This method creates a new locator that matches both the parent and provided locator. The following example finds a button with a specific title:
+
+```ts
+page.getByRole('button').and(page.getByTitle('Subscribe'))
+```
+
+## or
+
+```ts
+function or(locator: Locator): Locator
+```
+
+This method creates a new locator that matches either one or both locators.
+
+::: warning
+Note that if locator matches more than a single element, calling another method might throw an error if it expects a single element:
+
+```tsx
+<>
+  <button>Click me</button>
+  <a href="https://vitest.dev">Error happened!</a>
+</>
+
+page.getByRole('button')
+  .or(page.getByRole('link'))
+  .click() // ❌ matches multiple elements
+```
+:::
+
+## filter
+
+```ts
+function filter(options: LocatorOptions): Locator
+```
+
+This methods narrows down the locator according to the options, such as filtering by text. It can be chained to apply multiple filters.
+
+### has
+
+- **Type:** `Locator`
+
+This options narrows down the selector to match elements that contain other elements matching provided locator. For example, with this HTML:
+
+```html{1,3}
+<article>
+  <div>Vitest</div>
+</article>
+<article>
+  <div>Rolldown</div>
+</article>
+```
+
+We can narrow down the locator to only find the `article` with `Vitest` text inside:
+
+```ts
+page.getByRole('article').filter({ has: page.getByText('Vitest') }) // ✅
+```
+
+::: warning
+Provided locator (`page.getByText('Vitest')` in the example) must be relative to the parent locator (`page.getByRole('article')` in the example). It will be queried starting with the parent locator, not the document root.
+
+Meaning, you cannot pass down a locator that queries the element outside of the parent locator:
+
+```ts
+page.getByText('Vitest').filter({ has: page.getByRole('article') }) // ❌
+```
+
+This example will fail because the `article` element is outside the element with `Vitest` text.
+:::
+
+::: tip
+This method can be chained to narrow down the element even further:
+
+```ts
+page.getByRole('article')
+  .filter({ has: page.getByRole('button', { name: 'delete row' }) })
+  .filter({ has: page.getByText('Vitest') })
+```
+:::
+
+### hasNot
+
+- **Type:** `Locator`
+
+This option narrows down the selector to match elements that do not contain other elements matching provided locator. For example, with this HTML:
+
+```html{1,3}
+<article>
+  <div>Vitest</div>
+</article>
+<article>
+  <div>Rolldown</div>
+</article>
+```
+
+We can narrow down the locator to only find the `article` that doesn't have `Rolldown` inside.
+
+```ts
+page.getByRole('article')
+  .filter({ hasNot: page.getByText('Rolldown') }) // ✅
+page.getByRole('article')
+  .filter({ hasNot: page.getByText('Vitest') }) // ❌
+```
+
+::: warning
+Note that provided locator is queried against the parent, not the document root, just like [`has`](#has) option.
+:::
+
+### hasText
+
+- **Type:** `string | RegExp`
+
+This options narrows down the selector to only match elements that contain provided text somewhere inside. When the `string` is passed, matching is case-insensitive and searches for a substring.
+
+```html{1,3}
+<article>
+  <div>Vitest</div>
+</article>
+<article>
+  <div>Rolldown</div>
+</article>
+```
+
+Both locators will find the same element because the search is case-insensitive:
+
+```ts
+page.getByRole('article').filter({ hasText: 'Vitest' }) // ✅
+page.getByRole('article').filter({ hasText: 'Vite' }) // ✅
+```
+
+### hasNotText
+
+- **Type:** `string | RegExp`
+
+This options narrows down the selector to only match elements that do not contain provided text somewhere inside. When the `string` is passed, matching is case-insensitive and searches for a substring.
+
 ## Methods
 
 所有方法都是异步的，必须使用 `await`。自 Vitest 3 起，如果方法没有被 `await`，测试将会失败。
@@ -505,7 +647,7 @@ await page.getByRole('img', { name: 'Rose' }).tripleClick()
 ### clear
 
 ```ts
-function clear(): Promise<void>
+function clear(options?: UserEventClearOptions): Promise<void>
 ```
 
 清除输入元素的内容。
