@@ -919,6 +919,12 @@ Collect test and suite locations in the `location` property
 
  watch 模式下重新运行测试时清除终端屏幕（默认值：`true`）。
 
+### configLoader
+
+- **CLI:** `--configLoader <loader>`
+
+Use `bundle` to bundle the config with esbuild or `runner` (experimental) to process it on the fly. This is only available in vite version 6.1.0 and above. (default: `bundle`)
+
 ### standalone
 
 - **CLI:** `--standalone`
