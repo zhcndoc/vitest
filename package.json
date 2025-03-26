@@ -1,7 +1,7 @@
 {
   "name": "docs-cn",
   "type": "module",
-  "version": "3.0.1",
+  "version": "3.0.9",
   "private": true,
   "packageManager": "pnpm@9.7.1",
   "scripts": {
@@ -21,23 +21,15 @@
     "vue": "latest"
   },
   "devDependencies": {
-<<<<<<< HEAD
     "@antfu/eslint-config": "^4.10.1",
     "@antfu/ni": "^24.3.0",
-    "@iconify-json/carbon": "^1.2.7",
-    "@iconify-json/logos": "^1.2.4",
-    "@shikijs/transformers": "^1.29.2",
-    "@shikijs/vitepress-twoslash": "^1.29.2",
+    "@iconify-json/carbon": "latest",
+    "@iconify-json/logos": "latest",
+    "@shikijs/transformers": "latest",
+    "@shikijs/vitepress-twoslash": "latest",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^22.10.7",
-    "@unocss/reset": "^0.65.4",
-=======
-    "@iconify-json/carbon": "catalog:",
-    "@iconify-json/logos": "catalog:",
-    "@shikijs/transformers": "^3.2.1",
-    "@shikijs/vitepress-twoslash": "^3.2.1",
-    "@unocss/reset": "catalog:",
->>>>>>> 9568fbd449a7dae42979ba471334d85bee623450
+    "@unocss/reset": "latest",
     "@vite-pwa/assets-generator": "^0.2.6",
     "@vite-pwa/vitepress": "^0.5.3",
     "@vitejs/plugin-vue": "^5.2.1",
