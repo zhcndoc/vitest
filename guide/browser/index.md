@@ -396,19 +396,13 @@ test('properly handles form inputs', async () => {
 - [`vitest-browser-svelte`](https://github.com/vitest-dev/vitest-browser-svelte) 渲染 [svelte](https://svelte.dev) 组件
 - [`vitest-browser-react`](https://github.com/vitest-dev/vitest-browser-react) 渲染 [react](https://react.dev) 组件
 
-<<<<<<< HEAD
-如果我们的框架没有包含此功能，请随意创建自己的软件包--它是框架渲染器和 `page.elementLocator` API 的简单封装。我们将在本页添加指向它的链接。请确保它的名称以 `vitest-browser-` 开头。
+其他框架也有社区提供的软件包：
 
-除了使用 `@testing-library/your-framework` 渲染组件和查询元素外，你还需要进行断言。Vitest 捆绑了 [`@testing-library/jest-dom`](https://github.com/testing-library/jest-dom)库，可提供各种开箱即用的 DOM 断言。更多信息请参阅 [Assertions API](/guide/browser/assertion-api)。
-=======
-Community packages are available for other frameworks:
+- [`vitest-browser-lit`](https://github.com/EskiMojo14/vitest-browser-lit) 用于渲染 [lit](https://lit.dev) 组件
 
-- [`vitest-browser-lit`](https://github.com/EskiMojo14/vitest-browser-lit) to render [lit](https://lit.dev) components
+如果你的框架没有被包含在内，请随时创建你自己的软件包——它是一个简单的封装，围绕着框架渲染器和 `page.elementLocator` API。我们会在本页面添加指向它的链接。请确保其名称以 `vitest-browser-` 开头。
 
-If your framework is not represented, feel free to create your own package - it is a simple wrapper around the framework renderer and `page.elementLocator` API. We will add a link to it on this page. Make sure it has a name starting with `vitest-browser-`.
-
-Besides rendering components and locating elements, you will also need to make assertions. Vitest forks the [`@testing-library/jest-dom`](https://github.com/testing-library/jest-dom) library to provide a wide range of DOM assertions out of the box. Read more at the [Assertions API](/guide/browser/assertion-api).
->>>>>>> 1ebafee5b234e92eede3db7f12edd04e0faeec81
+除了渲染组件和定位元素外，你还需要进行断言。Vitest 基于 [`@testing-library/jest-dom`](https://github.com/testing-library/jest-dom) 库提供了一整套开箱即用的 DOM 断言。更多信息请参阅 [Assertions API](/guide/browser/assertion-api)。
 
 ```ts
 import { page } from '@vitest/browser/context'
@@ -480,8 +474,8 @@ test('loads and displays greeting', async () => {
 })
 ```
 ```ts [lit]
-import { render } from 'vitest-browser-lit'
 import { html } from 'lit'
+import { render } from 'vitest-browser-lit'
 import './greeter-button'
 
 test('greeting appears on click', async () => {
