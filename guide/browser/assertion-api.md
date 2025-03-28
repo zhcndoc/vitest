@@ -4,80 +4,51 @@ title: Assertion API | Browser Mode
 
 # Assertion API
 
-<<<<<<< HEAD
-Vitest 捆绑了 [`@testing-library/jest-dom`](https://github.com/testing-library/jest-dom)库，以提供各种开箱即用的 DOM 断言。有关详细文档，请阅读 `jest-dom` readme：
-=======
-Vitest provides a wide range of DOM assertions out of the box forked from [`@testing-library/jest-dom`](https://github.com/testing-library/jest-dom) library with the added support for locators and built-in retry-ability.
->>>>>>> 1ebafee5b234e92eede3db7f12edd04e0faeec81
+Vitest 默认提供了一组丰富的 DOM 断言，这些断言源自 [`@testing-library/jest-dom`](https://github.com/testing-library/jest-dom) 库，并增加了对定位器的支持以及内置的重试能力。
 
 ::: tip TypeScript Support
-If you are using [TypeScript](/guide/browser/#typescript) or want to have correct type hints in `expect`, make sure you have `@vitest/browser/context` referenced somewhere. If you never imported from there, you can add a `reference` comment in any file that's covered by your `tsconfig.json`:
+如果您使用 [TypeScript](/guide/browser/#typescript) 或希望在 `expect` 中获得正确的类型提示，请确保在某个地方引用了 `@vitest/browser/context`。如果您从未从该模块导入过，可以在 `tsconfig.json` 覆盖范围内的任何文件中添加一个 `reference` 注释：
 
-<<<<<<< HEAD
-如果我们使用 [TypeScript](/guide/browser/#typescript) 或希望在 `expect` 中获得正确的类型提示，请确保我们的 [setup 文件](/config/#setupfile) 或 [config 文件](/config/) 中引用了 `@vitest/browser/providers/playwright` 或 `@vitest/browser/providers/webdriverio` ，具体取决于我们使用的 provider 。如果我们使用的是默认的`preview` provider ，我们可以改为指定 `@vitest/browser/matchers` 。
-
-::: code-group
-```ts [preview]
-/// <reference types="@vitest/browser/matchers" />
-```
-```ts [playwright]
-/// <reference types="@vitest/browser/providers/playwright" />
-```
-```ts [webdriverio]
-/// <reference types="@vitest/browser/providers/webdriverio" />
-=======
 ```ts
 /// <reference types="@vitest/browser/context" />
->>>>>>> 1ebafee5b234e92eede3db7f12edd04e0faeec81
 ```
 :::
 
 浏览器中的测试由于其异步特性，可能会不一致地失败。因此，即使条件延迟（如超时、网络请求或动画），也必须有办法保证断言成功。为此，Vitest 通过 [`expect.poll`](/api/expect#poll)和 `expect.element` API 提供了可重试的断言：
 
 ```ts
-import { expect, test } from 'vitest'
 import { page } from '@vitest/browser/context'
+import { expect, test } from 'vitest'
 
 test('error banner is rendered', async () => {
   triggerError()
 
-<<<<<<< HEAD
-  // @testing-library 提供内置重试功能的查询
-  // 它会尝试找到 banner，直到它渲染出来
-  const banner = await page.getByRole('alert', {
-    name: /error/i,
-  })
-
-  // Vitest 提供内置重试功能的 `expect.element`
-  // 它会检查 `element.textContent` 直到等于 “Error!”。
-=======
-  // This creates a locator that will try to find the element
-  // when any of its methods are called.
-  // This call by itself doesn't check the existence of the element.
+  // 这会创建一个定位器，它将尝试查找元素
+  // 当调用它的任何方法时。
+  // 单独这行代码不会检查元素是否存在。
   const banner = page.getByRole('alert', {
     name: /error/i,
   })
 
-  // Vitest provides `expect.element` with built-in retry-ability
-  // It will repeatedly check that the element exists in the DOM and that
-  // the content of `element.textContent` is equal to "Error!"
-  // until all the conditions are met
->>>>>>> 1ebafee5b234e92eede3db7f12edd04e0faeec81
+  // Vitest 提供了带有内置重试能力的 `expect.element`。
+  // 它会反复检查该元素是否存在于 DOM 中，并且
+  // `element.textContent` 的内容等于 "Error!"
+  // 直到所有条件都满足为止
   await expect.element(banner).toHaveTextContent('Error!')
 })
 ```
 
-We recommend to always use `expect.element` when working with `page.getBy*` locators to reduce test flakiness. Note that `expect.element` accepts a second option:
+我们建议在使用 `page.getBy*` 定位器时，始终使用 `expect.element`，以减少测试的不稳定性。注意，`expect.element` 接受第二个选项：
 
 ```ts
 interface ExpectPollOptions {
-  // The interval to retry the assertion for in milliseconds
-  // Defaults to "expect.poll.interval" config option
+  // 以毫秒为单位的断言重试间隔
+  // 默认为 `"expect.poll.interval"` 配置选项
   interval?: number
-  // Time to retry the assertion for in milliseconds
-  // Defaults to "expect.poll.timeout" config option
+  // 以毫秒为单位的断言重试时间
+  // 默认为 `"expect.poll.timeout"` 配置选项
   timeout?: number
-  // The message printed when the assertion fails
+  // 断言失败时打印的消息
   message?: string
 }
 ```
@@ -85,11 +56,7 @@ interface ExpectPollOptions {
 ::: tip
 `expect.element` 是 `expect.poll(() => element)`的简写，工作方式完全相同。
 
-<<<<<<< HEAD
-`toHaveTextContent` 和所有其他 [`@testing-library/jest-dom`](https://github.com/testing-library/jest-dom)断言在没有内置重试机制的常规`expect`中仍然可用：
-=======
-`toHaveTextContent` and all other assertions are still available on a regular `expect` without a built-in retry-ability mechanism:
->>>>>>> 1ebafee5b234e92eede3db7f12edd04e0faeec81
+`toHaveTextContent` 以及其他所有断言在常规的 `expect` 中仍然可用，但没有内置的重试机制：
 
 ```ts
 // 如果 .textContent 不是 `'Error!'`，则会立即失败。
@@ -103,13 +70,11 @@ expect(banner).toHaveTextContent('Error!')
 function toBeDisabled(): Promise<void>
 ```
 
-Allows you to check whether an element is disabled from the user's perspective.
+允许你检查某个元素从用户的角度来看是否被禁用。
 
-Matches if the element is a form control and the `disabled` attribute is specified on this element or the
-element is a descendant of a form element with a `disabled` attribute.
+如果该元素是一个表单控件，并且此元素上指定了 `disabled` 属性，或者该元素是带有 `disabled` 属性的表单元素的后代，则匹配。
 
-Note that only native control elements such as HTML `button`, `input`, `select`, `textarea`, `option`, `optgroup`
-can be disabled by setting "disabled" attribute. "disabled" attribute on other elements is ignored, unless it's a custom element.
+请注意，只有原生控件元素（如 HTML 中的 `button`、`input`、`select`、`textarea`、`option`、`optgroup`）可以通过设置 "disabled" 属性来禁用。其他元素上的 "disabled" 属性会被忽略，除非它是自定义元素。
 
 ```html
 <button
@@ -132,9 +97,9 @@ await expect.element(getByTestId('button')).not.toBeDisabled() // ❌
 function toBeEnabled(): Promise<void>
 ```
 
-Allows you to check whether an element is not disabled from the user's perspective.
+允许你检查某个元素从用户的角度来看是否未被禁用。
 
-Works like [`not.toBeDisabled()`](#tobedisabled). Use this matcher to avoid double negation in your tests.
+其工作方式类似于 [`not.toBeDisabled()`](#tobedisabled)。使用此匹配器可以避免测试中的双重否定。
 
 ```html
 <button
@@ -157,7 +122,7 @@ await expect.element(getByTestId('button')).not.toBeEnabled() // ❌
 function toBeEmptyDOMElement(): Promise<void>
 ```
 
-This allows you to assert whether an element has no visible content for the user. It ignores comments but will fail if the element contains white-space.
+这允许你断言某个元素对用户而言是否没有可见内容。它会忽略注释，但如果元素包含空白字符，则会断言失败。
 
 ```html
 <span data-testid="not-empty"><span data-testid="empty"></span></span>
@@ -179,7 +144,7 @@ await expect.element(
 function toBeInTheDocument(): Promise<void>
 ```
 
-Assert whether an element is present in the document or not.
+断言某个元素是否存在于文档中。
 
 ```html
 <svg data-testid="svg-element"></svg>
@@ -191,7 +156,7 @@ await expect.element(getByTestId('does-not-exist')).not.toBeInTheDocument()
 ```
 
 ::: warning
-This matcher does not find detached elements. The element must be added to the document to be found by `toBeInTheDocument`. If you desire to search in a detached element, please use: [`toContainElement`](#tocontainelement).
+这个匹配器不会查找已分离的元素。元素必须被添加到文档中才能被 `toBeInTheDocument` 找到。如果你希望在已分离的元素中进行搜索，请使用：[`toContainElement`](#tocontainelement)。
 :::
 
 ## toBeInvalid
@@ -200,9 +165,9 @@ This matcher does not find detached elements. The element must be added to the d
 function toBeInvalid(): Promise<void>
 ```
 
-This allows you to check if an element, is currently invalid.
+这允许你检查某个元素是否当前无效。
 
-An element is invalid if it has an [`aria-invalid` attribute](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-invalid) with no value or a value of `"true"`, or if the result of [`checkValidity()`](https://developer.mozilla.org/en-US/docs/Web/HTML/Constraint_validation) is `false`.
+一个元素如果具有一个没有值或值为 `"true"` 的 [`aria-invalid` 属性](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-invalid)，或者 [`checkValidity()`](https://developer.mozilla.org/en-US/docs/Web/HTML/Constraint_validation) 方法的结果为 `false`，则该元素被认为是无效的。
 
 ```html
 <input data-testid="no-aria-invalid" />
@@ -235,9 +200,9 @@ await expect.element(getByTestId('invalid-form')).toBeInvalid()
 function toBeRequired(): Promise<void>
 ```
 
-This allows you to check if a form element is currently required.
+这允许你检查某个表单元素是否当前为必填项。
 
-An element is required if it is having a `required` or `aria-required="true"` attribute.
+如果一个元素具有 `required` 或 `aria-required="true"` 属性，则该元素为必填项。
 
 ```html
 <input data-testid="required-input" required />
@@ -271,9 +236,9 @@ await expect.element(getByTestId('supported-role-aria')).toBeRequired()
 function toBeValid(): Promise<void>
 ```
 
-This allows you to check if the value of an element, is currently valid.
+这允许你检查某个元素的值是否当前有效。
 
-An element is valid if it has no [`aria-invalid` attribute](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-invalid) or an attribute value of "false". The result of [`checkValidity()`](https://developer.mozilla.org/en-US/docs/Web/HTML/Constraint_validation) must also be `true` if it's a form element.
+如果一个元素没有 [`aria-invalid` 属性](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-invalid)，或者该属性的值为 "false"，则该元素被视为有效。如果这是一个表单元素，则 [`checkValidity()`](https://developer.mozilla.org/en-US/docs/Web/HTML/Constraint_validation) 的结果也必须为 `true`。
 
 ```html
 <input data-testid="no-aria-invalid" />
@@ -306,17 +271,17 @@ await expect.element(getByTestId('invalid-form')).not.toBeValid()
 function toBeVisible(): Promise<void>
 ```
 
-This allows you to check if an element is currently visible to the user.
+这允许你检查某个元素当前是否对用户可见。
 
-Element is considered visible when it has non-empty bounding box and does not have `visibility:hidden` computed style.
+当一个元素具有非空的边界框，并且其计算样式不是 `visibility:hidden` 时，该元素被视为可见。
 
-Note that according to this definition:
+请注意，根据这一定义：
 
-- Elements of zero size **are not** considered visible.
-- Elements with `display:none` **are not** considered visible.
-- Elements with `opacity:0` **are** considered visible.
+- 尺寸为零的元素 **不** 被认为是可见的。
+- 样式为 `display:none` 的元素 **不** 被认为是可见的。
+- 样式为 `opacity:0` 的元素 **是** 被认为是可见的。
 
-To check that at least one element from the list is visible, use `locator.first()`.
+若要检查列表中至少有一个元素是可见的，请使用 `locator.first()`。
 
 ```ts
 // A specific element is visible.
@@ -339,7 +304,7 @@ await expect.element(
 function toContainElement(element: HTMLElement | SVGElement | null): Promise<void>
 ```
 
-This allows you to assert whether an element contains another element as a descendant or not.
+这允许你断言一个元素是否包含另一个作为其后代的元素。
 
 ```html
 <span data-testid="ancestor"><span data-testid="descendant"></span></span>
@@ -361,7 +326,7 @@ await expect.element(ancestor).not.toContainElement(nonExistantElement)
 function toContainHTML(htmlText: string): Promise<void>
 ```
 
-Assert whether a string representing a HTML element is contained in another element. The string should contain valid html, and not any incomplete html.
+断言一个表示 HTML 元素的字符串是否包含在另一个元素中。该字符串应包含有效的 HTML，而不是不完整的 HTML。
 
 ```html
 <span data-testid="parent"><span data-testid="child"></span></span>
@@ -380,11 +345,11 @@ await expect.element(getByTestId('parent')).toContainHTML('</span>')
 ```
 
 ::: warning
-Chances are you probably do not need to use this matcher. We encourage testing from the perspective of how the user perceives the app in a browser. That's why testing against a specific DOM structure is not advised.
+你可能不需要使用这个匹配器。我们鼓励从用户在浏览器中感知应用程序的角度进行测试。这就是为什么不建议针对特定的 DOM 结构进行测试。
 
-It could be useful in situations where the code being tested renders html that was obtained from an external source, and you want to validate that that html code was used as intended.
+在某些情况下，被测试的代码会渲染从外部来源获取的 HTML，而你希望验证该 HTML 代码是否按预期使用。
 
-It should not be used to check DOM structure that you control. Please, use [`toContainElement`](#tocontainelement) instead.
+不应使用它来检查你控制的 DOM 结构。请改用 [`toContainElement`](#tocontainelement)。
 :::
 
 ## toHaveAccessibleDescription
@@ -393,12 +358,9 @@ It should not be used to check DOM structure that you control. Please, use [`toC
 function toHaveAccessibleDescription(description?: string | RegExp): Promise<void>
 ```
 
-This allows you to assert that an element has the expected
-[accessible description](https://w3c.github.io/accname/).
+这允许你断言一个元素具有预期的[可访问描述](https://w3c.github.io/accname/)。
 
-You can pass the exact string of the expected accessible description, or you can
-make a partial match passing a regular expression, or by using
-[`expect.stringContaining`](/api/expect#expect-stringcontaining) or [`expect.stringMatching`](/api/expect#expect-stringmatching).
+你可以传递预期的可访问描述的确切字符串，或者通过传递正则表达式来进行部分匹配，或者使用[`expect.stringContaining`](/api/expect#expect-stringcontaining)或[`expect.stringMatching`](/api/expect#expect-stringmatching)。
 
 ```html
 <a
@@ -446,13 +408,9 @@ await expect.element(getByTestId('logo2')).toHaveAccessibleDescription(
 function toHaveAccessibleErrorMessage(message?: string | RegExp): Promise<void>
 ```
 
-This allows you to assert that an element has the expected
-[accessible error message](https://w3c.github.io/aria/#aria-errormessage).
+这允许你断言一个元素具有预期的[可访问错误消息](https://w3c.github.io/aria/#aria-errormessage)。
 
-You can pass the exact string of the expected accessible error message.
-Alternatively, you can perform a partial match by passing a regular expression
-or by using
-[`expect.stringContaining`](/api/expect#expect-stringcontaining) or [`expect.stringMatching`](/api/expect#expect-stringmatching).
+你可以传递预期的可访问错误消息的确切字符串。或者，你可以通过传递正则表达式或使用[`expect.stringContaining`](/api/expect#expect-stringcontaining)或[`expect.stringMatching`](/api/expect#expect-stringmatching)来进行部分匹配。
 
 ```html
 <input
@@ -499,13 +457,9 @@ await expect.element(
 function toHaveAccessibleName(name?: string | RegExp): Promise<void>
 ```
 
-This allows you to assert that an element has the expected
-[accessible name](https://w3c.github.io/accname/). It is useful, for instance,
-to assert that form elements and buttons are properly labelled.
+这允许你断言一个元素具有预期的[可访问名称](https://w3c.github.io/accname/)。例如，它有助于断言表单元素和按钮是否被正确标记。
 
-You can pass the exact string of the expected accessible name, or you can make a
-partial match passing a regular expression, or by using
-[`expect.stringContaining`](/api/expect#expect-stringcontaining) or [`expect.stringMatching`](/api/expect#expect-stringmatching).
+你可以传递预期的可访问名称的确切字符串，或者通过传递正则表达式进行部分匹配，也可以使用[`expect.stringContaining`](/api/expect#expect-stringcontaining)或[`expect.stringMatching`](/api/expect#expect-stringmatching)。
 
 ```html
 <img data-testid="img-alt" src="" alt="Test alt" />
@@ -535,9 +489,7 @@ await expect.element(getByTestId('input-title')).toHaveAccessibleName()
 function toHaveAttribute(attribute: string, value?: unknown): Promise<void>
 ```
 
-This allows you to check whether the given element has an attribute or not. You
-can also optionally check that the attribute has a specific expected value or
-partial match using [`expect.stringContaining`](/api/expect#expect-stringcontaining) or [`expect.stringMatching`](/api/expect#expect-stringmatching).
+这允许你检查给定的元素是否具有某个属性。你还可以选择性地验证该属性是否具有特定的预期值或使用[`expect.stringContaining`](/api/expect#expect-stringcontaining)或[`expect.stringMatching`](/api/expect#expect-stringmatching)进行部分匹配。
 
 ```html
 <button data-testid="ok-button" type="submit" disabled>ok</button>
@@ -567,16 +519,12 @@ function toHaveClass(...classNames: string[], options?: { exact: boolean }): Pro
 function toHaveClass(...classNames: (string | RegExp)[]): Promise<void>
 ```
 
-This allows you to check whether the given element has certain classes within
-its `class` attribute. You must provide at least one class, unless you are
-asserting that an element does not have any classes.
+这允许你检查给定元素在其 `class` 属性中是否包含某些类。除非你断言该元素没有任何类，否则必须提供至少一个类。
 
-The list of class names may include strings and regular expressions. Regular
-expressions are matched against each individual class in the target element, and
-it is NOT matched against its full `class` attribute value as whole.
+类名列表可以包括字符串和正则表达式。正则表达式会与目标元素中的每个单独类进行匹配，**而不是与其完整的 `class` 属性值整体匹配**。
 
 ::: warning
-Note that you cannot use `exact: true` option when only regular expressions are provided.
+请注意，当仅提供正则表达式时，不能使用 `exact: true` 选项。
 :::
 
 ```html
@@ -618,7 +566,7 @@ await expect.element(noClasses).not.toHaveClass()
 function toHaveFocus(): Promise<void>
 ```
 
-This allows you to assert whether an element has focus or not.
+这允许你断言某个元素是否具有焦点。
 
 ```html
 <div><input type="text" data-testid="element-to-focus" /></div>
@@ -638,51 +586,29 @@ await expect.element(input).not.toHaveFocus()
 function toHaveFormValues(expectedValues: Record<string, unknown>): Promise<void>
 ```
 
-This allows you to check if a form or fieldset contains form controls for each given name, and having the specified value.
+这允许你检查表单或字段集中是否包含每个给定名称的表单控件，并且具有指定的值。
 
 ::: tip
-It is important to stress that this matcher can only be invoked on a [form](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement) or a [fieldset](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFieldSetElement) element.
+需要强调的是，此匹配器只能在 [表单](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement) 或 [字段集](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFieldSetElement) 元素上调用。
 
-This allows it to take advantage of the [`.elements`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/elements) property in `form` and `fieldset` to reliably fetch all form controls within them.
+这使得它可以利用 `form` 和 `fieldset` 中的 [`.elements`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/elements) 属性，可靠地获取它们内部的所有表单控件。
 
-This also avoids the possibility that users provide a container that contains more than one `form`, thereby intermixing form controls that are not related, and could even conflict with one another.
+这也避免了用户提供包含多个 `form` 的容器的可能性，从而防止不相关的表单控件混杂在一起，甚至可能产生冲突。
 :::
 
-This matcher abstracts away the particularities with which a form control value
-is obtained depending on the type of form control. For instance, `<input>`
-elements have a `value` attribute, but `<select>` elements do not. Here's a list
-of all cases covered:
+此匹配器抽象了根据表单控件类型获取其值的特殊性。例如，`<input>` 元素具有 `value` 属性，但 `<select>` 元素没有。以下是涵盖的所有情况列表：
 
-- `<input type="number">` elements return the value as a **number**, instead of
-  a string.
-- `<input type="checkbox">` elements:
-  - if there's a single one with the given `name` attribute, it is treated as a
-    **boolean**, returning `true` if the checkbox is checked, `false` if
-    unchecked.
-  - if there's more than one checkbox with the same `name` attribute, they are
-    all treated collectively as a single form control, which returns the value
-    as an **array** containing all the values of the selected checkboxes in the
-    collection.
-- `<input type="radio">` elements are all grouped by the `name` attribute, and
-  such a group treated as a single form control. This form control returns the
-  value as a **string** corresponding to the `value` attribute of the selected
-  radio button within the group.
-- `<input type="text">` elements return the value as a **string**. This also
-  applies to `<input>` elements having any other possible `type` attribute
-  that's not explicitly covered in different rules above (e.g. `search`,
-  `email`, `date`, `password`, `hidden`, etc.)
-- `<select>` elements without the `multiple` attribute return the value as a
-  **string** corresponding to the `value` attribute of the selected `option`, or
-  `undefined` if there's no selected option.
-- `<select multiple>` elements return the value as an **array** containing all
-  the values of the [selected options](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/selectedOptions).
-- `<textarea>` elements return their value as a **string**. The value
-  corresponds to their node content.
+- `<input type="number">` 元素以 **数字** 而非字符串的形式返回值。
+- `<input type="checkbox">` 元素：
+  - 如果只有一个具有指定 `name` 属性的复选框，则将其视为 **布尔值**，如果复选框被选中则返回 `true`，否则返回 `false`。
+  - 如果有多个具有相同 `name` 属性的复选框，则将它们作为一个整体处理为一个表单控件，并以包含所有选中复选框值的 **数组** 形式返回值。
+- `<input type="radio">` 元素按 `name` 属性分组，这样的组被视为一个表单控件。该控件返回一个与组内选中的单选按钮的 `value` 属性对应的 **字符串** 值。
+- `<input type="text">` 元素以 **字符串** 形式返回值。这同样适用于具有其他可能 `type` 属性（未在上述规则中明确涵盖）的 `<input>` 元素（例如 `search`、`email`、`date`、`password`、`hidden` 等）。
+- 没有 `multiple` 属性的 `<select>` 元素以 **字符串** 形式返回值，对应于选中 `<option>` 的 `value` 属性值；如果没有选中的选项，则返回 `undefined`。
+- `<select multiple>` 元素以 **数组** 形式返回值，包含所有 [选中的选项](https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/selectedOptions) 的值。
+- `<textarea>` 元素以 **字符串** 形式返回值，该值对应于其节点内容。
 
-The above rules make it easy, for instance, to switch from using a single select
-control to using a group of radio buttons. Or to switch from a multi select
-control, to using a group of checkboxes. The resulting set of form values used
-by this matcher to compare against would be the same.
+上述规则使得从使用单个下拉菜单切换到一组单选按钮，或者从多选下拉菜单切换到一组复选框变得简单。此匹配器用于比较的最终表单值集合将保持一致。
 
 ```html
 <form data-testid="login-form">
@@ -706,9 +632,7 @@ await expect.element(getByTestId('login-form')).toHaveFormValues({
 function toHaveStyle(css: string | Partial<CSSStyleDeclaration>): Promise<void>
 ```
 
-This allows you to check if a certain element has some specific css properties
-with specific values applied. It matches only if the element has _all_ the
-expected properties applied, not just some of them.
+此功能允许你检查某个元素是否应用了特定的 CSS 属性及其特定值。只有当元素应用了 **所有** 预期的属性时，才会匹配，而不仅仅是其中的一部分。
 
 ```html
 <button
@@ -742,9 +666,8 @@ await expect.element(button).not.toHaveStyle({
 })
 ```
 
-This also works with rules that are applied to the element via a class name for
-which some rules are defined in a stylesheet currently active in the document.
-The usual rules of css precedence apply.
+这同样适用于通过类名应用到元素上的规则，这些规则在当前文档中激活的样式表里有定义。
+通常的 CSS 优先级规则适用。
 
 ## toHaveTextContent
 
@@ -755,16 +678,13 @@ function toHaveTextContent(
 ): Promise<void>
 ```
 
-This allows you to check whether the given node has a text content or not. This
-supports elements, but also text nodes and fragments.
+此功能允许你检查给定节点是否具有文本内容。它支持元素，同时也支持文本节点和片段。
 
-When a `string` argument is passed through, it will perform a partial
-case-sensitive match to the node content.
+当传递一个 `string` 类型的参数时，它会对节点内容进行部分区分大小写的匹配。
 
-To perform a case-insensitive match, you can use a `RegExp` with the `/i`
-modifier.
+若要进行不区分大小写的匹配，可以使用带有 `/i` 修饰符的 `RegExp`。
 
-If you want to match the whole content, you can use a `RegExp` to do it.
+如果你想匹配整个内容，可以使用 `RegExp` 来实现。
 
 ```html
 <span data-testid="text-content">Text Content</span>
@@ -787,17 +707,12 @@ await expect.element(element).not.toHaveTextContent('content')
 function toHaveValue(value: string | string[] | number | null): Promise<void>
 ```
 
-This allows you to check whether the given form element has the specified value.
-It accepts `<input>`, `<select>` and `<textarea>` elements with the exception of
-`<input type="checkbox">` and `<input type="radio">`, which can be meaningfully
-matched only using [`toBeChecked`](#tobechecked) or
-[`toHaveFormValues`](#tohaveformvalues).
+这允许你检查给定的表单元素是否具有指定的值。
+它接受 `<input>`、`<select>` 和 `<textarea>` 元素，但不包括 `<input type="checkbox">` 和 `<input type="radio">`，因为这些类型的元素只能通过 [`toBeChecked`](#tobechecked) 或 [`toHaveFormValues`](#tohaveformvalues) 进行有意义的匹配。
 
-It also accepts elements with roles `meter`, `progressbar`, `slider` or
-`spinbutton` and checks their `aria-valuenow` attribute (as a number).
+它还接受具有 `meter`、`progressbar`、`slider` 或 `spinbutton` 角色的元素，并检查它们的 `aria-valuenow` 属性（作为数字）。
 
-For all other form elements, the value is matched using the same algorithm as in
-[`toHaveFormValues`](#tohaveformvalues) does.
+对于所有其他表单元素，值的匹配使用与 [`toHaveFormValues`](#tohaveformvalues) 相同的算法。
 
 ```html
 <input type="text" value="text" data-testid="input-text" />
@@ -830,12 +745,7 @@ function toHaveDisplayValue(
 ): Promise<void>
 ```
 
-This allows you to check whether the given form element has the specified
-displayed value (the one the end user will see). It accepts `<input>`,
-`<select>` and `<textarea>` elements with the exception of
-`<input type="checkbox">` and `<input type="radio">`, which can be meaningfully
-matched only using [`toBeChecked`](#tobechecked) or
-[`toHaveFormValues`](#tohaveformvalues).
+这允许你检查给定的表单元素是否具有指定的显示值（即终端用户实际看到的值）。它接受 `<input>`、`<select>` 和 `<textarea>` 元素，但不包括 `<input type="checkbox">` 和 `<input type="radio">`，因为这些类型的元素只能通过 [`toBeChecked`](#tobechecked) 或 [`toHaveFormValues`](#tohaveformvalues) 进行有意义的匹配。
 
 ```html
 <label for="input-example">First name</label>
@@ -882,10 +792,7 @@ await expect.element(selectMultiple).toHaveDisplayValue([/Avocado/, 'Banana'])
 function toBeChecked(): Promise<void>
 ```
 
-This allows you to check whether the given element is checked. It accepts an
-`input` of type `checkbox` or `radio` and elements with a `role` of `checkbox`,
-`radio` or `switch` with a valid `aria-checked` attribute of `"true"` or
-`"false"`.
+这允许你检查给定的元素是否被选中。它接受类型为 `checkbox` 或 `radio` 的 `input` 元素，以及具有 `checkbox`、`radio` 或 `switch` 角色的元素，这些元素需要拥有值为 `"true"` 或 `"false"` 的有效 `aria-checked` 属性。
 
 ```html
 <input type="checkbox" checked data-testid="input-checkbox-checked" />
@@ -936,10 +843,7 @@ await expect.element(ariaSwitchUnchecked).not.toBeChecked()
 function toBePartiallyChecked(): Promise<void>
 ```
 
-This allows you to check whether the given element is partially checked. It
-accepts an `input` of type `checkbox` and elements with a `role` of `checkbox`
-with a `aria-checked="mixed"`, or `input` of type `checkbox` with
-`indeterminate` set to `true`
+这允许你检查给定的元素是否处于部分选中状态。它接受类型为 `checkbox` 的 `input` 元素，以及具有 `checkbox` 角色且 `aria-checked="mixed"` 的元素，或者类型为 `checkbox` 且 `indeterminate` 属性设置为 `true` 的 `input` 元素。
 
 ```html
 <input type="checkbox" aria-checked="mixed" data-testid="aria-checkbox-mixed" />
@@ -978,11 +882,11 @@ await expect.element(inputCheckboxIndeterminate).toBePartiallyChecked()
 function toHaveRole(role: ARIARole): Promise<void>
 ```
 
-This allows you to assert that an element has the expected [role](https://www.w3.org/TR/html-aria/#docconformance).
+这允许你断言某个元素具有预期的[角色](https://www.w3.org/TR/html-aria/#docconformance)。
 
-This is useful in cases where you already have access to an element via some query other than the role itself, and want to make additional assertions regarding its accessibility.
+在你已经通过某种查询（而非角色本身）获取到某个元素，并希望对其可访问性进行更多断言时，这非常有用。
 
-The role can match either an explicit role (via the `role` attribute), or an implicit one via the [implicit ARIA semantics](https://www.w3.org/TR/html-aria/#docconformance).
+角色可以匹配显式角色（通过 `role` 属性），也可以通过[隐式 ARIA 语义](https://www.w3.org/TR/html-aria/#docconformance)匹配隐式角色。
 
 ```html
 <button data-testid="button">Continue</button>
@@ -1003,9 +907,9 @@ await expect.element(getByTestId('link-invalid')).toHaveRole('generic')
 ```
 
 ::: warning
-Roles are matched literally by string equality, without inheriting from the ARIA role hierarchy. As a result, querying a superclass role like `checkbox` will not include elements with a subclass role like `switch`.
+角色通过字符串相等性进行精确匹配，不会继承自 ARIA 角色层次结构。因此，查询像 `checkbox` 这样的超类角色时，不会包含具有子类角色（如 `switch`）的元素。
 
-Also note that unlike `testing-library`, Vitest ignores all custom roles except the first valid one, following Playwright's behaviour:
+还需注意的是，与 `testing-library` 不同，Vitest 会忽略所有自定义角色，仅保留第一个有效的角色，这一行为遵循 Playwright 的规则。
 
 ```jsx
 <div data-testid="switch" role="switch alert"></div>
@@ -1021,16 +925,12 @@ await expect.element(getByTestId('switch')).toHaveRole('alert') // ❌
 function toHaveSelection(selection?: string): Promise<void>
 ```
 
-This allows to assert that an element has a
-[text selection](https://developer.mozilla.org/en-US/docs/Web/API/Selection).
+这允许断言某个元素具有一个[文本选择](https://developer.mozilla.org/en-US/docs/Web/API/Selection)。
 
-This is useful to check if text or part of the text is selected within an
-element. The element can be either an input of type text, a textarea, or any
-other element that contains text, such as a paragraph, span, div etc.
+这在检查元素内是否选择了文本或部分文本时非常有用。该元素可以是文本类型的输入框、`textarea`，或者是任何包含文本的其他元素，例如段落、`span`、`div` 等。
 
 ::: warning
-The expected selection is a string, it does not allow to check for
-selection range indeces.
+预期的选择是一个字符串，它不允许检查选择范围的索引。
 :::
 
 ```html
