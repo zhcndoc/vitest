@@ -396,9 +396,13 @@ test('properly handles form inputs', async () => {
 - [`vitest-browser-svelte`](https://github.com/vitest-dev/vitest-browser-svelte) 渲染 [svelte](https://svelte.dev) 组件
 - [`vitest-browser-react`](https://github.com/vitest-dev/vitest-browser-react) 渲染 [react](https://react.dev) 组件
 
-如果我们的框架没有包含此功能，请随意创建自己的软件包--它是框架渲染器和 `page.elementLocator` API 的简单封装。我们将在本页添加指向它的链接。请确保它的名称以 `vitest-browser-` 开头。
+其他框架也有社区提供的软件包：
 
-除了使用 `@testing-library/your-framework` 渲染组件和查询元素外，你还需要进行断言。Vitest 捆绑了 [`@testing-library/jest-dom`](https://github.com/testing-library/jest-dom)库，可提供各种开箱即用的 DOM 断言。更多信息请参阅 [Assertions API](/guide/browser/assertion-api)。
+- [`vitest-browser-lit`](https://github.com/EskiMojo14/vitest-browser-lit) 用于渲染 [lit](https://lit.dev) 组件
+
+如果你的框架没有被包含在内，请随时创建你自己的软件包——它是一个简单的封装，围绕着框架渲染器和 `page.elementLocator` API。我们会在本页面添加指向它的链接。请确保其名称以 `vitest-browser-` 开头。
+
+除了渲染组件和定位元素外，你还需要进行断言。Vitest 基于 [`@testing-library/jest-dom`](https://github.com/testing-library/jest-dom) 库提供了一整套开箱即用的 DOM 断言。更多信息请参阅 [Assertions API](/guide/browser/assertion-api)。
 
 ```ts
 import { page } from '@vitest/browser/context'
@@ -467,6 +471,21 @@ test('loads and displays greeting', async () => {
   // 断言警告消息是正确的。
   await expect.element(heading).toHaveTextContent('hello there')
   await expect.element(screen.getByRole('button')).toBeDisabled()
+})
+```
+```ts [lit]
+import { html } from 'lit'
+import { render } from 'vitest-browser-lit'
+import './greeter-button'
+
+test('greeting appears on click', async () => {
+  const screen = render(html`<greeter-button name="World"></greeter-button>`)
+
+  const button = screen.getByRole('button')
+  await button.click()
+  const greeting = screen.getByText(/hello world/iu)
+
+  await expect.element(greeting).toBeInTheDocument()
 })
 ```
 :::

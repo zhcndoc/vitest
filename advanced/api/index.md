@@ -61,7 +61,7 @@ console.log(vitest.state.getTestModules()) // [TestModule]
 ```ts
 function createVitest(
   mode: VitestRunMode,
-  options: UserConfig,
+  options: CliOptions,
   viteOverrides: ViteUserConfig = {},
   vitestOptions: VitestOptions = {},
 ): Promise<Vitest>
