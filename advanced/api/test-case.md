@@ -68,9 +68,10 @@ import { generateFileHash } from 'vitest/node'
 
 const hash = generateFileHash(
   '/file/path.js', // relative path
-  undefined, // the project name or `undefined` is not set
+  undefined // the project name or `undefined` is not set
 )
 ```
+
 :::
 
 ::: danger
@@ -125,7 +126,7 @@ function ok(): boolean
 function meta(): TaskMeta
 ```
 
-在测试执行期间附加的自定义元数据。可以通过在测试运行期间将属性赋值给 `ctx.task.meta` 对象来附加元数据：
+在测试执行期间附加到测试的自定义[元数据](/advanced/metadata)。在测试运行期间，可以通过为 `ctx.task.meta` 对象分配一个属性来附加元数据：
 
 ```ts {3,6}
 import { test } from 'vitest'

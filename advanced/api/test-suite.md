@@ -69,9 +69,10 @@ import { generateFileHash } from 'vitest/node'
 
 const hash = generateFileHash(
   '/file/path.js', // relative path
-  undefined, // the project name or `undefined` is not set
+  undefined // the project name or `undefined` is not set
 )
 ```
+
 :::
 
 ::: danger
@@ -144,6 +145,7 @@ function visit(collection: TestCollection) {
   }
 }
 ```
+
 :::
 
 ## ok
@@ -189,4 +191,31 @@ describe('collection failed', () => {
 
 ::: warning
 请注意，错误会被序列化为简单对象：`instanceof Error` 将始终返回 `false`。
+:::
+
+## meta <Version>3.1.0</Version> {#meta}
+
+```ts
+function meta(): TaskMeta
+```
+
+在执行或收集过程中附加到套件的自定义[元数据](/advanced/metadata)。在测试运行期间，可以通过向 `task.meta` 对象分配属性来附加 meta：
+
+```ts {5,10}
+import { test } from 'vitest'
+
+describe('the validation works correctly', (task) => {
+  // assign "decorated" during collection
+  task.meta.decorated = false
+
+  test('some test', ({ task }) => {
+    // assign "decorated" during test run, it will be available
+    // only in onTestCaseReady hook
+    task.suite.meta.decorated = false
+  })
+})
+```
+
+:::tip
+If metadata was attached during collection (outside of the `test` function), then it will be available in [`onTestModuleCollected`](./reporters#ontestmodulecollected) hook in the custom reporter.
 :::

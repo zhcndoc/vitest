@@ -8,7 +8,6 @@ Vitest 通过 [`v8`](https://v8.dev/blog/javascript-code-coverage) 支持原生�
 
 ## 测试覆盖率提供者
 
-
 `v8` 和 `istanbul` 的支持都是可选的。 默认情况下，启用 `v8`。
 
 你可以通过将 `test.coverage.provider` 设置为 `v8` 或 `istanbul` 来选择覆盖工具：
@@ -30,12 +29,15 @@ export default defineConfig({
 或者，如果你更喜欢手动安装它们：
 
 ::: code-group
+
 ```bash [v8]
 npm i -D @vitest/coverage-v8
 ```
+
 ```bash [istanbul]
 npm i -D @vitest/coverage-istanbul
 ```
+
 :::
 
 ## 覆盖率配置
@@ -142,7 +144,7 @@ import type {
   CoverageProvider,
   CoverageProviderModule,
   ResolvedCoverageOptions,
-  Vitest
+  Vitest,
 } from 'vitest'
 
 const CustomCoverageProviderModule: CoverageProviderModule = {
