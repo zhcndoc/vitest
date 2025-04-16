@@ -830,7 +830,11 @@ vi.useRealTimers()
 
 - **类型:** `() => Vitest`
 
+<<<<<<< HEAD
 定时器用完后，可以调用此方法将模拟的定时器返回到其原始实现。之前调度的所有计时器都将被丢弃。
+=======
+When timers have run out, you may call this method to return mocked timers to its original implementations. All timers that were scheduled before will be discarded.
+>>>>>>> 39f838fb2b9abaf466053eb8d725f296d3a46d06
 
 ## Miscellaneous
 
