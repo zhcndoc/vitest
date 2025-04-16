@@ -173,7 +173,7 @@ export default CustomCoverageProviderModule
 
 ## 更改默认覆盖文件夹位置
 
-运行覆盖率报告时，会在项目的根目录中创建一个 `coverage` 文件夹。 如果你想将它移动到不同的目录，请使用 `vite.config.js` 文件中的 `test.coverage.reportsDirectory` 属性。
+运行覆盖率报告时，项目根目录下会生成一个名为 `coverage` 的文件夹。如果想把它移动到其他目录，可以在 `vitest.config.js` 文件中使用 `test.coverage.reportsDirectory` 属性。
 
 ```js [vitest.config.js]
 import { defineConfig } from 'vite'
@@ -219,14 +219,18 @@ if (condition) {
 
 要查看有关覆盖率的所有可配置选项，请参见 [覆盖率配置参考](https://cn.vitest.dev/config/#coverage)。
 
+## Coverage performance
+
+If code coverage generation is slow on your project, see [Profiling Test Performance | Code coverage](/guide/profiling-test-performance.html#code-coverage).
+
 ## Vitest UI
 
-你可以在 [Vitest UI](/guide/ui) 中查看你的覆盖率报告。
+我们可以在 [Vitest UI](/guide/ui) 中查看你的覆盖率报告。
 
-Vitest UI 将在显式启用覆盖率报告且存在 html 覆盖率报告器的情况下启用覆盖率报告，否则将不可用：
+Vitest UI 会在以下情况下启用覆盖率报告：
 
-- 在配置中启用 `coverage.enabled=true` 或使用 `--coverage.enabled=true` 标志运行 Vitest
-- 在 `coverage.reporter` 列表中添加 `html`：也可以启用 `subdir` 选项，将覆盖率报告放到子目录中
+- 显式启用覆盖率报告：在配置文件中设置 `coverage.enabled=true` ，或运行 Vitest 时添加 `--coverage.enabled=true` 标志。
+- 添加 HTML 报告器：将 `html` 添加到 `coverage.reporter` 列表中，我们还可以启用 `subdir` 选项，将覆盖率报告放在子目录中。
 
 <img alt="html coverage activation in Vitest UI" img-light src="/vitest-ui-show-coverage-light.png">
 <img alt="html coverage activation in Vitest UI" img-dark src="/vitest-ui-show-coverage-dark.png">

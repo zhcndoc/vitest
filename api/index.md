@@ -39,7 +39,7 @@ interface TestOptions {
 
 :::
 
-你可以通过链接函数的属性来定义选项：
+我们可以通过在函数上链式定义属性来设置选项。
 
 ```ts
 import { test } from 'vitest'
@@ -51,9 +51,13 @@ test.skip('skipped test', () => {
 test.concurrent.skip('skipped concurrent test', () => {
   // 一些现在失败的逻辑
 })
+
+test.concurrent.skip('skipped concurrent test', () => {
+  // some logic that fails right now
+})
 ```
 
-但你也可以提供一个对象作为第二个参数：
+但我们也可以选择将对象作为第二个参数来使用。
 
 ```ts
 import { test } from 'vitest'
@@ -65,11 +69,15 @@ test('skipped test', { skip: true }, () => {
 test('skipped concurrent test', { skip: true, concurrent: true }, () => {
   // some logic that fails right now
 })
+
+test('skipped concurrent test', { skip: true, concurrent: true }, () => {
+  // some logic that fails right now
+})
 ```
 
-两者的工作方式完全相同。使用其中任何一种纯粹是个人风格选择。
+They both work in exactly the same way. To use either one is purely a stylistic choice.
 
-请注意，如果你将超时设置为最后一个参数，则不能再使用选项：
+Note that if you are providing timeout as the last argument, you cannot use options anymore:
 
 ```ts
 import { test } from 'vitest'
@@ -80,17 +88,12 @@ test.skip('heavy test', () => {
 }, 10_000)
 
 // ❌ this doesn't work
-test(
-  'heavy test',
-  { skip: true },
-  () => {
-    // ...
-  },
-  10_000
-)
+test('heavy test', { skip: true }, () => {
+  // ...
+}, 10_000)
 ```
 
-但是，你可以在对象内提供超时：
+However, you can provide a timeout inside the object:
 
 ```ts
 import { test } from 'vitest'
