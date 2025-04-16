@@ -106,11 +106,11 @@ importers:
         specifier: 2.0.0-alpha.4
         version: 2.0.0-alpha.4(@algolia/client-search@5.19.0)(@types/node@22.10.7)(jiti@2.4.2)(postcss@8.5.3)(search-insights@2.13.0)(terser@5.37.0)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       vitepress-plugin-group-icons:
-        specifier: ^1.3.8
-        version: 1.3.8
+        specifier: ^1.5.2
+        version: 1.5.2
       vitepress-plugin-tabs:
-        specifier: ^0.6.0
-        version: 0.6.0(vitepress@2.0.0-alpha.4(@algolia/client-search@5.19.0)(@types/node@22.10.7)(jiti@2.4.2)(postcss@8.5.3)(search-insights@2.13.0)(terser@5.37.0)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0))(vue@3.5.13(typescript@5.8.2))
+        specifier: ^0.7.0
+        version: 0.7.0(vitepress@2.0.0-alpha.4(@algolia/client-search@5.19.0)(@types/node@22.10.7)(jiti@2.4.2)(postcss@8.5.3)(search-insights@2.13.0)(terser@5.37.0)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0))(vue@3.5.13(typescript@5.8.2))
       vitest:
         specifier: ^3.0.2
         version: 3.0.2(@types/node@22.10.7)(@vitest/browser@3.0.2)(@vitest/ui@3.0.2)(msw@2.7.0(@types/node@22.10.7)(typescript@5.8.2))(terser@5.37.0)
@@ -1187,8 +1187,8 @@ packages:
   '@iconify-json/simple-icons@1.2.29':
     resolution: {integrity: sha512-KYrxmxtRz6iOAulRiUsIBMUuXek+H+Evwf8UvYPIkbQ+KDoOqTegHx3q/w3GDDVC0qJYB+D3hXPMZcpm78qIuA==}
 
-  '@iconify-json/vscode-icons@1.2.16':
-    resolution: {integrity: sha512-hstc2yVq2UJ6v6FrgjftzXRvphGZBsKxvSeXoFLP1Hgx89TPZKrGE5SV6vqsoeIlLYaQ7OZbXmAoVGroTfGmVQ==}
+  '@iconify-json/vscode-icons@1.2.19':
+    resolution: {integrity: sha512-M6Ujx2Ncmr/jfHhLJ+unqaILOJ/wWAkfc84Eh3+e8PccFmB1TS4KwOSyqbawybbqKK7JaaEk5uhFYSFpYOeuOA==}
 
   '@iconify/types@2.0.0':
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
@@ -4724,14 +4724,14 @@ packages:
       yaml:
         optional: true
 
-  vitepress-plugin-group-icons@1.3.8:
-    resolution: {integrity: sha512-BIx1HgXEvbDeJX8NqVvthWHQqEW2slj1SkAWLMNoUR5IJq1dq6LmrURYCyznMJCB3/0g+YY89ifvQp3in1fX3g==}
+  vitepress-plugin-group-icons@1.5.2:
+    resolution: {integrity: sha512-zen07KxZ83y3eecou4EraaEgwIriwHaB5Q0cHAmS4yO1UZEQvbljTylHPqiJ7LNkV39U8VehfcyquAJXg/26LA==}
 
-  vitepress-plugin-tabs@0.6.0:
-    resolution: {integrity: sha512-35mQUbI6lcVrLj0PpwautXm8LiV6Gz5ZDlklVRf/0KDd6gGs8HaZztqOxdffnzCiKIFLURBx930xq28it9jQTg==}
+  vitepress-plugin-tabs@0.7.0:
+    resolution: {integrity: sha512-++RyeFNEsj/bJBXJK1IURRbJOB9vRqCahRwk1a2ntp9+SZy+7qgE5806vw9W7+uKR9CMi1iW+6plOcCKpmDnfA==}
     peerDependencies:
       vitepress: ^1.0.0
-      vue: ^3.3.8
+      vue: ^3.5.0
 
   vitepress@2.0.0-alpha.4:
     resolution: {integrity: sha512-3/tiBTx47d4to5RqfYwWeht9ND0la0C8Vc0gtbdY3RMffFnWGmAQryODTXDN9Cm1exXZr8ywcxA2eJcpxa3igQ==}
@@ -6102,7 +6102,7 @@ snapshots:
     dependencies:
       '@iconify/types': 2.0.0
 
-  '@iconify-json/vscode-icons@1.2.16':
+  '@iconify-json/vscode-icons@1.2.19':
     dependencies:
       '@iconify/types': 2.0.0
 
@@ -10329,15 +10329,15 @@ snapshots:
       tsx: 4.19.3
       yaml: 2.7.0
 
-  vitepress-plugin-group-icons@1.3.8:
+  vitepress-plugin-group-icons@1.5.2:
     dependencies:
       '@iconify-json/logos': 1.2.4
-      '@iconify-json/vscode-icons': 1.2.16
+      '@iconify-json/vscode-icons': 1.2.19
       '@iconify/utils': 2.3.0
     transitivePeerDependencies:
       - supports-color
 
-  vitepress-plugin-tabs@0.6.0(vitepress@2.0.0-alpha.4(@algolia/client-search@5.19.0)(@types/node@22.10.7)(jiti@2.4.2)(postcss@8.5.3)(search-insights@2.13.0)(terser@5.37.0)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0))(vue@3.5.13(typescript@5.8.2)):
+  vitepress-plugin-tabs@0.7.0(vitepress@2.0.0-alpha.4(@algolia/client-search@5.19.0)(@types/node@22.10.7)(jiti@2.4.2)(postcss@8.5.3)(search-insights@2.13.0)(terser@5.37.0)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0))(vue@3.5.13(typescript@5.8.2)):
     dependencies:
       vitepress: 2.0.0-alpha.4(@algolia/client-search@5.19.0)(@types/node@22.10.7)(jiti@2.4.2)(postcss@8.5.3)(search-insights@2.13.0)(terser@5.37.0)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       vue: 3.5.13(typescript@5.8.2)
