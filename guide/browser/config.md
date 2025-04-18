@@ -110,8 +110,13 @@ export default defineConfig({
 - **类型:** `string`
 - **CLI:** `--browser=safari`
 
+<<<<<<< HEAD
 ::: danger
 此 API 已弃用，并将在 Vitest 4 中移除。请改用 [`browser.instances`](#browser-instances) 选项。
+=======
+::: danger DEPRECATED
+This API is deprecated an will be removed in Vitest 4. Please, use [`browser.instances`](#browser-instances) option instead.
+>>>>>>> 63d97cc6b11e1655c78a610d385a02a7c04271c0
 :::
 
 在特定浏览器中运行所有测试。不同提供者中的可能选项：
@@ -150,17 +155,25 @@ HTML 入口点的路径。可以是相对于项目根目录的路径。此文件
 
 配置为浏览器提供代码的 Vite 服务器的选项。不影响 [`test.api`](#api) 选项。默认情况下，Vitest 分配端口 `63315` 以避免与开发服务器冲突，允许我们同时运行两者。
 
+<<<<<<< HEAD
 ## browser.provider <Badge type="warning">实验性</Badge> {#browser-provider}
+=======
+## browser.provider {#browser-provider}
+>>>>>>> 63d97cc6b11e1655c78a610d385a02a7c04271c0
 
 - **类型:** `'webdriverio' | 'playwright' | 'preview' | string`
 - **默认值:** `'preview'`
 - **CLI:** `--browser.provider=playwright`
 
+<<<<<<< HEAD
 ::: danger 高级 API
 提供者 API 是高度实验性的，可能会在补丁之间发生变化。如果我们只需要在浏览器中运行测试，请改用 [`browser.instances`](#browser-instances) 选项。
 :::
 
 运行浏览器测试时使用的提供者路径。Vitest 提供了三个提供者，分别是 `preview`（默认）、`webdriverio` 和 `playwright`。自定义提供者应使用 `default` 导出，并具有以下形状：
+=======
+Path to a provider that will be used when running browser tests. Vitest provides three providers which are `preview` (default), `webdriverio` and `playwright`. Custom providers should be exported using `default` export and have this shape:
+>>>>>>> 63d97cc6b11e1655c78a610d385a02a7c04271c0
 
 ```ts
 export interface BrowserProvider {
@@ -180,12 +193,25 @@ export interface BrowserProvider {
 }
 ```
 
+<<<<<<< HEAD
 ## browser.providerOptions <Badge type="danger">已弃用</Badge> {#browser-provideroptions}
+=======
+::: danger ADVANCED API
+The custom provider API is highly experimental and can change between patches. If you just need to run tests in a browser, use the [`browser.instances`](#browser-instances) option instead.
+:::
+
+## browser.providerOptions <Badge type="danger">deprecated</Badge> {#browser-provideroptions}
+>>>>>>> 63d97cc6b11e1655c78a610d385a02a7c04271c0
 
 - **类型:** `BrowserProviderOptions`
 
+<<<<<<< HEAD
 ::: danger
 此 API 已弃用，并将在 Vitest 4 中移除。请改用 [`browser.instances`](#browser-instances) 选项。
+=======
+::: danger DEPRECATED
+This API is deprecated an will be removed in Vitest 4. Please, use [`browser.instances`](#browser-instances) option instead.
+>>>>>>> 63d97cc6b11e1655c78a610d385a02a7c04271c0
 :::
 
 调用 `provider.initialize` 时传递给提供者的选项。
@@ -300,8 +326,13 @@ export interface BrowserScript {
 - **类型:** `BrowserScript[]`
 - **默认值:** `[]`
 
+<<<<<<< HEAD
 ::: danger
 此 API 已弃用，并将在 Vitest 4 中移除。请改用 [`browser.testerHtmlPath`](#browser-testerhtmlpath) 字段。
+=======
+::: danger DEPRECATED
+This API is deprecated an will be removed in Vitest 4. Please, use [`browser.testerHtmlPath`](#browser-testerhtmlpath) field instead.
+>>>>>>> 63d97cc6b11e1655c78a610d385a02a7c04271c0
 :::
 
 在测试环境初始化之前应注入到测试器 HTML 中的自定义脚本。这对于注入 Vitest 浏览器实现所需的 polyfill 非常有用。在几乎所有情况下，建议使用 [`setupFiles`](#setupfiles) 代替此选项。
