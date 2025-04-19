@@ -198,7 +198,6 @@ describe('collection failed', () => {
 ```ts
 function meta(): TaskMeta
 ```
-
 在执行或收集过程中附加到套件的自定义[元数据](/advanced/metadata)。在测试运行期间，可以通过向 `task.meta` 对象分配属性来附加 meta：
 
 ```ts {5,10}
@@ -217,5 +216,5 @@ describe('the validation works correctly', (task) => {
 ```
 
 :::tip
-If metadata was attached during collection (outside of the `test` function), then it will be available in [`onTestModuleCollected`](./reporters#ontestmodulecollected) hook in the custom reporter.
+如果元数据是在收集阶段（而非 `test` 函数内部）附加的，那么它将在 available 的 [`onTestModuleCollected`](./reporters#ontestmodulecollected) 中可用。
 :::
