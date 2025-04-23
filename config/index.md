@@ -106,7 +106,7 @@ export default defineConfig({
 
 由于 Vitest 使用 Vite 的配置，我们也可以使用 [Vite](https://vitejs.dev/config/) 中的任何配置选项。例如，使用 `define` 来定义全局变量，或者使用 `resolve.alias` 来定义别名——这些选项应该在顶级定义，而不是在 `test` 属性内部。
 
-不支持在[工作区](/guide/workspace)项目配置中的配置选项旁边会有 <NonProjectOption /> 标志。
+不支持在[工作区](/guide/workspace)项目配置中的配置选项旁边会有 <NonProjectOption /> 标志。这意味着这些选项只能在根 Vitest 配置中设置。
 :::
 
 ### include
@@ -683,10 +683,14 @@ export default defineConfig({
 ### watch<NonProjectOption />
 
 - **类型:** `boolean`
-- **默认值:** `!process.env.CI`
+- **默认值:** `!process.env.CI && process.stdin.isTTY`
 - **命令行终端:** `-w`, `--watch`, `--watch=false`
 
 启动监听模式
+
+In interactive environments, this is the default, unless `--run` is specified explicitly.
+
+In CI, or when run from a non-interactive shell, "watch" mode is not the default, but can be enabled explicitly with this flag.
 
 ### root
 

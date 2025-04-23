@@ -110,7 +110,7 @@ export default defineConfig({
 - **类型:** `string`
 - **CLI:** `--browser=safari`
 
-::: danger
+::: danger DEPRECATED
 此 API 已弃用，并将在 Vitest 4 中移除。请改用 [`browser.instances`](#browser-instances) 选项。
 :::
 
@@ -150,17 +150,13 @@ HTML 入口点的路径。可以是相对于项目根目录的路径。此文件
 
 配置为浏览器提供代码的 Vite 服务器的选项。不影响 [`test.api`](#api) 选项。默认情况下，Vitest 分配端口 `63315` 以避免与开发服务器冲突，允许我们同时运行两者。
 
-## browser.provider <Badge type="warning">实验性</Badge> {#browser-provider}
+## browser.provider {#browser-provider}
 
 - **类型:** `'webdriverio' | 'playwright' | 'preview' | string`
 - **默认值:** `'preview'`
 - **CLI:** `--browser.provider=playwright`
 
-::: danger 高级 API
-提供者 API 是高度实验性的，可能会在补丁之间发生变化。如果我们只需要在浏览器中运行测试，请改用 [`browser.instances`](#browser-instances) 选项。
-:::
-
-运行浏览器测试时使用的提供者路径。Vitest 提供了三个提供者，分别是 `preview`（默认）、`webdriverio` 和 `playwright`。自定义提供者应使用 `default` 导出，并具有以下形状：
+在运行浏览器测试时使用的提供者路径。Vitest 提供了三个提供者，分别是 `preview`（默认）、`webdriverio` 和 `playwright`。自定义提供者应使用 `default` 导出，并具有以下形状：
 
 ```ts
 export interface BrowserProvider {
@@ -180,11 +176,15 @@ export interface BrowserProvider {
 }
 ```
 
+::: danger ADVANCED API
+自定义提供者 API 高度实验性，并且可能在补丁版本之间发生变化。如果你只需要在浏览器中运行测试，请改用 [`browser.instances`](#browser-instances) 选项。
+:::
+
 ## browser.providerOptions <Badge type="danger">已弃用</Badge> {#browser-provideroptions}
 
 - **类型:** `BrowserProviderOptions`
 
-::: danger
+::: danger DEPRECATED
 此 API 已弃用，并将在 Vitest 4 中移除。请改用 [`browser.instances`](#browser-instances) 选项。
 :::
 
@@ -300,7 +300,7 @@ export interface BrowserScript {
 - **类型:** `BrowserScript[]`
 - **默认值:** `[]`
 
-::: danger
+::: danger DEPRECATED
 此 API 已弃用，并将在 Vitest 4 中移除。请改用 [`browser.testerHtmlPath`](#browser-testerhtmlpath) 字段。
 :::
 

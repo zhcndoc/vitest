@@ -610,6 +610,10 @@ class Dog {
     return 'animal'
   }
 
+  greet = (): string => {
+    return `Hi! My name is ${this.name}!`
+  }
+
   speak(): string {
     return 'bark!'
   }
@@ -624,6 +628,8 @@ class Dog {
 ```ts
 const Dog = vi.fn(function (name) {
   this.name = name
+  // mock instance methods in the constructor, each instance will have its own spy
+  this.greet = vi.fn(() => `Hi! My name is ${this.name}!`)
 })
 
 // notice that static methods are mocked directly on the function,
@@ -631,10 +637,30 @@ const Dog = vi.fn(function (name) {
 Dog.getType = vi.fn(() => 'mocked animal')
 
 // mock the "speak" and "feed" methods on every instance of a class
-// all `new Dog()` instances will inherit these spies
+// all `new Dog()` instances will inherit and share these spies
 Dog.prototype.speak = vi.fn(() => 'loud bark!')
 Dog.prototype.feed = vi.fn()
 ```
+
+::: warning
+If a non-primitive is returned from the constructor function, that value will become the result of the new expression. In this case the `[[Prototype]]` may not be correctly bound:
+
+```ts
+const CorrectDogClass = vi.fn(function (name) {
+  this.name = name
+})
+
+const IncorrectDogClass = vi.fn(name => ({
+  name
+}))
+
+const Marti = new CorrectDogClass('Marti')
+const Newt = new IncorrectDogClass('Newt')
+
+Marti instanceof CorrectDogClass // ✅ true
+Newt instanceof IncorrectDogClass // ❌ false!
+```
+:::
 
 ::: tip WHEN TO USE?
 一般来说，如果类是从另一个模块重新导出的，你会在模块工厂内重新创建这样的类：
@@ -678,11 +704,19 @@ test('can feed dogs', () => {
 现在，当我们创建一个新的 `Dog` 类实例时，它的 `speak` 方法（与 `feed` 并列）已经被模拟：
 
 ```ts
-const dog = new Dog('Cooper')
-dog.speak() // loud bark!
+const Cooper = new Dog('Cooper')
+Cooper.speak() // loud bark!
+Cooper.greet() // Hi! My name is Cooper!
 
 // you can use built-in assertions to check the validity of the call
-expect(dog.speak).toHaveBeenCalled()
+expect(Cooper.speak).toHaveBeenCalled()
+expect(Cooper.greet).toHaveBeenCalled()
+
+const Max = new Dog('Max')
+
+// methods assigned to the prototype are shared between instances
+expect(Max.speak).toHaveBeenCalled()
+expect(Max.greet).not.toHaveBeenCalled()
 ```
 
 我们可以为特定实例重新分配返回值：
