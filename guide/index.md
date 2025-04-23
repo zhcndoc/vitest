@@ -181,32 +181,11 @@ export default defineConfig({
 
 ## 支持工作空间
 
-<<<<<<< HEAD
-使用 [Vitest Workspaces](/guide/workspace) 在同一项目中运行不同的项目配置。你可以在`vitest.workspace`文件中定义工作区的文件和文件夹列表。该文件支持 `js` / `ts` / `json` 扩展名。此功能非常适合配合 monorepo 使用。
-=======
-Run different project configurations inside the same project with [Vitest Workspaces](/guide/workspace). You can define a list of files and folders that define your workspace in `vitest.config` file.
->>>>>>> 63d97cc6b11e1655c78a610d385a02a7c04271c0
+在同一个项目中使用 [Vitest 工作区](/guide/workspace)运行不同的项目配置。你可以在 `vitest.config` 文件中定义一个包含文件和文件夹的列表来指定你的工作区。
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
 
-<<<<<<< HEAD
-export default defineWorkspace([
-  // 你可以用一个 glob 模式列表来定义你的工作空间
-  // Vitest 希望一系列配置文件
-  // 或者包含一个配置文件的目录
-  'packages/*',
-  'tests/*/vitest.config.{e2e,unit}.ts',
-  // 你甚至可以在同一个 "vitest" 进程中以不同的配置
-  // 运行相同的测试
-  {
-    test: {
-      name: 'happy-dom',
-      root: './shared_tests',
-      environment: 'happy-dom',
-      setupFiles: ['./setup.happy-dom.ts'],
-    },
-=======
 export default defineConfig({
   test: {
     workspace: [
@@ -234,7 +213,6 @@ export default defineConfig({
         },
       },
     ],
->>>>>>> 63d97cc6b11e1655c78a610d385a02a7c04271c0
   },
 })
 ```
