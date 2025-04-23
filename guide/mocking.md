@@ -701,11 +701,7 @@ test('can feed dogs', () => {
 ```
 :::
 
-<<<<<<< HEAD
 现在，当我们创建一个新的 `Dog` 类实例时，它的 `speak` 方法（与 `feed` 并列）已经被模拟：
-=======
-Now, when we create a new instance of the `Dog` class its `speak` method (alongside `feed` and `greet`) is already mocked:
->>>>>>> 63d97cc6b11e1655c78a610d385a02a7c04271c0
 
 ```ts
 const Cooper = new Dog('Cooper')
