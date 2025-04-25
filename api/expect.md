@@ -6,7 +6,19 @@
 type Awaitable<T> = T | PromiseLike<T>
 ```
 
-`expect` 用于创建断言。在这种情况下， `assertions` 是可以调用来断言语句的函数。 Vitest 默认提供 `chai` 断言，并且还在 `chai` 之上构建了与 `Jest` 兼容的断言。
+`expect` 用于创建断言。在此上下文中，`断言` 是可以被调用来验证一个语句的函数。Vitest 默认提供 `chai` 断言，并且还提供了基于 `chai` 构建的与 `Jest` 兼容的断言。与 `Jest` 不同的是，Vitest 支持将消息作为第二个参数——如果断言失败，错误信息将等于该消息。
+
+```ts
+export interface ExpectStatic extends Chai.ExpectStatic, AsymmetricMatchersContaining {
+  <T>(actual: T, message?: string): Assertion<T>
+  extend: (expects: MatchersObject) => void
+  anything: () => any
+  any: (constructor: unknown) => any
+  getState: () => MatcherState
+  setState: (state: Partial<MatcherState>) => void
+  not: AsymmetricMatchersContaining
+}
+```
 
 例如，此代码断言 `input` 值等于 `2`。 如果不是，assertions 将抛出错误，并且测试将失败。
 
