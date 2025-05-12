@@ -1,0 +1,1 @@
+import{_ as o,o as e,b as t}from"./framework.BPQ0K0mP.js";const n={},c={"text-sm":"","text-orange":"","cursor-not-allowed":"",title:"Not supported in workspace project config"};function r(s,_){return e(),t("span",c," * ")}const p=o(n,[["render",r]]);export{p as _};
