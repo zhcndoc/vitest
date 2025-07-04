@@ -70,7 +70,6 @@ export default ({ mode }: { mode: string }) => {
           customIcon: {
             'CLI': 'vscode-icons:file-type-shell',
             'vitest.shims': 'vscode-icons:file-type-vitest',
-            'vitest.workspace': 'vscode-icons:file-type-vitest',
             'vitest.config': 'vscode-icons:file-type-vitest',
             '.spec.ts': 'vscode-icons:file-type-testts',
             '.test.ts': 'vscode-icons:file-type-testts',
@@ -469,8 +468,13 @@ function guide(): DefaultTheme.SidebarItem[] {
       link: '/guide/filtering',
     },
     {
+<<<<<<< HEAD
       text: '工作空间',
       link: '/guide/workspace',
+=======
+      text: 'Test Projects',
+      link: '/guide/projects',
+>>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
     },
     {
       text: '报告器「Reporters」',
@@ -489,7 +493,15 @@ function guide(): DefaultTheme.SidebarItem[] {
       link: '/guide/mocking',
     },
     {
+<<<<<<< HEAD
       text: '类型测试',
+=======
+      text: 'Parallelism',
+      link: '/guide/parallelism',
+    },
+    {
+      text: 'Testing Types',
+>>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
       link: '/guide/testing-types',
     },
     {
@@ -505,7 +517,15 @@ function guide(): DefaultTheme.SidebarItem[] {
       link: '/guide/test-context',
     },
     {
+<<<<<<< HEAD
       text: '测试环境',
+=======
+      text: 'Test Annotations',
+      link: '/guide/test-annotations',
+    },
+    {
+      text: 'Environment',
+>>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
       link: '/guide/environment',
     },
     {
@@ -530,8 +550,13 @@ function guide(): DefaultTheme.SidebarItem[] {
       collapsed: false,
       items: [
         {
+<<<<<<< HEAD
           text: '迁移到 Vitest 3.0',
           link: '/guide/migration#vitest-3',
+=======
+          text: 'Migrating to Vitest 4.0',
+          link: '/guide/migration#vitest-4',
+>>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
         },
         {
           text: '从 Jest 迁移',
