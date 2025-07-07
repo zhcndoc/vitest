@@ -702,11 +702,7 @@ await page.getByRole('img', { name: 'Rose' }).unhover()
 function fill(text: string, options?: UserEventFillOptions): Promise<void>
 ```
 
-<<<<<<< HEAD
-设置当前 `input`、`textarea` 或 `contenteditable` 元素的值。
-=======
-Sets the value of the current `input`, `textarea` or `contenteditable` element.
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+为当前的 `input` 、`textarea` 或 `contenteditable` 元素赋值。
 
 ```ts
 import { page } from '@vitest/browser/context'

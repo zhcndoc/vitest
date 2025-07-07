@@ -156,11 +156,7 @@ function fill(
 ): Promise<void>
 ```
 
-<<<<<<< HEAD
-为 `input/textarea/conteneditable` 字段设置值。这将在设置新值前移除输入中的任何现有文本。
-=======
-Set a value to the `input`/`textarea`/`contenteditable` field. This will remove any existing text in the input before setting the new value.
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+为 `input` `、textarea` 或 `contenteditable` 元素设置新的内容，并且在赋值前会先清空其中已有的文本。
 
 ```ts
 import { page, userEvent } from '@vitest/browser/context'
@@ -267,11 +263,7 @@ function type(
 
 `type` 方法在 [`keyboard`](https://testing-library.com/docs/user-event/keyboard) API 的基础上实现了 `@testing-library/user-event` 的 [`type`](https://testing-library.com/docs/user-event/utility/#type) 工具。
 
-<<<<<<< HEAD
-该函数允许您在 input/textarea/conteneditable 中键入字符。它支持 [user-event `keyboard` syntax](https://testing-library.com/docs/user-event/keyboard)。
-=======
-This function allows you to type characters into an `input`/`textarea`/`contenteditable` element. It supports [user-event `keyboard` syntax](https://testing-library.com/docs/user-event/keyboard).
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+你可以使用此函数向 `input` `、textarea` 或 `contenteditable` 元素中模拟键盘输入。[它兼容 user-event 提供的 keyboard 语法](https://testing-library.com/docs/user-event/keyboard)。
 
 如果只需按下字符而无需输入，请使用 [`userEvent.keyboard`](#userevent-keyboard) API。
 

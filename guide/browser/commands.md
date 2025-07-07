@@ -11,11 +11,7 @@ outline: deep
 
 ### 文件处理
 
-<<<<<<< HEAD
-你可以使用 `readFile` 、`writeFile` 和 `removeFile` API 来处理浏览器测试中的文件。所有路径都是相对于测试文件解析的，即使它们是在位于另一个文件中的辅助函数中调用的。
-=======
-You can use the `readFile`, `writeFile`, and `removeFile` APIs to handle files in your browser tests. Since Vitest 3.2, all paths are resolved relative to the [project](/guide/projects) root (which is `process.cwd()`, unless overriden manually). Previously, paths were resolved relative to the test file.
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+在浏览器端的测试中，你可以通过 `readFile` 、`writeFile` 和 `removeFile` 这些 API 来操作文件。从 Vitest 3.2 版本起，所有文件路径都会相对于 [项目]((/guide/projects)) 根目录解析（默认为 `process.cwd()`，除非你手动修改过）。在此之前，路径是以测试文件所在位置作为基准进行解析的。
 
 默认情况下，Vitest 使用 `utf-8` 编码，但你可以使用选项覆盖它。
 

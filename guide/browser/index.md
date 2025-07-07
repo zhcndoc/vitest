@@ -217,46 +217,13 @@ export default defineConfig({
 ```
 :::
 
-<<<<<<< HEAD
-如果我们需要使用基于 Node 的运行器来运行一些测试，可以定义一个 [工作区](/guide/workspace) 文件，其中包含不同测试策略的独立配置：
-=======
-If you need to run some tests using Node-based runner, you can define a [`projects`](/guide/projects) option with separate configurations for different testing strategies:
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+如果你想让部分测试通过基于 Node 的运行器执行，可以在配置中使用 [`projects`](/guide/projects) 选项，并为不同的测试策略提供独立的配置：
 
 {#projects-config}
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
 
-<<<<<<< HEAD
-export default defineWorkspace([
-  {
-    test: {
-      // 文件约定的示例，
-      // 你不必遵循它。
-      include: [
-        'tests/unit/**/*.{test,spec}.ts',
-        'tests/**/*.unit.{test,spec}.ts',
-      ],
-      name: 'unit',
-      environment: 'node',
-    },
-  },
-  {
-    test: {
-      // 文件约定的示例，
-      // 你不必遵循它。
-      include: [
-        'tests/browser/**/*.{test,spec}.ts',
-        'tests/**/*.browser.{test,spec}.ts',
-      ],
-      name: 'browser',
-      browser: {
-        enabled: true,
-        instances: [
-          { browser: 'chromium' },
-        ],
-=======
 export default defineConfig({
   test: {
     projects: [
@@ -271,7 +238,6 @@ export default defineConfig({
           name: 'unit',
           environment: 'node',
         },
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
       },
       {
         test: {
@@ -375,15 +341,11 @@ npx vitest --browser=chromium
 npx vitest --browser.headless
 ```
 
-<<<<<<< HEAD
-默认情况下，Vitest 会自动打开浏览器用户界面进行开发。我们的测试将在中间的 iframe 中运行。我们可以通过选择首选尺寸、在测试中调用 `page.viewport` 或在 [the config](/config/#browser-viewport) 中设置默认值来配置视口。
-=======
 ::: warning
-Since Vitest 3.2, if you don't have the `browser` option in your config but specify the `--browser` flag, Vitest will fail because it can't assume that config is meant for the browser and not Node.js tests.
+自 Vitest 3.2 起，如果你在配置文件中没有设置 browser 选项，却在命令行中使用了 `--browser` 参数， Vitest 会直接报错，因为它无法确定当前配置是为浏览器测试准备的还是用于 Node.js 测试。
 :::
 
-By default, Vitest will automatically open the browser UI for development. Your tests will run inside an iframe in the center. You can configure the viewport by selecting the preferred dimensions, calling `page.viewport` inside the test, or setting default values in [the config](/config/#browser-viewport).
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+Vitest 默认会在开发模式下自动打开浏览器界面，测试会在页面中央的 iframe 中执行。你可以通过选择界面中的预设尺寸、在测试中调用 `page.viewport` 方法，或者在 [配置文件](/config/#browser-viewport) 中设置默认值来调整视口大小。
 
 ## Headless
 
@@ -452,12 +414,8 @@ test('properly handles form inputs', async () => {
 
 其他框架也有社区提供的软件包：
 
-<<<<<<< HEAD
-- [`vitest-browser-lit`](https://github.com/EskiMojo14/vitest-browser-lit) 用于渲染 [lit](https://lit.dev) 组件
-=======
 - [`vitest-browser-lit`](https://github.com/EskiMojo14/vitest-browser-lit) to render [lit](https://lit.dev) components
 - [`vitest-browser-preact`](https://github.com/JoviDeCroock/vitest-browser-preact) to render [preact](https://preactjs.com) components
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
 
 如果你的框架没有被包含在内，请随时创建你自己的软件包——它是一个简单的封装，围绕着框架渲染器和 `page.elementLocator` API。我们会在本页面添加指向它的链接。请确保其名称以 `vitest-browser-` 开头。
 
@@ -568,14 +526,8 @@ Vitest 并不支持所有开箱即用的框架，但我们可以使用外部工�
 
 对于不支持的框架，我们建议使用 `testing-library` 软件包：
 
-<<<<<<< HEAD
-- [`@testing-library/preact`](https://testing-library.com/docs/preact-testing-library/intro) 渲染 [preact](https://preactjs.com) 组件
-- [`@solidjs/testing-library`](https://testing-library.com/docs/solid-testing-library/intro) 渲染 [solid](https://www.solidjs.com) 组件
-- [`@marko/testing-library`](https://testing-library.com/docs/marko-testing-library/intro) 渲染 [marko](https://markojs.com) 组件
-=======
 - [`@solidjs/testing-library`](https://testing-library.com/docs/solid-testing-library/intro) to render [solid](https://www.solidjs.com) components
 - [`@marko/testing-library`](https://testing-library.com/docs/marko-testing-library/intro) to render [marko](https://markojs.com) components
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
 
 我们还可以在 [`browser-examples`](https://github.com/vitest-tests/browser-examples) 中查看更多的案例。
 
@@ -584,39 +536,6 @@ Vitest 并不支持所有开箱即用的框架，但我们可以使用外部工�
 :::
 
 ::: code-group
-<<<<<<< HEAD
-```tsx [preact]
-// based on @testing-library/preact example
-// https://testing-library.com/docs/preact-testing-library/example
-
-import { render } from '@testing-library/preact'
-import { page } from '@vitest/browser/context'
-import { h } from 'preact'
-
-import HiddenMessage from '../hidden-message'
-
-test('shows the children when the checkbox is checked', async () => {
-  const testMessage = 'Test Message'
-
-  const { baseElement } = render(
-    <HiddenMessage>{testMessage}</HiddenMessage>,
-  )
-
-  const screen = page.elementLocator(baseElement)
-
-  // .query() 将返回找到的元素或在未找到时返回 null。
-  // .element() 会返回该元素，如果找不到该元素则会抛出错误。
-  expect(screen.getByText(testMessage).query()).not.toBeInTheDocument()
-
-  // 查询可以接受正则表达式，
-  // 使选择器更能适应内容的调整和变化。
-  await screen.getByLabelText(/show/i).click()
-
-  await expect.element(screen.getByText(testMessage)).toBeInTheDocument()
-})
-```
-=======
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
 ```tsx [solid]
 // based on @testing-library/solid API
 // https://testing-library.com/docs/solid-testing-library/api
@@ -668,14 +587,11 @@ test('renders a message', async () => {
 
 使用 Vitest 浏览器时，需要注意的是像 `alert` 或 `confirm` 这样的线程阻塞对话框不能在本地使用。这是因为它们阻塞了网页，这意味着 Vitest 无法继续与该页面通信，导致执行挂起。
 
-<<<<<<< HEAD
-在这种情况下，Vitest 为这些 API 提供默认模拟和默认返回值。这确保如果用户不小心使用了同步弹出式 Web API，执行不会挂起。但是，仍然建议用户模拟这些 Web API 以获得更好的体验。在 [Mocking](/guide/mocking) 中阅读更多内容。
-=======
-In such situations, Vitest provides default mocks with default returned values for these APIs. This ensures that if the user accidentally uses synchronous popup web APIs, the execution would not hang. However, it's still recommended for the user to mock these web APIs for better experience. Read more in [Mocking](/guide/mocking).
+在这类情况下，Vitest 会为相关 API 提供带有默认返回值的内置 mock，从而避免用户不小心使用同步弹窗等 Web API 时导致程序卡死。不过，仍然强烈建议用户自行对这些 Web API 进行 mock，以获得更稳定、可控的测试体验。更多内容可参考 [模拟](/guide/mocking) 章节。
 
-### Spying on Module Exports
+### 对模块的导出内容进行监听（Spy）。
 
-Browser Mode uses the browser's native ESM support to serve modules. The module namespace object is sealed and can't be reconfigured, unlike in Node.js tests where Vitest can patch the Module Runner. This means you can't call `vi.spyOn` on an imported object:
+在浏览器模式下，Vitest 依赖浏览器自身对 ESM 模块的原生支持来加载模块。此时，模块的命名空间对象是不可修改的，这与 Node.js 测试中 Vitest 能够对模块执行打补丁不同。因此，你不能对通过 import 导入的对象使用 `vi.spyOn` ：
 
 ```ts
 import { vi } from 'vitest'
@@ -684,7 +600,7 @@ import * as module from './module.js'
 vi.spyOn(module, 'method') // ❌ throws an error
 ```
 
-To bypass this limitation, Vitest supports `{ spy: true }` option in `vi.mock('./module.js')`. This will automatically spy on every export in the module without replacing them with fake ones.
+为了解决这个限制，Vitest 在 `vi.mock('./module.js')` 中提供了 `{ spy: true }` 选项。启用后，它会自动对模块里所有的导出进行监听，而不会像普通 mock 那样将它们替换成假的实现。
 
 ```ts
 import { vi } from 'vitest'
@@ -697,7 +613,7 @@ vi.mocked(module.method).mockImplementation(() => {
 })
 ```
 
-However, the only way to mock exported _variables_ is to export a method that will change the internal value:
+不过，如果你想模拟导出的 _变量_ ，唯一可行的方式是让模块额外导出一个能修改该变量内部值的方法：
 
 ::: code-group
 ```js [module.js]
@@ -714,4 +630,3 @@ changeMode('production')
 expect(MODE).toBe('production')
 ```
 :::
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
