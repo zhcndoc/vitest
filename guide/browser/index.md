@@ -8,11 +8,7 @@ outline: deep
 此页面提供有关 Vitest API 中实验性浏览器模式功能的信息，该功能允许你在浏览器中本地运行测试，提供对窗口和文档等浏览器全局变量的访问。此功能目前正在开发中，API 未来可能会更改。
 
 ::: tip
-<<<<<<< HEAD
-如果你正在寻找关于 `expect`、`vi` 或任何通用 API（如工作区或类型测试）的文档，请参阅 ["入门指南"](/guide/)。
-=======
-If you are looking for documentation for `expect`, `vi` or any general API like test projects or type testing, refer to the ["Getting Started" guide](/guide/).
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+如果你需要 `expect` 、`vi` ，或者像测试项目、类型测试等通用 API 的文档，请查看 [「快速上手」指南](/guide/)。
 :::
 
 <img alt="Vitest UI" img-light src="/ui-browser-1-light.png">
@@ -99,11 +95,7 @@ bun add -D vitest @vitest/browser webdriverio
 
 ## 配置
 
-<<<<<<< HEAD
-要在 Vitest 配置中使用浏览器模式，我们可以使用 `--browser=name` 标志或在 Vitest 配置文件中将 `browser.enabled` 字段设置为 `true`。下面是使用浏览器字段的示例配置：
-=======
-To activate browser mode in your Vitest configuration, set the `browser.enabled` field to `true` in your Vitest configuration file. Here is an example configuration using the browser field:
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+想要在 Vitest 中启用浏览器模式，只需在配置文件中将 `browser.enabled` 设置为 true。下面是一个使用 browser 配置的示例：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
