@@ -173,11 +173,7 @@ interface File extends Suite {
    */
   filepath: string
   /**
-<<<<<<< HEAD
-   * 文件所属的工作区项目的名称。
-=======
-   * The name of the test project the file belongs to.
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+   * 该文件所归属的测试项目的名称。
    */
   projectName: string | undefined
   /**
@@ -222,11 +218,7 @@ interface Test<ExtraContext = object> extends TaskBase {
    */
   file: File
   /**
-<<<<<<< HEAD
-   * 任务是否通过调用 `t.skip()` 被跳过。
-=======
-   * Whether the task was skipped by calling `context.skip()`.
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+   * 是否使用 `context.skip()` 方法将此任务标记为跳过。
    */
   pending?: boolean
   /**
