@@ -179,11 +179,7 @@ test('skipped test', (context) => {
 })
 ```
 
-<<<<<<< HEAD
-自 Vitest 3.1 起，如果条件未知，我们可以将其作为第一个参数提供给 `skip` 方法：
-=======
-Since Vitest 3.1, if the condition is unknown, you can provide it to the `skip` method as the first arguments:
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+自 Vitest 3.1 起，如果你无法提前确定是否跳过，可以把条件直接作为第一个参数传给 `skip 方法：
 
 ```ts
 import { assert, test } from 'vitest'
@@ -502,23 +498,12 @@ Vitest 使用 chai `format` 方法处理 `$values`。如果数值太短，可以
 
 - **Alias:** `it.for`
 
-<<<<<<< HEAD
-作为 `test.each` 的替代，提供 [`TestContext`](/guide/test-context)。
+`test.each` 是一种能同时提供 [`TestContext`](/guide/test-context) 的替代用法。
 
-与 `test.each` 的区别在于如何在参数中提供数组情况。
-其他非数组情况（包括模板字符串的使用）完全相同。
+它和 `test.each` 的主要区别在于：当你需要传递数组参数时，二者的写法和处理方式不同。而对于非数组参数（包括模板字符串的用法），`test.each` 和 `test.each` 的使用方法是一致的。
 
 ```ts
 // `each` 展开数组用例
-=======
-Alternative to `test.each` to provide [`TestContext`](/guide/test-context).
-
-The difference from `test.each` lies in how arrays are provided in the arguments.
-Non-array arguments to `test.for` (including template string usage) work exactly the same as for `test.each`.
-
-```ts
-// `each` spreads arrays
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
 test.each([
   [1, 1, 2],
   [1, 2, 3],
@@ -528,11 +513,7 @@ test.each([
   expect(a + b).toBe(expected)
 })
 
-<<<<<<< HEAD
-// `for` 不会展开数组用例
-=======
-// `for` doesn't spread arrays (notice the square brackets around the arguments)
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+// `for` 不会将数组拆开成独立的参数（请留意参数外层需要使用方括号）。
 test.for([
   [1, 1, 2],
   [1, 2, 3],
@@ -543,11 +524,7 @@ test.for([
 })
 ```
 
-<<<<<<< HEAD
-第二个参数是 [`TestContext`](/guide/test-context)，可用于并发快照等
-=======
-The 2nd argument is [`TestContext`](/guide/test-context) and can be used for concurrent snapshots, for example:
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+第二个参数是 [`TestContext`](/guide/test-context) ，你可以用它来执行并发快照等操作，例如：
 
 ```ts
 test.concurrent.for([
@@ -563,15 +540,9 @@ test.concurrent.for([
 
 - **类型:** `(name: string | Function, fn: BenchFunction, options?: BenchOptions) => void`
 
-<<<<<<< HEAD
-`bench` 定义了一个基准。在 Vitest 术语中，基准是定义一系列操作的函数。Vitest 会多次运行该函数，以显示不同的性能结果。
+`bench` 用于定义一个性能基准。在 Vitest 的语境中，基准测试指的是一个包含一系列操作的函数。Vitest 会重复执行这个函数，以输出不同的性能数据。
 
-Vitest 使用了 [`tinybench`](https://github.com/tinylibs/tinybench)库，继承其所有可用作第三个参数的选项。
-=======
-`bench` defines a benchmark. In Vitest terms, benchmark is a function that defines a series of operations. Vitest runs this function multiple times to display different performance results.
-
-Vitest uses the [`tinybench`](https://github.com/tinylibs/tinybench) library under the hood, inheriting all its options that can be used as a third argument.
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+Vitest 在底层集成了 [`tinybench`](https://github.com/tinylibs/tinybench) 库，因此你可以将它支持的所有配置项作为第三个参数传入 `bench` 使用。
 
 ```ts
 import { bench } from 'vitest'
@@ -1227,11 +1198,7 @@ describe.for([
 import { beforeEach } from 'vitest'
 
 beforeEach(async () => {
-<<<<<<< HEAD
-  // 在每个测试运行之前清除模拟并添加一些测试数据。
-=======
-  // Clear mocks and add some testing data before each test run
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+  // 每次执行测试前，先重置所有 mock，然后准备好需要用到的测试数据。
   await stopMocking()
   await addUser({ name: 'John' })
 })
@@ -1391,23 +1358,7 @@ test('performs an organization query', async () => {
 ```
 
 ::: tip
-<<<<<<< HEAD
-此 hook 始终以相反的顺序调用，并且不受 [`sequence.hooks`](/config/#sequence-hooks) 选项的影响。
-
-<!-- TODO: should it be called? https://github.com/vitest-dev/vitest/pull/7069 -->
-
-请注意，如果测试是通过动态 `ctx.skip()` 调用跳过的，则不会调用此钩子。:
-
-```ts{2}
-test('skipped dynamically', (t) => {
-  onTestFinished(() => {}) // not called
-  t.skip()
-})
-```
-
-=======
-This hook is always called in reverse order and is not affected by [`sequence.hooks`](/config/#sequence-hooks) option.
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+这个 hook 始终会以倒序执行，并且它的调用顺序不会被 [`sequence.hooks`](/config/#sequence-hooks) 配置所改变。
 :::
 
 ### onTestFailed
