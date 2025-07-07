@@ -106,11 +106,7 @@ export default defineConfig({
 
 由于 Vitest 使用 Vite 的配置，我们也可以使用 [Vite](https://vitejs.dev/config/) 中的任何配置选项。例如，使用 `define` 来定义全局变量，或者使用 `resolve.alias` 来定义别名——这些选项应该在顶级定义，而不是在 `test` 属性内部。
 
-<<<<<<< HEAD
-不支持在[工作区](/guide/workspace)项目配置中的配置选项旁边会有 <NonProjectOption /> 标志。这意味着这些选项只能在根 Vitest 配置中设置。
-=======
-Configuration options that are not supported inside a [project](/guide/projects) config have <NonProjectOption /> sign next to them. This means they can only be set in the root Vitest config.
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+在 [项目](/guide/workspace) 配置里不被支持的选项，会在旁边标注 <NonProjectOption /> 。这表示这些选项只能在 Vitest 的根配置中进行设置。
 :::
 
 ### include
@@ -126,15 +122,9 @@ Configuration options that are not supported inside a [project](/guide/projects)
 
 ### exclude
 
-<<<<<<< HEAD
 - **类型:** `string[]`
-- **默认值:** `['**/node_modules/**', '**/dist/**', '**/cypress/**', '**/.{idea,git,cache,output,temp}/**', '**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build,eslint,prettier}.config.*']`
-- **命令行终端:** `vitest --exclude "**/excluded-file"`
-=======
-- **Type:** `string[]`
-- **Default:** `['**/node_modules/**', '**/.git/**']`
-- **CLI:** `vitest --exclude "**/excluded-file" --exclude "*/other-files/*.js"`
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+- **默认值:** `['**/node_modules/**', '**/.git/**']`
+- **命令行终端:** `vitest --exclude "**/excluded-file" --exclude "*/other-files/*.js"`
 
 匹配排除测试文件的 glob 规则。
 
@@ -151,13 +141,9 @@ Configuration options that are not supported inside a [project](/guide/projects)
 
 - **Type:** `string | { label: string, color?: LabelColor }`
 
-<<<<<<< HEAD
-为测试项目或 Vitest 进程分配一个自定义名称。该名称将在 CLI 中可见，并且可以通过 Node.js API 中的 [`project.name`](/advanced/api/test-project#name) 获取。
-=======
-Assign a custom name to the test project or Vitest process. The name will be visible in the CLI and UI, and available in the Node.js API via [`project.name`](/advanced/api/test-project#name).
+你可以为测试项目或 Vitest 进程指定一个自定义名称，这个名称会在命令行界面（CLI）和用户界面（UI）中显示，同时也能通过 Node.js API 中的 [`project.name`](/advanced/api/test-project#name) 获取。
 
-Color used by CLI and UI can be changed by providing an object with `color` property.
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+此外，如果你提供一个包含 color 属性的对象，还可以自定义 CLI 和 UI 中显示名称的颜色。
 
 ### server {#server}
 
@@ -482,10 +468,7 @@ export default defineConfig({
 }
 ```
 
-<<<<<<< HEAD
-如果你已经在项目中使用 [`unplugin-auto-import`](https://github.com/antfu/unplugin-auto-import)，你也可以直接用它来自动导入这些 API。
-=======
-If you have redefined your [`typeRoots`](https://www.typescriptlang.org/tsconfig/#typeRoots) to include more types in your compilation, you will have to add back the `node_modules` to make `vitest/globals` discoverable.
+如果你在 TypeScript 配置中修改了 [`typeRoots`](https://www.typescriptlang.org/tsconfig/#typeRoots) ，以便编译时引入更多类型，那么你需要重新把 `node_modules` 加回到 `typeRoots` 中，这样才能让 `vitest/globals` 被正确识别。
 
 ```json [tsconfig.json]
 {
@@ -496,8 +479,7 @@ If you have redefined your [`typeRoots`](https://www.typescriptlang.org/tsconfig
 }
 ```
 
-If you are already using [`unplugin-auto-import`](https://github.com/antfu/unplugin-auto-import) in your project, you can also use it directly for auto importing those APIs.
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+如果你的项目中已经集成了 [`unplugin-auto-import`](https://github.com/antfu/unplugin-auto-import) 插件，那么可以直接用它来自动引入这些 API，而无需手动导入。
 
 ```ts [vitest.config.js]
 import AutoImport from 'unplugin-auto-import/vite'
@@ -608,104 +590,6 @@ jsdom 环境变量导出了等同于当前[JSDOM](https://github.com/jsdom/jsdom
 
 这些选项被传递给当前 [`environment`](#environment) 的 `setup` 方法。 默认情况下，如果你将其用作测试环境，则只能配置 JSDOM 选项。
 
-<<<<<<< HEAD
-### environmentMatchGlobs
-
-- **类型:** `[string, EnvironmentName][]`
-- **默认值:** `[]`
-
-::: danger DEPRECATED
-此 API 在 Vitest 3 中已弃用。请使用 [workspace](/guide/workspace) 来定义不同的配置。
-
-```ts
-export default defineConfig({
-  test: {
-    environmentMatchGlobs: [ // [!code --]
-      ['./*.jsdom.test.ts', 'jsdom'], // [!code --]
-    ], // [!code --]
-    workspace: [ // [!code ++]
-      { // [!code ++]
-        extends: true, // [!code ++]
-        test: { // [!code ++]
-          environment: 'jsdom', // [!code ++]
-        }, // [!code ++]
-      }, // [!code ++]
-    ], // [!code ++]
-  },
-})
-```
-:::
-
-基于 globs 自动匹配执行环境。将使用第一个匹配项。
-
-例如：
-
-```ts
-import { defineConfig } from 'vitest/config'
-
-export default defineConfig({
-  test: {
-    environmentMatchGlobs: [
-      // `tests/dom` 目录中的所有测试将在 jsdom 中运行。
-      ['tests/dom/**', 'jsdom'],
-      // `tests/` 目录中所有以 `.edge.test.ts` 结尾的测试将在 edge-runtime 中运行。
-      ['**/*.edge.test.ts', 'edge-runtime'],
-      // ...
-    ],
-  },
-})
-```
-
-### poolMatchGlobs {#poolmatchglobs}
-
-- **类型:** `[string, 'threads' | 'forks' | 'vmThreads' | 'vmForks' | 'typescript'][]`
-- **默认值:** `[]`
-
-::: danger DEPRECATED
-此 API 在 Vitest 3 中已被弃用。请使用 [workspace](/guide/workspace) 来定义不同的配置：
-
-```ts
-export default defineConfig({
-  test: {
-    poolMatchGlobs: [ // [!code --]
-      ['./*.threads.test.ts', 'threads'], // [!code --]
-    ], // [!code --]
-    workspace: [ // [!code ++]
-      { // [!code ++]
-        test: { // [!code ++]
-          extends: true, // [!code ++]
-          pool: 'threads', // [!code ++]
-        }, // [!code ++]
-      }, // [!code ++]
-    ], // [!code ++]
-  },
-})
-```
-:::
-
-基于 globs 模式来匹配运行池中的测试并运行，将使用第一个匹配项。
-
-例如:
-
-```ts
-import { defineConfig } from 'vitest/config'
-
-export default defineConfig({
-  test: {
-    poolMatchGlobs: [
-      // all tests in "worker-specific" directory will run inside a worker as if you enabled `--pool=threads` for them,
-      ['**/tests/worker-specific/**', 'threads'],
-      // run all tests in "browser" directory in an actual browser
-      ['**/tests/browser/**', 'browser'],
-      // all other tests will run based on "browser.enabled" and "threads" options, if you didn't specify other globs
-      // ...
-    ],
-  },
-})
-```
-
-=======
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
 ### update<NonProjectOption />
 
 - **类型:** `boolean`
@@ -1335,12 +1219,7 @@ test('execute a script', async () => {
 
 ### coverage<NonProjectOption />
 
-<<<<<<< HEAD
-- **类型:** `CoverageC8Options | CoverageIstanbulOptions`
-- **默认值:** `undefined`
-=======
-You can use [`v8`](/guide/coverage.html#v8-provider), [`istanbul`](/guide/coverage.html#istanbul-provider) or [a custom coverage solution](/guide/coverage#custom-coverage-provider) for coverage collection.
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+你可以选择 [`v8`](/guide/coverage.html#v8-provider)、[`istanbul`](/guide/coverage.html#istanbul-provider) ，或者 [自定义覆盖率工具](/guide/coverage#custom-coverage-provider) 来进行代码覆盖率统计。
 
 你可以使用点符号向 CLI 提供覆盖选项：
 
@@ -1371,103 +1250,25 @@ npx vitest --coverage.enabled --coverage.provider=istanbul
 
 #### coverage.include
 
-<<<<<<< HEAD
 - **类型:** `string[]`
-- **默认值:** `['**']`
+- **默认值:** 在执行测试过程中所引入的文件。
 - **可用的测试提供者:** `'v8' | 'istanbul'`
-- **命令行终端:** `--coverage.include=<path>`, `--coverage.include=<path1> --coverage.include=<path2>`
+- **命令行终端:** `--coverage.include=<pattern>`, `--coverage.include=<pattern1> --coverage.include=<pattern2>`
 
-匹配包含测试覆盖率的 glob 规则
-=======
-- **Type:** `string[]`
-- **Default:** Files that were imported during test run
-- **Available for providers:** `'v8' | 'istanbul'`
-- **CLI:** `--coverage.include=<pattern>`, `--coverage.include=<pattern1> --coverage.include=<pattern2>`
+以 glob 模式指定需要统计覆盖率的文件列表。默认情况下，只有被测试实际执行到的文件会被纳入覆盖率统计。
 
-List of files included in coverage as glob patterns. By default only files covered by tests are included.
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+建议在 glob 模式中明确包含文件扩展名。
 
-It is recommended to pass file extensions in the pattern.
-
-<<<<<<< HEAD
-- **类型:** `string | string[]`
-- **默认值:** `['.js', '.cjs', '.mjs', '.ts', '.mts', '.tsx', '.jsx', '.vue', '.svelte', '.marko', '.astro']`
-- **可用的测试提供者:** `'v8' | 'istanbul'`
-- **命令行终端:** `--coverage.extension=<extension>`, `--coverage.extension=<extension1> --coverage.extension=<extension2>`
+可以参考 [如何在覆盖率报告中包含或排除文件](/guide/coverage.html#including-and-excluding-files-from-coverage-report) 里的示例。
 
 #### coverage.exclude
 
 - **类型:** `string[]`
-- **默认值:**
-
-```js
-[
-  'coverage/**',
-  'dist/**',
-  '**/node_modules/**',
-  '**/[.]**',
-  'packages/*/test?(s)/**',
-  '**/*.d.ts',
-  '**/virtual:*',
-  '**/__x00__*',
-  '**/\x00*',
-  'cypress/**',
-  'test?(s)/**',
-  'test?(-*).?(c|m)[jt]s?(x)',
-  '**/*{.,-}{test,spec,bench,benchmark}?(-d).?(c|m)[jt]s?(x)',
-  '**/__tests__/**',
-  '**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build,eslint,prettier}.config.*',
-  '**/vitest.{workspace,projects}.[jt]s?(on)',
-  '**/.{eslint,mocha,prettier}rc.{?(c|m)js,yml}',
-]
-```
-=======
-See [Including and excluding files from coverage report](/guide/coverage.html#including-and-excluding-files-from-coverage-report) for examples.
-
-#### coverage.exclude
-
-- **Type:** `string[]`
-- **Default:** : `[]`
-- **Available for providers:** `'v8' | 'istanbul'`
-- **CLI:** `--coverage.exclude=<path>`, `--coverage.exclude=<path1> --coverage.exclude=<path2>`
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
-
+- **默认值:** : `[]`
 - **可用的测试提供者:** `'v8' | 'istanbul'`
 - **命令行终端:** `--coverage.exclude=<path>`, `--coverage.exclude=<path1> --coverage.exclude=<path2>`
 
-<<<<<<< HEAD
-使用全局模式排除在覆盖范围之外的文件列表。
-
-该选项覆盖所有默认选项。添加新的忽略模式时，扩展默认选项：
-
-```ts
-import { coverageConfigDefaults, defineConfig } from 'vitest/config'
-
-export default defineConfig({
-  test: {
-    coverage: {
-      exclude: ['**/custom-pattern/**', ...coverageConfigDefaults.exclude],
-    },
-  },
-})
-```
-
-::: tip NOTE
-Vitest 会自动将测试文件的 `include` 模式添加到 `coverage.exclude` 中。
-无法显示测试文件的覆盖率。
-:::
-
-#### coverage.all
-
-- **类型:** `boolean`
-- **默认值:** `true`
-- **可用的测试提供者:** `'v8' | 'istanbul'`
-- **命令行终端:** `--coverage.all`, `--coverage.all=false`
-
-是否将所有文件（包括未测试的文件）包括在报告中。
-=======
-See [Including and excluding files from coverage report](/guide/coverage.html#including-and-excluding-files-from-coverage-report) for examples.
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+想要查看示例，请参考 [如何在覆盖率报告中包含或排除文件](/guide/coverage.html#including-and-excluding-files-from-coverage-report)。
 
 #### coverage.clean
 
@@ -1736,53 +1537,12 @@ Sets thresholds to 100 for files matching the glob pattern.
 }
 ```
 
-<<<<<<< HEAD
-#### coverage.ignoreEmptyLines
-
-- **类型:** `boolean`
-- **默认值:** `true` (`false` in v1)
-- **可用的测试提供者:** `'v8'`
-- **命令行终端:** `--coverage.ignoreEmptyLines=<boolean>`
-
-忽略空行、注释和其他非运行时代码，如 Typescript 类型。
-
-该选项只有在使用的编译器删除了转译代码中的注释和其他非运行时代码时才有效。
-默认情况下，Vite 使用 ESBuild，它会删除 `.ts`、`.tsx` 和 `.jsx` 文件中的注释和 Typescript 类型。
-
-如果还想将 ESBuild 应用于其他文件，请在 [`esbuild` options](https://cn.vitejs.dev/config/shared-options.html#esbuild) 中定义它们：
-
-```ts
-import { defineConfig } from 'vitest/config'
-
-export default defineConfig({
-  esbuild: {
-    // 使用 ESBuild 转换所有文件以删除代码覆盖率中的注释。
-    // `test.coverage.ignoreEmptyLines` 需要工作：
-    include: ['**/*.js', '**/*.jsx', '**/*.mjs', '**/*.ts', '**/*.tsx'],
-  },
-  test: {
-    coverage: {
-      provider: 'v8',
-      ignoreEmptyLines: true,
-    },
-  },
-})
-```
-
 #### coverage.ignoreClassMethods
 
 - **类型:** `string[]`
 - **默认值:** `[]`
-- **可用的测试提供者:** `'istanbul'`
+- **可用的测试提供者:** `'v8' | 'istanbul'`
 - **命令行终端:** `--coverage.ignoreClassMethods=<method>`
-=======
-#### coverage.ignoreClassMethods
-
-- **Type:** `string[]`
-- **Default:** `[]`
-- **Available for providers:** `'v8' | 'istanbul'`
-- **CLI:** `--coverage.ignoreClassMethods=<method>`
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
 
 设置为要忽略覆盖率的类方法名称数组。参考 [istanbul 文档](https://github.com/istanbuljs/nyc#ignoring-methods) 来了解详情。
 
@@ -2108,11 +1868,7 @@ export default defineConfig({
 
 ### sequence
 
-<<<<<<< HEAD
-- **类型**: `{ sequencer?, shuffle?, seed?, hooks?, setupFiles? }`
-=======
-- **Type**: `{ sequencer?, shuffle?, seed?, hooks?, setupFiles?, groupOrder }`
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+- **类型**: `{ sequencer?, shuffle?, seed?, hooks?, setupFiles?, groupOrder }`
 
 配置测试运行顺序的选项。
 
@@ -2405,11 +2161,6 @@ Minimum time in milliseconds it takes to spawn the typechecker.
 
 ### onConsoleLog<NonProjectOption />
 
-<<<<<<< HEAD
-- **类型**: `(log: string, type: 'stdout' | 'stderr') => boolean | void`
-
-在测试自定义 `console.log` 的处理程序。如果返回 `false`，Vitest 将不会将日志打印到控制台上。
-=======
 ```ts
 function onConsoleLog(
   log: string,
@@ -2418,8 +2169,7 @@ function onConsoleLog(
 ): boolean | void
 ```
 
-Custom handler for `console` methods in tests. If you return `false`, Vitest will not print the log to the console. Note that Vitest ignores all other falsy values.
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+用于自定义处理测试中调用的 `console` 方法。如果返回值是 `false` ， Vitest 将不会将日志打印到控制台。需要注意的是， Vitest 会忽略除 `false` 之外的其他假值。
 
 这在过滤掉来自第三方库的日志时会非常有用。
 
@@ -2637,20 +2387,10 @@ Limit the depth to recurse when printing nested objects
 
 ### projects<NonProjectOption /> {#projects}
 
-<<<<<<< HEAD
-- **类型:** `string | TestProjectConfiguration`
-- **命令行终端:** `--workspace=./file.js`
-- **默认值:** `vitest.{workspace,projects}.{js,ts,json}` close to the config file or root
+- **类型:** `TestProjectConfiguration[]`
+- **默认值:** `[]`
 
-相对于[root](#root) 的 [workspace](/guide/workspace) 配置文件的路径。
-
-Since Vitest 3, you can also define the workspace array in the root config. If the `workspace` is defined in the config manually, Vitest will ignore the `vitest.workspace` file in the root.
-=======
-- **Type:** `TestProjectConfiguration[]`
-- **Default:** `[]`
-
-An array of [projects](/guide/projects).
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+一个由多个 [项目](/guide/projects) 组成的数组。
 
 ### isolate
 
@@ -2758,15 +2498,11 @@ export interface SnapshotEnvironment {
 - **类型:** `boolean`
 - **默认值:** `false`
 
-<<<<<<< HEAD
-调用任何`console`方法时始终打印控制台跟踪。这对于调试很有用。
-=======
-Always print console traces when calling any `console` method. This is useful for debugging.
+每次调用 `console` 方法时都输出堆栈追踪信息，这对于排查问题非常有帮助。
 
 ### attachmentsDir <Version>3.2.0</Version>
 
-- **Type:** `string`
-- **Default:** `'.vitest-attachments'`
+- **类型:** `string`
+- **默认值:** `'.vitest-attachments'`
 
-Directory path for storing attachments created by [`context.annotate`](/guide/test-context#annotate) relative to the project root.
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+相对于项目根目录，用于保存通过 [`context.annotate`](/guide/test-context#annotate) 方法生成的附件文件的目录路径。
