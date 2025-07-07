@@ -5,469 +5,52 @@ outline: deep
 
 # 迁移指南
 
-<<<<<<< HEAD
-## 迁移到 Vitest 3.0 {#vitest-3}
-=======
-## Migrating to Vitest 4.0 {#vitest-4}
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+## 迁移到 Vitest 4.0 {#vitest-4}
 
-### Removed `reporters: 'basic'`
+### 移除 `reporters: 'basic'`
 
-<<<<<<< HEAD
-Vitest 3.0 如果我们将一个对象作为第三个参数传递给 `test` 或 `describe` 函数，会打印一条警告：
-
-```ts
-test('validation works', () => {
-  // ...
-}, { retry: 3 }) // [!code --]
-
-test('validation works', { retry: 3 }, () => { // [!code ++]
-  // ...
-})
-```
-
-下一个主要版本将在第三个参数是对象时抛出错误。请注意，超时时间（timeout number）并没有被弃用：
-
-```ts
-test('validation works', () => {
-  // ...
-}, 1000) // Ok ✅
-```
-
-### `browser.name` 和 `browser.providerOptions` 已弃用
-
-[`browser.name`](/guide/browser/config#browser-name) 和 [`browser.providerOptions`](/guide/browser/config#browser-provideroptions) 都将在 Vitest 4 中删除。请使用新的 [`browser.instances`](/guide/browser/config#browser-instances) 选项来代替它们：
-=======
-Basic reporter is removed as it is equal to:
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+Basic 报告器已被移除，它等价于以下配置：
 
 ```ts
 export default defineConfig({
   test: {
-<<<<<<< HEAD
-    browser: {
-      name: 'chromium', // [!code --]
-      providerOptions: { // [!code --]
-        launch: { devtools: true }, // [!code --]
-      }, // [!code --]
-      instances: [ // [!code ++]
-        { // [!code ++]
-          browser: 'chromium', // [!code ++]
-          launch: { devtools: true }, // [!code ++]
-        }, // [!code ++]
-      ], // [!code ++]
-    },
-  },
-})
-```
-
-使用新的 `browser.instances` 字段，我们还可以指定多个浏览器配置。
-
-### `spy.mockReset` Now Restores the Original Implementation
-
-之前没有好的方法在不重新应用 spy 的情况下将其重置为原始实现。现在，`spy.mockReset` 会将实现函数重置为原始函数，而不是假的 noop（空操作）。
-
-```ts
-const foo = {
-  bar: () => 'Hello, world!'
-}
-
-vi.spyOn(foo, 'bar').mockImplementation(() => 'Hello, mock!')
-
-foo.bar() // 'Hello, mock!'
-
-foo.bar.mockReset()
-
-foo.bar() // undefined [!code --]
-foo.bar() // 'Hello, world!' [!code ++]
-```
-
-### `vi.spyOn` Reuses Mock if Method is Already Mocked
-
-之前，Vitest 在监视对象时总会分配一个新的 spy。这会导致 `mockRestore` 出现错误，因为它会将 spy 恢复到之前的 spy，而不是原始函数：
-
-```ts
-vi.spyOn(fooService, 'foo').mockImplementation(() => 'bar')
-vi.spyOn(fooService, 'foo').mockImplementation(() => 'bar')
-vi.restoreAllMocks()
-vi.isMockFunction(fooService.foo) // true [!code --]
-vi.isMockFunction(fooService.foo) // false [!code ++]
-```
-
-### Fake Timers Defaults
-
-Vitest 不再提供默认的 `fakeTimers.toFake` 选项。现在，如果存在任何与定时器相关的 API（除 `nextTick` 外），Vitest 都会对其进行模拟。具体来说，当调用 `vi.useFakeTimers` 时，`performance.now()` 也会被模拟。
-
-```ts
-vi.useFakeTimers()
-
-performance.now() // original [!code --]
-performance.now() // fake [!code ++]
-```
-
-你可以通过在调用 `vi.useFakeTimers` 时或在全局配置中指定定时器来恢复到之前的行为：
-
-```ts
-export default defineConfig({
-  test: {
-    fakeTimers: {
-      toFake: [ // [!code ++]
-        'setTimeout', // [!code ++]
-        'clearTimeout', // [!code ++]
-        'setInterval', // [!code ++]
-        'clearInterval', // [!code ++]
-        'setImmediate', // [!code ++]
-        'clearImmediate', // [!code ++]
-        'Date', // [!code ++]
-      ] // [!code ++]
-    },
-  },
-})
-```
-
-### More Strict Error Equality
-
-现在，Vitest 在通过 `toEqual` 或 `toThrowError` 比较错误时会检查更多的属性。Vitest 会比较 `name`、`message`、`cause` 和 `AggregateError.errors`。对于 `Error.cause`，比较是不对称进行的：
-
-```ts
-expect(new Error('hi', { cause: 'x' })).toEqual(new Error('hi')) // ✅
-expect(new Error('hi')).toEqual(new Error('hi', { cause: 'x' })) // ❌
-```
-
-除了检查更多的属性外，Vitest 现在还会比较错误原型。例如，如果抛出的是 `TypeError`，相等性检查应该引用 `TypeError`，而不是 `Error`：
-
-```ts
-expect(() => {
-  throw new TypeError('type error')
-})
-  .toThrowError(new Error('type error')) // [!code --]
-  .toThrowError(new TypeError('type error')) // [!code ++]
-```
-
-更多详情请参见 PR：[#5876](https://github.com/vitest-dev/vitest/pull/5876)。
-
-### `module` condition export is not resolved by default on Vite 6
-
-Vite 6 allows more flexible [`resolve.conditions`](https://vite.dev/config/shared-options#resolve-conditions) options and Vitest configures it to exclude `module` conditional export by default.
-See also [Vite 6 migration guide](https://v6.vite.dev/guide/migration.html#default-value-for-resolve-conditions) for the detail of Vite side changes.
-
-### `Custom` Type is Deprecated <Badge type="danger">API</Badge> {#custom-type-is-deprecated}
-
-`Custom` 类型现在等同于 `Test` 类型。需要注意一下，Vitest 在 2.1 版本中更新了公共类型，并将导出的名称更改为 `RunnerCustomCase` 和 `RunnerTestCase`。
-
-```ts
-import {
-  RunnerCustomCase, // [!code --]
-  RunnerTestCase, // [!code ++]
-} from 'vitest'
-```
-
-如果我们正在使用 `getCurrentSuite().custom()`，返回的任务的 `type` 现在等于 `'test'`。`Custom` 类型将在 Vitest 4 中被移除。
-
-### The `WorkspaceSpec` Type is No Longer Used <Badge type="danger">API</Badge> {#the-workspacespec-type-is-no-longer-used}
-
-在公共 API 中，此类型之前用于自定义 [sequencers](/config/#sequence-sequencer)。请迁移到 [`TestSpecification`](/advanced/api/test-specification)。
-
-### `onTestFinished` and `onTestFailed` Now Receive a Context
-
-[`onTestFinished`](/api/#ontestfinished) 和 [`onTestFailed`](/api/#ontestfailed) 钩子之前接收测试结果作为第一个参数。现在，它们像 `beforeEach` 和 `afterEach` 一样，接收一个测试上下文。
-
-### Changes to the Snapshot API <Badge type="danger">API</Badge> {#changes-to-the-snapshot-api}
-
-`@vitest/snapshot` 中的公共 Snapshot API 已更改，以支持在单次运行中处理多个状态。更多详情请参见 PR：[#6817](https://github.com/vitest-dev/vitest/pull/6817)。
-
-请注意，这些更改仅影响直接使用 Snapshot API 的开发者。`.toMatchSnapshot` API 没有任何变化。
-
-### Changes to `resolveConfig` Type Signature <Badge type="danger">API</Badge> {#changes-to-resolveconfig-type-signature}
-
-[`resolveConfig`](/advanced/api/#resolveconfig) 现在更加有用。它不再接受已经解析的 Vite 配置，而是接受用户配置并返回解析后的配置。
-
-此函数不用于内部，仅作为公共 API 暴露。
-
-### Cleaned up `vitest/reporters` types <Badge type="danger">API</Badge> {#cleaned-up-vitest-reporters-types}
-
-`vitest/reporters` 入口现在仅导出报告器实现和选项类型。如果您需要访问 `TestCase`、`TestSuite` 以及其他与任务相关的类型，请另外从 `vitest/node` 中导入它们。
-
-### Coverage ignores test files even when `coverage.excludes` is overwritten.
-
-不再可以通过覆盖 `coverage.excludes` 来将测试文件包含在覆盖率报告中。测试文件现在总是被排除。
-
-## Migrating to Vitest 2.0 {#vitest-2}
-
-### 默认数据池为 `forks`
-
-为了提高稳定性，Vitest 2.0 将 `pool` 的默认配置改为 `'fork'`。您可以在 [PR](https://github.com/vitest-dev/vitest/pull/5047)中阅读完整的动机。
-
-如果使用了 `poolOptions` 而未指定一个 `pool`，则可能需要更新配置：
-
-```ts
-export default defineConfig({
-  test: {
-    poolOptions: {
-      threads: { // [!code --]
-        singleThread: true, // [!code --]
-      }, // [!code --]
-      forks: { // [!code ++]
-        singleFork: true, // [!code ++]
-      }, // [!code ++]
-    }
-=======
     reporters: [
       ['default', { summary: false }]
     ]
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
   }
 })
 ```
 
-<<<<<<< HEAD
-### 钩子函数在堆栈中运行
+### V8 代码覆盖率重大变更
 
-在 Vitest 2.0 之前，所有钩子函数都是并行运行的。 在 2.0 中，所有钩子都是串行运行的。 除此之外，`afterAll`/`afterEach` 以相反的顺序运行。
+Vitest 的 V8 覆盖率提供器现在使用了更精准的结果映射逻辑，从 Vitest v3 升级后，你可能会看到覆盖率报告的内容有变化。
 
-要恢复钩子的并行执行，请将 [`sequence.hooks`](/config/#sequence-hooks) 改为 `'parallel'`：
-=======
-### V8 Code Coverage Major Changes
+之前 Vitest 使用 [`v8-to-istanbul`](https://github.com/istanbuljs/v8-to-istanbul) 将 V8 覆盖率结果映射到源码文件，但这种方式不够准确，报告中常常会出现误报。现在我们开发了基于 AST 分析的新方法，使 V8 报告的准确度与 `@vitest/coverage-istanbul` 一致。
 
-Vitest's V8 code coverage provider is now using more accurate coverage result remapping logic.
-It is expected for users to see changes in their coverage reports when updating from Vitest v3.
+- 覆盖率忽略提示已更新，详见 [覆盖率 | 忽略代码](/guide/coverage.html#ignoring-code)。
+- 已移除 `coverage.ignoreEmptyLines` 选项。没有可执行代码的行将不再出现在报告中。
+- 已移除 `coverage.experimentalAstAwareRemapping` 选项。此功能现已默认启用，并成为唯一的映射方式。
+- 现在 V8 提供器也支持 `coverage.ignoreClassMethods`。
 
-In the past Vitest used [`v8-to-istanbul`](https://github.com/istanbuljs/v8-to-istanbul) for remapping V8 coverage results into your source files.
-This method wasn't very accurate and provided plenty of false positives in the coverage reports.
-We've now developed a new package that utilizes AST based analysis for the V8 coverage.
-This allows V8 reports to be as accurate as `@vitest/coverage-istanbul` reports.
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+### 移除 `coverage.all` 和 `coverage.extensions` 选项
 
-- Coverage ignore hints have updated. See [Coverage | Ignoring Code](/guide/coverage.html#ignoring-code).
-- `coverage.ignoreEmptyLines` is removed. Lines without runtime code are no longer included in reports.
-- `coverage.experimentalAstAwareRemapping` is removed. This option is now enabled by default, and is the only supported remapping method.
-- `coverage.ignoreClassMethods` is now supported by V8 provider too.
+在之前的版本中，Vitest 会默认把所有未覆盖的文件包含到报告中。这是因为 `coverage.all` 默认为 `true`，`coverage.include` 默认为 `**`。这样设计是因为测试工具无法准确判断用户源码所在位置。
 
-<<<<<<< HEAD
-### `suite.concurrent` 同时运行所有测试
+然而，这导致 Vitest 覆盖率工具会处理很多意料之外的文件（例如压缩 JS 文件），造成报告生成速度很慢甚至卡死。在 Vitest v4 中，我们彻底移除了 `coverage.all`，并将默认行为改为**只在报告中包含被测试覆盖的文件**。
 
-以前，在套件上指定 `concurrent` 时，并发测试仍会按套件分组并逐个运行。现在，它会遵循 jest 的行为，一次运行所有测试（仍受 [`maxConcurrency`](/config/#maxConcurrency)限制）。
-
-### 默认启用 V8 覆盖的 `coverage.ignoreEmptyLines`
-
-将 `coverage.ignoreEmptyLines` 的默认值改为 `true`。此更改将对用户的代码覆盖率报告产生重大影响。使用覆盖率阈值的项目很可能需要在此之后调整这些值。此更改仅影响 `coverage.provider` 为 `'v8'` 时的默认设置.
-
-### 不再有`watchExclude`选项
-
-Vitest 使用 Vite 的监视器。您可以将排除项添加到 `server.watch.ignored`：
-
-```ts
-export default defineConfig({
-  server: { // [!code ++]
-    watch: { // [!code ++]
-      ignored: ['!node_modules/examplejs'] // [!code ++]
-    } // [!code ++]
-  } // [!code ++]
-})
-```
-
-### `--segfault-retry` 删除
-
-默认程序池更改后，不再需要此选项。如果遇到分离故障错误，请尝试切换到`'forks'`池。如果问题仍然存在，请重现问题并打开一个新问题。
-### 删除套件任务中的空任务
-
-这是对高级[task API](/advanced/runner#your-task-function)的更改。以前，遍历 `.suite`最终会导致使用空的内部套件，而不是文件任务。
-
-这使得 `.suite`成为可选项；如果任务是在顶层定义的，则不会有 suite。您可以回退到 `.file`属性，该属性现在存在于所有任务中（包括文件任务本身，因此要小心不要陷入无休止的递归）。
-
-这一更改还删除了 `expect.getState().currentTestName` 中的文件，并使 `expect.getState().testPath` 成为必填项。
-
-### `task.meta` 已添加到 JSON 报告器中
-
-JSON 报告器现在会为每个断言结果打印 `task.meta` 。
-
-### 简化的模拟函数通用类型 (e.g. `vi.fn<T>`, `Mock<T>`)
-
-以前 `vi.fn<TArgs, TReturn>` 分别接受参数和返回值的两个泛型。现在改为直接接受一个函数类型 `vi.fn<T>` 以简化用法。
-
-```ts
-import type { Mock } from 'vitest'
-import { vi } from 'vitest'
-
-const add = (x: number, y: number): number => x + y
-
-// using vi.fn<T>
-const mockAdd = vi.fn<Parameters<typeof add>, ReturnType<typeof add>>() // [!code --]
-const mockAdd = vi.fn<typeof add>() // [!code ++]
-
-// using Mock<T>
-const mockAdd: Mock<Parameters<typeof add>, ReturnType<typeof add>> = vi.fn() // [!code --]
-const mockAdd: Mock<typeof add> = vi.fn() // [!code ++]
-```
-
-### Accessing Resolved `mock.results`
-
-之前，Vitest 会在函数返回 Promise 时解析 `mock.results` 的值。现在，增加了一个独立的 [`mock.settledResults`](/api/mock#mock-settledresults) 属性，仅在返回的 Promise 被解析或拒绝时填充。
-
-```ts
-const fn = vi.fn().mockResolvedValueOnce('result')
-await fn()
-
-const result = fn.mock.results[0] // 'result' [!code --]
-const result = fn.mock.results[0] // 'Promise<result>' [!code ++]
-
-const settledResult = fn.mock.settledResults[0] // 'result'
-```
-
-通过这一更改，我们还引入了新的 [`toHaveResolved*`](/api/expect#tohaveresolved) 匹配器，类似于 `toHaveReturned`，以便如果您之前使用过 `toHaveReturned`，迁移会更加容易：
-
-```ts
-const fn = vi.fn().mockResolvedValueOnce('result')
-await fn()
-
-expect(fn).toHaveReturned('result') // [!code --]
-expect(fn).toHaveResolved('result') // [!code ++]
-```
-
-### 浏览器模式
-
-Vitest 浏览器模式在测试周期内发生了很多变化。您可以在[GitHub discussion](https://github.com/vitest-dev/vitest/discussions/5828)上阅读我们关于浏览器模式的理念。
-
-大多数改动都是附加的，但也有一些小的突破性改动：
-
-- `none` provider 更名为 `preview` [#5842](https://github.com/vitest-dev/vitest/pull/5826)
-- `preview` provider 现在是默认的 [#5842](https://github.com/vitest-dev/vitest/pull/5826)
-- `indexScripts` 更名为 `orchestratorScripts` [#5842](https://github.com/vitest-dev/vitest/pull/5842)
-
-### 删除过时的选项
-
-删除了一些过时的选项：
-
-- `vitest typecheck` 命令 - 使用 `vitest --typecheck` 代替
-- `VITEST_JUNIT_CLASSNAME` 和 `VITEST_JUNIT_SUITE_NAME` 环境变量（改用 reporter 选项）
-- 检查 `c8` 覆盖率（使用 coverage-v8 代替）
-- 从 `vitest` 导出 `SnapshotEnvironment` - 改为从 `vitest/snapshot` 导入
-- 删除 `SpyInstance` 改用 `MockInstance`
-
-## 迁移到 Vitest 1.0
-
-### 最低要求
-
-Vitest 1.0 需要 Vite 5.0 和 Node.js 18 或更高版本。
-
-所有 `@vitest/*` 子软件包都需要 Vitest 1.0 版本。
-
-### Snapshots 更新 [#3961](https://github.com/vitest-dev/vitest/pull/3961)
-
-快照中的引号不再转义，即使字符串只有一行，所有快照也都使用回车引号 (`)。
-
-1. 引号不再转义：
-
-```diff
-expect({ foo: 'bar' }).toMatchInlineSnapshot(`
-  Object {
--    \\"foo\\": \\"bar\\",
-+    "foo": "bar",
-  }
-`)
-```
-
-2. 单行快照现在使用"`"引号，而不是"'"：
-
-```diff
-- expect('some string').toMatchInlineSnapshot('"some string"')
-+ expect('some string').toMatchInlineSnapshot(`"some string"`)
-```
-
-对 `@vitest/snapshot` 也有[修改](https://github.com/vitest-dev/vitest/pull/4076)。如果不直接使用它，则无需做任何更改。
-
-- 我们不再需要扩展 `SnapshotClient` 以覆盖 `equalityCheck` 方法：只需在启动实例时将其作为 `isEqual` 传递即可。
-- `client.setTest` 更名为 `client.startCurrentRun`
-- `client.resetCurrent` 更名为 `client.finishCurrentRun` 。
-
-### Pools 标准化 [#4172](https://github.com/vitest-dev/vitest/pull/4172)
-
-我们删除了大量配置选项，以便根据需要配置运行程序。如果你已经使用了 `--threads` 或其他相关标记，请查看迁移示例。
-
-- `--threads` 现在是 `--pool=threads`
-- `--no-threads` 现在是 `--pool=forks`
-- `--single-thread` 现在是 `--poolOptions.threads.singleThread`
-- `--experimental-vm-threads` 现在是 `--pool=vmThreads`
-- `--experimental-vm-worker-memory-limit` 现在是 `--poolOptions.vmThreads.memoryLimit`
-- `--isolate` 现在是 `--poolOptions.<pool-name>.isolate` 和 `browser.isolate`
-- `test.maxThreads` 现在是 `test.poolOptions.<pool-name>.maxThreads`
-- `test.minThreads` 现在是 `test.poolOptions.<pool-name>.minThreads`
-- `test.useAtomics` 现在是 `test.poolOptions.<pool-name>.useAtomics`
-- `test.poolMatchGlobs.child_process` 现在是 `test.poolMatchGlobs.forks`
-- `test.poolMatchGlobs.experimentalVmThreads` 现在是 `test.poolMatchGlobs.vmThreads`
-
-```diff
-{
-  scripts: {
--    "test": "vitest --no-threads"
-     // For identical behaviour:
-+    "test": "vitest --pool forks --poolOptions.forks.singleFork"
-     // Or multi parallel forks:
-+    "test": "vitest --pool forks"
-
-  }
-}
-```
-
-```diff
-{
-  scripts: {
--    "test": "vitest --experimental-vm-threads"
-+    "test": "vitest --pool vmThreads"
-  }
-}
-```
-
-```diff
-{
-  scripts: {
--    "test": "vitest --isolate false"
-+    "test": "vitest --poolOptions.threads.isolate false"
-  }
-}
-```
-
-```diff
-{
-  scripts: {
--    "test": "vitest --no-threads --isolate false"
-+    "test": "vitest --pool forks --poolOptions.forks.isolate false"
-  }
-}
-```
-
-### Coverage 的变化 [#4265](https://github.com/vitest-dev/vitest/pull/4265), [#4442](https://github.com/vitest-dev/vitest/pull/4442)
-
-选项 `coverage.all` 现在默认启用。这意味着，所有符合 `coverage.include` 模式的项目文件都将被处理，即使它们未被执行。
-
-更改了覆盖阈值 API 的形状，现在它支持使用 glob 模式为特定文件指定阈值：
-
-```diff
-=======
-### Removed options `coverage.all` and `coverage.extensions`
-
-In previous versions Vitest included all uncovered files in coverage report by default.
-This was due to `coverage.all` defaulting to `true`, and `coverage.include` defaulting to `**`.
-These default values were chosen for a good reason - it is impossible for testing tools to guess where users are storing their source files.
-
-This ended up having Vitest's coverage providers processing unexpected files, like minified Javascript, leading to slow/stuck coverage report generations.
-In Vitest v4 we have removed `coverage.all` completely and <ins>**defaulted to include only covered files in the report**</ins>.
-
-When upgrading to v4 it is recommended to define `coverage.include` in your configuration, and then start applying simple `coverage.exclusion` patterns if needed.
+在升级到 v4 后，推荐在配置中显式指定 `coverage.include`，并视需要配合使用 `coverage.exclude` 进行排除。
 
 ```ts [vitest.config.ts]
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
 export default defineConfig({
   test: {
     coverage: {
-      // Include covered and uncovered files matching this pattern:
+      // 包含匹配此模式的被覆盖和未覆盖文件：
       include: ['packages/**/src/**.{js,jsx,ts,tsx}'], // [!code ++]
 
-      // Exclusion is applied for the files that match include pattern above
-      // No need to define root level *.config.ts files or node_modules, as we didn't add those in include
+      // 对上述 include 匹配到的文件应用排除规则：
       exclude: ['**/some-pattern/**'], // [!code ++]
 
-      // These options are removed now
+      // 以下选项已移除
       all: true, // [!code --]
       extensions: ['js', 'ts'], // [!code --]
     }
@@ -475,49 +58,29 @@ export default defineConfig({
 })
 ```
 
-<<<<<<< HEAD
-### Mock 类型 [#4400](https://github.com/vitest-dev/vitest/pull/4400)
+如果未定义 `coverage.include`，报告将只包含测试运行中被加载的文件：
 
-删除了一些类型，改用 Jest 风格的 "Mock "命名。
-
-```diff
-- import { EnhancedSpy, SpyInstance } from 'vitest'
-+ import { MockInstance } from 'vitest'
-```
-
-::: warning
-`SpyInstance` 已被弃用，取而代之的是 `MockInstance` ，并会在下一个主要版本中移除。
-:::
-=======
-If `coverage.include` is not defined, coverage report will include only files that were loaded during test run:
 ```ts [vitest.config.ts]
 export default defineConfig({
   test: {
     coverage: {
-      // Include not set, include only files that are loaded during test run
+      // 未设置 include，只包含运行时加载的文件
       include: undefined, // [!code ++]
 
-      // Loaded files that match this pattern will be excluded:
+      // 匹配此模式的已加载文件将被排除：
       exclude: ['**/some-pattern/**'], // [!code ++]
     }
   }
 })
 ```
 
-See also new guides:
-- [Including and excluding files from coverage report](/guide/coverage.html#including-and-excluding-files-from-coverage-report) for examples
-- [Profiling Test Performance | Code coverage](/guide/profiling-test-performance.html#code-coverage) for tips about debugging coverage generation
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+更多示例请参考：
+- [覆盖率报告中的文件包含与排除](/guide/coverage.html#including-and-excluding-files-from-coverage-report)
+- [性能分析 | 代码覆盖率](/guide/profiling-test-performance.html#code-coverage) 了解调试覆盖率生成的方法
 
-### `spyOn` Supports Constructors
+### `spyOn` 支持构造函数
 
-<<<<<<< HEAD
-`vi.useFakeTimers()` 不再自动模拟 [`process.nextTick`](https://nodejs.org/api/process.html#processnexttickcallback-args) 。
-仍然可以通过使用 `vi.useFakeTimers({ toFake: ['nextTick'] })` 明确指定来模拟 `process.nextTick`。
-
-但是，在使用 `--pool=forks` 时，无法模拟 `process.nextTick` 。如果需要模拟 `process.nextTick` ，请使用不同的 `--pool` 选项。
-=======
-Previously, if you tried to spy on a constructor with `vi.spyOn`, you would get an error like `Constructor <name> requires 'new'`. Since Vitest 4, all mocks called with a `new` keyword construct the instance instead of callying `mock.apply`. This means that the mock implementation has to use either the `function` or the `class` keyword in these cases:
+在之前版本中，如果你对构造函数使用 `vi.spyOn`，会收到类似 `Constructor <name> requires 'new'` 的错误。从 Vitest 4 开始，所有用 `new` 调用的 mock 都会正确创建实例，而不是调用 `mock.apply`。这意味着 mock 实现必须使用 `function` 或 `class` 关键字，例如：
 
 ```ts {12-14,16-20}
 const cart = {
@@ -530,11 +93,11 @@ const cart = {
 
 const Spy = vi.spyOn(cart, 'Apples')
   .mockImplementation(() => ({ getApples: () => 0 })) // [!code --]
-  // with a function keyword
+  // 使用 function 关键字
   .mockImplementation(function () {
     this.getApples = () => 0
   })
-  // with a custom class
+  // 使用自定义 class
   .mockImplementation(class MockApples {
     getApples() {
       return 0
@@ -544,135 +107,129 @@ const Spy = vi.spyOn(cart, 'Apples')
 const mock = new Spy()
 ```
 
-Note that now if you provide an arrow function, you will get [`<anonymous> is not a constructor` error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Not_a_constructor) when the mock is called.
+请注意，如果此时使用箭头函数，调用 mock 时会报 [`<anonymous> is not a constructor` 错误](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Not_a_constructor)。
 
-### Deprecated APIs are Removed
+### 移除废弃的 API
 
-Vitest 4.0 removes some deprecated APIs, including:
+Vitest 4.0 移除了以下废弃的配置项：
 
-- `poolMatchGlobs` config option. Use [`projects`](/guide/projects) instead.
-- `environmentMatchGlobs` config option. Use [`projects`](/guide/projects) instead.
-- `workspace` config option. Use [`projects`](/guide/projects) instead.
+- `poolMatchGlobs` 配置项，请使用 [`projects`](/guide/projects) 代替。
+- `environmentMatchGlobs` 配置项，请使用 [`projects`](/guide/projects) 代替。
+- `workspace` 配置项，请使用 [`projects`](/guide/projects) 代替。
 
-This release also removes all deprecated types. This finally fixes an issue where Vitest accidentally pulled in `node` types (see [#5481](https://github.com/vitest-dev/vitest/issues/5481) and [#6141](https://github.com/vitest-dev/vitest/issues/6141)).
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+此次发布还移除了所有废弃类型，这也解决了 Vitest 错误引入 `node` 类型的问题（详见 [#5481](https://github.com/vitest-dev/vitest/issues/5481) 和 [#6141](https://github.com/vitest-dev/vitest/issues/6141)）。
 
 ## 从 Jest 迁移 {#jest}
 
-Vitest 设计了与 Jest 兼容的 API ，方便你从 Jest 的迁移尽可能简单。尽管做出了这些努力，你仍然可能会遇到以下差异：
+Vitest 的 API 设计兼容 Jest，旨在使从 Jest 迁移尽可能简单。尽管如此，你仍可能遇到以下差异：
 
-### 全局变量作为默认值
+### 默认是否启用全局变量
 
-Jest 默认启用[全局 API](https://jestjs.io/zh-Hans/docs/api)。然而 Vitest 没有。你既可以通过 [`globals` 配置选项](/config/#globals)启用全局 API，也可以通过更新你的代码以便使用来自 `vitest` 模块的导入。
+Jest 默认启用其 [globals API](https://jestjs.io/docs/api)。Vitest 默认不启用。你可以通过配置项 [globals](/config/#globals) 启用全局变量，或者修改代码直接从 `vitest` 模块导入所需 API。
 
-如果你决定禁用全局 API，请注意像 [`testing-library`](https://testing-library.com/) 这样的通用库不会自动运行 DOM [cleanup](https://testing-library.com/docs/svelte-testing-library/api/#cleanup)。
+如果选择不启用全局变量，注意常用库如 [`testing-library`](https://testing-library.com/) 将不会自动执行 DOM 的 [清理](https://testing-library.com/docs/svelte-testing-library/api/#cleanup)。
 
 ### `spy.mockReset`
 
-Jest 的 [`mockReset`](https://jestjs.io/docs/mock-function-api#mockfnmockreset) 方法会将模拟函数的实现替换为一个返回 `undefined` 的空函数。
+Jest 的 [`mockReset`](https://jestjs.io/docs/mock-function-api#mockfnmockreset) 会将 mock 实现替换为空函数，返回 `undefined`。
 
-而 Vitest 的 [`mockReset`](/api/mock#mockreset) 方法会将模拟函数的实现重置为其原始实现。
-也就是说，通过 `vi.fn(impl)` 创建的模拟，使用 `mockReset` 将会把模拟的实现重置回 `impl`。
+Vitest 的 [`mockReset`](/api/mock#mockreset) 会将 mock 实现重置为最初的实现。也就是说，使用 `vi.fn(impl)` 创建的 mock，`mockReset` 会将实现重置为 `impl`。
 
-### 模拟模块
+### 模块 Mock
 
-在 Jest 中模拟一个模块时，工厂参数的返回值是默认导出。在 Vitest 中，工厂参数必须返回一个明确定义了每个导出的对象。例如，下面的 `jest.mock` 必须更新如下：
+在 Jest 中，mock 模块时工厂函数返回值即为默认导出。在 Vitest 中，工厂函数需返回包含所有导出的对象。例如，以下 Jest 代码需要改写为：
 
 ```ts
 jest.mock('./some-path', () => 'hello') // [!code --]
-vi.mock('./some-path', () => ({
-  // [!code ++]
+vi.mock('./some-path', () => ({ // [!code ++]
   default: 'hello', // [!code ++]
 })) // [!code ++]
 ```
 
-有关更深入的详细描述，请参阅 [`vi.mock` api section](/api/#vi-mock)。
+更多细节请参考 [`vi.mock` API](/api/vi#vi-mock)。
 
-### 自动模拟行为
+### 自动 Mock 行为
 
-区别于 Jest，在 `<root>/__mocks__` 中的模拟模块只有在 `vi.mock()` 被调用时才会加载。如果你需要它们像在 Jest 中一样，在每个测试中都被模拟，你可以在 [`setupFiles`](/config/#setupfiles) 中模拟它们。
+与 Jest 不同，Vitest 仅在调用 `vi.mock()` 时加载 `<root>/__mocks__` 中的模块。如果你需要像 Jest 一样在每个测试中自动 mock，可以在 [`setupFiles`](/config/#setupfiles) 中调用 mock。
 
-### 导入模拟包的原始版本
+### 导入被 Mock 包的原始模块
 
-如果你只需要模拟一个 package 的部分功能，你可能之前使用了 Jest 的 `requireActual` 函数。在 Vitest 中，你应该将这些调用替换为 `vi.importActual`。
+如果只部分 mock 一个包，之前可能用 Jest 的 `requireActual`，Vitest 中应使用 `vi.importActual`：
 
 ```ts
 const { cloneDeep } = jest.requireActual('lodash/cloneDeep') // [!code --]
 const { cloneDeep } = await vi.importActual('lodash/cloneDeep') // [!code ++]
 ```
 
-### 将模拟扩展到外部库
+### 扩展 Mock 到外部库
 
-在 Jest 的默认情况下，当模拟一个模块并希望将此模拟扩展到使用相同模块的其他外部库时，您应该明确告知您希望模拟哪个第三方库，这样外部库就会成为您源代码的一部分，方法是使用  [server.deps.inline](https://vitest.dev/config/#server-deps-inline).
+Jest 默认会扩展 mock 到使用相同模块的外部库。Vitest 需要显式告知要 mock 的第三方库，使其成为源码的一部分，方法是使用 [server.deps.inline](https://vitest.dev/config/#server-deps-inline)：
 
 ```
 server.deps.inline: ["lib-name"]
 ```
 
-### expect.getState().currentTestName
+### `expect.getState().currentTestName`
 
-Vitest 的 `test` 名称用 `>` 符号连接，以便于区分测试和套件，而 Jest 则使用空格 (` `)。
+Vitest 的测试名使用 `>` 符号连接，方便区分测试与套件，而 Jest 使用空格 (` `)。
 
 ```diff
 - `${describeTitle} ${testTitle}`
 + `${describeTitle} > ${testTitle}`
 ```
 
-### Envs
+### 环境变量
 
-Jest 导出各种 [`jasmine`](https://jasmine.github.io/) 全局 API (例如 `jasmine.any()` )。任何此类实例都需要迁移成 [Vitest 的对应 API ](/api/)。
+与 Jest 类似，Vitest 会将未设置时的 `NODE_ENV` 设为 `test`。Vitest 还有对应 `JEST_WORKER_ID` 的 `VITEST_POOL_ID`（小于等于 `maxThreads`），如果依赖此值，需重命名。Vitest 还暴露 `VITEST_WORKER_ID`，表示唯一的运行中 worker ID，受 `maxThreads` 不影响，随 worker 创建递增。
 
-### 测试环境
+### 替换属性
 
-如果之前没有设置，Vitest 会像 Jest 一样，把 `NODE_ENV` 设置为 `test`。 Vitest 也有一个 `JEST_WORKER_ID` 的对应项，是 `VITEST_WORKER_ID`，所以如果你依赖它，不要忘记重命名它。
+如果想修改对象，Jest 使用 [replaceProperty API](https://jestjs.io/docs/jest-object#jestreplacepropertyobject-propertykey-value)，Vitest 可使用 [`vi.stubEnv`](/api/#vi-stubenv) 或 [`vi.spyOn`](/api/vi#vi-spyon) 达成相同效果。
 
-### 属性替换
+### Done 回调
 
-如果你想修改测试环境，你会在 Jest 中使用 [replaceProperty API](https://jestjs.io/docs/jest-object#jestreplacepropertyobject-propertykey-value)，你可以使用 [vi.stubEnv](/api/vi#vi-stubenv) 或者 [`vi.spyOn`](/api/vi#vi-spyon) 也可以在 Vitest 中执行此操作。
-
-从 Vitest v0.10.0 开始，声明测试的回调样式被弃用。 你可以重写它们以使用 `async`/`await` 函数，或者使用 Promise 来模仿回调样式。
+从 Vitest v0.10.0 开始，回调式测试声明被弃用。你可以改写为使用 `async`/`await`，或用 Promise 模拟回调风格。
 
 <!--@include: ./examples/promise-done.md-->
 
-### 钩子
+### Hooks
 
-`beforeAll`/`beforeEach` 钩子可能在 Vitest 的 [teardown 函数](/api/#setup-and-teardown)中返回。因此，如果它们返回的不是 `undefined` 或 `null`，你可能需要重写你的钩子声明：
+Vitest 中 `beforeAll`/`beforeEach` 钩子可返回 [清理函数](/api/#setup-and-teardown)。因此，如果钩子返回非 `undefined` 或 `null`，可能需改写：
 
 ```ts
 beforeEach(() => setActivePinia(createTestingPinia())) // [!code --]
-beforeEach(() => {
-  setActivePinia(createTestingPinia())
-}) // [!code ++]
+beforeEach(() => { setActivePinia(createTestingPinia()) }) // [!code ++]
 ```
 
-在 Jest 中，钩子是按顺序调用的（一个接一个）。默认情况下，Vitest 并行运行钩子。要使用 Jest 的行为，请更新 [`sequence.hooks`](/config/#sequence-hooks) 选项：
+Jest 中钩子顺序执行（逐个执行），Vitest 默认并行执行。若想使用 Jest 行为，可配置 [`sequence.hooks`](/config/#sequence-hooks)：
 
 ```ts
 export default defineConfig({
   test: {
-    sequence: {
-      // [!code ++]
+    sequence: { // [!code ++]
       hooks: 'list', // [!code ++]
-    }, // [!code ++]
-  },
+    } // [!code ++]
+  }
 })
 ```
 
 ### 类型
 
-Vitest 没有等效于 `jest` 的命名空间，因此你需要直接从 `Vitest` 导入类型：
+Vitest 没有 Jest 的 `jest` 命名空间，需直接从 `vitest` 导入类型：
 
 ```ts
-// [!code --]
-// [!code --]
-import type { Mock } from 'vitest'
-let fn: jest.Mock<(name: string) => number> // [!code ++]
+let fn: jest.Mock<(name: string) => number> // [!code --]
+import type { Mock } from 'vitest' // [!code ++]
 let fn: Mock<(name: string) => number> // [!code ++]
 ```
 
 ### 定时器
 
-如果你之前在测试中使用了 jest.setTimeout ，那么你需要迁移到 Vitest 中的`vi.setConfig` :
+Vitest 不支持 Jest 的遗留定时器。
+
+### 超时
+
+如果使用了 `jest.setTimeout`，需迁移为 `vi.setConfig`：
 
 ```ts
 jest.setTimeout(5_000) // [!code --]
@@ -681,21 +238,23 @@ vi.setConfig({ testTimeout: 5_000 }) // [!code ++]
 
 ### Vue 快照
 
-如果你以前在 vue-cli preset 中使用 Jest，那么这不是一个 Jest 独有的新特性。你可能需要安装 [`jest-serializer-vue`](https://github.com/eddyerburgh/jest-serializer-vue) 包，然后在 [setupFiles](/config/#setupfiles) 中配置：
+这不是 Jest 特有功能，但如果之前使用 Jest 的 vue-cli preset，需要安装 [`jest-serializer-vue`](https://github.com/eddyerburgh/jest-serializer-vue) 包，并在 [setupFiles](/config/#setupfiles) 中使用：
 
 :::code-group
 ```js [vite.config.js]
 import { defineConfig } from 'vite'
+
 export default defineConfig({
   test: {
-    setupFiles: ['./tests/unit/setup.js'],
-  },
+    setupFiles: ['./tests/unit/setup.js']
+  }
 })
 ```
 ```js [tests/unit/setup.js]
 import vueSnapshotSerializer from 'jest-serializer-vue'
+
 expect.addSnapshotSerializer(vueSnapshotSerializer)
 ```
 :::
 
-否则你的快照将出现大量的 `"` 字符。
+否则快照中会出现大量转义的 `"` 字符。
