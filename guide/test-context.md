@@ -14,15 +14,9 @@ outline: deep
 ```ts
 import { it } from 'vitest'
 
-<<<<<<< HEAD
-it('should work', (ctx) => {
-  // 打印测试的名称
-  console.log(ctx.task.name)
-=======
 it('should work', ({ task }) => {
   // prints name of the test
   console.log(task.name)
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
 })
 ```
 
@@ -76,10 +70,7 @@ it('math is hard', ({ skip }) => {
 })
 ```
 
-<<<<<<< HEAD
-## 扩展测试上下文
-=======
-Since Vitest 3.1, it accepts a boolean parameter to skip the test conditionally:
+从 Vitest 3.1 版本开始，你可以通过传入一个布尔值参数来按条件跳过某个测试：
 
 ```ts
 it('math is hard', ({ skip, mind }) => {
@@ -103,7 +94,7 @@ function annotate(
 ): Promise<TestAnnotation>
 ```
 
-Add a [test annotation](/guide/test-annotations) that will be displayed by your [reporter](/config/#reporter).
+添加一个 [测试标注](/guide/test-annotations) ，该标注会在 [报告器](/config/#reporter) 输出中展示。
 
 ```ts
 test('annotations API', async ({ annotate }) => {
@@ -113,12 +104,12 @@ test('annotations API', async ({ annotate }) => {
 
 #### `signal` <Version>3.2.0</Version> {#signal}
 
-An [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) that can be aborted by Vitest. The signal is aborted in these situations:
+一个由 Vitest 控制的 [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) ，在以下场景下会被触发中止：
 
-- Test times out
-- User manually cancelled the test run with Ctrl+C
-- [`vitest.cancelCurrentRun`](/advanced/api/vitest#cancelcurrentrun) was called programmatically
-- Another test failed in parallel and the [`bail`](/config/#bail) flag is set
+- 测试用例超时
+- 用户使用 Ctrl+C 手动终止了测试
+- 代码中调用了 [`vitest.cancelCurrentRun`](/advanced/api/vitest#cancelcurrentrun) 方法
+- 当并行测试中的其他用例失败，并且启用了 [`bail`](/config/#bail) 参数时
 
 ```ts
 it('stop request when test times out', async ({ signal }) => {
@@ -128,14 +119,13 @@ it('stop request when test times out', async ({ signal }) => {
 
 #### `onTestFailed`
 
-The [`onTestFailed`](/api/#ontestfailed) hook bound to the current test. This API is useful if you are running tests concurrently and need to have a special handling only for this specific test.
+[`onTestFailed`](/api/#ontestfailed) 与当前测试用例绑定。当你并发执行多个测试并希望只对某个具体测试进行特殊处理时，这个 API 会非常有用。
 
 #### `onTestFinished`
 
-The [`onTestFinished`](/api/#ontestfailed) hook bound to the current test. This API is useful if you are running tests concurrently and need to have a special handling only for this specific test.
+[`onTestFinished`](/api/#ontestfailed) 与当前测试用例绑定。当你并发执行多个测试并希望只对某个特定测试进行特殊处理时，这个 API 会非常有帮助。
 
-## Extend Test Context
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+## 扩展测试上下文
 
 Vitest 提供了两种不同的方式来帮助你扩展测试上下文。
 
@@ -143,11 +133,7 @@ Vitest 提供了两种不同的方式来帮助你扩展测试上下文。
 
 与 [Playwright](https://playwright.dev/docs/api/class-test#test-extend) 一样，你可以使用此方法通过自定义装置定义你自己的 `test` API，并在任何地方重复使用它。
 
-<<<<<<< HEAD
-例如，我们首先使用两个固定装置创建 `myTest`，`todos` 和 `archive`。
-=======
-For example, we first create the `test` collector with two fixtures: `todos` and `archive`.
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+比如说，我们先创建一个包含 `todos` 和 `archive` 两个夹具的 `test` 收集器。
 
 ```ts [my-test.ts]
 import { test as baseTest } from 'vitest'
@@ -155,12 +141,7 @@ import { test as baseTest } from 'vitest'
 const todos = []
 const archive = []
 
-<<<<<<< HEAD
-export const myTest = test.extend({
-
-=======
 export const test = baseTest.extend({
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
   todos: async ({}, use) => {
     // 在每次测试函数运行之前设置固定装置
     todos.push(1, 2, 3)
@@ -198,11 +179,7 @@ test('move items from todos to archive', ({ todos, archive }) => {
 })
 ```
 
-<<<<<<< HEAD
-我们还可以通过扩展 `myTest` 添加更多的固定装置或覆盖现有的固定装置。
-=======
-We can also add more fixtures or override existing fixtures by extending our `test`.
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+我们还可以通过对 `test` 进行扩展来新增夹具或覆盖已有的夹具配置。
 
 ```ts
 import { test as todosTest } from './my-test.js'
@@ -221,23 +198,6 @@ Vitest 运行器将智能地初始化你的固定装置并根据使用情况将�
 ```ts
 import { test as baseTest } from 'vitest'
 
-<<<<<<< HEAD
-async function todosFn({ task }, use) {
-  await use([1, 2, 3])
-}
-
-const myTest = test.extend({
-  todos: todosFn,
-  archive: [],
-})
-
-// todosFn 不会运行
-myTest('', () => {})
-myTest('', ({ archive }) => {})
-
-// todosFn 会运行
-myTest('', ({ todos }) => {})
-=======
 const test = baseTest.extend<{
   todos: number[]
   archive: number[]
@@ -254,7 +214,6 @@ test('skip', ({ archive }) => {})
 
 // todos will run
 test('run', ({ todos }) => {})
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
 ```
 
 ::: warning
@@ -500,15 +459,11 @@ test('types are correct', ({
 
 ### `beforeEach` and `afterEach`
 
-<<<<<<< HEAD
-每个测试的上下文都不同。 你可以在 `beforeEach` 和 `afterEach` hooks 中访问和扩展它们。
-=======
 ::: danger Deprecated
-This is an outdated way of extending context and it will not work when the `test` is extended with `test.extend`.
+这种扩展上下文的方法已不再推荐使用，并且在你使用 `test.extend` 扩展 `test` 时，它将无法生效。
 :::
 
-The contexts are different for each test. You can access and extend them within the `beforeEach` and `afterEach` hooks.
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+每个测试用例都有独立的上下文，你可以在 `beforeEach` 和 `afterEach` 钩子里对其进行访问或扩展。
 
 ```ts
 import { beforeEach, it } from 'vitest'
@@ -525,11 +480,7 @@ it('should work', ({ foo }) => {
 
 #### TypeScript
 
-<<<<<<< HEAD
-你可以通过添加聚合(aggregate)类型 `TestContext`, 为你的自定义上下文属性提供类型支持。
-=======
-To provide property types for all your custom contexts, you can augment the `TestContext` type by adding
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+如果你想为自定义的上下文属性提供类型支持，可以通过扩展 `TestContext` 类型来实现：
 
 ```ts
 declare module 'vitest' {

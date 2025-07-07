@@ -766,15 +766,11 @@ import * as exports from './example.js'
 vi.spyOn(exports, 'getter', 'get').mockReturnValue('mocked')
 ```
 
-<<<<<<< HEAD
-### 监听模块导出 setter/getter
-=======
 ::: warning
-This will not work in the Browser Mode. For a workaround, see [Limitations](/guide/browser/#spying-on-module-exports).
+此方法在浏览器模式中无法使用。如需替代方案，请查看 [限制部分](/guide/browser/#spying-on-module-exports)。
 :::
 
-### Mock an exported function
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+### 对模块中导出的函数进行 mock。
 
 ```ts
 import * as exports from 'some-path'
@@ -810,19 +806,13 @@ import * as exports from './example.js'
 vi.spyOn(exports, 'method').mockImplementation(() => {})
 ```
 
-<<<<<<< HEAD
-### 模拟模块导出类实现
-
-1. `vi.mock` 和 `.prototype` 的示例:
-=======
 ::: warning
-`vi.spyOn` example will not work in the Browser Mode. For a workaround, see [Limitations](/guide/browser/#spying-on-module-exports).
+`vi.spyOn` 示例在浏览器模式中无法使用。如需替代方案，请查看 [限制部分](/guide/browser/#spying-on-module-exports)。
 :::
 
-### Mock an exported class implementation
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+### `vi.mock` 和 `.prototype` 的示例:
 
-1. Example with a fake `class`:
+1. 一个使用假 class 的示例：
 ```ts [example.js]
 export class SomeClass {}
 ```
@@ -854,11 +844,7 @@ vi.mock(import('./example.js'), () => {
 // SomeClass.mock.instances 上将会有 someMethod 方法
 ```
 
-<<<<<<< HEAD
-2. `vi.spyOn` 的示例:
-=======
-3. Example with `vi.spyOn`:
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+3. `vi.spyOn` 的示例:
 
 ```ts
 import * as mod from './example.js'
@@ -869,15 +855,11 @@ SomeClass.prototype.someMethod = vi.fn()
 vi.spyOn(mod, 'SomeClass').mockImplementation(SomeClass)
 ```
 
-<<<<<<< HEAD
-### 监听一个函数是否返回了一个对象
-=======
 ::: warning
-`vi.spyOn` example will not work in the Browser Mode. For a workaround, see [Limitations](/guide/browser/#spying-on-module-exports).
+vi.spyOn 的示例无法在浏览器模式中正常使用。如需替代方案，请查看 [限制部分](/guide/browser/#spying-on-module-exports)。
 :::
 
-### Spy on an object returned from a function
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+### 监听一个函数是否返回了一个对象
 
 1. 使用 cache 的示例:
 

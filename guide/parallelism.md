@@ -1,28 +1,28 @@
 ---
-title: Parallelism | Guide
+title: 并行性 | Guide
 outline: deep
 ---
 
-# Parallelism
+# 并行性
 
-## File Parallelism
+## 文件级并行
 
-By default, Vitest runs _test files_ in parallel. Depending on the specified `pool`, Vitest uses a different mechanism to parallelize test files:
+Vitest 默认会并行执行 _测试文件_ 。具体使用哪种并行机制取决于配置的 `pool` 类型：
 
-- `forks` (the default) and `vmForks` run tests in different [child processes](https://nodejs.org/api/child_process.html)
-- `threads` and `vmThreads` run tests in different [worker threads](https://nodejs.org/api/worker_threads.html)
+- `forks`（默认）和 `vmForks` 会在不同的 [child processes](https://nodejs.org/api/child_process.html) 中执行测试
+- `threads` 和 `vmThreads` 则会在不同的 [worker threads](https://nodejs.org/api/worker_threads.html) 中运行
 
-Both "child processes" and "worker threads" are refered to as "workers". You can configure the number of running workers with [`minWorkers`](/config/#minworkers) and [`maxWorkers`](/config/#maxworkers) options. Or more granually with [`poolOptions`](/config/#pooloptions) configuration.
+在文档中，“子进程”和“工作线程”统称为“工作者”。你可以通过 [`minWorkers`](/config/#minworkers) 和 [`maxWorkers`](/config/#maxworkers) 参数来控制并行工作的数量，也可以通过 [`poolOptions`](/config/#pooloptions) 进行更详细的配置。
 
-If you have a lot of tests, it is usually faster to run them in parallel, but it also depends on the project, the environment and [isolation](/config/#isolate) state. To disable file parallelisation, you can set [`fileParallelism`](/config/#fileparallelism) to `false`. To learn more about possible performance improvements, read the [Performance Guide](/guide/improving-performance).
+如果项目包含大量测试文件，通常并行执行会大幅提升速度。但具体效果还要看项目本身、运行环境以及是否启用了 [隔离](/config/#isolate)。若需要关闭文件级并行化，可以将 [`fileParallelism`](/config/#fileparallelism) 设为 `false` 。更多性能优化技巧，请参考 [性能指南](/guide/improving-performance) 。
 
-## Test Parallelism
+## 测试用例并行
 
-Unlike _test files_, Vitest runs _tests_ in sequence. This means that tests inside a single test file will run in the order they are defined.
+与 _测试文件_ 不同， Vitest 在同一个文件中会顺序执行 _测试用例_ 。也就是说，同一个文件里的测试会按定义顺序一个接一个地执行。
 
-Vitest supports the [`concurrent`](/api/#test-concurrent) option to run tests together. If this option is set, Vitest will group concurrent tests in the same _file_ (the number of simultaneously running tests depends on the [`maxConcurrency`](/config/#maxconcurrency) option) and run them with [`Promise.all`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all).
+如果希望让同一文件中的多个测试并行执行，可以使用 [`concurrent`](/api/#test-concurrent) 选项。启用后， Vitest 会将同一文件中的并发测试分组，并基于 maxConcurrency 控制并行度，然后通过 [`Promise.all`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all) 一起执行。
 
-Vitest doesn't perform any smart analysis and doesn't create additional workers to run these tests. This means that the performance of your tests will improve only if you rely heavily on asynchronous operations. For example, these tests will still run one after another even though the `concurrent` option is specified. This is because they are synchronous:
+Vitest 不会自动分析你的测试是否可以并行，也不会为了并发而额外创建工作者。这意味着，只有在测试中有大量异步操作时，使用并发才能提升性能。例如，以下示例即便指定了 concurrent ，也会顺序执行，因为它们是同步的：
 
 ```ts
 test.concurrent('the first test', () => {
@@ -34,4 +34,4 @@ test.concurrent('the second test', () => {
 })
 ```
 
-If you wish to run all tests concurrently, you can set the [`sequence.concurrent`](/config/#sequence-concurrent) option to `true`.
+如果希望所有测试用例都并发执行，可以将 [`sequence.concurrent`](/config/#sequence-concurrent) 配置项设为 `true` 。

@@ -89,11 +89,7 @@
 - **CLI:** `--reporter <name>`
 - **Config:** [reporters](/config/#reporters)
 
-<<<<<<< HEAD
-指定 reporters
-=======
-Specify reporters (default, blob, verbose, dot, json, tap, tap-flat, junit, hanging-process, github-actions)
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+用来选择报告输出格式的类型，可选值包括： default、blob、verbose、dot、json、tap、tap-flat、junit、hanging-process、github-actions。
 
 ### outputFile
 
@@ -102,16 +98,6 @@ Specify reporters (default, blob, verbose, dot, json, tap, tap-flat, junit, hang
 
 如果还指定了支持报告程序，则将测试结果写入文件，使用 cac 的点符号表示多个报告程序的单个输出结果 (比如: --outputFile.tap=./tap.txt)
 
-<<<<<<< HEAD
-### coverage.all
-
-- **CLI:** `--coverage.all`
-- **Config:** [coverage.all](/config/#coverage-all)
-
-是否在报告中包含所有文件，包括未测试的文件
-
-=======
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
 ### coverage.provider
 
 - **CLI:** `--coverage.provider <name>`
@@ -140,16 +126,6 @@ Specify reporters (default, blob, verbose, dot, json, tap, tap-flat, junit, hang
 
 覆盖范围中要排除的文件。使用多个扩展名时，可指定多次（默认情况下： 访问 [`coverage.exclude`](https://vitest.dev/config/#coverage-exclude)
 
-<<<<<<< HEAD
-### coverage.extension
-
-- **CLI:** `--coverage.extension <extension>`
-- **Config:** [coverage.extension](/config/#coverage-extension)
-
-包含在覆盖范围内的扩展名。使用多个扩展名时，可指定多次 (默认: `[".js", ".cjs", ".mjs", ".ts", ".mts", ".tsx", ".jsx", ".vue", ".svelte"]`)
-
-=======
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
 ### coverage.clean
 
 - **CLI:** `--coverage.clean`
@@ -296,16 +272,6 @@ High and low watermarks for functions in the format of `<high>,<low>`
 
 覆盖 Vite 模式 (默认值: `test` 或 `benchmark`)
 
-<<<<<<< HEAD
-### workspace
-
-- **CLI:** `--workspace <path>`
-- **Config:** [workspace](/config/#workspace)
-
-工作区配置文件的路径
-
-=======
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
 ### isolate
 
 - **CLI:** `--isolate`
@@ -373,11 +339,7 @@ High and low watermarks for functions in the format of `<high>,<low>`
 - **CLI:** `--browser.provider <name>`
 - **Config:** [browser.provider](/guide/browser/config#browser-provider)
 
-<<<<<<< HEAD
-用于运行浏览器测试的 Provider。某些浏览器只适用于特定的提供 Provider，可以是"webdriverio", "playwright", "preview"，或自定义 provider. 通过 [`browser.provider`](https://vitest.dev/config/#browser-provider) 查看更多信息 (默认值: `"preview"`)
-=======
-Provider used to run browser tests. Some browsers are only available for specific providers. Can be "webdriverio", "playwright", "preview", or the path to a custom provider. Visit [`browser.provider`](https://vitest.dev/guide/browser/config.html#browser-provider) for more information (default: `"preview"`)
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+指定执行浏览器测试时所使用的提供程序。部分浏览器仅在特定的提供程序下可用。可选值有 "webdriverio"、"playwright"、"preview"，也可以填写自定义提供程序的路径。更多信息请查看 [`browser.provider`](https://vitest.dev/guide/browser/config.html#browser-provider)（默认值为 "preview"）。
 
 ### browser.providerOptions
 

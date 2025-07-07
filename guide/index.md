@@ -179,15 +179,9 @@ export default defineConfig({
 但我们建议 Vite 和 Vitest 使用相同的文件，而不是创建两个单独的文件。
 :::
 
-<<<<<<< HEAD
-## 支持工作空间
+## 多项目支持
 
-在同一个项目中使用 [Vitest 工作区](/guide/workspace)运行不同的项目配置。你可以在 `vitest.config` 文件中定义一个包含文件和文件夹的列表来指定你的工作区。
-=======
-## Projects Support
-
-Run different project configurations inside the same project with [Test Projects](/guide/projects). You can define a list of files and folders that define your projects in `vitest.config` file.
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+通过 [测试项目](/guide/projects) 功能，你可以在同一个项目里运行多套不同的配置。只需在 vitest.config 文件中列出对应的文件和文件夹，即可定义各个项目。
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'

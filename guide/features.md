@@ -34,11 +34,8 @@ $ vitest
 
 ## 多线程
 
-<<<<<<< HEAD
-默认情况下，Vitest 通过 [Tinypool](https://github.com/tinylibs/tinypool)（[Piscina](https://github.com/piscinajs/piscina) 的轻量级分叉）使用 [`node:child_process`](https://nodejs.org/api/child_process.html)，在多个进程中运行测试文件，允许测试同时运行。如果想进一步加快测试套件的速度，可以考虑启用 `--pool=threads`，使用 [`node:worker_threads`](https://nodejs.org/api/worker_threads.html)来运行测试（注意，某些软件包可能无法使用此设置）。
-=======
-By default Vitest runs test files in [multiple processes](/guide/parallelism) using [`node:child_process`](https://nodejs.org/api/child_process.html) via [Tinypool](https://github.com/tinylibs/tinypool) (a lightweight fork of [Piscina](https://github.com/piscinajs/piscina)), allowing tests to run simultaneously. If you want to speed up your test suite even further, consider enabling `--pool=threads` to run tests using [`node:worker_threads`](https://nodejs.org/api/worker_threads.html) (beware that some packages might not work with this setup).
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+Vitest 默认会通过 [Tinypool](https://github.com/tinylibs/tinypool)（它是 [Piscina](https://github.com/piscinajs/piscina) 的轻量版分支），利用 [`node:child_process`](https://nodejs.org/api/child_process.html) 在 [多个进程](/guide/parallelism) 中并行执行测试文件，
+从而提升测试执行效率。如果你想让测试套件跑得更快，可以尝试开启 `--pool=threads` 选项，让 Vitest 使用 [`node:worker_threads`](https://nodejs.org/api/worker_threads.html) 执行测试——不过要注意，有些依赖可能在该模式下无法正常工作。
 
 要在单个线程或进程中运行测试，查看 [`poolOptions`](/config/#pooloptions) 了解更多消息。
 
