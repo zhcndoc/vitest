@@ -317,10 +317,7 @@ function onTestCaseResult(testCase: TestCase): Awaitable<void>
 
 当测试完成运行或刚刚被跳过时调用此方法。请注意，如果有 `afterEach` 钩子，这将在 `afterEach` 钩子完成后调用。
 
-<<<<<<< HEAD
-此时，[`testCase.result()`](/advanced/api/test-case#result) 将具有非挂起状态。
-=======
-At this point, [`testCase.result()`](/advanced/api/test-case#result) will have non-pending state.
+此时，[`testCase.result()`](/advanced/api/test-case#result) 已不再是挂起状态。
 
 ## onTestAnnotate <Version>3.2.0</Version> {#ontestannotate}
 
@@ -331,7 +328,6 @@ function onTestAnnotate(
 ): Awaitable<void>
 ```
 
-The `onTestAnnotate` hook is associated with the [`context.annotate`](/guide/test-context#annotate) method. When `annotate` is invoked, Vitest serialises it and sends the same attachment to the main thread where reporter can interact with it.
+onTestAnnotate 是与 [`context.annotate`](/guide/test-context#annotate) 方法配套使用的钩子。当你在测试中调用 annotate 后， Vitest 会将注解内容序列化，并将其发送到主线程，从而让报告器可以处理这些附加信息。
 
-If the path is specified, Vitest stores it in a separate directory (configured by [`attachmentsDir`](/config/#attachmentsdir)) and modifies the `path` property to reference it.
->>>>>>> 20a6f55e1a3609aeed48afd2473a8ca5a705126a
+如果在注解中指定了文件路径， Vitest 会将附件保存到一个独立的目录（该目录通过 [`attachmentsDir`](/config/#attachmentsdir) 配置），并自动更新 path 属性，使其指向存储后的文件位置。
