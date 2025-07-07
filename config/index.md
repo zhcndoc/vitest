@@ -106,7 +106,7 @@ export default defineConfig({
 
 由于 Vitest 使用 Vite 的配置，我们也可以使用 [Vite](https://vitejs.dev/config/) 中的任何配置选项。例如，使用 `define` 来定义全局变量，或者使用 `resolve.alias` 来定义别名——这些选项应该在顶级定义，而不是在 `test` 属性内部。
 
-在 [项目](/guide/workspace) 配置里不被支持的选项，会在旁边标注 <NonProjectOption /> 。这表示这些选项只能在 Vitest 的根配置中进行设置。
+在 [项目](/guide/projects) 配置里不被支持的选项，会在旁边标注 <NonProjectOption /> 。这表示这些选项只能在 Vitest 的根配置中进行设置。
 :::
 
 ### include
