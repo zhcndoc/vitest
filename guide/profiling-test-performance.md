@@ -15,12 +15,12 @@
 >   # Time metrics ^^
 > ```
 
-- 「 转换 / Transform 」：转换文件所花费的时间。参见[文件转换](#file-transform)。
-- Setup：运行 [`setupFiles`](/config/#setupfiles) 文件所花费的时间。
-- 「 收集 / Collect 」：收集测试文件中所有测试所花费的时间。这包括导入所有文件依赖项所花费的时间。
-- 「 测试 / Tests 」：实际运行测试用例所花费的时间。
-- 「 环境 / Environment 」：设置测试[`环境`](/config/#environment)所花费的时间，例如 JSDOM 。
-- 「 准备 / Prepare 」：Vitest 用于准备 测试运行器 的时间。
+- Transform ：转换文件所用的时间。详见 [文件转换](#file-transform)。
+- Setup ：执行 [`setupFiles`](/config/#setupfiles) 配置文件所花的时间。
+- Collect ：收集测试文件中所有用例的时间，包括导入文件依赖的耗时。
+- Tests ：实际执行测试用例所用的时间。
+- Environment ： [配置测试](/config/#environment) 环境（比如 JSDOM ）所需的时间。
+- Prepare ： Vitest 用于准备测试运行环境的时间。在 Node 环境下，包括导入并执行内部工具；在浏览器中，还包含初始化 iframe 的时间。
 
 ## Test runner
 

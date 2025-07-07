@@ -173,7 +173,7 @@ interface File extends Suite {
    */
   filepath: string
   /**
-   * 文件所属的工作区项目的名称。
+   * 该文件所归属的测试项目的名称。
    */
   projectName: string | undefined
   /**
@@ -218,7 +218,7 @@ interface Test<ExtraContext = object> extends TaskBase {
    */
   file: File
   /**
-   * 任务是否通过调用 `t.skip()` 被跳过。
+   * 是否使用 `context.skip()` 方法将此任务标记为跳过。
    */
   pending?: boolean
   /**
@@ -247,7 +247,7 @@ export interface TaskResult {
    * 在任务执行期间发生的错误。可能存在多个错误。
    * 如果 `expect.soft()` 多次失败。
    */
-  errors?: ErrorWithDiff[]
+  errors?: TestError[]
   /**
    * 任务运行所花费的时间（以毫秒为单位）。
    */

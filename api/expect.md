@@ -773,7 +773,7 @@ test('throws on pineapples', async () => {
 
 ## toMatchSnapshot
 
-- **类型:** `<T>(shape?: Partial<T> | string, message?: string) => void`
+- **类型:** `<T>(shape?: Partial<T> | string, hint?: string) => void`
 
 这样可以确保一个值与最近的快照匹配。
 
@@ -805,7 +805,7 @@ test('matches snapshot', () => {
 
 ## toMatchInlineSnapshot
 
-- **类型:** `<T>(shape?: Partial<T> | string, snapshot?: string, message?: string) => void`
+- **类型:** `<T>(shape?: Partial<T> | string, snapshot?: string, hint?: string) => void`
 
 这确保了一个值与最近的快照相匹配。
 
@@ -848,7 +848,7 @@ test('matches snapshot', () => {
 
 ## toMatchFileSnapshot {#tomatchfilesnapshot}
 
-- **类型:** `<T>(filepath: string, message?: string) => Promise<void>`
+- **类型:** `<T>(filepath: string, hint?: string) => Promise<void>`
 
 指定文件内容与快照进行比较或更新（而非使用 `.snap` 文件）。
 
@@ -865,13 +865,13 @@ it('render basic', async () => {
 
 ## toThrowErrorMatchingSnapshot
 
-- **类型:** `(message?: string) => void`
+- **类型:** `(hint?: string) => void`
 
 与 [`toMatchSnapshot`](#tomatchsnapshot) 相同，但期望的值与 [`toThrowError`](#tothrowerror) 相同。
 
 ## toThrowErrorMatchingInlineSnapshot
 
-- **类型:** `(snapshot?: string, message?: string) => void`
+- **类型:** `(snapshot?: string, hint?: string) => void`
 
 与 [`toMatchInlineSnapshot`](#tomatchinlinesnapshot) 类似，但期望的值与 [`toThrowError`](#tothrowerror) 相同。
 

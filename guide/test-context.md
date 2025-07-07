@@ -14,19 +14,19 @@ outline: deep
 ```ts
 import { it } from 'vitest'
 
-it('should work', (ctx) => {
-  // 打印测试的名称
-  console.log(ctx.task.name)
+it('should work', ({ task }) => {
+  // prints name of the test
+  console.log(task.name)
 })
 ```
 
 ## 内置测试上下文
 
-#### `context.task`
+#### `task`
 
 包含关于测试的元数据的只读对象。
 
-#### `context.expect`
+#### `expect`
 
 绑定到当前测试的 `expect` API:
 
@@ -52,7 +52,12 @@ it.concurrent('math is hard', ({ expect }) => {
 })
 ```
 
-#### `context.skip`
+#### `skip`
+
+```ts
+function skip(note?: string): never
+function skip(condition: boolean, note?: string): void
+```
 
 跳过后续测试执行并将测试标记为已跳过：
 
@@ -65,6 +70,61 @@ it('math is hard', ({ skip }) => {
 })
 ```
 
+从 Vitest 3.1 版本开始，你可以通过传入一个布尔值参数来按条件跳过某个测试：
+
+```ts
+it('math is hard', ({ skip, mind }) => {
+  skip(mind === 'foggy')
+  expect(2 + 2).toBe(5)
+})
+```
+
+#### `annotate` <Version>3.2.0</Version> {#annotate}
+
+```ts
+function annotate(
+  message: string,
+  attachment?: TestAttachment,
+): Promise<TestAnnotation>
+
+function annotate(
+  message: string,
+  type?: string,
+  attachment?: TestAttachment,
+): Promise<TestAnnotation>
+```
+
+添加一个 [测试标注](/guide/test-annotations) ，该标注会在 [报告器](/config/#reporter) 输出中展示。
+
+```ts
+test('annotations API', async ({ annotate }) => {
+  await annotate('https://github.com/vitest-dev/vitest/pull/7953', 'issues')
+})
+```
+
+#### `signal` <Version>3.2.0</Version> {#signal}
+
+一个由 Vitest 控制的 [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) ，在以下场景下会被触发中止：
+
+- 测试用例超时
+- 用户使用 Ctrl+C 手动终止了测试
+- 代码中调用了 [`vitest.cancelCurrentRun`](/advanced/api/vitest#cancelcurrentrun) 方法
+- 当并行测试中的其他用例失败，并且启用了 [`bail`](/config/#bail) 参数时
+
+```ts
+it('stop request when test times out', async ({ signal }) => {
+  await fetch('/resource', { signal })
+}, 2000)
+```
+
+#### `onTestFailed`
+
+[`onTestFailed`](/api/#ontestfailed) 与当前测试用例绑定。当你并发执行多个测试并希望只对某个具体测试进行特殊处理时，这个 API 会非常有用。
+
+#### `onTestFinished`
+
+[`onTestFinished`](/api/#ontestfailed) 与当前测试用例绑定。当你并发执行多个测试并希望只对某个特定测试进行特殊处理时，这个 API 会非常有帮助。
+
 ## 扩展测试上下文
 
 Vitest 提供了两种不同的方式来帮助你扩展测试上下文。
@@ -73,16 +133,15 @@ Vitest 提供了两种不同的方式来帮助你扩展测试上下文。
 
 与 [Playwright](https://playwright.dev/docs/api/class-test#test-extend) 一样，你可以使用此方法通过自定义装置定义你自己的 `test` API，并在任何地方重复使用它。
 
-例如，我们首先使用两个固定装置创建 `myTest`，`todos` 和 `archive`。
+比如说，我们先创建一个包含 `todos` 和 `archive` 两个夹具的 `test` 收集器。
 
 ```ts [my-test.ts]
-import { test } from 'vitest'
+import { test as baseTest } from 'vitest'
 
 const todos = []
 const archive = []
 
-export const myTest = test.extend({
-
+export const test = baseTest.extend({
   todos: async ({}, use) => {
     // 在每次测试函数运行之前设置固定装置
     todos.push(1, 2, 3)
@@ -101,16 +160,16 @@ export const myTest = test.extend({
 
 ```ts [my-test.test.ts]
 import { expect } from 'vitest'
-import { myTest } from './my-test.js'
+import { test } from './my-test.js'
 
-myTest('add items to todos', ({ todos }) => {
+test('add items to todos', ({ todos }) => {
   expect(todos.length).toBe(3)
 
   todos.push(4)
   expect(todos.length).toBe(4)
 })
 
-myTest('move items from todos to archive', ({ todos, archive }) => {
+test('move items from todos to archive', ({ todos, archive }) => {
   expect(todos.length).toBe(3)
   expect(archive.length).toBe(0)
 
@@ -120,10 +179,12 @@ myTest('move items from todos to archive', ({ todos, archive }) => {
 })
 ```
 
-我们还可以通过扩展 `myTest` 添加更多的固定装置或覆盖现有的固定装置。
+我们还可以通过对 `test` 进行扩展来新增夹具或覆盖已有的夹具配置。
 
 ```ts
-export const myTest2 = myTest.extend({
+import { test as todosTest } from './my-test.js'
+
+export const test = todosTest.extend({
   settings: {
     // ...
   },
@@ -135,34 +196,35 @@ export const myTest2 = myTest.extend({
 Vitest 运行器将智能地初始化你的固定装置并根据使用情况将它们注入到测试上下文中。
 
 ```ts
-import { test } from 'vitest'
+import { test as baseTest } from 'vitest'
 
-async function todosFn({ task }, use) {
-  await use([1, 2, 3])
-}
-
-const myTest = test.extend({
-  todos: todosFn,
-  archive: [],
+const test = baseTest.extend<{
+  todos: number[]
+  archive: number[]
+}>({
+  todos: async ({ task }, use) => {
+    await use([1, 2, 3])
+  },
+  archive: []
 })
 
-// todosFn 不会运行
-myTest('', () => {})
-myTest('', ({ archive }) => {})
+// todos will not run
+test('skip', () => {})
+test('skip', ({ archive }) => {})
 
-// todosFn 会运行
-myTest('', ({ todos }) => {})
+// todos will run
+test('run', ({ todos }) => {})
 ```
 
 ::: warning
 在固定装置中使用 `test.extend()` 时，需要始终使用对象解构模式 `{ todos }` 来访问固定装置函数和测试函数中的上下文。
 
 ```ts
-myTest('context must be destructured', (context) => { // [!code --]
+test('context must be destructured', (context) => { // [!code --]
   expect(context.todos.length).toBe(2)
 })
 
-myTest('context must be destructured', ({ todos }) => { // [!code ++]
+test('context must be destructured', ({ todos }) => { // [!code ++]
   expect(todos.length).toBe(2)
 })
 ```
@@ -193,7 +255,7 @@ test('works correctly')
 
 #### Default fixture
 
-Since Vitest 3, you can provide different values in different [projects](/guide/workspace). To enable this feature, pass down `{ injected: true }` to the options. If the key is not specified in the [project configuration](/config/#provide), then the default value will be used.
+Since Vitest 3, you can provide different values in different [projects](/guide/projects). To enable this feature, pass down `{ injected: true }` to the options. If the key is not specified in the [project configuration](/config/#provide), then the default value will be used.
 
 :::code-group
 ```ts [fixtures.test.ts]
@@ -214,32 +276,36 @@ test('works correctly', ({ url }) => {
   // url is "/empty" in "project-empty"
 })
 ```
-```ts [vitest.workspace.ts]
-import { defineWorkspace } from 'vitest/config'
+```ts [vitest.config.ts]
+import { defineConfig } from 'vitest/config'
 
-export default defineWorkspace([
-  {
-    test: {
-      name: 'project-new',
-    },
-  },
-  {
-    test: {
-      name: 'project-full',
-      provide: {
-        url: '/full',
+export default defineConfig({
+  test: {
+    projects: [
+      {
+        test: {
+          name: 'project-new',
+        },
       },
-    },
-  },
-  {
-    test: {
-      name: 'project-empty',
-      provide: {
-        url: '/empty',
+      {
+        test: {
+          name: 'project-full',
+          provide: {
+            url: '/full',
+          },
+        },
       },
-    },
+      {
+        test: {
+          name: 'project-empty',
+          provide: {
+            url: '/empty',
+          },
+        },
+      },
+    ],
   },
-])
+})
 ```
 :::
 
@@ -307,6 +373,46 @@ describe('another type of schema', () => {
 })
 ```
 
+#### Per-Scope Context <Version>3.2.0</Version>
+
+You can define context that will be initiated once per file or a worker. It is initiated the same way as a regular fixture with an objects parameter:
+
+```ts
+import { test as baseTest } from 'vitest'
+
+export const test = baseTest.extend({
+  perFile: [
+    ({}, { use }) => use([]),
+    { scope: 'file' },
+  ],
+  perWorker: [
+    ({}, { use }) => use([]),
+    { scope: 'worker' },
+  ],
+})
+```
+
+The value is initialised the first time any test has accessed it, unless the fixture options have `auto: true` - in this case the value is initialised before any test has run.
+
+```ts
+const test = baseTest.extend({
+  perFile: [
+    ({}, { use }) => use([]),
+    {
+      scope: 'file',
+      // always run this hook before any test
+      auto: true
+    },
+  ],
+})
+```
+
+The `worker` scope will run the fixture once per worker. The number of running workers depends on various factors. By default, every file runs in a separate worker, so `file` and `worker` scopes work the same way.
+
+However, if you disable [isolation](/config/#isolate), then the number of workers is limited by the [`maxWorkers`](/config/#maxworkers) or [`poolOptions`](/config/#pooloptions) configuration.
+
+Note that specifying `scope: 'worker'` when running tests in `vmThreads` or `vmForks` will work the same way as `scope: 'file'`. This limitation exists because every test file has its own VM context, so if Vitest were to initiate it once, one context could leak to another and create many reference inconsistencies (instances of the same class would reference different constructors, for example).
+
 #### TypeScript
 
 要为所有自定义上下文提供固定装置类型，你可以将固定装置类型作为泛型(generic)传递。
@@ -317,20 +423,47 @@ interface MyFixtures {
   archive: number[]
 }
 
-const myTest = test.extend<MyFixtures>({
+const test = baseTest.extend<MyFixtures>({
   todos: [],
   archive: [],
 })
 
-myTest('types are defined correctly', ({ todos, archive }) => {
+test('types are defined correctly', ({ todos, archive }) => {
   expectTypeOf(todos).toEqualTypeOf<number[]>()
   expectTypeOf(archive).toEqualTypeOf<number[]>()
 })
 ```
 
+::: info Type Inferring
+Note that Vitest doesn't support infering the types when the `use` function is called. It is always preferable to pass down the whole context type as the generic type when `test.extend` is called:
+
+```ts
+import { test as baseTest } from 'vitest'
+
+const test = baseTest.extend<{
+  todos: number[]
+  schema: string
+}>({
+  todos: ({ schema }, use) => use([]),
+  schema: 'test'
+})
+
+test('types are correct', ({
+  todos, // number[]
+  schema, // string
+}) => {
+  // ...
+})
+```
+:::
+
 ### `beforeEach` and `afterEach`
 
-每个测试的上下文都不同。 你可以在 `beforeEach` 和 `afterEach` hooks 中访问和扩展它们。
+::: danger Deprecated
+这种扩展上下文的方法已不再推荐使用，并且在你使用 `test.extend` 扩展 `test` 时，它将无法生效。
+:::
+
+每个测试用例都有独立的上下文，你可以在 `beforeEach` 和 `afterEach` 钩子里对其进行访问或扩展。
 
 ```ts
 import { beforeEach, it } from 'vitest'
@@ -347,7 +480,7 @@ it('should work', ({ foo }) => {
 
 #### TypeScript
 
-你可以通过添加聚合(aggregate)类型 `TestContext`, 为你的自定义上下文属性提供类型支持。
+如果你想为自定义的上下文属性提供类型支持，可以通过扩展 `TestContext` 类型来实现：
 
 ```ts
 declare module 'vitest' {

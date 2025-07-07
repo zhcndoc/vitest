@@ -70,7 +70,6 @@ export default ({ mode }: { mode: string }) => {
           customIcon: {
             'CLI': 'vscode-icons:file-type-shell',
             'vitest.shims': 'vscode-icons:file-type-vitest',
-            'vitest.workspace': 'vscode-icons:file-type-vitest',
             'vitest.config': 'vscode-icons:file-type-vitest',
             '.spec.ts': 'vscode-icons:file-type-testts',
             '.test.ts': 'vscode-icons:file-type-testts',
@@ -469,8 +468,8 @@ function guide(): DefaultTheme.SidebarItem[] {
       link: '/guide/filtering',
     },
     {
-      text: '工作空间',
-      link: '/guide/workspace',
+      text: '测试项目',
+      link: '/guide/projects',
     },
     {
       text: '报告器「Reporters」',
@@ -487,6 +486,10 @@ function guide(): DefaultTheme.SidebarItem[] {
     {
       text: '模拟对象',
       link: '/guide/mocking',
+    },
+    {
+      text: '并行执行',
+      link: '/guide/parallelism',
     },
     {
       text: '类型测试',
@@ -530,8 +533,8 @@ function guide(): DefaultTheme.SidebarItem[] {
       collapsed: false,
       items: [
         {
-          text: '迁移到 Vitest 3.0',
-          link: '/guide/migration#vitest-3',
+          text: '迁移到 Vitest 4.0',
+          link: '/guide/migration#vitest-4',
         },
         {
           text: '从 Jest 迁移',
