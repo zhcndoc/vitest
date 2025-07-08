@@ -53,7 +53,7 @@ Vitest 通过  `Vite` namespace 重新导出所有仅 Vite 类型的导入，我
 ```
 :::
 
-与 [`reporter.onInit`](/advanced/api/reporters#oninit) 不同，此 hooks 在 Vitest 生命周期的早期运行，允许我们更改 `coverage` 和 `reporters` 等配置。更值得注意的变化是，如果我们的插件是在项目中定义而不是在全局配置中定义的，我们可以从 [工作区项目](/guide/workspace) 操作全局配置。
+与 [`reporter.onInit`](/advanced/api/reporters#oninit) 不同，此 hooks 在 Vitest 生命周期的早期运行，允许我们更改 `coverage` 和 `reporters` 等配置。更值得注意的变化是，如果我们的插件是在项目中定义而不是在全局配置中定义的，我们可以从 [工作区项目](/guide/projects) 操作全局配置。
 
 ## Context
 
@@ -93,10 +93,10 @@ function injectTestProjects(
 ```ts
 // inject a single project with a custom alias
 const newProjects = await injectTestProjects({
-  // you can inherit the current project config by referencing `configFile`
+  // you can inherit the current project config by referencing `extends`
   // note that you cannot have a project with the name that already exists,
   // so it's a good practice to define a custom name
-  configFile: project.vite.config.configFile,
+  extends: project.vite.config.configFile,
   test: {
     name: 'my-custom-alias',
     alias: {
@@ -107,7 +107,7 @@ const newProjects = await injectTestProjects({
 ```
 
 ::: warning Projects are Filtered
-Vitest 在配置解析期间过滤项目，因此如果用户定义了过滤器，则注入的项目可能无法解析，除非它 [与 filter 匹配](./vitest#matchesprojectfilter)。我们可以通过 `vitest.config.project` 选项更新过滤器，以始终包含我们的工作区项目：
+在解析配置时， Vitest 会对项目进行过滤，因此如果用户配置了过滤条件，某些被注入的项目可能不会被加载，除非它们 符合过滤规则。我们可以使用 vitest.config.project 选项来修改过滤器，从而确保始终包含我们的测试项目：
 
 ```ts
 vitest.config.project.push('my-project-name')
@@ -117,7 +117,7 @@ vitest.config.project.push('my-project-name')
 :::
 
 ::: tip Referencing the Current Config
-如果我们想保留用户配置，可以指定 `configFile` 属性。所有其他属性都将与用户定义的配置合并。
+若想在使用我们自己的配置时仍保留用户的原有配置，可以通过设置 extends 属性实现。这样，除了 extends 指定的内容外，其他配置项都会与我们配置合并。
 
 项目的 `configFile` 可以在 Vite 的配置中访问：`project.vite.config.configFile`。
 

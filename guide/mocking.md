@@ -766,7 +766,11 @@ import * as exports from './example.js'
 vi.spyOn(exports, 'getter', 'get').mockReturnValue('mocked')
 ```
 
-### 监听模块导出 setter/getter
+::: warning
+此方法在浏览器模式中无法使用。如需替代方案，请查看 [限制部分](/guide/browser/#spying-on-module-exports)。
+:::
+
+### 对模块中导出的函数进行 mock。
 
 ```ts
 import * as exports from 'some-path'
@@ -802,11 +806,29 @@ import * as exports from './example.js'
 vi.spyOn(exports, 'method').mockImplementation(() => {})
 ```
 
-### 模拟模块导出类实现
+::: warning
+`vi.spyOn` 示例在浏览器模式中无法使用。如需替代方案，请查看 [限制部分](/guide/browser/#spying-on-module-exports)。
+:::
 
-1. `vi.mock` 和 `.prototype` 的示例:
+### `vi.mock` 和 `.prototype` 的示例:
 
-1. Example with `vi.mock` and `.prototype`:
+1. 一个使用假 class 的示例：
+```ts [example.js]
+export class SomeClass {}
+```
+```ts
+import { SomeClass } from './example.js'
+
+vi.mock(import('./example.js'), () => {
+  const SomeClass = vi.fn(class FakeClass {
+    someMethod = vi.fn()
+  })
+  return { SomeClass }
+})
+// SomeClass.mock.instances will have SomeClass
+```
+
+2. Example with `vi.mock` and `.prototype`:
 ```ts [example.js]
 export class SomeClass {}
 ```
@@ -822,7 +844,7 @@ vi.mock(import('./example.js'), () => {
 // SomeClass.mock.instances 上将会有 someMethod 方法
 ```
 
-2. `vi.spyOn` 的示例:
+3. `vi.spyOn` 的示例:
 
 ```ts
 import * as mod from './example.js'
@@ -832,6 +854,10 @@ SomeClass.prototype.someMethod = vi.fn()
 
 vi.spyOn(mod, 'SomeClass').mockImplementation(SomeClass)
 ```
+
+::: warning
+vi.spyOn 的示例无法在浏览器模式中正常使用。如需替代方案，请查看 [限制部分](/guide/browser/#spying-on-module-exports)。
+:::
 
 ### 监听一个函数是否返回了一个对象
 

@@ -31,12 +31,12 @@ export default defineConfig({
 })
 ```
 
-如果我们在不同 pools 中运行测试，可以使用 [workspace](/guide/workspace) 功能:
+如果你需要让测试在不同的执行池中分别运行，可以借助 [`projects`](/guide/projects) 功能来实现：
 
 ```ts [vitest.config.ts]
 export default defineConfig({
   test: {
-    workspace: [
+    projects: [
       {
         extends: true,
         test: {
@@ -47,10 +47,6 @@ export default defineConfig({
   },
 })
 ```
-
-::: info
-`workspace` 字段是在 Vitest 3 中引入的。在 [Vitest 2](https://v2.vitest.dev/) 中定义工作区，需要创建一个单独的 `vitest.workspace.ts` 文件。
-:::
 
 ## API
 
@@ -69,7 +65,7 @@ export interface ProcessPool {
 
 这个函数只会被调用一次（除非服务器配置被更新），通常最好在这个函数内初始化测试所需的一切，并在调用 `runTests` 时重复使用它。
 
-Vitest 在安排运行新测试时调用 `runTest`。如果 `files` 为空，将不会调用它。第一个参数是一个 [TestSpecifications](/advanced/api/test-specification) 数组。在调用 `runTests` 之前，文件将使用 [`sequencer`](/config/#sequence-sequencer) 进行排序。可能（但不太可能）会有相同的文件出现两次，但它们将始终属于不同的项目 - 这是通过 [`vitest.workspace.ts`](/guide/workspace) 配置实现的。
+Vitest 会在安排新的测试任务时调用 runTest 方法；如果 files 为空，则不会调用。该方法的第一个参数是 [TestSpecifications](/advanced/api/test-specification) 组成的数组。在执行 runTests 前，这些文件会先经过 [sequencer](/config/#sequence-sequencer) 排序。虽然比较少见，但同一个文件可能会被多次包含在列表里，不过它们总是归属于不同的项目——这是通过 [projects](/guide/projects) 配置机制实现的。
 
 Vitest 会等到 `runTests` 执行完毕后才结束运行（即只有在 `runTests` 解决后才会触发 [`onFinished`](/advanced/reporters)）。
 

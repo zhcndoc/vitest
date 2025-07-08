@@ -16,9 +16,9 @@
 }
 ```
 
-Vitest 打开一个页面以在同一文件中运行所有测试。我们可以在 `instances` 中配置 `launch` 和 `context` 属性：
+Vitest 会在一个页面中执行同一文件里的所有测试。你可以通过 instances 配置项中的 `launch` 、`connect` 和 `context` 属性来自定义行为：
 
-```ts{9-10} [vitest.config.ts]
+```ts{9-11} [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -28,6 +28,7 @@ export default defineConfig({
         {
           browser: 'firefox',
           launch: {},
+          connect: {},
           context: {},
         },
       ],
@@ -63,6 +64,14 @@ export default defineConfig({
 Vitest 将忽略 `launch.headless` 选项。请改用 [`test.browser.headless`](/guide/browser/config#browser-headless)。
 
 请注意，如果启用了 [`--inspect`](/guide/cli#inspect)，Vitest 会将调试标志推送到 `launch.args`。
+:::
+
+## connect <Version>3.2.0</Version> {#connect}
+
+These options are directly passed down to `playwright[browser].connect` command. You can read more about the command and available arguments in the [Playwright documentation](https://playwright.dev/docs/api/class-browsertype#browser-type-connect).
+
+::: warning
+Since this command connects to an existing Playwright server, any `launch` options will be ignored.
 :::
 
 ## context

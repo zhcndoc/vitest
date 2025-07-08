@@ -113,13 +113,13 @@ const { vitestConfig, viteConfig } = await resolveConfig({
 ```
 
 ::: info
-由于 Vite 的 `createServer` 工作方式，Vitest 必须在插件的 `configResolve` 钩子中解析配置。因此，此方法实际上并未在内部使用，而是仅作为公共 API 暴露。
+由于 Vite 的 `createServer` 工作方式， Vitest 必须在插件的 `configResolve` 钩子中解析配置。因此，此方法实际上并未在内部使用，而是仅作为公共 API 暴露。
 
-如果你将配置传递给 `startVitest` 或 `createVitest` API，Vitest 仍然会重新解析配置。
+如果你将配置传递给 `startVitest` 或 `createVitest` API ， Vitest 仍然会重新解析配置。
 :::
 
 ::: warning
-`resolveConfig` 不会解析 `workspace`。要解析工作区配置，Vitest 需要一个已建立的 Vite 服务器。
+`resolveConfig` 不会解析 `workspace`。要解析工作区配置， Vitest 需要一个已建立的 Vite 服务器。
 
 另外请注意，`viteConfig.test` 不会被完全解析。如果你需要 Vitest 配置，请使用 `vitestConfig` 代替。
 :::

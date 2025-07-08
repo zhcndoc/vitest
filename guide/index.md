@@ -179,17 +179,17 @@ export default defineConfig({
 但我们建议 Vite 和 Vitest 使用相同的文件，而不是创建两个单独的文件。
 :::
 
-## 支持工作空间
+## 多项目支持
 
-在同一个项目中使用 [Vitest 工作区](/guide/workspace)运行不同的项目配置。你可以在 `vitest.config` 文件中定义一个包含文件和文件夹的列表来指定你的工作区。
+通过 [测试项目](/guide/projects) 功能，你可以在同一个项目里运行多套不同的配置。只需在 vitest.config 文件中列出对应的文件和文件夹，即可定义各个项目。
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
-    workspace: [
-      // you can use a list of glob patterns to define your workspaces
+    projects: [
+      // you can use a list of glob patterns to define your projects
       // Vitest expects a list of config files
       // or directories where there is a config file
       'packages/*',
@@ -265,7 +265,7 @@ export default defineConfig({
 | `sveltekit` | [GitHub](https://github.com/vitest-dev/vitest/tree/main/examples/sveltekit) | [Play Online](https://stackblitz.com/fork/github/vitest-dev/vitest/tree/main/examples/sveltekit?initialPath=__vitest__/) |
 | `profiling` | [GitHub](https://github.com/vitest-dev/vitest/tree/main/examples/profiling) | Not Available |
 | `typecheck` | [GitHub](https://github.com/vitest-dev/vitest/tree/main/examples/typecheck) | [Play Online](https://stackblitz.com/fork/github/vitest-dev/vitest/tree/main/examples/typecheck?initialPath=__vitest__/) |
-| `workspace` | [GitHub](https://github.com/vitest-dev/vitest/tree/main/examples/workspace) | [Play Online](https://stackblitz.com/fork/github/vitest-dev/vitest/tree/main/examples/workspace?initialPath=__vitest__/) |
+| `projects` | [GitHub](https://github.com/vitest-dev/vitest/tree/main/examples/projects) | [Play Online](https://stackblitz.com/fork/github/vitest-dev/vitest/tree/main/examples/projects?initialPath=__vitest__/) |
 
 ## 使用 Vitest 的项目
 

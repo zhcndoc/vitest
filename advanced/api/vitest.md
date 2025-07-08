@@ -64,7 +64,7 @@ Vitest 3 在稳定公共 API 方面迈出了一步。为了实现这一点，我
 
 ## config
 
-根（或全局）配置。如果启用了工作区功能，项目将引用此配置作为 `globalConfig`。
+这是根配置（也叫全局配置）。如果你在配置中定义了多个项目，这些项目都会将这个配置视作它们的 `globalConfig` 并进行继承或引用。
 
 ::: warning
 这是 Vitest 配置，它不扩展 _Vite_ 配置。它仅包含从 `test` 属性解析的值。
@@ -101,9 +101,9 @@ const testCase = vitest.state.getReportedEntity(task) // 新 API
 
 ## projects
 
-属于用户工作区的 [测试项目](/advanced/api/test-project) 数组。如果用户未指定自定义工作区，则工作区将仅包含一个 [根项目](#getrootproject)。
+这是一个数组，里面包含了所有 [测试项目](/advanced/api/test-project) ，这些项目是用户自己定义的。如果用户没有显式指定任何项目，那么这个数组中只会包含一个 [根项目](#getrootproject) 。
 
-Vitest 将确保工作区中始终至少有一个项目。如果用户指定了不存在的 `--project` 名称，Vitest 将抛出错误。
+Vitest 会保证这个数组里至少有一个项目可用。如果用户在命令行里通过 --project 参数指定了不存在的项目名称，Vitest 会在创建这个数组前就报错。
 
 ## getRootProject
 
@@ -111,7 +111,7 @@ Vitest 将确保工作区中始终至少有一个项目。如果用户指定了�
 function getRootProject(): TestProject
 ```
 
-返回根测试项目。根项目通常不运行任何测试，并且除非用户明确在其工作区中包含根配置，或者根本没有定义工作区，否则不会包含在 `vitest.projects` 中。
+该方法会返回根测试项目。一般情况下，根项目并不会实际执行测试，也不会被加入到 `vitest.projects` 列表中，除非用户在配置中主动包含了根配置，或者没有定义任何独立的测试项目。
 
 根项目的主要目标是设置全局配置。实际上，`rootProject.config` 直接引用 `rootProject.globalConfig` 和 `vitest.config`：
 
@@ -308,7 +308,7 @@ function runTestSpecifications(
 ): Promise<TestRunResult>
 ```
 
-此方法根据接收到的 [规范](/advanced/api/test-specification) 运行每个测试。第二个参数 `allTestsRun` 由覆盖率提供者用于确定是否需要在根目录中检测每个文件的覆盖率（这仅在启用了覆盖率并且 `coverage.all` 设置为 `true` 时才重要）。
+该方法会遍历并执行所有根据 [测试规格](/advanced/api/test-specification) 定义的测试用例。第二个参数 `allTestsRun` 则供覆盖率工具判断是否应在覆盖率报告中加入那些没有被任何测试覆盖到的文件。
 
 ::: warning
 此方法不会触发 `onWatcherRerun`、`onWatcherStart` 和 `onTestsRerun` 回调。如果我们基于文件更改重新运行测试，请考虑使用 [`rerunTestSpecifications`](#reruntestspecifications) 代替。
@@ -433,7 +433,7 @@ dynamicExample !== staticExample // ✅
 :::
 
 ::: info
-在内部，Vitest 使用此方法导入全局设置、自定义覆盖率提供者、工作区文件和自定义报告器，这意味着只要它们属于同一个 Vite 服务器，它们就共享相同的模块图。
+Vitest 在内部会通过这个方法加载全局设置、自定义的覆盖率工具和报告器。只要这些组件都挂载在同一个 Vite 服务器下，它们就会共享相同的模块依赖图。
 :::
 
 ## close

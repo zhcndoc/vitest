@@ -4,10 +4,8 @@ title: TestProject
 
 # TestProject <Version>3.0.0</Version> {#testproject}
 
-- **别名**：在 3.0.0 之前称为 `WorkspaceProject`
-
 ::: warning
-本指南描述了高级的 Node.js API。如果我们只是想创建一个工作区，请遵循 [Workspace](/guide/workspace) 指南。
+本指南专门讲解进阶的 Node.js API 使用方法。如果你只是需要创建和管理测试项目，可以直接参考 [“测试项目”](/guide/projects) 指南。
 :::
 
 ## name
@@ -26,23 +24,29 @@ vitest.projects.map(p => p.name) === [
   'custom'
 ]
 ```
-```ts [vitest.workspace.js]
-export default [
-  './packages/server', // 有 package.json，名称为 "@pkg/server"
-  './utils', // 没有 package.json 文件
-  {
-    // 没有自定义名称
-    test: {
-      pool: 'threads',
-    },
+```ts [vitest.config.js]
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    projects: [
+      './packages/server', // has package.json with "@pkg/server"
+      './utils', // doesn't have a package.json file
+      {
+        // doesn't customize the name
+        test: {
+          pool: 'threads',
+        },
+      },
+      {
+        // customized the name
+        test: {
+          name: 'custom',
+        },
+      },
+    ],
   },
-  {
-    // 自定义了名称
-    test: {
-      name: 'custom',
-    },
-  },
-]
+})
 ```
 :::
 
@@ -85,6 +89,12 @@ vitest.config === vitest.projects[0].globalConfig
 ## config
 
 这是项目的已解析测试配置。
+
+## hash <Version>3.2.0</Version> {#hash}
+
+The unique hash of this project. This value is consistent between the reruns.
+
+It is based on the root of the project and its name. Note that the root path is not consistent between different OS, so the hash will also be different.
 
 ## vite
 
@@ -279,7 +289,7 @@ dynamicExample !== staticExample // ✅
 :::
 
 ::: info
-在内部，Vitest 使用此方法导入全局设置、自定义覆盖率提供者、工作区文件和自定义报告器，这意味着只要它们属于同一个 Vite 服务器，它们就共享相同的模块图。
+Vitest 在内部通过这个方法加载全局设置、自定义的覆盖率提供器和报告器。也就是说，只要它们都挂在同一个 Vite 服务器下，这些组件就会共用同一个模块依赖关系图。
 :::
 
 ## onTestsRerun

@@ -89,7 +89,7 @@
 - **CLI:** `--reporter <name>`
 - **Config:** [reporters](/config/#reporters)
 
-指定 reporters
+用来选择报告输出格式的类型，可选值包括： default、blob、verbose、dot、json、tap、tap-flat、junit、hanging-process、github-actions。
 
 ### outputFile
 
@@ -97,13 +97,6 @@
 - **Config:** [outputFile](/config/#outputfile)
 
 如果还指定了支持报告程序，则将测试结果写入文件，使用 cac 的点符号表示多个报告程序的单个输出结果 (比如: --outputFile.tap=./tap.txt)
-
-### coverage.all
-
-- **CLI:** `--coverage.all`
-- **Config:** [coverage.all](/config/#coverage-all)
-
-是否在报告中包含所有文件，包括未测试的文件
 
 ### coverage.provider
 
@@ -132,13 +125,6 @@
 - **Config:** [coverage.exclude](/config/#coverage-exclude)
 
 覆盖范围中要排除的文件。使用多个扩展名时，可指定多次（默认情况下： 访问 [`coverage.exclude`](https://vitest.dev/config/#coverage-exclude)
-
-### coverage.extension
-
-- **CLI:** `--coverage.extension <extension>`
-- **Config:** [coverage.extension](/config/#coverage-extension)
-
-包含在覆盖范围内的扩展名。使用多个扩展名时，可指定多次 (默认: `[".js", ".cjs", ".mjs", ".ts", ".mts", ".tsx", ".jsx", ".vue", ".svelte"]`)
 
 ### coverage.clean
 
@@ -286,13 +272,6 @@ High and low watermarks for functions in the format of `<high>,<low>`
 
 覆盖 Vite 模式 (默认值: `test` 或 `benchmark`)
 
-### workspace
-
-- **CLI:** `--workspace <path>`
-- **Config:** [workspace](/config/#workspace)
-
-工作区配置文件的路径
-
 ### isolate
 
 - **CLI:** `--isolate`
@@ -360,7 +339,7 @@ High and low watermarks for functions in the format of `<high>,<low>`
 - **CLI:** `--browser.provider <name>`
 - **Config:** [browser.provider](/guide/browser/config#browser-provider)
 
-用于运行浏览器测试的 Provider。某些浏览器只适用于特定的提供 Provider，可以是"webdriverio", "playwright", "preview"，或自定义 provider. 通过 [`browser.provider`](https://vitest.dev/config/#browser-provider) 查看更多信息 (默认值: `"preview"`)
+指定执行浏览器测试时所使用的提供程序。部分浏览器仅在特定的提供程序下可用。可选值有 "webdriverio"、"playwright"、"preview"，也可以填写自定义提供程序的路径。更多信息请查看 [`browser.provider`](https://vitest.dev/guide/browser/config.html#browser-provider)（默认值为 "preview"）。
 
 ### browser.providerOptions
 
@@ -761,6 +740,13 @@ Omit annotation lines from the output (default: `false`)
 
 Print basic prototype Object and Array (default: `true`)
 
+### diff.maxDepth
+
+- **CLI:** `--diff.maxDepth <maxDepth>`
+- **Config:** [diff.maxDepth](/config/#diff-maxdepth)
+
+Limit the depth to recurse when printing nested objects (default: `20`)
+
 ### diff.truncateThreshold
 
 - **CLI:** `--diff.truncateThreshold <threshold>`
@@ -838,6 +824,13 @@ Annotation for truncated lines (default: `... Diff result is truncated`)
 
 自定义 tsconfig 文件的路径
 
+### typecheck.spawnTimeout
+
+- **CLI:** `--typecheck.spawnTimeout <time>`
+- **Config:** [typecheck.spawnTimeout](/config/#typecheck-spawntimeout)
+
+Minimum time in milliseconds it takes to spawn the typechecker
+
 ### project
 
 - **CLI:** `--project <name>`
@@ -900,6 +893,13 @@ Annotation for truncated lines (default: `... Diff result is truncated`)
 - **Config:** [includeTaskLocation](/config/#includetasklocation)
 
 Collect test and suite locations in the `location` property
+
+### attachmentsDir
+
+- **CLI:** `--attachmentsDir <dir>`
+- **Config:** [attachmentsDir](/config/#attachmentsdir)
+
+The directory where attachments from `context.annotate` are stored in (default: `.vitest-attachments`)
 
 ### run
 

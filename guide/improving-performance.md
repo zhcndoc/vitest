@@ -58,6 +58,10 @@ export default defineConfig({
 
 :::
 
+## Limiting directory search
+
+You can limit the working directory when Vitest searches for files using [`test.dir`](/config/#test-dir) option. This should make the search faster if you have unrelated folders and files in the root directory.
+
 ## Pool
 
 默认情况下，Vitest 在 `pool: 'forks'` 中运行测试。虽然 `'forks'` 池更适合解决兼容性问题（[hanging process](/guide/common-errors.html#failed-to-terminate-worker) 和[segfaults](/guide/common-errors.html#segfaults-and-native-code-errors)），但在较大的项目中，它可能比 `pool: 'threads'` 稍慢。
@@ -84,7 +88,7 @@ export default defineConfig({
 
 ## Sharding
 
-测试分片意味着一次运行一小部分测试用例。当你有多台可用于同时运行测试的机器时，它会很有用。
+测试分片指的是把整个测试套件拆分成若干小组（分片）的方法。当你拥有庞大的测试套件，并且能用多台机器并行运行其中的部分测试时，这种方式能显著提高效率。
 
 要在多个不同的运行中拆分 Vitest 测试，请将 [`--shard`](/guide/cli#shard) 选项与 [`--reporter=blob`](/guide/reporters#blob-reporter) 选项一起使用：
 
@@ -94,13 +98,15 @@ vitest run --reporter=blob --shard=2/3 # 2nd machine
 vitest run --reporter=blob --shard=3/3 # 3rd machine
 ```
 
-从每台计算机收集存储在 `.vitest-reports` 目录中的结果，并使用 [`--merge-reports`](/guide/cli#merge-reports) 选项将其合并：
+> Vitest 对 _测试文件_（而非单个测试用例）进行分片。如果你有 1000 个测试文件，使用 `--shard=1/4` 时会运行其中的 250 个文件，而不会根据文件内的用例数量做进一步切分。
+
+在各台机器上收集保存在 `.vitest-reports` 目录中的结果文件，然后通过 [`--merge-reports`](/guide/cli#merge-reports) 选项将这些结果合并：
 
 ```sh
 vitest run --merge-reports
 ```
 
-::: details Github action example
+::: details GitHub Actions example
 This setup is also used at https://github.com/vitest-tests/test-sharding.
 
 ```yaml
