@@ -75,7 +75,11 @@ test('expect.soft test', () => {
 
 ```ts
 interface ExpectPoll extends ExpectStatic {
+<<<<<<< HEAD
   (actual: () => T, options: { interval, timeout, message }): Promise<Assertions<T>>
+=======
+  (actual: () => T, options?: { interval?: number; timeout?: number; message?: string }): Promise<Assertions<T>>
+>>>>>>> 65594a18160290a40d9a534fb8348edadf793e44
 }
 ```
 
@@ -297,6 +301,32 @@ function apples() {
 
 test('we don\'t have apples', () => {
   expect(apples()).toBeNull()
+})
+```
+
+## toBeNullable
+
+- **Type:** `() => Awaitable<void>`
+
+`toBeNullable` simply asserts if something is nullable (`null` or `undefined`).
+
+```ts
+import { expect, test } from 'vitest'
+
+function apples() {
+  return null
+}
+
+function bananas() {
+  return null
+}
+
+test('we don\'t have apples', () => {
+  expect(apples()).toBeNullable()
+})
+
+test('we don\'t have bananas', () => {
+  expect(bananas()).toBeNullable()
 })
 ```
 

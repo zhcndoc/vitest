@@ -14,7 +14,11 @@ Vitest 提供 [`environment`](/config/#environment) 选项以在特定环境中�
 - `edge-runtime` 模拟 Vercel 的 [edge-runtime](https://edge-runtime.vercel.app/)，使用 [`@edge-runtime/vm`](https://www.npmjs.com/package/@edge-runtime/vm) 包
 
 ::: info
+<<<<<<< HEAD
 当使用 `jsdom` 或 `happy-dom` 环境时，Vitest 遵循与 Vite 在导入 [CSS](https://vitejs.dev/guide/features.html#css) 和 [assets](https://vitejs.dev/guide/features.html#static-assets) 时相同的规则。如果导入外部依赖时出现 `unknown extension .css`错误，则需要将所有软件包添加到 [`server.deps.external`](/config/#server-deps-external)，手动内联整个导入链。例如，如果错误发生在以下导入链中的`package-3`：`source code -> package-1 -> package-2 -> package-3`，则需要将所有三个软件包添加到 `server.deps.external`。
+=======
+When using `jsdom` or `happy-dom` environments, Vitest follows the same rules that Vite does when importing [CSS](https://vitejs.dev/guide/features.html#css) and [assets](https://vitejs.dev/guide/features.html#static-assets). If importing external dependency fails with `unknown extension .css` error, you need to inline the whole import chain manually by adding all packages to [`server.deps.inline`](/config/#server-deps-inline). For example, if the error happens in `package-3` in this import chain: `source code -> package-1 -> package-2 -> package-3`, you need to add all three packages to `server.deps.inline`.
+>>>>>>> 65594a18160290a40d9a534fb8348edadf793e44
 
 外部依赖中的CSS和资源文件的 `require` 调用会自动解析。
 :::
