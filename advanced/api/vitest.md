@@ -256,11 +256,7 @@ function start(filters?: string[]): Promise<TestRunResult>
 初始化报告器、覆盖率提供者并运行测试。此方法接受字符串过滤器以匹配测试文件 - 这些过滤器与 [CLI 支持的过滤器](/guide/filtering#cli) 相同。
 
 ::: warning
-<<<<<<< HEAD
 如果还调用了 [`vitest.init()`](#init)，则不应调用此方法。如果我们需要在 Vitest 初始化后运行测试，请使用 [`runTestSpecifications`](#runtestspecifications) 或 [`rerunTestSpecifications`](#reruntestspecifications)。
-=======
-This method should not be called if [`vitest.init()`](#init) is also invoked. Use [`runTestSpecifications`](#runtestspecifications) or [`rerunTestSpecifications`](#reruntestspecifications) instead if you need to run tests after Vitest was initialised.
->>>>>>> 65594a18160290a40d9a534fb8348edadf793e44
 :::
 
 如果未设置 `config.mergeReports` 和 `config.standalone`，则此方法由 [`startVitest`](/advanced/guide/tests) 自动调用。

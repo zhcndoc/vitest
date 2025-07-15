@@ -75,11 +75,7 @@ test('expect.soft test', () => {
 
 ```ts
 interface ExpectPoll extends ExpectStatic {
-<<<<<<< HEAD
-  (actual: () => T, options: { interval, timeout, message }): Promise<Assertions<T>>
-=======
   (actual: () => T, options?: { interval?: number; timeout?: number; message?: string }): Promise<Assertions<T>>
->>>>>>> 65594a18160290a40d9a534fb8348edadf793e44
 }
 ```
 
