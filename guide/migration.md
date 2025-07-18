@@ -109,12 +109,9 @@ const mock = new Spy()
 
 请注意，如果此时使用箭头函数，调用 mock 时会报 [`<anonymous> is not a constructor` 错误](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Not_a_constructor)。
 
-<<<<<<< HEAD
-### 移除废弃的 API
-=======
-### Standalone mode with filename filter
+### 带文件名过滤器的独立模式
 
-To improve user experience, Vitest will now start running the matched files when [`--standalone`](/guide/cli#standalone) is used with filename filter.
+为了提升用户体验，当 [`--standalone`](/guide/cli#standalone) 与文件名过滤器一起使用时，Vitest 现在会直接开始运行匹配到的文件。
 
 ```sh
 # In Vitest v3 and below this command would ignore "math.test.ts" filename filter.
@@ -122,7 +119,7 @@ To improve user experience, Vitest will now start running the matched files when
 $ vitest --standalone math.test.ts
 ```
 
-This allows users to create re-usable `package.json` scripts for standalone mode.
+这允许用户为独立模式创建可复用的 `package.json`。
 
 ::: code-group
 ```json [package.json]
@@ -141,8 +138,7 @@ $ pnpm run test:dev math.test.ts
 ```
 :::
 
-### Deprecated APIs are Removed
->>>>>>> f5c932c2c9d32dc91559f9cbd68db891a3b082f5
+### 移除废弃的 API
 
 Vitest 4.0 移除了以下废弃的配置项：
 

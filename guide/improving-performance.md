@@ -88,11 +88,7 @@ export default defineConfig({
 
 ## Sharding
 
-<<<<<<< HEAD
-测试分片指的是把整个测试套件拆分成若干小组（分片）的方法。当你拥有庞大的测试套件，并且能用多台机器并行运行其中的部分测试时，这种方式能显著提高效率。
-=======
-Test sharding is a process of splitting your test suite into groups, or shards. This can be useful when you have a large test suite and multiple machines that could run subsets of that suite simultaneously.
->>>>>>> f5c932c2c9d32dc91559f9cbd68db891a3b082f5
+测试分片是将你的测试套件拆分成多个组或分片的过程。当你拥有大量的测试用例，并且有多台机器可以同时运行这些测试的不同子集时，这个功能会非常有用。
 
 要在多个不同的运行中拆分 Vitest 测试，请将 [`--shard`](/guide/cli#shard) 选项与 [`--reporter=blob`](/guide/reporters#blob-reporter) 选项一起使用：
 

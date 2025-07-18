@@ -117,22 +117,14 @@
 - **CLI:** `--coverage.include <pattern>`
 - **Config:** [coverage.include](/config/#coverage-include)
 
-<<<<<<< HEAD
-作为 glob 模式包含在覆盖范围内的文件。使用多个模式时，可指定多次（默认值：`**`）。
-=======
-Files included in coverage as glob patterns. May be specified more than once when using multiple patterns. By default only files covered by tests are included.
->>>>>>> f5c932c2c9d32dc91559f9cbd68db891a3b082f5
+作为通配符模式包含在覆盖率中的文件。在使用多个模式时可以指定多次。默认情况下，只包含被测试覆盖的文件。
 
 ### coverage.exclude
 
 - **CLI:** `--coverage.exclude <pattern>`
 - **Config:** [coverage.exclude](/config/#coverage-exclude)
 
-<<<<<<< HEAD
-覆盖范围中要排除的文件。使用多个扩展名时，可指定多次（默认情况下： 访问 [`coverage.exclude`](https://vitest.dev/config/#coverage-exclude)
-=======
-Files to be excluded in coverage. May be specified more than once when using multiple extensions.
->>>>>>> f5c932c2c9d32dc91559f9cbd68db891a3b082f5
+覆盖范围中要排除的文件。使用多个扩展名时，可指定多次。
 
 ### coverage.clean
 
@@ -937,8 +929,4 @@ Use `bundle` to bundle the config with esbuild or `runner` (experimental) to pro
 
 - **CLI:** `--standalone`
 
-<<<<<<< HEAD
-启动 Vitest 而不运行测试。文件过滤器将被忽略，只有在发生变化时才会运行测试。(默认值:`false`)
-=======
-Start Vitest without running tests. Tests will be running only on change. This option is ignored when CLI file filters are passed. (default: `false`)
->>>>>>> f5c932c2c9d32dc91559f9cbd68db891a3b082f5
+启动 Vitest 但不运行测试。只有在文件发生变化时才会运行测试。当通过 CLI 传递了文件过滤器时，此选项将被忽略。（默认值：`false`）
