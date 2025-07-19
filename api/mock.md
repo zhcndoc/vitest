@@ -410,10 +410,10 @@ interface MockResultThrow {
   value: any
 }
 
-type MockResult<T> =
-  | MockResultReturn<T>
-  | MockResultThrow
-  | MockResultIncomplete
+type MockResult<T>
+  = | MockResultReturn<T>
+    | MockResultThrow
+    | MockResultIncomplete
 
 const results: MockResult<ReturnType<T>>[]
 ```
@@ -468,9 +468,9 @@ interface MockSettledResultRejected {
   value: any
 }
 
-export type MockSettledResult<T> =
-  | MockSettledResultFulfilled<T>
-  | MockSettledResultRejected
+export type MockSettledResult<T>
+  = | MockSettledResultFulfilled<T>
+    | MockSettledResultRejected
 
 const settledResults: MockSettledResult<Awaited<ReturnType<T>>>[]
 ```
