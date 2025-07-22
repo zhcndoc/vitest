@@ -21,7 +21,6 @@
     "vue": "latest"
   },
   "devDependencies": {
-<<<<<<< HEAD
     "@antfu/eslint-config": "^4.10.1",
     "@antfu/ni": "^24.3.0",
     "@iconify-json/carbon": "latest",
@@ -31,13 +30,6 @@
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^22.10.7",
     "@unocss/reset": "latest",
-=======
-    "@iconify-json/carbon": "catalog:",
-    "@iconify-json/logos": "catalog:",
-    "@shikijs/transformers": "^3.8.1",
-    "@shikijs/vitepress-twoslash": "^3.8.1",
-    "@unocss/reset": "catalog:",
->>>>>>> a1475f5f702021ad2b98b313fd8e81d19730664b
     "@vite-pwa/assets-generator": "^1.0.0",
     "@vite-pwa/vitepress": "^1.0.0",
     "@vitejs/plugin-vue": "latest",
