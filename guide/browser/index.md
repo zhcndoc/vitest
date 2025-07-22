@@ -207,6 +207,24 @@ export default defineConfig({
   }
 })
 ```
+```ts [qwik]
+import { defineConfig } from 'vitest/config'
+import { qwikVite } from '@builder.io/qwik/optimizer'
+
+// optional, run the tests in SSR mode
+import { testSSR } from 'vitest-browser-qwik/ssr-plugin'
+
+export default defineConfig({
+  plugins: [testSSR(), qwikVite()],
+  test: {
+    browser: {
+      enabled: true,
+      provider: 'playwright',
+      instances: [{ browser: 'chromium' }]
+    },
+  },
+})
+```
 :::
 
 如果你想让部分测试通过基于 Node 的运行器执行，可以在配置中使用 [`projects`](/guide/projects) 选项，并为不同的测试策略提供独立的配置：
@@ -408,6 +426,7 @@ test('properly handles form inputs', async () => {
 
 - [`vitest-browser-lit`](https://github.com/EskiMojo14/vitest-browser-lit) to render [lit](https://lit.dev) components
 - [`vitest-browser-preact`](https://github.com/JoviDeCroock/vitest-browser-preact) to render [preact](https://preactjs.com) components
+- [`vitest-browser-qwik`](https://github.com/kunai-consulting/vitest-browser-qwik) to render [qwik](https://qwik.dev) components
 
 如果你的框架没有被包含在内，请随时创建你自己的软件包——它是一个简单的封装，围绕着框架渲染器和 `page.elementLocator` API。我们会在本页面添加指向它的链接。请确保其名称以 `vitest-browser-` 开头。
 
@@ -503,6 +522,21 @@ import { createElement } from 'preact'
 import Greeting from '.Greeting'
 
 test('greeting appears on click', async () => {
+  const screen = render(<Greeting />)
+
+  const button = screen.getByRole('button')
+  await button.click()
+  const greeting = screen.getByText(/hello world/iu)
+
+  await expect.element(greeting).toBeInTheDocument()
+})
+```
+```tsx [qwik]
+import { render } from 'vitest-browser-qwik'
+import Greeting from './greeting'
+
+test('greeting appears on click', async () => {
+  // renderSSR and renderHook are also available
   const screen = render(<Greeting />)
 
   const button = screen.getByRole('button')
