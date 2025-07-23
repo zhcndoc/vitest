@@ -78,6 +78,7 @@ export default ({ mode }: { mode: string }) => {
             '.spec.js': 'vscode-icons:file-type-testjs',
             '.test.js': 'vscode-icons:file-type-testjs',
             'marko': 'vscode-icons:file-type-marko',
+            'qwik': 'logos:qwik-icon',
           },
         }),
       ],
