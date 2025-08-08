@@ -99,6 +99,10 @@ const testCase = vitest.state.getReportedEntity(task) // 新 API
 
 缓存管理器，存储有关最新测试结果和测试文件状态的信息。在 Vitest 中，这仅由默认的排序器用于排序测试。
 
+## watcher <Version>4.0.0</Version> {#watcher}
+
+The instance of a Vitest watcher with useful methods to track file changes and rerun tests. You can use `onFileChange`, `onFileDelete` or `onFileCreate` with your own watcher, if the built-in watcher is disabled.
+
 ## projects
 
 这是一个数组，里面包含了所有 [测试项目](/advanced/api/test-project) ，这些项目是用户自己定义的。如果用户没有显式指定任何项目，那么这个数组中只会包含一个 [根项目](#getrootproject) 。
@@ -527,4 +531,72 @@ function matchesProjectFilter(name: string): boolean
 
 检查名称是否与当前 [项目过滤器](/guide/cli#project) 匹配。如果没有项目过滤器，则始终返回 `true` 。
 
+<<<<<<< HEAD
 无法通过编程方式更改 `--project` CLI 选项。
+=======
+It is not possible to programmatically change the `--project` CLI option.
+
+## waitForTestRunEnd <Version>4.0.0</Version> {#waitfortestrunend}
+
+```ts
+function waitForTestRunEnd(): Promise<void>
+```
+
+If there is a test run happening, returns a promise that will resolve when the test run is finished.
+
+## createCoverageProvider <Version>4.0.0</Version> {#createcoverageprovider}
+
+```ts
+function createCoverageProvider(): Promise<CoverageProvider | null>
+```
+
+Creates a coverage provider if `coverage` is enabled in the config. This is done automatically if you are running tests with [`start`](#start) or [`init`](#init) methods.
+
+::: warning
+This method will also clean all previous reports if [`coverage.clean`](/config/#coverage-clean) is not set to `false`.
+:::
+
+## experimental_parseSpecification <Version>4.0.0</Version> <Badge type="warning">experimental</Badge> {#parsespecification}
+
+```ts
+function experimental_parseSpecification(
+  specification: TestSpecification
+): Promise<TestModule>
+```
+
+This function will collect all tests inside the file without running it. It uses rollup's `parseAst` function on top of Vite's `ssrTransform` to statically analyse the file and collect all tests that it can.
+
+::: warning
+If Vitest could not analyse the name of the test, it will inject a hidden `dynamic: true` property to the test or a suite. The `id` will also have a postfix with `-dynamic` to not break tests that were collected properly.
+
+Vitest always injects this property in tests with `for` or `each` modifier or tests with a dynamic name (like, `hello ${property}` or `'hello' + ${property}`). Vitest will still assign a name to the test, but it cannot be used to filter the tests.
+
+There is nothing Vitest can do to make it possible to filter dynamic tests, but you can turn a test with `for` or `each` modifier into a name pattern with `escapeTestName` function:
+
+```ts
+import { escapeTestName } from 'vitest/node'
+
+// turns into /hello, .+?/
+const escapedPattern = new RegExp(escapeTestName('hello, %s', true))
+```
+:::
+
+::: warning
+Vitest will only collect tests defined in the file. It will never follow imports to other files.
+
+Vitest collects all `it`, `test`, `suite` and `describe` definitions even if they were not imported from the `vitest` entry point.
+:::
+
+## experimental_parseSpecifications <Version>4.0.0</Version> <Badge type="warning">experimental</Badge> {#parsespecifications}
+
+```ts
+function experimental_parseSpecifications(
+  specifications: TestSpecification[],
+  options?: {
+    concurrency?: number
+  }
+): Promise<TestModule[]>
+```
+
+This method will [collect tests](#parsespecification) from an array of specifications. By default, Vitest will run only `os.availableParallelism()` number of specifications at a time to reduce the potential performance degradation. You can specify a different number in a second argument.
+>>>>>>> 0dbbfc0a68127f12d0001ace6c3d1c8601295b63
