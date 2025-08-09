@@ -576,7 +576,7 @@ const spy = vi.spyOn(cart, 'Apples')
   })
 ```
 
-如果传入箭头函数， mock 被调用时将抛出 [`<anonymous> is not a constructor` 错误]((https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Not_a_constructor))。
+如果传入箭头函数， mock 被调用时将抛出 [`<anonymous> is not a constructor` 错误](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Not_a_constructor)。
 
 ::: tip
 若运行环境支持 [Explicit Resource Management](https://github.com/tc39/proposal-explicit-resource-management) ，可将 `const` 替换为 `using`。离开当前块级作用域时，系统会自动对被 mock 的函数调用 `mockRestore`，特别适用于已打 spy 的方法。

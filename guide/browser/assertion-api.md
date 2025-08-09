@@ -1001,7 +1001,7 @@ await expect.element(queryByTestId('prev')).not.toHaveSelection()
 await expect.element(queryByTestId('next')).toHaveSelection('ne')
 ```
 
-## toMatchScreenshot <Badge type="warning">experimental</Badge>
+## toMatchScreenshot <Badge type="warning">实验性</Badge>
 
 ```ts
 function toMatchScreenshot(
@@ -1014,43 +1014,34 @@ function toMatchScreenshot(
 ```
 
 ::: tip
-The `toMatchScreenshot` assertion can be configured globally in your
-[Vitest config](/guide/browser/config#browser-expect-tomatchscreenshot).
+`toMatchScreenshot` 断言可在 [Vitest 配置](/guide/browser/config#browser-expect-tomatchscreenshot) 中全局设定。
 :::
 
-This assertion allows you to perform visual regression testing by comparing
-screenshots of elements or pages against stored reference images.
+该断言通过将元素或整页的截图与预先保存的基准图像进行比对，实现视觉回归测试。
 
-When differences are detected beyond the configured threshold, the test fails.
-To help identify the changes, the assertion generates:
 
-- The actual screenshot captured during the test
-- The expected reference screenshot
-- A diff image highlighting the differences (when possible)
+若差异超出设定阈值，测试即告失败。为便于定位变更，断言会自动生成：
 
-::: warning Screenshots Stability
-The assertion automatically retries taking screenshots until two consecutive
-captures yield the same result. This helps reduce flakiness caused by
-animations, loading states, or other dynamic content. You can control this
-behavior with the `timeout` option.
+- 测试过程中的实际截图
+- 预期的基准截图
+- 差异高亮的对比图（如技术可行）
 
-However, browser rendering can vary across:
+::: warning 截图稳定性
+该断言会不断重试截图，直到连续两次结果完全一致，从而削弱动画、加载状态或其他动态内容带来的抖动。可通过 `timeout` 选项设定最长等待时间。
 
-- Different browsers and browser versions
-- Operating systems (Windows, macOS, Linux)
-- Screen resolutions and pixel densities
-- GPU drivers and hardware acceleration
-- Font rendering and system fonts
+但浏览器渲染易受多种变量影响：
 
-It is recommended to read the
-[Visual Regression Testing guide](/guide/browser/visual-regression-testing) to
-implement this testing strategy efficiently.
+- 浏览器及其版本差异
+- 操作系统（Windows、macOS、Linux）
+- 屏幕分辨率与像素密度
+- GPU 驱动及硬件加速策略
+- 字体渲染与系统字体差异
+
+建议先阅读 [视觉回归测试指南](/guide/browser/visual-regression-testing)，再落地实施。
 :::
 
 ::: tip
-When a screenshot comparison fails due to **intentional changes**, you can
-update the reference screenshot by pressing the `u` key in watch mode, or by
-running tests with the `-u` or `--update` flags.
+若截图对比因**有意变更**而失败，可在监听模式下按 `u` 键，或运行测试时加上 `-u`/`--update` 标志，以更新基准图。
 :::
 
 ```html
@@ -1085,25 +1076,22 @@ await expect.element(getByTestId('button')).toMatchScreenshot('fancy-button', {
 
 - `comparatorName: "pixelmatch" = "pixelmatch"`
 
-  The name of the algorithm/library used for comparing images.
+  用于比较图像的算法/库名称。
 
-  Currently, [`"pixelmatch"`](https://github.com/mapbox/pixelmatch) is the only
-  supported comparator.
+  目前，仅支持 [“pixelmatch”](https://github.com/mapbox/pixelmatch)。
 
 - `comparatorOptions: object`
 
-  These options allow changing the behavior of the comparator. What properties
-  can be set depends on the chosen comparator algorithm.
+  用于调整比较器行为的选项，可设置的属性取决于所选的比较算法。
 
-  Vitest has set default values out of the box, but they can be overridden.
+  Vitest 已内置默认值，但可以覆盖。
 
   - [`"pixelmatch"` options](#pixelmatch-comparator-options)
 
   ::: warning
-  **Always explicitly set `comparatorName` to get proper type inference for
-  `comparatorOptions`**.
+  **始终显式设置 `comparatorName`，以确保 `comparatorOptions` 的类型推断正确**。
 
-  Without it, TypeScript won't know which options are valid:
+  否则，TypeScript 无法识别哪些选项是有效的。
 
   ```ts
   // ❌ TypeScript can't infer the correct options
@@ -1126,8 +1114,7 @@ await expect.element(getByTestId('button')).toMatchScreenshot('fancy-button', {
 
 - `screenshotOptions: object`
 
-  The same options allowed by
-  [`locator.screenshot()`](/guide/browser/locators.html#screenshot), except for:
+  与 [`locator.screenshot()`](/guide/browser/locators.html#screenshot) 支持的选项一致，但以下情况除外：
 
   - `'base64'`
   - `'path'`
@@ -1136,80 +1123,63 @@ await expect.element(getByTestId('button')).toMatchScreenshot('fancy-button', {
 
 - `timeout: number = 5_000`
 
-  Time to wait until a stable screenshot is found.
+  等待获取稳定截图的时间。
 
-  Setting this value to `0` disables the timeout, but if a stable screenshot
-  can't be determined the process will not end.
+  设为 `0` 可禁用超时，但如果无法确定稳定截图，进程将不会结束。
 
 #### `"pixelmatch"` comparator options
 
-The following options are available when using the `"pixelmatch"` comparator:
+使用 `"pixelmatch"` 比较器时，以下选项可用：
 
 - `allowedMismatchedPixelRatio: number | undefined = undefined`
 
-  The maximum allowed ratio of differing pixels between the captured screenshot
-  and the reference image.
+  允许的捕获截图与参考图像之间不同的像素比例的最大值，范围为 `0` 到 `1`。
 
-  Must be a value between `0` and `1`.
-
-  For example, `allowedMismatchedPixelRatio: 0.02` means the test will pass
-  if up to 2% of pixels differ, but fail if more than 2% differ.
+  例如，`allowedMismatchedPixelRatio: 0.02` 表示最多允许 2% 的像素不同，否则测试失败。
 
 - `allowedMismatchedPixels: number | undefined = undefined`
 
-  The maximum number of pixels that are allowed to differ between the captured
-  screenshot and the stored reference image.
+  允许的捕获截图与参考图像之间不同的像素的最大数量。
 
-  If set to `undefined`, any non-zero difference will cause the test to fail.
+  如果设置为 `undefined`，任何非零差异都将导致测试失败。
 
-  For example, `allowedMismatchedPixels: 10` means the test will pass if 10 or
-  fewer pixels differ, but fail if 11 or more differ.
+  例如，`allowedMismatchedPixels: 10` 表示最多允许 10 个像素不同，否则测试失败。
 
 - `threshold: number = 0.1`
 
-  Acceptable perceived color difference between the same pixel in two images.
+  两张图像中相同像素的可接受颜色差异范围，值越小越敏感。
 
-  Value ranges from `0` (strict) to `1` (very lenient). Lower values mean small
-  differences will be detected.
-
-  The comparison uses the [YIQ color space](https://en.wikipedia.org/wiki/YIQ).
+  比较使用 [YIQ 色彩空间](https://en.wikipedia.org/wiki/YIQ)。
 
 - `includeAA: boolean = false`
 
-  If `true`, disables detection and ignoring of anti-aliased pixels.
+  如果为 `true`，则禁用抗锯齿像素的检测和忽略。
 
 - `alpha: number = 0.1`
 
-  Blending level of unchanged pixels in the diff image.
-
-  Ranges from `0` (white) to `1` (original brightness).
+  差异图像中未改变像素的混合级别，范围为 `0`（白色）到 `1`（原始亮度）。
 
 - `aaColor: [r: number, g: number, b: number] = [255, 255, 0]`
 
-  Color used for anti-aliased pixels in the diff image.
+  差异图像中抗锯齿像素的颜色。
 
 - `diffColor: [r: number, g: number, b: number] = [255, 0, 0]`
 
-  Color used for differing pixels in the diff image.
+  差异图像中不同像素的颜色。
 
 - `diffColorAlt: [r: number, g: number, b: number] | undefined = undefined`
 
-  Optional alternative color for dark-on-light differences, to help show what's
-  added vs. removed.
-
-  If not set, `diffColor` is used for all differences.
+  可选的替代颜色，用于区分深色和浅色背景下的差异，帮助区分添加和移除的内容。
+  如果未设置，则所有差异均使用 `diffColor`。
 
 - `diffMask: boolean = false`
 
-  If `true`, shows only the diff as a mask on a transparent background, instead
-  of overlaying it on the original image.
+  如果为 `true`，则仅以透明背景上的遮罩形式显示差异，而不是将其叠加在原始图像上。
 
-  Anti-aliased pixels won't be shown (if detected).
+  如果检测到抗锯齿像素，则不会显示。
 
 ::: warning
-When both `allowedMismatchedPixels` and `allowedMismatchedPixelRatio` are set,
-the more restrictive value is used.
+当 `allowedMismatchedPixels` 和 `allowedMismatchedPixelRatio` 同时设置时，将采用更严格的限制值。
 
-For example, if you allow 100 pixels or 2% ratio, and your image has 10,000
-pixels, the effective limit would be 100 pixels instead of 200.
+例如，如果你允许 100 个像素差异或 2% 的比例差异，且图像总像素为 10,000，那么实际限制将是 100 个像素，而不是 200 个。
 :::
