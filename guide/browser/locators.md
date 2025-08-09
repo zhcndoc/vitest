@@ -1004,7 +1004,7 @@ declare module '@vitest/browser/context' {
 }
 ```
 
-If the method is called on the global `page` object, then selector will be applied to the whole page. In the example below, `getByArticleTitle` will find all elements with an attribute `data-title` with the value of `title`. However, if the method is called on the locator, then it will be scoped to that locator.
+如果该方法在全局的 `page` 对象上调用，选择器将作用于整个页面。在下面的例子中，`getByArticleTitle` 会找到所有具有 `data-title` 属性且值为 `title` 的元素。然而，如果该方法在定位器上调用，它将仅作用于该定位器的范围内。
 
 ```html
 <article data-title="Hello, World!">
