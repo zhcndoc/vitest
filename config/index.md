@@ -618,17 +618,17 @@ jsdom 环境变量导出了等同于当前[JSDOM](https://github.com/jsdom/jsdom
 
 启动监听模式
 
-In interactive environments, this is the default, unless `--run` is specified explicitly.
+交互式环境中，默认启用监听模式，除非显式传入 `--run`。
 
-In CI, or when run from a non-interactive shell, "watch" mode is not the default, but can be enabled explicitly with this flag.
+在 CI 或非交互式 shell 中，监听模式默认关闭，需手动加此标志开启。
 
 ### watchTriggerPatterns <Version>3.2.0</Version><NonProjectOption /> {#watchtriggerpatterns}
 
 - **Type:** `WatcherTriggerPattern[]`
 
-Vitest reruns tests based on the module graph which is populated by static and dynamic `import` statements. However, if you are reading from the file system or fetching from a proxy, then Vitest cannot detect those dependencies.
+Vitest 依据静态与动态 `import` 语句生成的模块图来决定重新执行哪些测试。但若测试读取文件系统或向代理拉取数据，这些依赖便无法被自动探测。
 
-To correctly rerun those tests, you can define a regex pattern and a function that returns a list of test files to run.
+要触发相关测试重新运行，可定义一条正则及一个返回待执行测试文件列表的函数。
 
 ```ts
 import { defineConfig } from 'vitest/config'
