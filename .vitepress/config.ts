@@ -288,9 +288,9 @@ export default ({ mode }: { mode: string }) => {
                 docFooterText: 'Multiple Setups | Browser Mode',
               },
               {
-                text: 'Visual Regression Testing',
+                text: '可视化回归测试',
                 link: '/guide/browser/visual-regression-testing',
-                docFooterText: 'Visual Regression Testing | Browser Mode',
+                docFooterText: '可视化回归测试 | Browser Mode',
               },
             ],
           },
