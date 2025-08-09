@@ -101,7 +101,7 @@ const testCase = vitest.state.getReportedEntity(task) // 新 API
 
 ## watcher <Version>4.0.0</Version> {#watcher}
 
-The instance of a Vitest watcher with useful methods to track file changes and rerun tests. You can use `onFileChange`, `onFileDelete` or `onFileCreate` with your own watcher, if the built-in watcher is disabled.
+这是 Vitest 的 watcher 实例，提供追踪文件变更并重新执行测试的便利方法。若关闭内置 watcher ，你仍可在自定义 watcher 中调用 `onFileChange`、`onFileDelete` 或 `onFileCreate` 完成相同任务。
 
 ## projects
 
