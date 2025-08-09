@@ -237,8 +237,8 @@ By default, Vitest will fail transforming files if it cannot find the source of 
 To redirect the import, use [`test.alias`](/config/#alias) config option:
 
 ```ts [vitest.config.ts]
-import { defineConfig } from 'vitest/config'
 import { resolve } from 'node:path'
+import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
@@ -252,8 +252,8 @@ export default defineConfig({
 To mark the module as always resolved, return the same string from `resolveId` hook of a plugin:
 
 ```ts [vitest.config.ts]
-import { defineConfig } from 'vitest/config'
 import { resolve } from 'node:path'
+import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   plugins: [

@@ -28,15 +28,15 @@
     "@shikijs/transformers": "latest",
     "@shikijs/vitepress-twoslash": "latest",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^22.10.7",
+    "@types/node": "latest",
     "@unocss/reset": "latest",
     "@vite-pwa/assets-generator": "^1.0.0",
     "@vite-pwa/vitepress": "^1.0.0",
     "@vitejs/plugin-vue": "latest",
-    "@vitest/browser": "^4.0.0-beta.2",
-    "@vitest/coverage-istanbul": "^4.0.0-beta.2",
-    "@vitest/coverage-v8": "^4.0.0-beta.2",
-    "@vitest/ui": "^4.0.0-beta.2",
+    "@vitest/browser": "^4.0.0-beta.7",
+    "@vitest/coverage-istanbul": "^4.0.0-beta.7",
+    "@vitest/coverage-v8": "^4.0.0-beta.7",
+    "@vitest/ui": "^4.0.0-beta.7",
     "eslint": "^9.30.1",
     "esno": "^4.8.0",
     "fs-extra": "^11.3.0",
@@ -49,18 +49,12 @@
     "unocss": "latest",
     "unplugin-vue-components": "latest",
     "vite": "^6.3.5",
-<<<<<<< HEAD
     "vite-plugin-pwa": "^1.0.0",
-    "vitepress": "2.0.0-alpha.6",
-    "vitepress-plugin-group-icons": "^1.6.0",
-=======
-    "vite-plugin-pwa": "^0.21.2",
     "vitepress": "2.0.0-alpha.9",
     "vitepress-plugin-group-icons": "^1.6.1",
     "vitepress-plugin-llms": "^1.7.2",
->>>>>>> 0dbbfc0a68127f12d0001ace6c3d1c8601295b63
     "vitepress-plugin-tabs": "^0.7.1",
-    "vitest": "^4.0.0-beta.2",
+    "vitest": "^4.0.0-beta.7",
     "workbox-window": "^7.3.0"
   }
 }

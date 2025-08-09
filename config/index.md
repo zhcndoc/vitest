@@ -227,13 +227,8 @@ Vite 将处理内联模块。这可能有助于处理以 ESM 格式传送 `.js` 
 
 #### deps.optimizer {#deps-optimizer}
 
-<<<<<<< HEAD
-- **类型:** `{ ssr?, web? }`
-- **参考:** [依赖优化选项](https://cn.vitejs.dev/config/dep-optimization-options.html)
-=======
-- **Type:** `{ ssr?, client? }`
-- **See also:** [Dep Optimization Options](https://vitejs.dev/config/dep-optimization-options.html)
->>>>>>> 0dbbfc0a68127f12d0001ace6c3d1c8601295b63
+- **类型:** `{ ssr?, client? }`
+- **参考:** [Dep Optimization Options](https://vitejs.dev/config/dep-optimization-options.html)
 
 启用依赖优化。如果你有很多测试，这可能会提高它们的性能。
 
@@ -244,11 +239,13 @@ Vite 将处理内联模块。这可能有助于处理以 ESM 格式传送 `.js` 
 - 你的 `alias` 配置现在在捆绑包中得到处理
 - 测试中的代码更接近于它在浏览器中的运行方式
 
-<<<<<<< HEAD
-请注意，只有 `deps.experimentalOptimizer?.[mode].include` 选项中的包会被捆绑（一些插件会自动填充它，比如 Svelte）。 你可以在 [Vite](https://cn.vitejs.dev/config/dep-optimization-options.html) 文档中阅读有关可用选项的更多信息。默认情况，Vitest 的 `experimentalOptimizer.web` 用在 `jsdom` 和 `happy-dom`, 在 `node` 和 `edge` 环境下使用 `experimentalOptimizer.ssr`，但这可以在 [`transformMode`](#transformmode) 进行配置。
-=======
-Be aware that only packages in `deps.optimizer?.[mode].include` option are bundled (some plugins populate this automatically, like Svelte). You can read more about available options in [Vite](https://vitejs.dev/config/dep-optimization-options.html) docs (Vitest doesn't support `disable` and `noDiscovery` options). By default, Vitest uses `optimizer.client` for `jsdom` and `happy-dom` environments, and `optimizer.ssr` for `node` and `edge` environments.
->>>>>>> 0dbbfc0a68127f12d0001ace6c3d1c8601295b63
+仅当包名出现在 `deps.optimizer?.[mode].include` 中时，才会被预打包（如 Svelte 等插件会自动填充）。完整选项见 [Vite 文档](https://cn.vitejs.dev/config/dep-optimization-options.html)（Vitest 暂不支持 `disable` 与 `noDiscovery`）。
+
+默认策略：
+
+- `jsdom` / `happy-dom` → `optimizer.client`
+
+- `node` / `edge` → `optimizer.ssr`
 
 此选项还继承了你的 `optimizeDeps` 配置（对于 web 环境， Vitest 将会继承 `optimizeDeps`，对于 ssr 则是 `ssr.optimizeDeps`）。如果你在 `deps.experimentalOptimizer` 中重新定义 `include`/`exclude`/`entries` 选项，它将在运行测试时覆盖你的 `optimizeDeps`。如果它们在 `exclude` 中配置，Vitest 会自动从 `include` 中删除相同的选项。
 
@@ -263,21 +260,19 @@ Be aware that only packages in `deps.optimizer?.[mode].include` option are bundl
 
 启用依赖优化。
 
-<<<<<<< HEAD
-::: warning
-此选项仅适用于 Vite 4.3.2 及更高版本。
-:::
-=======
 #### deps.client  {#deps-client}
->>>>>>> 0dbbfc0a68127f12d0001ace6c3d1c8601295b63
 
 #### deps.web <Badge type="info">0.34.2+</Badge>
 
-<<<<<<< HEAD
-#### deps.web
-=======
-Options that are applied to external files when the environment is set to `client`. By default, `jsdom` and `happy-dom` use `client` environment, while `node` and `edge` environments use `ssr`, so these options will have no affect on files inside those environments.
->>>>>>> 0dbbfc0a68127f12d0001ace6c3d1c8601295b63
+仅当环境设为 `client` 时，下列选项才会作用于外部文件。
+
+默认映射：
+
+- `jsdom`、`happy-dom` → `client`
+
+- `node`、`edge` → `ssr`
+
+故这些选项对后者中的文件无效。
 
 - **类型:** `{ transformAssets?, ... }`
 
@@ -1665,40 +1660,21 @@ test('doNotRun', () => {
 - **类型:** `boolean`
 - **默认值:** `false`
 
-<<<<<<< HEAD
-每次测试前，都会对所有 spies 调用 [`.mockClear()`](/api/mock#mockclear)。
-这将清除模拟历史记录，而不会影响模拟实现。
-=======
-Will call [`vi.clearAllMocks()`](/api/vi#vi-clearallmocks) before each test.
-This will clear mock history without affecting mock implementations.
->>>>>>> 0dbbfc0a68127f12d0001ace6c3d1c8601295b63
+每个测试开始前自动调用 [`vi.clearAllMocks()`](/api/vi#vi-clearallmocks)，仅清除 mock 调用记录，不影响其实现。
 
 ### mockReset
 
 - **类型:** `boolean`
 - **默认值:** `false`
 
-<<<<<<< HEAD
-每次测试前，都会对所有 spies 调用 [`.mockReset()`](/api/mock#mockreset)。
-这将清除模拟历史记录，并将每个实现重置为原始状态。
-=======
-Will call [`vi.resetAllMocks()`](/api/vi#vi-resetallmocks) before each test.
-This will clear mock history and reset each implementation.
->>>>>>> 0dbbfc0a68127f12d0001ace6c3d1c8601295b63
+每个测试开始前自动调用 [`vi.resetAllMocks()`](/api/vi#vi-resetallmocks)，既清空 mock 调用记录，又将所有实现重置。
 
 ### restoreMocks
 
 - **类型:** `boolean`
 - **默认值:** `false`
 
-<<<<<<< HEAD
-每次测试前，都会对所有 spies 调用 [`.mockRestore()`](/api/mock#mockrestore)。
-这将清除模拟历史记录，将每个实现恢复为原始实现，并恢复被监视对象的原始描述符。
-=======
-Will call [`vi.restoreAllMocks()`](/api/vi#vi-restoreallmocks) before each test.
-
-This restores all original implementations on spies created with [`vi.spyOn`](#vi-spyon).
->>>>>>> 0dbbfc0a68127f12d0001ace6c3d1c8601295b63
+每个测试开始前自动调用 [`vi.restoreAllMocks()`](/api/vi#vi-restoreallmocks)，恢复所有由 [`vi.spyOn`](#vi-spyon) 创建的 spy 的原始实现。
 
 ### unstubEnvs {#unstubenvs}
 
@@ -1714,45 +1690,6 @@ This restores all original implementations on spies created with [`vi.spyOn`](#v
 
 将在每次测试前调用 [`vi.unstubAllGlobals`](/api/#vi-unstuballglobals)。
 
-<<<<<<< HEAD
-### testTransformMode {#testtransformmode}
-
-- **类型:** `{ web?, ssr? }`
-
-确定与测试中的 glob 模式匹配的所有导入模块的转换方法。默认情况下，依赖于环境。例如，使用 JSDOM 环境的测试将处理所有带有 `ssr: false` 标志的文件，而使用 Node 环境的测试将处理所有带有 `ssr: true` 的模块。
-
-#### testTransformMode.ssr
-
-- **类型:** `string[]`
-- **默认值:** `[]`
-
-对指定的文件使用 SSR 转换管道。<br>
-Vite 插件在处理这些文件时会收到 `ssr: true` 标志。
-
-#### testTransformMode&#46;web
-
-- **类型:** `string[]`
-- **默认值:** `[]`
-
-首先会进行正常的转换管道（针对浏览器），然后进行 SSR 重写以在 Node 中运行代码。<br>
-Vite 插件在处理这些文件时会收到 `ssr: false` 标志。
-
-当你使用 JSX 作为 React 以外的组件模型（例如 Vue JSX 或 SolidJS）时，你可能需要进行如下配置以使 `.tsx` / `.jsx` 转换为客户端组件：
-
-```ts
-import { defineConfig } from 'vitest/config'
-
-export default defineConfig({
-  test: {
-    transformMode: {
-      web: [/\.[jt]sx$/],
-    },
-  },
-})
-```
-
-=======
->>>>>>> 0dbbfc0a68127f12d0001ace6c3d1c8601295b63
 ### snapshotFormat<NonProjectOption />
 
 - **类型:** `PrettyFormatOptions`

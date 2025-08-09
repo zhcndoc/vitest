@@ -74,11 +74,7 @@ export default <Environment>{
 ```
 
 ::: warning
-<<<<<<< HEAD
-Vitest 需要指定环境对象上的 `transformMode` 选项。它应该等于 `ssr` 或 `web`。该值决定插件如何转换源代码。如果设置为 `ssr`，则插件挂钩在转换或解析文件时将收到 `ssr: true`。 否则，`ssr` 被设置为 `false`。
-=======
-Vitest requires `viteEnvironment` option on environment object (fallbacks to the Vitest environment name by default). It should be equal to `ssr`, `client` or any custom [Vite environment](https://vite.dev/guide/api-environment) name. This value determines which environment is used to process file.
->>>>>>> 0dbbfc0a68127f12d0001ace6c3d1c8601295b63
+Vitest 要求环境对象显式提供 `viteEnvironment` 字段（若省略则取 Vitest 环境名）。该字段必须设为 `ssr`、`client` 或任意自定义 [Vite 环境](https://cn.vite.dev/guide/api-environment) 名称，用于指定处理测试文件的目标环境。
 :::
 
 你还可以通过 `vitest/environments` 访问默认的 Vitest 环境：

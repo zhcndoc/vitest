@@ -1,4 +1,5 @@
 import type { DefaultTheme } from 'vitepress'
+import process from 'node:process'
 import { transformerNotationWordHighlight } from '@shikijs/transformers'
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
 import { withPwa } from '@vite-pwa/vitepress'
@@ -7,13 +8,9 @@ import {
   groupIconMdPlugin,
   groupIconVitePlugin,
 } from 'vitepress-plugin-group-icons'
-<<<<<<< HEAD
+import llmstxt from 'vitepress-plugin-llms'
 import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
 import { version } from '../package.json'
-=======
-import llmstxt from 'vitepress-plugin-llms'
-import { version } from '../../package.json'
->>>>>>> 0dbbfc0a68127f12d0001ace6c3d1c8601295b63
 import { teamMembers } from './contributors'
 import {
   bluesky,
@@ -84,7 +81,7 @@ export default ({ mode }: { mode: string }) => {
             'qwik': 'logos:qwik-icon',
             'next': '',
           },
-        }),
+        }) as any,
         llmstxt(),
       ],
     },

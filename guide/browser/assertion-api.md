@@ -951,12 +951,7 @@ function toHaveSelection(selection?: string): Promise<void>
 这在检查元素内是否选择了文本或部分文本时非常有用。该元素可以是文本类型的输入框、`textarea`，或者是任何包含文本的其他元素，例如段落、`span`、`div` 等。
 
 ::: warning
-<<<<<<< HEAD
-预期的选择是一个字符串，它不允许检查选择范围的索引。
-=======
-The expected selection is a string, it does not allow to check for
-selection range indices.
->>>>>>> 0dbbfc0a68127f12d0001ace6c3d1c8601295b63
+`expected selection` 仅限字符串形式，无法校验选区起止索引。
 :::
 
 ```html

@@ -53,8 +53,8 @@ Visual regression testing in Vitest can be done through the
 [`toMatchScreenshot` assertion](/guide/browser/assertion-api.html#tomatchscreenshot):
 
 ```ts
-import { expect, test } from 'vitest'
 import { page } from '@vitest/browser/context'
+import { expect, test } from 'vitest'
 
 test('hero section looks correct', async () => {
   // ...the rest of the test

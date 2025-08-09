@@ -531,10 +531,7 @@ function matchesProjectFilter(name: string): boolean
 
 检查名称是否与当前 [项目过滤器](/guide/cli#project) 匹配。如果没有项目过滤器，则始终返回 `true` 。
 
-<<<<<<< HEAD
 无法通过编程方式更改 `--project` CLI 选项。
-=======
-It is not possible to programmatically change the `--project` CLI option.
 
 ## waitForTestRunEnd <Version>4.0.0</Version> {#waitfortestrunend}
 
@@ -542,7 +539,7 @@ It is not possible to programmatically change the `--project` CLI option.
 function waitForTestRunEnd(): Promise<void>
 ```
 
-If there is a test run happening, returns a promise that will resolve when the test run is finished.
+若测试正在运行，则返回一个 Promise ，它会在测试运行完毕后兑现。
 
 ## createCoverageProvider <Version>4.0.0</Version> {#createcoverageprovider}
 
@@ -550,10 +547,10 @@ If there is a test run happening, returns a promise that will resolve when the t
 function createCoverageProvider(): Promise<CoverageProvider | null>
 ```
 
-Creates a coverage provider if `coverage` is enabled in the config. This is done automatically if you are running tests with [`start`](#start) or [`init`](#init) methods.
+当配置中启用了 `coverage` 时，创建覆盖率提供器。若使用 [`start`](#start) 或 [`init`](#init) 方法启动测试，这一步会自动完成。
 
 ::: warning
-This method will also clean all previous reports if [`coverage.clean`](/config/#coverage-clean) is not set to `false`.
+若未将 [`coverage.clean`](/config/#coverage-clean) 显式设为 false ，此方法还会清空之前的所有报告。
 :::
 
 ## experimental_parseSpecification <Version>4.0.0</Version> <Badge type="warning">experimental</Badge> {#parsespecification}
@@ -564,7 +561,7 @@ function experimental_parseSpecification(
 ): Promise<TestModule>
 ```
 
-This function will collect all tests inside the file without running it. It uses rollup's `parseAst` function on top of Vite's `ssrTransform` to statically analyse the file and collect all tests that it can.
+该函数会收集文件内的所有测试，但不会执行它们。它借助 Vite 的 `ssrTransform` ，并在其之上使用 rollup 的 `parseAst` 进行静态分析，从而提取所有可识别的测试用例。
 
 ::: warning
 If Vitest could not analyse the name of the test, it will inject a hidden `dynamic: true` property to the test or a suite. The `id` will also have a postfix with `-dynamic` to not break tests that were collected properly.
@@ -573,21 +570,27 @@ Vitest always injects this property in tests with `for` or `each` modifier or te
 
 There is nothing Vitest can do to make it possible to filter dynamic tests, but you can turn a test with `for` or `each` modifier into a name pattern with `escapeTestName` function:
 
+若 Vitest 无法解析测试名称，它会在测试或套件中注入一个隐藏的 `dynamic: true` 属性，并在 `id` 后追加 `-dynamic` ，以免破坏已正确收集的测试。
+
+含 `for` 或 `each` 修饰符的测试，以及名称动态生成的测试（如 `hello ${property}` 或 `'hello' + ${property}` ） ， Vitest 一律会注入此属性。 Vitest 仍会为其分配名称，但该名称无法用于过滤测试。
+
+Vitest 无法让动态测试支持过滤，但你可以使用 `escapeTestName` 函数，将带 `for` 或 `each` 的测试转换成名称模式：
+
 ```ts
 import { escapeTestName } from 'vitest/node'
 
-// turns into /hello, .+?/
+// 转换为 /hello, .+?/
 const escapedPattern = new RegExp(escapeTestName('hello, %s', true))
 ```
 :::
 
 ::: warning
-Vitest will only collect tests defined in the file. It will never follow imports to other files.
+Vitest 只会收集当前文件内定义的测试，绝不会跟随导入去其他文件搜寻。
 
-Vitest collects all `it`, `test`, `suite` and `describe` definitions even if they were not imported from the `vitest` entry point.
+无论是否从 `vitest` 入口点导入， Vitest 都会收集所有 `it` 、`test` 、`suite` 和 `describe` 的定义。
 :::
 
-## experimental_parseSpecifications <Version>4.0.0</Version> <Badge type="warning">experimental</Badge> {#parsespecifications}
+## experimental_parseSpecifications <Version>4.0.0</Version> <Badge type="warning">实验</Badge> {#parsespecifications}
 
 ```ts
 function experimental_parseSpecifications(
@@ -598,5 +601,6 @@ function experimental_parseSpecifications(
 ): Promise<TestModule[]>
 ```
 
-This method will [collect tests](#parsespecification) from an array of specifications. By default, Vitest will run only `os.availableParallelism()` number of specifications at a time to reduce the potential performance degradation. You can specify a different number in a second argument.
->>>>>>> 0dbbfc0a68127f12d0001ace6c3d1c8601295b63
+该方法会依据规格数组 [collect tests](#parsespecification)。
+
+默认情况下， Vitest 仅同时运行 `os.availableParallelism()` 个规格，以避免性能骤降。我们可以在第二个参数中指定其他并发数。

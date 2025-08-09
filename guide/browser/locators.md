@@ -234,11 +234,7 @@ function getByLabelText(
 
 创建一个能够找到具有关联标签的元素的定位器。
 
-<<<<<<< HEAD
-`page.getByLabelText('Username')` 定位器将在以下示例中找到所有的输入元素：
-=======
-The `page.getByLabelText('Username')` locator will find every input in the example below:
->>>>>>> 0dbbfc0a68127f12d0001ace6c3d1c8601295b63
+下方示例中，`page.getByLabelText('Username')` 会一次性选中所有相关输入框。
 
 ```html
 // for/htmlFor relationship between label and form element id

@@ -169,7 +169,6 @@ export default defineConfig({
 
 Vitest 默认只统计测试中实际导入的文件。如果希望报告里也包含那些未被测试覆盖到的文件，需要在 [`coverage.include`](/config/#coverage-include) 中配置一个能匹配你源代码文件的模式：
 
-
 ::: code-group
 ```ts [vitest.config.ts] {6}
 import { defineConfig } from 'vitest/config'
