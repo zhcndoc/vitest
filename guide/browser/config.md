@@ -331,11 +331,11 @@ export interface BrowserScript {
 - **Type:** `boolean`
 - **Default:** `true`
 
-Enables tracking uncaught errors and exceptions so they can be reported by Vitest.
+启用对未捕获错误和异常的跟踪，以便 Vitest 报告。
 
-If you need to hide certain errors, it is recommended to use [`onUnhandledError`](/config/#onunhandlederror) option instead.
+如果需要隐藏某些错误，建议使用 [`onUnhandledError`](/config/#onunhandlederror) 选项。
 
-Disabling this will completely remove all Vitest error handlers, which can help debugging with the "Pause on exceptions" checkbox turned on.
+禁用此功能将完全移除所有 Vitest 的错误处理机制，有助于在启用“暂停于异常”功能时进行调试。
 
 ## browser.expect
 
@@ -343,14 +343,11 @@ Disabling this will completely remove all Vitest error handlers, which can help 
 
 ### browser.expect.toMatchScreenshot
 
-Default options for the
-[`toMatchScreenshot` assertion](/guide/browser/assertion-api.html#tomatchscreenshot).
-These options will be applied to all screenshot assertions.
+[`toMatchScreenshot`](/guide/browser/assertion-api.html#tomatchscreenshot) 断言的默认选项。
+这些选项将应用于所有截图断言。
 
 ::: tip
-Setting global defaults for screenshot assertions helps maintain consistency
-across your test suite and reduces repetition in individual tests. You can still
-override these defaults at the assertion level when needed for specific test cases.
+为截图断言设置全局默认值，有助于在整个测试套件中保持一致性，并减少单个测试中的重复。如果需要，你仍可以在特定测试用例的断言级别覆盖这些默认值。
 :::
 
 ```ts
@@ -376,24 +373,19 @@ export default defineConfig({
 })
 ```
 
-[All options available in the `toMatchScreenshot` assertion](/guide/browser/assertion-api#options)
-can be configured here. Additionally, two path resolution functions are
-available: `resolveScreenshotPath` and `resolveDiffPath`.
+`toMatchScreenshot` 断言中可用的 [所有选项](/guide/browser/assertion-api#options) 均可在此配置。此外，还提供了两个路径解析函数：`resolveScreenshotPath` 和 `resolveDiffPath`。
 
 #### browser.expect.toMatchScreenshot.resolveScreenshotPath
 
 - **Type:** `(data: PathResolveData) => string`
 - **Default output:** `` `${root}/${testFileDirectory}/${screenshotDirectory}/${testFileName}/${arg}-${browserName}-${platform}${ext}` ``
 
-A function to customize where reference screenshots are stored. The function
-receives an object with the following properties:
+一个用于自定义参考截图存储位置的函数。该函数接收一个包含以下属性的对象：
 
 - `arg: string`
 
-  Path **without** extension, sanitized and relative to the test file.
-
-  This comes from the arguments passed to `toMatchScreenshot`; if called
-  without arguments this will be the auto-generated name.
+  路径**不含**扩展名，已清理且相对于测试文件。
+  这来自传递给 `toMatchScreenshot` 的参数；如果没有参数，将使用自动生成的名称。
 
   ```ts
   test('calls `onClick`', () => {
@@ -410,49 +402,43 @@ receives an object with the following properties:
 
 - `ext: string`
 
-  Screenshot extension, with leading dot.
+  截图扩展名，带前导点。
 
-  This can be set through the arguments passed to `toMatchScreenshot`, but
-  the value will fall back to `'.png'` if an unsupported extension is used.
+  可以通过传递给 `toMatchScreenshot` 的参数设置，但如果使用了不支持的扩展名，值将回退为 `'.png'`。
 
 - `browserName: string`
 
-  The instance's browser name.
+  实例的浏览器名称。
 
 - `platform: NodeJS.Platform`
 
-  The value of
-  [`process.platform`](https://nodejs.org/docs/v22.16.0/api/process.html#processplatform).
+  [`process.platform`](https://nodejs.org/docs/v22.16.0/api/process.html#processplatform) 属性的值。
 
 - `screenshotDirectory: string`
 
-  The value provided to
-  [`browser.screenshotDirectory`](/guide/browser/config#browser-screenshotdirectory),
-  if none is provided, its default value.
+  如果未提供值，则为 [`browser.screenshotDirectory`](/guide/browser/config#browser-screenshotdirectory)。
 
 - `root: string`
 
-  Absolute path to the project's [`root`](/config/#root).
+  项目根目录（[`root`](/config/#root)）的绝对路径。
 
 - `testFileDirectory: string`
 
-  Path to the test file, relative to the project's [`root`](/config/#root).
+  测试文件的路径，相对于项目的根目录（[`root`](/config/#root)）。
 
 - `testFileName: string`
 
-  The test's filename.
+  测试文件的文件名。
 
 - `testName: string`
 
-  The [`test`](/api/#test)'s name, including parent
-  [`describe`](/api/#describe), sanitized.
+  [`test`](/api/#test) 的名称，包括父级 [`describe`](/api/#describe) ，已清理。
 
 - `attachmentsDir: string`
 
-  The value provided to [`attachmentsDir`](/config/#attachmentsdir), if none is
-  provided, its default value.
+如果未提供值，则为 [`attachmentsDir`](/config/#attachmentsdir) 提供的默认值。
 
-For example, to group screenshots by browser:
+例如，按浏览器分组截图：
 
 ```ts
 resolveScreenshotPath: ({ arg, browserName, ext, root, testFileName }) =>
@@ -464,11 +450,9 @@ resolveScreenshotPath: ({ arg, browserName, ext, root, testFileName }) =>
 - **Type:** `(data: PathResolveData) => string`
 - **Default output:** `` `${root}/${attachmentsDir}/${testFileDirectory}/${testFileName}/${arg}-${browserName}-${platform}${ext}` ``
 
-A function to customize where diff images are stored when screenshot comparisons
-fail. Receives the same data object as
-[`resolveScreenshotPath`](#browser-expect-tomatchscreenshot-resolvescreenshotpath).
+一个用于自定义截图比较失败时差异图像存储位置的函数。它接收与 [`resolveScreenshotPath`](#browser-expect-tomatchscreenshot-resolvescreenshotpath) 相同的数据对象。
 
-For example, to store diffs in a subdirectory of attachments:
+例如，将差异图像存储在附件的子目录中：
 
 ```ts
 resolveDiffPath: ({ arg, attachmentsDir, browserName, ext, root, testFileName }) =>
@@ -476,9 +460,7 @@ resolveDiffPath: ({ arg, attachmentsDir, browserName, ext, root, testFileName })
 ```
 
 ::: tip
-To have a better type safety when using built-in providers, you should reference
-one of these types (for provider that you are using) in your
-[config file](/config/):
+为了在使用内置提供程序时获得更好的类型安全性，应在你的 [配置文件](/config/) 中引用这些类型之一（针对你正在使用的提供程序）。
 
 ```ts
 /// <reference types="@vitest/browser/providers/playwright" />
