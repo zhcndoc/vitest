@@ -1,4 +1,5 @@
 import type { DefaultTheme } from 'vitepress'
+import process from 'node:process'
 import { transformerNotationWordHighlight } from '@shikijs/transformers'
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
 import { withPwa } from '@vite-pwa/vitepress'
@@ -7,6 +8,7 @@ import {
   groupIconMdPlugin,
   groupIconVitePlugin,
 } from 'vitepress-plugin-group-icons'
+import llmstxt from 'vitepress-plugin-llms'
 import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
 import { version } from '../package.json'
 import { teamMembers } from './contributors'
@@ -77,8 +79,10 @@ export default ({ mode }: { mode: string }) => {
             '.test.js': 'vscode-icons:file-type-testjs',
             'marko': 'vscode-icons:file-type-marko',
             'qwik': 'logos:qwik-icon',
+            'next': '',
           },
-        }),
+        }) as any,
+        llmstxt(),
       ],
     },
     markdown: {
@@ -131,7 +135,7 @@ export default ({ mode }: { mode: string }) => {
 
       footer: {
         message: 'Released under the MIT License.',
-        copyright: 'Copyright © 2021-PRESENT Anthony Fu, Matías Capeletto and Vitest contributors',
+        copyright: 'Copyright © 2021-PRESENT VoidZero Inc. and Vitest contributors',
       },
 
       nav: [
@@ -282,6 +286,11 @@ export default ({ mode }: { mode: string }) => {
                 text: '多种设置',
                 link: '/guide/browser/multiple-setups',
                 docFooterText: 'Multiple Setups | Browser Mode',
+              },
+              {
+                text: '可视化回归测试',
+                link: '/guide/browser/visual-regression-testing',
+                docFooterText: '可视化回归测试 | Browser Mode',
               },
             ],
           },
@@ -487,6 +496,41 @@ function guide(): DefaultTheme.SidebarItem[] {
     {
       text: '模拟对象',
       link: '/guide/mocking',
+      collapsed: true,
+      items: [
+        {
+          text: 'Mocking Dates',
+          link: '/guide/mocking#dates',
+        },
+        {
+          text: 'Mocking Functions',
+          link: '/guide/mocking#functions',
+        },
+        {
+          text: 'Mocking Globals',
+          link: '/guide/mocking#globals',
+        },
+        {
+          text: 'Mocking Modules',
+          link: '/guide/mocking-modules',
+        },
+        {
+          text: 'Mocking File System',
+          link: '/guide/mocking#file-system',
+        },
+        {
+          text: 'Mocking Requests',
+          link: '/guide/mocking#requests',
+        },
+        {
+          text: 'Mocking Timers',
+          link: '/guide/mocking#timers',
+        },
+        {
+          text: 'Mocking Classes',
+          link: '/guide/mocking#classes',
+        },
+      ],
     },
     {
       text: '并行执行',
@@ -567,7 +611,7 @@ function api(): DefaultTheme.SidebarItem[] {
       link: '/api/',
     },
     {
-      text: 'Mock Functions',
+      text: 'Mocks',
       link: '/api/mock',
     },
     {

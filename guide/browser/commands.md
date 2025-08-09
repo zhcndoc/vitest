@@ -11,7 +11,7 @@ outline: deep
 
 ### 文件处理
 
-在浏览器端的测试中，你可以通过 `readFile` 、`writeFile` 和 `removeFile` 这些 API 来操作文件。从 Vitest 3.2 版本起，所有文件路径都会相对于 [项目](/guide/projects) 根目录解析（默认为 `process.cwd()`，除非你手动修改过）。在此之前，路径是以测试文件所在位置作为基准进行解析的。
+在浏览器测试中，可借助 `readFile`、`writeFile` 与 `removeFile` 三个 API 完成文件操作。自 Vitest 3.2 起，所有路径均以 [project](/guide/projects) 根目录为基准解析（根目录默认为 `process.cwd()`，可手动重写）；旧版本则以当前测试文件所在目录为基准。
 
 默认情况下，Vitest 使用 `utf-8` 编码，但你可以使用选项覆盖它。
 
@@ -162,7 +162,7 @@ Vitest 在上下文对象上公开了一些 `webdriverio` 特有属性。
 
 - `browser` 是 `WebdriverIO.Browser` API.
 
-Vitest 通过在调用命令前调用 `browser.switchToFrame` 自动将 `webdriver` 上下文切换到测试 iframe，因此 `$` 和 `$` 方法将引用 iframe 内的元素，而不是 orchestrator 中的元素，但非 Webdriver API 仍将引用 parent frame 上下文。
+Vitest 会在每条命令执行前自动调用 `browser.switchFrame`，将 `webdriver` 上下文切换至测试 iframe ，因此 `$` 与 `$$` 获取的是 iframe 内的元素，而非 orchestrator 中的元素；非 webdriver API 则仍作用于父级 frame。
 
 ::: tip
 如果我们使用的是 TypeScript，请记得在您的 [setup 文件](/config/#setupfile)或 [config 文件](/config/)中引用 `@vitest/browser/providers/webdriverio` ，以便获得自动补全功能。

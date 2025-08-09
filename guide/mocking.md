@@ -155,204 +155,7 @@ vi.stubGlobal('IntersectionObserver', IntersectionObserverMock)
 
 ## 模块
 
-模拟模块监听在其他代码中调用的第三方库，允许你测试参数、输出甚至重新声明其实现。
-
-### 自动模拟算法(Automocking algorithm)
-
-参见 [`vi.mock()` API 部分](/api/vi#vi-mock) 以获得更深入详细 API 描述。
-
-如果你的代码导入了模拟模块，并且没有任何与此模块相关联的 `__mocks__` 文件或 `factory`，Vitest 将通过调用模块并模拟每个导出来的模拟模块本身。
-
-以下原则适用
-
-- 所有的数组将被清空
-- 所有的基础类型和集合将保持不变
-- 所有的对象都将被深度克隆
-- 类的所有实例及其原型都将被深度克隆
-
-### Virtual Modules
-
-Vitest 支持模拟 Vite [虚拟模块](https://cn.vitejs.dev/guide/api-plugin#virtual-modules-convention)。它的工作方式与 Jest 中处理虚拟模块的方式不同。我们不需要将 `virtual: true` 传递给 `vi.mock` 函数，而是需要告诉 Vite 模块存在，否则它将在解析过程中失败。有几种方法可以做到这一点：
-
-1. 提供别名
-
-```ts [vitest.config.js]
-import { resolve } from 'node:path'
-import { defineConfig } from 'vitest/config'
-export default defineConfig({
-  test: {
-    alias: {
-      '$app/forms': resolve('./mocks/forms.js'),
-    },
-  },
-})
-```
-
-2. 提供解析虚拟模块的插件
-
-```ts [vitest.config.js]
-import { defineConfig } from 'vitest/config'
-export default defineConfig({
-  plugins: [
-    {
-      name: 'virtual-modules',
-      resolveId(id) {
-        if (id === '$app/forms') {
-          return 'virtual:$app/forms'
-        }
-      },
-    },
-  ],
-})
-```
-
-第二种方法的好处是可以动态创建不同的虚拟入口点。如果将多个虚拟模块重定向到一个文件中，那么所有这些模块都将受到 `vi.mock` 的影响，因此请确保使用唯一的标识符。
-
-### Mocking Pitfalls
-
-请注意，对在同一文件的其他方法中调用的方法的模拟调用是不可能的。例如，在此代码中：
-
-```ts [foobar.js]
-export function foo() {
-  return 'foo'
-}
-
-export function foobar() {
-  return `${foo()}bar`
-}
-```
-
-不可能从外部模拟 `foo` 方法，因为它是直接引用的。因此，此代码对 `foobar` 内部的 `foo` 调用没有影响（但会影响其他模块中的 `foo` 调用）：
-
-```ts [foobar.test.ts]
-import { vi } from 'vitest'
-import * as mod from './foobar.js'
-
-// 这只会影响在原始模块之外的 "foo"
-vi.spyOn(mod, 'foo')
-vi.mock('./foobar.js', async (importOriginal) => {
-  return {
-    ...(await importOriginal<typeof import('./foobar.js')>()),
-    // 这只会影响在原始模块之外的 "foo"
-    foo: () => 'mocked',
-  }
-})
-```
-
-你可以通过直接向 `foobar` 方法提供实现来确认这种行为：
-
-```ts [foobar.test.js]
-import * as mod from './foobar.js'
-
-vi.spyOn(mod, 'foo')
-
-// 导出的 foo  引用模拟的方法
-mod.foobar(mod.foo)
-```
-
-```ts [foobar.js]
-export function foo() {
-  return 'foo'
-}
-
-export function foobar(injectedFoo) {
-  return injectedFoo === foo // false
-}
-```
-
-这就是预期行为。当以这种方式包含 mock 时，这通常是不良代码的标志。考虑将代码重构为多个文件，或者使用[依赖项注入](https://en.wikipedia.org/wiki/dependency_injection)等技术来改进应用体系结构。
-
-### 示例
-
-```js
-import { Client } from 'pg'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { failure, success } from './handlers.js'
-
-// get todos
-export async function getTodos(event, context) {
-  const client = new Client({
-    // ...clientOptions
-  })
-
-  await client.connect()
-
-  try {
-    const result = await client.query('SELECT * FROM todos;')
-
-    client.end()
-
-    return success({
-      message: `${result.rowCount} item(s) returned`,
-      data: result.rows,
-      status: true,
-    })
-  }
-  catch (e) {
-    console.error(e.stack)
-
-    client.end()
-
-    return failure({ message: e, status: false })
-  }
-}
-
-vi.mock('pg', () => {
-  const Client = vi.fn()
-  Client.prototype.connect = vi.fn()
-  Client.prototype.query = vi.fn()
-  Client.prototype.end = vi.fn()
-
-  return { Client }
-})
-
-vi.mock('./handlers.js', () => {
-  return {
-    success: vi.fn(),
-    failure: vi.fn(),
-  }
-})
-
-describe('get a list of todo items', () => {
-  let client
-
-  beforeEach(() => {
-    client = new Client()
-  })
-
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
-  it('should return items successfully', async () => {
-    client.query.mockResolvedValueOnce({ rows: [], rowCount: 0 })
-
-    await getTodos()
-
-    expect(client.connect).toBeCalledTimes(1)
-    expect(client.query).toBeCalledWith('SELECT * FROM todos;')
-    expect(client.end).toBeCalledTimes(1)
-
-    expect(success).toBeCalledWith({
-      message: '0 item(s) returned',
-      data: [],
-      status: true,
-    })
-  })
-
-  it('should throw an error', async () => {
-    const mError = new Error('Unable to retrieve rows')
-    client.query.mockRejectedValueOnce(mError)
-
-    await getTodos()
-
-    expect(client.connect).toBeCalledTimes(1)
-    expect(client.query).toBeCalledWith('SELECT * FROM todos;')
-    expect(client.end).toBeCalledTimes(1)
-    expect(failure).toBeCalledWith({ message: mError, status: false })
-  })
-})
-```
+查看 ["Mocking Modules" guide](/guide/mocking-modules).
 
 ## 文件系统
 
@@ -596,7 +399,7 @@ describe('delayed execution', () => {
 
 ## Classes
 
-您只需调用一次 `vi.fn` 就能模拟整个类，因为所有的类也都是函数，所以这种方法开箱即用。请注意，目前 Vitest 并不尊重 `new` 关键字，因此在函数的主体中，`new.target` 总是 `undefined`。
+只需调用一次 `vi.fn`，即可将整个类一举模拟。
 
 ```ts
 class Dog {
@@ -623,27 +426,24 @@ class Dog {
 }
 ```
 
-我们可以使用 ES5 函数重新创建这个类：
+我们可以用 `vi.fn` 重新生成这个类；若想更精细，也可用 `vi.spyOn().mockImplementation()` 完成同样的工作：
 
 ```ts
-const Dog = vi.fn(function (name) {
-  this.name = name
-  // mock instance methods in the constructor, each instance will have its own spy
-  this.greet = vi.fn(() => `Hi! My name is ${this.name}!`)
+const Dog = vi.fn(class {
+  static getType = vi.fn(() => 'mocked animal')
+
+  constructor(name) {
+    this.name = name
+  }
+
+  greet = vi.fn(() => `Hi! My name is ${this.name}!`)
+  speak = vi.fn(() => 'loud bark!')
+  feed = vi.fn()
 })
-
-// notice that static methods are mocked directly on the function,
-// not on the instance of the class
-Dog.getType = vi.fn(() => 'mocked animal')
-
-// mock the "speak" and "feed" methods on every instance of a class
-// all `new Dog()` instances will inherit and share these spies
-Dog.prototype.speak = vi.fn(() => 'loud bark!')
-Dog.prototype.feed = vi.fn()
 ```
 
 ::: warning
-If a non-primitive is returned from the constructor function, that value will become the result of the new expression. In this case the `[[Prototype]]` may not be correctly bound:
+一旦构造函数返回的是非原始值，该值便会被视为 `new` 表达式的最终结果，而此时的 `[[Prototype]]` 可能尚未正确关联。
 
 ```ts
 const CorrectDogClass = vi.fn(function (name) {
@@ -660,6 +460,8 @@ const Newt = new IncorrectDogClass('Newt')
 Marti instanceof CorrectDogClass // ✅ true
 Newt instanceof IncorrectDogClass // ❌ false!
 ```
+
+在模拟类时，请优先使用类语法，而非函数语法。
 :::
 
 ::: tip WHEN TO USE?
@@ -669,9 +471,10 @@ Newt instanceof IncorrectDogClass // ❌ false!
 import { Dog } from './dog.js'
 
 vi.mock(import('./dog.js'), () => {
-  const Dog = vi.fn()
-  Dog.prototype.feed = vi.fn()
-  // ... other mocks
+  const Dog = vi.fn(class {
+    feed = vi.fn()
+    // ... other mocks
+  })
   return { Dog }
 })
 ```
@@ -687,8 +490,9 @@ function feed(dog: Dog) {
 import { expect, test, vi } from 'vitest'
 import { feed } from '../src/feed.js'
 
-const Dog = vi.fn()
-Dog.prototype.feed = vi.fn()
+const Dog = vi.fn(class {
+  feed = vi.fn()
+})
 
 test('can feed dogs', () => {
   const dogMax = new Dog('Max')
@@ -714,8 +518,8 @@ expect(Cooper.greet).toHaveBeenCalled()
 
 const Max = new Dog('Max')
 
-// methods assigned to the prototype are shared between instances
-expect(Max.speak).toHaveBeenCalled()
+// methods are not shared between instances if you assigned them directly
+expect(Max.speak).not.toHaveBeenCalled()
 expect(Max.greet).not.toHaveBeenCalled()
 ```
 
@@ -726,7 +530,7 @@ const dog = new Dog('Cooper')
 
 // "vi.mocked" is a type helper, since
 // TypeScript doesn't know that Dog is a mocked class,
-// it wraps any function in a MockInstance<T> type
+// it wraps any function in a Mock<T> type
 // without validating if the function is a mock
 vi.mocked(dog.speak).mockReturnValue('woof woof')
 
@@ -746,6 +550,10 @@ expect(nameSpy).toHaveBeenCalledTimes(1)
 
 ::: tip
 您还可以使用相同的方法监视获取器和设置器。
+:::
+
+::: danger
+从 Vitest 4 开始，才支持用类语法配合 `vi.fn()` 进行模拟；此前必须显式使用 `function` 并手动维护 `prototype` 继承。旧版实现方式可参考 [v3 指南](https://v3.vitest.dev/guide/mocking.html#classes)。
 :::
 
 ## 备忘单

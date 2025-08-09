@@ -169,7 +169,6 @@ export default defineConfig({
 
 Vitest 默认只统计测试中实际导入的文件。如果希望报告里也包含那些未被测试覆盖到的文件，需要在 [`coverage.include`](/config/#coverage-include) 中配置一个能匹配你源代码文件的模式：
 
-
 ::: code-group
 ```ts [vitest.config.ts] {6}
 import { defineConfig } from 'vitest/config'
@@ -357,6 +356,111 @@ if (condition) {
 +/* v8 ignore if -- @preserve */
 if (condition) {
 ```
+
+### Examples
+
+::: code-group
+
+```ts [if else]
+/* v8 ignore if -- @preserve */
+if (parameter) { // [!code error]
+  console.log('Ignored') // [!code error]
+} // [!code error]
+else {
+  console.log('Included')
+}
+
+/* v8 ignore else -- @preserve */
+if (parameter) {
+  console.log('Included')
+}
+else { // [!code error]
+  console.log('Ignored') // [!code error]
+} // [!code error]
+```
+
+```ts [next node]
+/* v8 ignore next -- @preserve */
+console.log('Ignored') // [!code error]
+console.log('Included')
+
+/* v8 ignore next -- @preserve */
+function ignored() { // [!code error]
+  console.log('all') // [!code error]
+  // [!code error]
+  console.log('lines') // [!code error]
+  // [!code error]
+  console.log('are') // [!code error]
+  // [!code error]
+  console.log('ignored') // [!code error]
+} // [!code error]
+
+/* v8 ignore next -- @preserve */
+class Ignored { // [!code error]
+  ignored() {} // [!code error]
+  alsoIgnored() {} // [!code error]
+} // [!code error]
+
+/* v8 ignore next -- @preserve */
+condition // [!code error]
+  ? console.log('ignored') // [!code error]
+  : console.log('also ignored') // [!code error]
+```
+
+```ts [try catch]
+/* v8 ignore next -- @preserve */
+try { // [!code error]
+  console.log('Ignored') // [!code error]
+} // [!code error]
+catch (error) { // [!code error]
+  console.log('Ignored') // [!code error]
+} // [!code error]
+
+try {
+  console.log('Included')
+}
+catch (error) {
+  /* v8 ignore next -- @preserve */
+  console.log('Ignored') // [!code error]
+  /* v8 ignore next -- @preserve */
+  console.log('Ignored') // [!code error]
+}
+
+// Requires rolldown-vite due to esbuild's lack of support.
+// See https://vite.dev/guide/rolldown.html#how-to-try-rolldown
+try {
+  console.log('Included')
+}
+catch (error) /* v8 ignore next */ { // [!code error]
+  console.log('Ignored') // [!code error]
+} // [!code error]
+```
+
+```ts [switch case]
+switch (type) {
+  case 1:
+    return 'Included'
+
+  /* v8 ignore next -- @preserve */
+  case 2: // [!code error]
+    return 'Ignored' // [!code error]
+
+  case 3:
+    return 'Included'
+
+  /* v8 ignore next -- @preserve */
+  default: // [!code error]
+    return 'Ignored' // [!code error]
+}
+```
+
+```ts [whole file]
+/* v8 ignore file -- @preserve */
+export function ignored() { // [!code error]
+  return 'Whole file is ignored'// [!code error]
+}// [!code error]
+```
+:::
 
 ## Coverage Performance
 

@@ -951,7 +951,7 @@ function toHaveSelection(selection?: string): Promise<void>
 这在检查元素内是否选择了文本或部分文本时非常有用。该元素可以是文本类型的输入框、`textarea`，或者是任何包含文本的其他元素，例如段落、`span`、`div` 等。
 
 ::: warning
-预期的选择是一个字符串，它不允许检查选择范围的索引。
+`expected selection` 仅限字符串形式，无法校验选区起止索引。
 :::
 
 ```html
@@ -1000,3 +1000,186 @@ await expect.element(queryByTestId('parent')).toHaveSelection('ected text')
 await expect.element(queryByTestId('prev')).not.toHaveSelection()
 await expect.element(queryByTestId('next')).toHaveSelection('ne')
 ```
+
+## toMatchScreenshot <Badge type="warning">实验性</Badge>
+
+```ts
+function toMatchScreenshot(
+  options?: ScreenshotMatcherOptions,
+): Promise<void>
+function toMatchScreenshot(
+  name?: string,
+  options?: ScreenshotMatcherOptions,
+): Promise<void>
+```
+
+::: tip
+`toMatchScreenshot` 断言可在 [Vitest 配置](/guide/browser/config#browser-expect-tomatchscreenshot) 中全局设定。
+:::
+
+该断言通过将元素或整页的截图与预先保存的基准图像进行比对，实现视觉回归测试。
+
+
+若差异超出设定阈值，测试即告失败。为便于定位变更，断言会自动生成：
+
+- 测试过程中的实际截图
+- 预期的基准截图
+- 差异高亮的对比图（如技术可行）
+
+::: warning 截图稳定性
+该断言会不断重试截图，直到连续两次结果完全一致，从而削弱动画、加载状态或其他动态内容带来的抖动。可通过 `timeout` 选项设定最长等待时间。
+
+但浏览器渲染易受多种变量影响：
+
+- 浏览器及其版本差异
+- 操作系统（Windows、macOS、Linux）
+- 屏幕分辨率与像素密度
+- GPU 驱动及硬件加速策略
+- 字体渲染与系统字体差异
+
+建议先阅读 [视觉回归测试指南](/guide/browser/visual-regression-testing)，再落地实施。
+:::
+
+::: tip
+若截图对比因**有意变更**而失败，可在监听模式下按 `u` 键，或运行测试时加上 `-u`/`--update` 标志，以更新基准图。
+:::
+
+```html
+<button data-testid="button">Fancy Button</button>
+```
+
+```ts
+// basic usage, auto-generates screenshot name
+await expect.element(getByTestId('button')).toMatchScreenshot()
+
+// with custom name
+await expect.element(getByTestId('button')).toMatchScreenshot('fancy-button')
+
+// with options
+await expect.element(getByTestId('button')).toMatchScreenshot({
+  comparatorName: 'pixelmatch',
+  comparatorOptions: {
+    allowedMismatchedPixelRatio: 0.01,
+  },
+})
+
+// with both name and options
+await expect.element(getByTestId('button')).toMatchScreenshot('fancy-button', {
+  comparatorName: 'pixelmatch',
+  comparatorOptions: {
+    allowedMismatchedPixelRatio: 0.01,
+  },
+})
+```
+
+### Options
+
+- `comparatorName: "pixelmatch" = "pixelmatch"`
+
+  用于比较图像的算法/库名称。
+
+  目前，仅支持 [“pixelmatch”](https://github.com/mapbox/pixelmatch)。
+
+- `comparatorOptions: object`
+
+  用于调整比较器行为的选项，可设置的属性取决于所选的比较算法。
+
+  Vitest 已内置默认值，但可以覆盖。
+
+  - [`"pixelmatch"` options](#pixelmatch-comparator-options)
+
+  ::: warning
+  **始终显式设置 `comparatorName`，以确保 `comparatorOptions` 的类型推断正确**。
+
+  否则，TypeScript 无法识别哪些选项是有效的。
+
+  ```ts
+  // ❌ TypeScript can't infer the correct options
+  await expect.element(button).toMatchScreenshot({
+    comparatorOptions: {
+      // might error when new comparators are added
+      allowedMismatchedPixelRatio: 0.01,
+    },
+  })
+
+  // ✅ TypeScript knows these are pixelmatch options
+  await expect.element(button).toMatchScreenshot({
+    comparatorName: 'pixelmatch',
+    comparatorOptions: {
+      allowedMismatchedPixelRatio: 0.01,
+    },
+  })
+  ```
+  :::
+
+- `screenshotOptions: object`
+
+  与 [`locator.screenshot()`](/guide/browser/locators.html#screenshot) 支持的选项一致，但以下情况除外：
+
+  - `'base64'`
+  - `'path'`
+  - `'save'`
+  - `'type'`
+
+- `timeout: number = 5_000`
+
+  等待获取稳定截图的时间。
+
+  设为 `0` 可禁用超时，但如果无法确定稳定截图，进程将不会结束。
+
+#### `"pixelmatch"` comparator options
+
+使用 `"pixelmatch"` 比较器时，以下选项可用：
+
+- `allowedMismatchedPixelRatio: number | undefined = undefined`
+
+  允许的捕获截图与参考图像之间不同的像素比例的最大值，范围为 `0` 到 `1`。
+
+  例如，`allowedMismatchedPixelRatio: 0.02` 表示最多允许 2% 的像素不同，否则测试失败。
+
+- `allowedMismatchedPixels: number | undefined = undefined`
+
+  允许的捕获截图与参考图像之间不同的像素的最大数量。
+
+  如果设置为 `undefined`，任何非零差异都将导致测试失败。
+
+  例如，`allowedMismatchedPixels: 10` 表示最多允许 10 个像素不同，否则测试失败。
+
+- `threshold: number = 0.1`
+
+  两张图像中相同像素的可接受颜色差异范围，值越小越敏感。
+
+  比较使用 [YIQ 色彩空间](https://en.wikipedia.org/wiki/YIQ)。
+
+- `includeAA: boolean = false`
+
+  如果为 `true`，则禁用抗锯齿像素的检测和忽略。
+
+- `alpha: number = 0.1`
+
+  差异图像中未改变像素的混合级别，范围为 `0`（白色）到 `1`（原始亮度）。
+
+- `aaColor: [r: number, g: number, b: number] = [255, 255, 0]`
+
+  差异图像中抗锯齿像素的颜色。
+
+- `diffColor: [r: number, g: number, b: number] = [255, 0, 0]`
+
+  差异图像中不同像素的颜色。
+
+- `diffColorAlt: [r: number, g: number, b: number] | undefined = undefined`
+
+  可选的替代颜色，用于区分深色和浅色背景下的差异，帮助区分添加和移除的内容。
+  如果未设置，则所有差异均使用 `diffColor`。
+
+- `diffMask: boolean = false`
+
+  如果为 `true`，则仅以透明背景上的遮罩形式显示差异，而不是将其叠加在原始图像上。
+
+  如果检测到抗锯齿像素，则不会显示。
+
+::: warning
+当 `allowedMismatchedPixels` 和 `allowedMismatchedPixelRatio` 同时设置时，将采用更严格的限制值。
+
+例如，如果你允许 100 个像素差异或 2% 的比例差异，且图像总像素为 10,000，那么实际限制将是 100 个像素，而不是 200 个。
+:::

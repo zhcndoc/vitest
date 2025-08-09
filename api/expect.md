@@ -75,7 +75,7 @@ test('expect.soft test', () => {
 
 ```ts
 interface ExpectPoll extends ExpectStatic {
-  (actual: () => T, options?: { interval?: number; timeout?: number; message?: string }): Promise<Assertions<T>>
+  (actual: () => T, options?: { interval?: number, timeout?: number, message?: string }): Promise<Assertions<T>>
 }
 ```
 
@@ -678,7 +678,7 @@ test('top fruits', () => {
 
 `toMatchObject` 断言对象是否匹配另一个对象的部分属性。
 
-我们还可以传递一个对象数组。如果想要检查两个数组在元素数量上是否匹配，这将非常有用，与`arrayContaining`不同，后者允许接收到的数组中有额外的元素。
+你同样可以传入一个对象数组。若希望验证两个数组的元素数量与顺序完全一致，这一点尤为方便；相反，`arrayContaining` 则允许实际收到的数组包含额外元素。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -1501,7 +1501,7 @@ test.each(errorDirs)('build fails with "%s"', async (dir) => {
 
 - **类型:** `() => any`
 
-该非对称匹配器与相等检查一起使用时，将始终返回 `true`。如果只想确定属性是否存在，那么它就很有用。
+这个非对称匹配器会匹配除 `null` 与 `undefined` 以外的任何值；当你想确认某个属性确实存在，且其值并非空或缺失时，它尤为实用。
 
 ```ts
 import { expect, test } from 'vitest'

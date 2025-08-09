@@ -200,8 +200,8 @@ export default mergeConfig(
 另外，你可以使用 `extends` 选项继承根配置，所有选项都会被合并。
 
 ```ts [vitest.config.ts]
-import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   plugins: [react()],
