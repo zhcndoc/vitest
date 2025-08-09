@@ -381,7 +381,7 @@ If connection to the browser takes longer, the test suite will fail (default: `6
 - **CLI:** `--browser.trackUnhandledErrors`
 - **Config:** [browser.trackUnhandledErrors](/guide/browser/config#browser-trackunhandlederrors)
 
-Control if Vitest catches uncaught exceptions so they can be reported (default: `true`)
+控制 Vitest 是否捕获未捕获的异常以便报告（默认：`true`）。
 
 ### pool
 
