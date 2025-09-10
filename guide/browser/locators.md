@@ -234,7 +234,7 @@ function getByLabelText(
 
 创建一个能够找到具有关联标签的元素的定位器。
 
-`page.getByLabelText('Username')` 定位器将在以下示例中找到所有的输入元素：
+下方示例中，`page.getByLabelText('Username')` 会一次性选中所有相关输入框。
 
 ```html
 // for/htmlFor relationship between label and form element id
@@ -1004,7 +1004,7 @@ declare module '@vitest/browser/context' {
 }
 ```
 
-If the method is called on the global `page` object, then selector will be applied to the whole page. In the example bellow, `getByArticleTitle` will find all elements with an attribute `data-title` with the value of `title`. However, if the method is called on the locator, then it will be scoped to that locator.
+如果该方法在全局的 `page` 对象上调用，选择器将作用于整个页面。在下面的例子中，`getByArticleTitle` 会找到所有具有 `data-title` 属性且值为 `title` 的元素。然而，如果该方法在定位器上调用，它将仅作用于该定位器的范围内。
 
 ```html
 <article data-title="Hello, World!">

@@ -376,6 +376,13 @@ High and low watermarks for functions in the format of `<high>,<low>`
 
 If connection to the browser takes longer, the test suite will fail (default: `60_000`)
 
+### browser.trackUnhandledErrors
+
+- **CLI:** `--browser.trackUnhandledErrors`
+- **Config:** [browser.trackUnhandledErrors](/guide/browser/config#browser-trackunhandlederrors)
+
+控制 Vitest 是否捕获未捕获的异常以便报告（默认：`true`）。
+
 ### pool
 
 - **CLI:** `--pool <pool>`

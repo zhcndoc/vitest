@@ -145,8 +145,8 @@ page.getByRole('article', { name: 'Hello World' })
 This method has access to the current locator context, if there is one (if method is called on the `page`, then context will refer to `page`), so you can chain all locator methods inside:
 
 ```ts
-import { locators } from '@vitest/browser/context'
 import type { Locator } from '@vitest/browser/context'
+import { locators } from '@vitest/browser/context'
 
 locators.extend({
   getByCommentsCount(this: Locator, count: number) {
@@ -159,8 +159,8 @@ locators.extend({
 Having access to context also allows you to call regular methods of the locator to define a custom user event:
 
 ```ts
-import { locators, page } from '@vitest/browser/context'
 import type { Locator } from '@vitest/browser/context'
+import { locators, page } from '@vitest/browser/context'
 
 locators.extend({
   clickAndFill(this: Locator, text: string) {

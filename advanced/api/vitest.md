@@ -99,6 +99,10 @@ const testCase = vitest.state.getReportedEntity(task) // 新 API
 
 缓存管理器，存储有关最新测试结果和测试文件状态的信息。在 Vitest 中，这仅由默认的排序器用于排序测试。
 
+## watcher <Version>4.0.0</Version> {#watcher}
+
+这是 Vitest 的 watcher 实例，提供追踪文件变更并重新执行测试的便利方法。若关闭内置 watcher ，你仍可在自定义 watcher 中调用 `onFileChange`、`onFileDelete` 或 `onFileCreate` 完成相同任务。
+
 ## projects
 
 这是一个数组，里面包含了所有 [测试项目](/advanced/api/test-project) ，这些项目是用户自己定义的。如果用户没有显式指定任何项目，那么这个数组中只会包含一个 [根项目](#getrootproject) 。
@@ -528,3 +532,75 @@ function matchesProjectFilter(name: string): boolean
 检查名称是否与当前 [项目过滤器](/guide/cli#project) 匹配。如果没有项目过滤器，则始终返回 `true` 。
 
 无法通过编程方式更改 `--project` CLI 选项。
+
+## waitForTestRunEnd <Version>4.0.0</Version> {#waitfortestrunend}
+
+```ts
+function waitForTestRunEnd(): Promise<void>
+```
+
+若测试正在运行，则返回一个 Promise ，它会在测试运行完毕后兑现。
+
+## createCoverageProvider <Version>4.0.0</Version> {#createcoverageprovider}
+
+```ts
+function createCoverageProvider(): Promise<CoverageProvider | null>
+```
+
+当配置中启用了 `coverage` 时，创建覆盖率提供器。若使用 [`start`](#start) 或 [`init`](#init) 方法启动测试，这一步会自动完成。
+
+::: warning
+若未将 [`coverage.clean`](/config/#coverage-clean) 显式设为 false ，此方法还会清空之前的所有报告。
+:::
+
+## experimental_parseSpecification <Version>4.0.0</Version> <Badge type="warning">experimental</Badge> {#parsespecification}
+
+```ts
+function experimental_parseSpecification(
+  specification: TestSpecification
+): Promise<TestModule>
+```
+
+该函数会收集文件内的所有测试，但不会执行它们。它借助 Vite 的 `ssrTransform` ，并在其之上使用 rollup 的 `parseAst` 进行静态分析，从而提取所有可识别的测试用例。
+
+::: warning
+If Vitest could not analyse the name of the test, it will inject a hidden `dynamic: true` property to the test or a suite. The `id` will also have a postfix with `-dynamic` to not break tests that were collected properly.
+
+Vitest always injects this property in tests with `for` or `each` modifier or tests with a dynamic name (like, `hello ${property}` or `'hello' + ${property}`). Vitest will still assign a name to the test, but it cannot be used to filter the tests.
+
+There is nothing Vitest can do to make it possible to filter dynamic tests, but you can turn a test with `for` or `each` modifier into a name pattern with `escapeTestName` function:
+
+若 Vitest 无法解析测试名称，它会在测试或套件中注入一个隐藏的 `dynamic: true` 属性，并在 `id` 后追加 `-dynamic` ，以免破坏已正确收集的测试。
+
+含 `for` 或 `each` 修饰符的测试，以及名称动态生成的测试（如 `hello ${property}` 或 `'hello' + ${property}` ） ， Vitest 一律会注入此属性。 Vitest 仍会为其分配名称，但该名称无法用于过滤测试。
+
+Vitest 无法让动态测试支持过滤，但你可以使用 `escapeTestName` 函数，将带 `for` 或 `each` 的测试转换成名称模式：
+
+```ts
+import { escapeTestName } from 'vitest/node'
+
+// 转换为 /hello, .+?/
+const escapedPattern = new RegExp(escapeTestName('hello, %s', true))
+```
+:::
+
+::: warning
+Vitest 只会收集当前文件内定义的测试，绝不会跟随导入去其他文件搜寻。
+
+无论是否从 `vitest` 入口点导入， Vitest 都会收集所有 `it` 、`test` 、`suite` 和 `describe` 的定义。
+:::
+
+## experimental_parseSpecifications <Version>4.0.0</Version> <Badge type="warning">实验</Badge> {#parsespecifications}
+
+```ts
+function experimental_parseSpecifications(
+  specifications: TestSpecification[],
+  options?: {
+    concurrency?: number
+  }
+): Promise<TestModule[]>
+```
+
+该方法会依据规格数组 [collect tests](#parsespecification)。
+
+默认情况下， Vitest 仅同时运行 `os.availableParallelism()` 个规格，以避免性能骤降。我们可以在第二个参数中指定其他并发数。

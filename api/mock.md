@@ -1,6 +1,6 @@
-# Mock Functions
+# Mocks
 
-我们可以使用 `vi.fn` 方法创建一个 mock 函数来跟踪其执行情况。如果要跟踪已创建对象上的方法，可以使用 `vi.spyOn` 方法：
+用 `vi.fn` 即可创建 mock 函数或类，并全程记录其调用情况；若想监控已存在对象上的某个属性，则改用 `vi.spyOn`。
 
 ```js
 import { vi } from 'vitest'
@@ -18,7 +18,7 @@ market.getApples()
 getApplesSpy.mock.calls.length === 1
 ```
 
-我们应该在 [`expect`](/api/expect) 上使用 mock 断言（例如 [`toHaveBeenCalled`](/api/expect#tohavebeencalled) ）来断言 mock 结果。在这里我们介绍了用于操作 mock 行为的可用属性和方法。
+要验证 mock 的行为，请通过 [`expect`](/api/expect) 调用类似 [`toHaveBeenCalled`](/api/expect#tohavebeencalled) 的断言方法；以下 API 参考汇总了所有可用来操控 mock 的属性和方法。
 
 ::: tip
 The custom function implementation in the types below is marked with a generic `<T>`.
@@ -30,7 +30,7 @@ The custom function implementation in the types below is marked with a generic `
 function getMockImplementation(): T | undefined
 ```
 
-返回当前的模拟实现（如果有）。
+若存在 mock 实现，则返回其当前版本；否则返回空值。
 
 如果 mock 对象是使用 [`vi.fn`](/api/vi#vi-fn) 创建的，它将使用提供的方法作为模拟实现。
 
@@ -42,12 +42,12 @@ function getMockImplementation(): T | undefined
 function getMockName(): string
 ```
 
-使用它来返回使用 `.mockName(name)` 方法分配给 mock 对象的名称。默认情况下，它将返回 `vi.fn()`。
+此方法返回由 `.mockName(name)` 为 mock 指定的名称。`vi.fn()` 创建的替身默认返回 `'vi.fn()'`； `vi.spyOn` 生成的 spy 则沿用被监视方法的原始名称。
 
 ## mockClear
 
 ```ts
-function mockClear(): MockInstance<T>
+function mockClear(): Mock<T>
 ```
 
 清除所有关于每次调用的信息。调用此方法后，`.mock` 上的所有属性将恢复到初始状态。这个方法不会重置实现。它适用于在不同断言之间清理 mock 对象。
@@ -72,7 +72,7 @@ expect(spy.mock.calls).toEqual([['Bob']])
 ## mockName
 
 ```ts
-function mockName(name: string): MockInstance<T>
+function mockName(name: string): Mock<T>
 ```
 
 设置内部 mock 名称。这在断言失败时识别 mock 对象非常有用。
@@ -80,7 +80,7 @@ function mockName(name: string): MockInstance<T>
 ## mockImplementation
 
 ```ts
-function mockImplementation(fn: T): MockInstance<T>
+function mockImplementation(fn: T): Mock<T>
 ```
 
 接受一个函数，用作 mock 实现。TypeScript 要求参数和返回类型与原始函数相匹配。
@@ -102,7 +102,7 @@ mockFn.mock.calls[1][0] === 1 // true
 ## mockImplementationOnce
 
 ```ts
-function mockImplementationOnce(fn: T): MockInstance<T>
+function mockImplementationOnce(fn: T): Mock<T>
 ```
 
 接受一个函数作为 mock 实现。TypeScript 要求该函数的参数和返回类型与原函数相匹配。这个方法可以被链式调用，以便对多次函数调用产生不同的结果。
@@ -135,11 +135,11 @@ console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn())
 function withImplementation(
   fn: T,
   cb: () => void
-): MockInstance<T>
+): Mock<T>
 function withImplementation(
   fn: T,
   cb: () => Promise<void>
-): Promise<MockInstance<T>>
+): Promise<Mock<T>>
 ```
 
 在执行回调时，临时覆盖原始模拟实现。
@@ -180,10 +180,10 @@ test('async callback', () => {
 ## mockRejectedValue
 
 ```ts
-function mockRejectedValue(value: unknown): MockInstance<T>
+function mockRejectedValue(value: unknown): Mock<T>
 ```
 
-接受在调用 async 函数时将被拒绝的错误。
+传入一个错误对象后，一旦 async 函数被调用，就会立即以该错误作为拒绝原因抛出。
 
 ```ts
 const asyncMock = vi.fn().mockRejectedValue(new Error('Async error'))
@@ -194,7 +194,7 @@ await asyncMock() // throws Error<'Async error'>
 ## mockRejectedValueOnce
 
 ```ts
-function mockRejectedValueOnce(value: unknown): MockInstance<T>
+function mockRejectedValueOnce(value: unknown): Mock<T>
 ```
 
 接受一个值，该值将在下一次函数调用时被拒绝。如果进行链式调用，每个连续的调用都将拒绝指定的值。
@@ -212,14 +212,16 @@ await asyncMock() // throws Error<'Async error'>
 ## mockReset
 
 ```ts
-function mockReset(): MockInstance<T>
+function mockReset(): Mock<T>
 ```
 
-执行 [`mockClear`](#mockClear) 所做的事情，并将内部实现重置为原始函数。
-这还会重置所有 "once" 实现。
+该方法会先执行与 [`mockClear`](#mockClear) 相同的清理，再重置 mock 的实现，并一并清除所有一次性（once）设定。
 
-请注意，从 `vi.fn()` 重置 mock 会将实现设置为返回 `undefined` 的空函数。
-从 `vi.fn(impl)` 重置 mock 会将实现 restore 为 `impl`。
+注意：
+
+- 若 mock 由 `vi.fn()` 创建，重置后其函数体将变为空实现，默认返回 `undefined`。
+
+- 若由 `vi.fn(impl)` 创建，重置后实现会恢复为传入的 `impl`。
 
 当我们想将模拟 restore 为其原始状态时，这很有用。
 
@@ -244,13 +246,12 @@ expect(spy.mock.calls).toEqual([['Bob']])
 ## mockRestore
 
 ```ts
-function mockRestore(): MockInstance<T>
+function mockRestore(): Mock<T>
 ```
 
-执行与 [`mockReset`](#mockReset) 相同的操作，并将内部实现恢复为原始对象。
+该方法先完成 [`mockReset`](#mockreset) 的全部工作；若 mock 通过 [`vi.spyOn`](/api/vi#vi-spyon) 创建，还会进一步恢复被监视对象的原始属性描述符。
 
-需要注意一下，从 `vi.fn()` 恢复的模拟将把实现设置为返回 `undefined` 的空函数。
-从 `vi.fn(impl)` 恢复的模拟将把实现恢复为 `impl` 。
+对于由 `vi.fn()` 创建的 mock，`mockRestore` 的行为与 [`mockReset`](#mockreset) 完全一致。
 
 ```ts
 const person = {
@@ -273,7 +274,7 @@ expect(spy.mock.calls).toEqual([])
 ## mockResolvedValue
 
 ```ts
-function mockResolvedValue(value: Awaited<ReturnType<T>>): MockInstance<T>
+function mockResolvedValue(value: Awaited<ReturnType<T>>): Mock<T>
 ```
 
 接受一个值，该值将在调用异步函数时被解析。TypeScript 只接受与原始函数返回类型相匹配的值。
@@ -287,7 +288,7 @@ await asyncMock() // 42
 ## mockResolvedValueOnce
 
 ```ts
-function mockResolvedValueOnce(value: Awaited<ReturnType<T>>): MockInstance<T>
+function mockResolvedValueOnce(value: Awaited<ReturnType<T>>): Mock<T>
 ```
 
 接受一个值，该值将在下一次函数调用时被解析。TypeScript 仅接受与原始函数返回类型相匹配的值。如果进行链式调用，每个连续的调用都将解析指定的值。
@@ -308,7 +309,7 @@ await asyncMock() // default
 ## mockReturnThis
 
 ```ts
-function mockReturnThis(): MockInstance<T>
+function mockReturnThis(): Mock<T>
 ```
 
 如果我们需要返回方法中的 `this` 上下文而不调用实际实现，请使用此方法。这是以下写法的简写形式：
@@ -322,7 +323,7 @@ spy.mockImplementation(function () {
 ## mockReturnValue
 
 ```ts
-function mockReturnValue(value: ReturnType<T>): MockInstance<T>
+function mockReturnValue(value: ReturnType<T>): Mock<T>
 ```
 
 接受一个值，该值将在模拟函数每次被调用时返回。TypeScript 仅接受与原始函数返回类型一致的值。
@@ -338,7 +339,7 @@ mock() // 43
 ## mockReturnValueOnce
 
 ```ts
-function mockReturnValueOnce(value: ReturnType<T>): MockInstance<T>
+function mockReturnValueOnce(value: ReturnType<T>): Mock<T>
 ```
 
 接受一个值，该值将在每次 mock 函数被调用时返回。TypeScript 仅接受与原始函数返回类型相匹配的值。
@@ -377,13 +378,44 @@ fn.mock.calls
 ]
 ```
 
+:::warning 对象按引用存储。
+请注意，Vitest 在 `mock` 状态的所有属性中始终按引用保存对象。一旦你的代码修改了这些属性，诸如 [`.toHaveBeenCalledWith`](/api/expect#tohavebeencalledwith) 之类的断言便可能无法通过：
+
+```ts
+const argument = {
+  value: 0,
+}
+const fn = vi.fn()
+fn(argument) // { value: 0 }
+
+argument.value = 10
+
+expect(fn).toHaveBeenCalledWith({ value: 0 }) // [!code --]
+
+// The equality check is done against the original argument,
+// but its property was changed between the call and assertion
+expect(fn).toHaveBeenCalledWith({ value: 10 }) // [!code ++]
+```
+
+此时，可先自行克隆该参数：
+
+```ts{6}
+const calledArguments = []
+const fn = vi.fn((arg) => {
+  calledArguments.push(structuredClone(arg))
+})
+
+expect(calledArguments[0]).toEqual({ value: 0 })
+```
+:::
+
 ## mock.lastCall
 
 ```ts
 const lastCall: Parameters<T> | undefined
 ```
 
-这包含了最后一次调用的参数。如果 mock 没有被调用，它将返回 `undefined`。
+该属性保存最近一次调用时传入的全部参数；若 mock 尚未被调用，则返回 `undefined`。
 
 ## mock.results
 
@@ -392,7 +424,7 @@ interface MockResultReturn<T> {
   type: 'return'
   /**
    * The value that was returned from the function.
-   * If function returned a Promise, then this will be a resolved value.
+   * If the function returned a Promise, then this will be a resolved value.
    */
   value: T
 }
@@ -420,8 +452,9 @@ const results: MockResult<ReturnType<T>>[]
 
 这是一个数组，包含了从函数中返回的所有值。数组中的每个项目是一个包含属性 `type` 和 `value` 的对象。可用的类型包括：
 
-- `'return'` - 函数返回时没有抛出。
-- `'throw'` - 函数抛出了一个值。
+- `'return'`：函数已正常返回，未抛异常。
+- `'throw'`：函数执行过程中抛出了异常。
+- `'incomplete'`：函数尚未结束，仍在运行。
 
 `value` 属性包含返回值或抛出的错误。如果函数返回一个 `Promise`，那么即使Promise rejected，`result` 也将始终为 `'return'`。
 
@@ -458,6 +491,11 @@ fn.mock.results
 ## mock.settledResults
 
 ```ts
+interface MockSettledResultIncomplete {
+  type: 'incomplete'
+  value: undefined
+}
+
 interface MockSettledResultFulfilled<T> {
   type: 'fulfilled'
   value: T
@@ -471,20 +509,28 @@ interface MockSettledResultRejected {
 export type MockSettledResult<T>
   = | MockSettledResultFulfilled<T>
     | MockSettledResultRejected
+    | MockSettledResultIncomplete
 
 const settledResults: MockSettledResult<Awaited<ReturnType<T>>>[]
 ```
 
-包含函数中`resolved` 或 `rejected` 的所有值的数组。
+该数组按顺序记录了函数每次被调用后最终兑现或拒绝的值。
 
-如果函数从未`resolved` 或 `rejected` ，则此数组将为空。
+若函数返回的是非 Promise ，实际值会原封不动地保留，但状态仍被标记为 `fulfilled` 或 `rejected`。
+
+在结果出来前，对应的 `settledResult` 类型始终为 `incomplete`。
 
 ```js
 const fn = vi.fn().mockResolvedValueOnce('result')
 
 const result = fn()
 
-fn.mock.settledResults === []
+fn.mock.settledResults === [
+  {
+    type: 'incomplete',
+    value: undefined,
+  },
+]
 
 await result
 
@@ -541,10 +587,10 @@ fn.mock.contexts[1] === context
 const instances: ReturnType<T>[]
 ```
 
-这个属性是一个数组，包含了使用 `new` 关键字调用模拟时创建的所有实例。请注意，这是函数的实际上下文（`this`），而不是返回值。
+该数组按顺序保存了每次用 `new` 调用 mock 时生成的实例。请注意，这里存储的是函数运行时的实际 `this` 上下文，而非函数的返回值。
 
 ::: warning
-如果使用 `new MyClass()` 对 mock 进行实例化，那么 `mock.instances` 将是一个只有一个值的数组：
+若用 `new MyClass()` 实例化该 mock ，则 `mock.instances` 将是一个仅包含单个元素的数组：
 
 ```js
 const MyClass = vi.fn()
@@ -553,7 +599,7 @@ const a = new MyClass()
 MyClass.mock.instances[0] === a
 ```
 
-如果从构造函数返回一个值，该值不会出现在 `instances` 数组中，而是会出现在 `results` 中：
+若构造函数显式返回值，该值不会存入 `instances`，而会出现在 `results` 中：
 
 ```js
 const Spy = vi.fn(() => ({ method: vi.fn() }))

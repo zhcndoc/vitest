@@ -208,11 +208,11 @@ export default defineConfig({
 })
 ```
 ```ts [qwik]
-import { defineConfig } from 'vitest/config'
 import { qwikVite } from '@builder.io/qwik/optimizer'
-
 // optional, run the tests in SSR mode
 import { testSSR } from 'vitest-browser-qwik/ssr-plugin'
+
+import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   plugins: [testSSR(), qwikVite()],
@@ -517,9 +517,9 @@ test('greeting appears on click', async () => {
 })
 ```
 ```tsx [preact]
-import { render } from 'vitest-browser-preact'
-import { createElement } from 'preact'
 import Greeting from '.Greeting'
+import { createElement } from 'preact'
+import { render } from 'vitest-browser-preact'
 
 test('greeting appears on click', async () => {
   const screen = render(<Greeting />)
