@@ -1,0 +1,127 @@
+# Vitest
+
+> 下一代测试框架
+
+一个原生支持 Vite 的测试框架。非常快速！
+
+## Table of Contents
+
+### 介绍
+
+- [Why Browser Mode | Browser Mode](/guide/browser/why.md)
+- [Browser Mode | Guide](/guide/browser.md)
+
+### 配置
+
+- [浏览器配置参考](/guide/browser/config.md)
+- [配置 Playwright](/guide/browser/playwright.md)
+- [配置 WebdriverIO](/guide/browser/webdriverio.md)
+
+### API
+
+- [Context API | Browser Mode](/guide/browser/context.md)
+- [Interactivity API | Browser Mode](/guide/browser/interactivity-api.md)
+- [Locators | Browser Mode](/guide/browser/locators.md)
+- [Assertion API | Browser Mode](/guide/browser/assertion-api.md)
+- [Commands | Browser Mode](/guide/browser/commands.md)
+
+### Guides
+
+- [多种设置](/guide/browser/multiple-setups.md)
+- [可视化回归测试](/guide/browser/visual-regression-testing.md)
+
+- [配置索引](/config.md)
+- [Test API 索引](/api.md)
+- [Advanced API](/advanced/api.md)
+
+### API
+
+- [插件 API](/advanced/api/plugin.md)
+- [运行器 API](/advanced/runner.md)
+- [报告器 「Reporters」](/advanced/api/reporters.md)
+- [任务元数据](/advanced/metadata.md)
+
+#### Node API
+
+- [Advanced API](/advanced/api.md)
+- [Vitest API](/advanced/api/vitest.md)
+- [TestProject](/advanced/api/test-project.md)
+- [TestSpecification](/advanced/api/test-specification.md)
+
+#### Test Task API
+
+- [TestCase](/advanced/api/test-case.md)
+- [TestSuite](/advanced/api/test-suite.md)
+- [TestModule](/advanced/api/test-module.md)
+- [TestCollection](/advanced/api/test-collection.md)
+
+### Guides
+
+- [Running Tests](/advanced/guide/tests.md)
+- [扩展默认报告器 (Extending Reporters)](/advanced/reporters.md)
+- [Custom Pool](/advanced/pool.md)
+
+- [配置索引](/config.md)
+- [Test API 索引](/api.md)
+
+### Introduction
+
+- [为什么是 Vitest | 指南](/guide/why.md)
+- [快速起步 | 指南](/guide.md)
+- [主要功能 | 指南](/guide/features.md)
+- [配置索引](/config.md)
+
+### API
+
+- [Test API 索引](/api.md)
+- [Mocks](/api/mock.md)
+- [Vi](/api/vi.md)
+- [expect](/api/expect.md)
+- [expectTypeOf](/api/expect-typeof.md)
+- [assert](/api/assert.md)
+- [assertType](/api/assert-type.md)
+
+### Guides
+
+- [命令行界面 | 指南](/guide/cli.md)
+- [测试筛选 | 指南](/guide/filtering.md)
+- [测试项目 | 指南](/guide/projects.md)
+- [报告器 | 指南](/guide/reporters.md)
+- [测试覆盖率 | 指南](/guide/coverage.md)
+- [测试快照 | 指南](/guide/snapshot.md)
+- [模拟对象 | 指南](/guide/mocking.md)
+- [并行性 | Guide](/guide/parallelism.md)
+- [类型测试 | 指南](/guide/testing-types.md)
+- [Vitest UI | 指南](/guide/ui.md)
+- [源码内联测试 | 指南](/guide/in-source.md)
+- [测试上下文 | 指南](/guide/test-context.md)
+- [测试环境 | 指南](/guide/environment.md)
+- [扩展断言 | 指南](/guide/extending-matchers.md)
+- [IDE 插件 | 指南](/guide/ide.md)
+- [调试 | 指南](/guide/debugging.md)
+- [常见错误 | 指南](/guide/common-errors.md)
+- [迁移指南 | 指南](/guide/migration.md)
+
+#### 模拟对象
+
+- [模拟模块（Mocking Modules）](/guide/mocking-modules.md)
+
+#### Performance
+
+- [性能测试分析](/guide/profiling-test-performance.md)
+- [性能优化 | 指南](/guide/improving-performance.md)
+
+- [Browser Mode | Guide](/guide/browser.md)
+- [Advanced API](/advanced/api.md)
+- [与其他测试框架对比 | 指南](/guide/comparisons.md)
+
+### Other
+
+- [Examples | Browser Mode](/guide/browser/examples.md)
+- [Retry-ability | Browser Mode](/guide/browser/retry-ability.md)
+- [Test Annotations | Guide](/guide/test-annotations.md)
+- [Untitled](/README.md)
+- [Untitled](/advanced/api/import-example.md)
+- [Untitled](/guide/cli-table.md)
+- [使用插件 | 指南](/guide/using-plugins.md)
+- [管理 Vitest 配置文件](/config/file.md)
