@@ -1,6 +1,6 @@
 # Mocking Classes
 
-You can mock an entire class with a single [`vi.fn`](/api/vi#fn) call.
+你可以通过一次 [`vi.fn`](/api/vi#fn) 调用来模拟整个类。
 
 ```ts
 class Dog {

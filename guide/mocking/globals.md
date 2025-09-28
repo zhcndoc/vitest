@@ -1,8 +1,8 @@
 # Mocking Globals
 
-You can mock global variables that are not present with `jsdom` or `node` by using [`vi.stubGlobal`](/api/vi#vi-stubglobal) helper. It will put the value of the global variable into a `globalThis` object.
+你可以使用 [`vi.stubGlobal`](/api/vi#vi-stubglobal) 助手来模拟 `jsdom` 或 [node](file:///Users/liuxin/Project/开源/vitest中文文档/node_modules/@types/node) 中不存在的全局变量。它会将全局变量的值放入 `globalThis` 对象中。
 
-By default, Vitest does not reset these globals, but you can turn on the [`unstubGlobals`](/config/#unstubglobals) option in your config to restore the original values after each test or call [`vi.unstubAllGlobals()`](/api/vi#vi-unstuballglobals) manually.
+默认情况下，Vitest 不会重置这些全局变量，但你可以在配置中开启 [`unstubGlobals`](/config/#unstubglobals) 选项，以便在每次测试后恢复原始值，或者手动调用 [`vi.unstubAllGlobals()`](/api/vi#vi-unstuballglobals)。
 
 ```ts
 import { vi } from 'vitest'

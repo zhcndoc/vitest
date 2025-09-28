@@ -1,12 +1,12 @@
 # Mocking the File System
 
-Mocking the file system ensures that the tests do not depend on the actual file system, making the tests more reliable and predictable. This isolation helps in avoiding side effects from previous tests. It allows for testing error conditions and edge cases that might be difficult or impossible to replicate with an actual file system, such as permission issues, disk full scenarios, or read/write errors.
+模拟文件系统可以确保测试不依赖于实际的文件系统，从而使测试更加可靠和可预测。这种隔离有助于避免之前测试产生的副作用。它允许测试错误条件和边缘情况，而这些情况在实际文件系统中可能难以或无法复制，例如权限问题、磁盘满场景或读写错误。
 
-Vitest doesn't provide any file system mocking API out of the box. You can use `vi.mock` to mock the `fs` module manually, but it's hard to maintain. Instead, we recommend using [`memfs`](https://www.npmjs.com/package/memfs) to do that for you. `memfs` creates an in-memory file system, which simulates file system operations without touching the actual disk. This approach is fast and safe, avoiding any potential side effects on the real file system.
+Vitest 没有开箱即用地提供任何文件系统模拟 API。你可以使用 `vi.mock` 手动模拟 `fs` 模块，但这很难维护。相反，我们推荐使用 [`memfs`](https://www.npmjs.com/package/memfs) 来为你完成这项工作。`memfs` 创建一个内存中的文件系统，它模拟文件系统操作而不触及实际磁盘。这种方法快速且安全，避免了对真实文件系统的任何潜在副作用。
 
 ## Example
 
-To automatically redirect every `fs` call to `memfs`, you can create `__mocks__/fs.cjs` and `__mocks__/fs/promises.cjs` files at the root of your project:
+为了自动将每个 `fs` 调用重定向到 `memfs`，你可以在项目的根目录下创建 `__mocks__/fs.cjs` 和 `__mocks__/fs/promises.cjs` 文件：
 
 ::: code-group
 ```ts [__mocks__/fs.cjs]
