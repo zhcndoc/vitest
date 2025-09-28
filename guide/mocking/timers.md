@@ -1,8 +1,8 @@
 # Timers
 
-When we test code that involves timeouts or intervals, instead of having our tests wait it out or timeout, we can speed up our tests by using "fake" timers that mock calls to `setTimeout` and `setInterval`.
+当我们测试涉及超时或间隔的代码时，我们可以使用"伪造"计时器来加速测试，而不是让测试等待超时。这些伪造计时器可以模拟对 `setTimeout` 和 `setInterval` 的调用。
 
-See the [`vi.useFakeTimers` API section](/api/vi#vi-usefaketimers) for a more in depth detailed API description.
+有关更详细的 API 描述，请参见 [`vi.useFakeTimers` API 部分](/api/vi#vi-usefaketimers)。
 
 ## Example
 

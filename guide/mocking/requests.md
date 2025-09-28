@@ -1,8 +1,8 @@
 # Mocking Requests
 
-Because Vitest runs in Node, mocking network requests is tricky; web APIs are not available, so we need something that will mimic network behavior for us. We recommend [Mock Service Worker](https://mswjs.io/) to accomplish this. It allows you to mock `http`, `WebSocket` and `GraphQL` network requests, and is framework agnostic.
+由于 Vitest 运行在 Node 环境中，模拟网络请求很棘手；Web API 不可用，所以我们需要一些能够模拟网络行为的工具。我们推荐使用 [Mock Service Worker](https://mswjs.io/) 来实现这一点。它允许你模拟 `http`、`WebSocket` 和 `GraphQL` 网络请求，并且与框架无关。
 
-Mock Service Worker (MSW) works by intercepting the requests your tests make, allowing you to use it without changing any of your application code. In-browser, this uses the [Service Worker API](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API). In Node.js, and for Vitest, it uses the [`@mswjs/interceptors`](https://github.com/mswjs/interceptors) library. To learn more about MSW, read their [introduction](https://mswjs.io/docs/)
+Mock Service Worker (MSW) 通过拦截你的测试发出的请求来工作，允许你在不更改任何应用程序代码的情况下使用它。在浏览器中，这使用 [Service Worker API](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API)。在 Node.js 和 Vitest 中，它使用 [`@mswjs/interceptors`](https://github.com/mswjs/interceptors) 库。要了解更多关于 MSW 的信息，请阅读他们的[介绍](https://mswjs.io/docs/)。
 
 ## Configuration
 
