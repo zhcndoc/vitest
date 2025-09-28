@@ -3,54 +3,54 @@ title: Component Testing | Guide
 outline: deep
 ---
 
-# Component Testing
+# 组件测试
 
-Component testing is a testing strategy that focuses on testing individual UI components in isolation. Unlike end-to-end tests that test entire user flows, component tests verify that each component works correctly on its own, making them faster to run and easier to debug.
+组件测试是一种专注于独立测试单个UI组件的测试策略。与测试整个用户流程的端到端测试不同，组件测试验证每个组件单独工作是否正确，使它们运行更快且更容易调试。
 
-Vitest provides comprehensive support for component testing across multiple frameworks including Vue, React, Svelte, Lit, Preact, Qwik, Solid, Marko, and more. This guide covers the specific patterns, tools, and best practices for testing components effectively with Vitest.
+Vitest为多个框架提供全面的组件测试支持，包括Vue、React、Svelte、Lit、Preact、Qwik、Solid、Marko等。本指南涵盖了使用Vitest有效测试组件的特定模式、工具和最佳实践。
 
-## Why Component Testing?
+## 为什么进行组件测试？
 
-Component testing sits between unit tests and end-to-end tests, offering several advantages:
+组件测试位于单元测试和端到端测试之间，提供了几个优势：
 
-- **Faster feedback** - Test individual components without loading entire applications
-- **Isolated testing** - Focus on component behavior without external dependencies
-- **Better debugging** - Easier to pinpoint issues in specific components
-- **Comprehensive coverage** - Test edge cases and error states more easily
+- **更快的反馈** - 测试单个组件而无需加载整个应用程序
+- **隔离测试** - 关注组件行为而无需外部依赖
+- **更好的调试** - 更容易定位特定组件中的问题
+- **全面的覆盖** - 更容易测试边缘情况和错误状态
 
-## Browser Mode for Component Testing
+## 组件测试的浏览器模式
 
-Component testing in Vitest uses **Browser Mode** to run tests in real browser environments using Playwright, WebdriverIO, or preview mode. This provides the most accurate testing environment as your components run in real browsers with actual DOM implementations, CSS rendering, and browser APIs.
+Vitest中的组件测试使用**浏览器模式**在真实浏览器环境中运行测试，支持使用Playwright、WebdriverIO或预览模式。这提供了最准确的测试环境，因为你的组件在真实浏览器中运行，具有实际的DOM实现、CSS渲染和浏览器API。
 
-### Why Browser Mode?
+### 为什么使用浏览器模式？
 
-Browser Mode is the recommended approach for component testing because it provides the most accurate testing environment. Unlike DOM simulation libraries, Browser Mode catches real-world issues that can affect your users.
+浏览器模式是组件测试的推荐方法，因为它提供了最准确的测试环境。与DOM模拟库不同，浏览器模式能够捕获影响用户的真实世界问题。
 
 ::: tip
-Browser Mode catches issues that DOM simulation libraries might miss, including:
-- CSS layout and styling problems
-- Real browser API behavior
-- Accurate event handling and propagation
-- Proper focus management and accessibility features
+浏览器模式能够捕获DOM模拟库可能遗漏的问题，包括：
+- CSS布局和样式问题
+- 真实浏览器API行为
+- 准确的事件处理和传播
+- 正确的焦点管理和无障碍功能特性
 
 :::
 
-### Purpose of this Guide
+### 本指南的目的
 
-This guide focuses specifically on **component testing patterns and best practices** using Vitest's capabilities. While many examples use Browser Mode (as it's the recommended approach), the focus here is on component-specific testing strategies rather than browser configuration details.
+本指南专门介绍使用Vitest功能的**组件测试模式和最佳实践**。虽然许多示例使用浏览器模式（因为这是推荐的方法），但这里的重点是组件特定的测试策略，而不是浏览器配置细节。
 
-For detailed browser setup, configuration options, and advanced browser features, refer to the [Browser Mode documentation](/guide/browser/).
+有关详细的浏览器设置、配置选项和高级浏览器功能，请参阅[浏览器模式文档](/guide/browser/)。
 
-## What Makes a Good Component Test
+## 什么是好的组件测试
 
-Good component tests focus on **behavior and user experience** rather than implementation details:
+好的组件测试关注**行为和用户体验**，而不是实现细节：
 
-- **Test the contract** - How components receive inputs (props) and produce outputs (events, renders)
-- **Test user interactions** - Clicks, form submissions, keyboard navigation
-- **Test edge cases** - Error states, loading states, empty states
-- **Avoid testing internals** - State variables, private methods, CSS classes
+- **测试契约** - 组件如何接收输入（props）并产生输出（事件、渲染）
+- **测试用户交互** - 点击、表单提交、键盘导航
+- **测试边缘情况** - 错误状态、加载状态、空状态
+- **避免测试内部实现** - 状态变量、私有方法、CSS类
 
-### Component Testing Hierarchy
+### 组件测试层次结构
 
 ```
 1. Critical User Paths → Always test these
@@ -60,11 +60,11 @@ Good component tests focus on **behavior and user experience** rather than imple
 5. Performance         → Large datasets, animations
 ```
 
-## Component Testing Strategies
+## 组件测试策略
 
-### Isolation Strategy
+### 隔离策略
 
-Test components in isolation by mocking dependencies:
+通过模拟依赖项来隔离测试组件：
 
 ```tsx
 // For API requests, we recommend MSW (Mock Service Worker)
@@ -90,9 +90,9 @@ test('UserProfile handles loading and data states', async () => {
 })
 ```
 
-### Integration Strategy
+### 集成策略
 
-Test component collaboration and data flow:
+测试组件协作和数据流：
 
 ```tsx
 test('ProductList filters and displays products correctly', async () => {
@@ -121,19 +121,19 @@ test('ProductList filters and displays products correctly', async () => {
 })
 ```
 
-## Testing Library Integration
+## Testing Library 集成
 
-While Vitest provides official packages for popular frameworks ([`vitest-browser-vue`](https://www.npmjs.com/package/vitest-browser-vue), [`vitest-browser-react`](https://www.npmjs.com/package/vitest-browser-react), [`vitest-browser-svelte`](https://www.npmjs.com/package/vitest-browser-svelte)), you can integrate with [Testing Library](https://testing-library.com/) for frameworks not yet officially supported.
+虽然Vitest为流行的框架提供了官方包([`vitest-browser-vue`](https://www.npmjs.com/package/vitest-browser-vue)、[`vitest-browser-react`](https://www.npmjs.com/package/vitest-browser-react)、[`vitest-browser-svelte`](https://www.npmjs.com/package/vitest-browser-svelte))，但你也可以为尚未得到官方支持的框架集成[Testing Library](https://testing-library.com/)。
 
-### When to Use Testing Library
+### 何时使用 Testing Library
 
-- Your framework doesn't have an official Vitest browser package yet
-- You're migrating existing tests that use Testing Library
-- You prefer Testing Library's API for specific testing scenarios
+- 你的框架还没有官方的Vitest浏览器包
+- 你正在迁移使用Testing Library的现有测试
+- 你更喜欢Testing Library的API来处理特定的测试场景
 
-### Integration Pattern
+### 集成模式
 
-The key is using `page.elementLocator()` to bridge Testing Library's DOM output with Vitest's browser mode APIs:
+关键是使用 `page.elementLocator()` 来桥接 Testing Library 的 DOM 输出与 Vitest 的浏览器模式 API：
 
 ```jsx
 // For Solid.js components
@@ -162,26 +162,26 @@ test('Solid component handles user interaction', async () => {
 })
 ```
 
-### Available Testing Library Packages
+### 可用的 Testing Library 包
 
-Popular Testing Library packages that work well with Vitest:
+与Vitest配合使用效果良好的流行Testing Library包：
 
-- [`@testing-library/solid`](https://github.com/solidjs/solid-testing-library) - For Solid.js
-- [`@marko/testing-library`](https://testing-library.com/docs/marko-testing-library/intro) - For Marko
-- [`@testing-library/svelte`](https://testing-library.com/docs/svelte-testing-library/intro) - Alternative to [`vitest-browser-svelte`](https://www.npmjs.com/package/vitest-browser-svelte)
-- [`@testing-library/vue`](https://testing-library.com/docs/vue-testing-library/intro) - Alternative to [`vitest-browser-vue`](https://www.npmjs.com/package/vitest-browser-vue)
+- [`@testing-library/solid`](https://github.com/solidjs/solid-testing-library) - 用于Solid.js
+- [`@marko/testing-library`](https://testing-library.com/docs/marko-testing-library/intro) - 用于Marko
+- [`@testing-library/svelte`](https://testing-library.com/docs/svelte-testing-library/intro) - [`vitest-browser-svelte`](https://www.npmjs.com/package/vitest-browser-svelte)的替代方案
+- [`@testing-library/vue`](https://testing-library.com/docs/vue-testing-library/intro) - [`vitest-browser-vue`](https://www.npmjs.com/package/vitest-browser-vue)的替代方案
 
 ::: tip Migration Path
-If your framework gets official Vitest support later, you can gradually migrate by replacing Testing Library's `render` function while keeping most of your test logic intact.
+如果你的框架后来获得了官方的Vitest支持，你可以通过替换Testing Library的 `render` 函数来逐步迁移，同时保持大部分测试逻辑不变。
 :::
 
-## Best Practices
+## 最佳实践
 
-### 1. Use Browser Mode for CI/CD
-Ensure tests run in real browser environments for the most accurate testing. Browser Mode provides accurate CSS rendering, real browser APIs, and proper event handling.
+### 1. 在CI/CD中使用浏览器模式
+确保测试在真实浏览器环境中运行以获得最准确的测试结果。浏览器模式提供准确的CSS渲染、真实的浏览器API和正确的事件处理。
 
-### 2. Test User Interactions
-Simulate real user behavior using Vitest's [Interactivity API](/guide/browser/interactivity-api). Use `page.getByRole()` and `userEvent` methods as shown in our [Advanced Testing Patterns](#advanced-testing-patterns):
+### 2. 测试用户交互
+使用Vitest的[交互API](/guide/browser/interactivity-api)模拟真实用户行为。使用`page.getByRole()`和`userEvent`方法，如我们的[高级测试模式](#advanced-testing-patterns)所示：
 
 ```tsx
 // Good: Test actual user interactions
@@ -192,8 +192,8 @@ await page.getByLabelText(/email/i).fill('user@example.com')
 // component.setState({ email: 'user@example.com' })
 ```
 
-### 3. Test Accessibility
-Ensure components work for all users by testing keyboard navigation, focus management, and ARIA attributes. See our [Testing Accessibility](#testing-accessibility) example for practical patterns:
+### 3. 测试可访问性
+通过测试键盘导航、焦点管理和ARIA属性，确保组件对所有用户都能正常工作。请查看我们的[测试可访问性](#testing-accessibility)示例了解实用模式：
 
 ```tsx
 // Test keyboard navigation
@@ -204,8 +204,8 @@ await expect.element(document.activeElement).toHaveFocus()
 await expect.element(modal).toHaveAttribute('aria-modal', 'true')
 ```
 
-### 4. Mock External Dependencies
-Focus tests on component logic by mocking APIs and external services. This makes tests faster and more reliable. See our [Isolation Strategy](#isolation-strategy) for examples:
+### 4. 模拟外部依赖
+通过模拟API和外部服务，将测试重点放在组件逻辑上。这使得测试更快、更可靠。请查看我们的[隔离策略](#isolation-strategy)获取示例：
 
 ```tsx
 // For API requests, we recommend using MSW (Mock Service Worker)
@@ -218,8 +218,8 @@ vi.mock(import('../components/UserCard'), () => ({
 }))
 ```
 
-### 5. Use Meaningful Test Descriptions
-Write test descriptions that explain the expected behavior, not implementation details:
+### 5. 使用有意义的测试描述
+编写测试描述时，应解释预期行为，而不是实现细节：
 
 ```tsx
 // Good: Describes user-facing behavior
@@ -231,9 +231,9 @@ test('calls validateEmail function')
 test('sets isSubmitting state to true')
 ```
 
-## Advanced Testing Patterns
+## 高级测试模式
 
-### Testing Component State Management
+### 测试组件状态管理
 
 ```tsx
 // Testing stateful components and state transitions
@@ -256,7 +256,7 @@ test('ShoppingCart manages items correctly', async () => {
 })
 ```
 
-### Testing Async Components with Data Fetching
+### 测试带有数据获取的异步组件
 
 ```tsx
 // Option 1: Recommended - Use MSW (Mock Service Worker) for API mocking
@@ -298,7 +298,7 @@ test('UserProfile handles loading, success, and error states', async () => {
 })
 ```
 
-### Testing Component Communication
+### 测试组件通信
 
 ```tsx
 // Test parent-child component interaction
@@ -326,7 +326,7 @@ test('parent and child components communicate correctly', async () => {
 })
 ```
 
-### Testing Complex Forms with Validation
+### 测试带验证的复杂表单
 
 ```tsx
 test('ContactForm handles complex validation scenarios', async () => {
@@ -373,7 +373,7 @@ test('ContactForm handles complex validation scenarios', async () => {
 })
 ```
 
-### Testing Error Boundaries
+### 测试错误边界
 
 ```tsx
 // Test how components handle and recover from errors
@@ -406,7 +406,7 @@ test('ErrorBoundary catches and displays errors gracefully', async () => {
 })
 ```
 
-### Testing Accessibility
+### 测试可访问性
 
 ```tsx
 test('Modal component is accessible', async () => {
@@ -443,23 +443,23 @@ test('Modal component is accessible', async () => {
 })
 ```
 
-## Debugging Component Tests
+## 调试组件测试
 
-### 1. Use Browser Dev Tools
+### 1. 使用浏览器开发者工具
 
-Browser Mode runs tests in real browsers, giving you access to full developer tools. When tests fail, you can:
+浏览器模式在真实浏览器中运行测试，让你可以使用完整的开发者工具。当测试失败时，你可以：
 
-- **Open browser dev tools** during test execution (F12 or right-click → Inspect)
-- **Set breakpoints** in your test code or component code
-- **Inspect the DOM** to see the actual rendered output
-- **Check console errors** for JavaScript errors or warnings
-- **Monitor network requests** to debug API calls
+- **在测试执行期间打开浏览器开发者工具**（按F12或右键点击→检查）
+- **在测试代码或组件代码中设置断点**
+- **检查DOM**以查看实际渲染的输出
+- **检查控制台错误**以查找JavaScript错误或警告
+- **监控网络请求**以调试API调用
 
-For headful mode debugging, add `headless: false` to your browser config temporarily.
+对于有头模式调试，可以在浏览器配置中临时添加`headless: false`。
 
-### 2. Add Debug Statements
+### 2. 添加调试语句
 
-Use strategic logging to understand test failures:
+使用策略性日志记录来理解测试失败：
 
 ```tsx
 test('debug form validation', async () => {
@@ -476,16 +476,16 @@ test('debug form validation', async () => {
 })
 ```
 
-### 3. Inspect Rendered Output
+### 3. 检查渲染输出
 
-When components don't render as expected, investigate systematically:
+当组件未按预期渲染时，请系统性地进行调查：
 
-**Use Vitest's browser UI:**
-- Run tests with browser mode enabled
-- Open the browser URL shown in the terminal to see tests running
-- Visual inspection helps identify CSS issues, layout problems, or missing elements
+**使用Vitest的浏览器UI：**
+- 在启用浏览器模式的情况下运行测试
+- 打开终端中显示的浏览器URL以查看测试运行情况
+- 可视化检查有助于识别CSS问题、布局问题或缺失元素
 
-**Test element queries:**
+**测试元素查询：**
 ```tsx
 // Debug why elements can't be found
 const button = page.getByRole('button', { name: /submit/i })
@@ -498,11 +498,11 @@ if (button.length === 0) {
 }
 ```
 
-### 4. Verify Selectors
+### 4. 验证选择器
 
-Selector issues are common causes of test failures. Debug them systematically:
+选择器问题是测试失败的常见原因。请系统性地调试它们：
 
-**Check accessible names:**
+**检查可访问名称：**
 ```tsx
 // If getByRole fails, check what roles/names are available
 const buttons = page.getByRole('button').all()
@@ -514,7 +514,7 @@ for (const button of buttons) {
 }
 ```
 
-**Test different query strategies:**
+**测试不同的查询策略：**
 ```tsx
 // Multiple ways to find the same element using .or for auto-retrying
 const submitButton = page.getByRole('button', { name: /submit/i }) // By accessible name
@@ -523,7 +523,7 @@ const submitButton = page.getByRole('button', { name: /submit/i }) // By accessi
 // Note: Vitest doesn't have page.locator(), use specific getBy* methods instead
 ```
 
-**Common selector debugging patterns:**
+**常见的选择器调试模式：**
 ```tsx
 test('debug element queries', async () => {
   render(<LoginForm />)
@@ -534,9 +534,9 @@ test('debug element queries', async () => {
 })
 ```
 
-### 5. Debugging Async Issues
+### 5. 调试异步问题
 
-Component tests often involve timing issues:
+组件测试经常涉及时机问题：
 
 ```tsx
 test('debug async component behavior', async () => {
@@ -547,11 +547,11 @@ test('debug async component behavior', async () => {
 })
 ```
 
-## Migration from Other Testing Frameworks
+## 从其他测试框架迁移
 
-### From Jest + Testing Library
+### 从 Jest + Testing Library 迁移
 
-Most Jest + Testing Library tests work with minimal changes:
+大多数 Jest + Testing Library 测试只需少量更改即可工作：
 
 ```ts
 // Before (Jest)
@@ -561,15 +561,15 @@ import { render, screen } from '@testing-library/react' // [!code --]
 import { render } from 'vitest-browser-react' // [!code ++]
 ```
 
-### Key Differences
+### 主要差异
 
-- Use `await expect.element()` instead of `expect()` for DOM assertions
-- Use `@vitest/browser/context` for user interactions instead of `@testing-library/user-event`
-- Browser Mode provides real browser environment for accurate testing
+- 使用 `await expect.element()` 而不是 `expect()` 进行 DOM 断言
+- 使用 `@vitest/browser/context` 进行用户交互而不是 `@testing-library/user-event`
+- 浏览器模式提供真实的浏览器环境以进行准确的测试
 
-## Learn More
+## 了解更多
 
-- [Browser Mode Documentation](/guide/browser/)
-- [Assertion API](/guide/browser/assertion-api)
-- [Interactivity API](/guide/browser/interactivity-api)
-- [Example Repository](https://github.com/vitest-tests/browser-examples)
+- [浏览器模式文档](/guide/browser/)
+- [断言API](/guide/browser/assertion-api)
+- [交互性API](/guide/browser/interactivity-api)
+- [示例仓库](https://github.com/vitest-tests/browser-examples)
