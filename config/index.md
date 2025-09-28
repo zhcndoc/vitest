@@ -8,7 +8,7 @@ outline: deep
 
 - 创建 `vitest.config.ts`，它将具有更高的优先级，并且会**覆盖** `vite.config.ts` 中的配置（Vitest 支持所有传统的 JS 和 TS 文件扩展名，但不支持 `json`） - 这意味着我们在 `vite.config` 中的所有选项将被**忽略**。
 - 向 CLI 传递 `--config` 选项，例如 `vitest --config ./path/to/vitest.config.ts`。
-- 使用 `process.env.VITEST` 或在 `defineConfig` 上的 `mode` 属性（如果没有用 `--mode` 覆盖，默认设置为 `test`/`benchmark`）来在 `vite.config.ts` 中有条件地应用不同的配置。
+- 使用 `process.env.VITEST` 或在 `defineConfig` 上的 `mode` 属性（如果没有用 `--mode` 覆盖，默认设置为 `test`/`benchmark`）来在 `vite.config.ts` 中有条件地应用不同的配置。请注意，像任何其他环境变量一样，`VITEST` 也会在测试中的 `import.meta.env` 上暴露出来。
 
 要配置 Vitest 本身，请在我们的 Vite 配置中添加 `test` 属性。如果我们是从 `vite` 本身导入 `defineConfig`，我们还需要在配置文件顶部使用[三斜杠指令](https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html#-reference-types-)添加对 Vitest 类型引用。
 
@@ -340,7 +340,7 @@ TypeError: createAsyncThunk is not a function
 TypeError: default is not a function
 ```
 
-如果你使用的是绕过此 Node.js 限制的捆绑器或转译器，则可以手动启用此选项。默认情况下，当 `environment` 为 `node` 时，Vitest 假定你使用的是 Node ESM 语法，并且不关心命名导出。
+默认情况下，Vitest 假设你使用的是打包工具来绕过此问题，不会失败，但如果代码未被处理，你可以手动禁用此行为。
 
 #### deps.moduleDirectories
 
@@ -768,13 +768,6 @@ export default defineConfig({
 
 最大线程数或百分比。还可以使用`VITEST_MAX_THREADS`环境变量进行设置。
 
-##### poolOptions.threads.minThreads<NonProjectOption />
-
-- **类型:** `number | string`
-- **默认值:** _available CPUs_
-
-最小线程数或百分比。还可以使用`VITEST_MIN_THREADS`环境变量进行设置。
-
 ##### poolOptions.threads.singleThread
 
 - **类型:** `boolean`
@@ -840,13 +833,6 @@ export default defineConfig({
 
 最大分支数量或百分比。你也可以使用 `VITEST_MAX_FORKS` 环境变量。
 
-##### poolOptions.forks.minForks<NonProjectOption />
-
-- **类型:** `number | string`
-- **默认值:** _available CPUs_
-
-最小分支数量或百分比。你也可以使用 `VITEST_MIN_FORKS` 环境变量。
-
 ##### poolOptions.forks.isolate
 
 - **类型:** `boolean`
@@ -902,13 +888,6 @@ export default defineConfig({
 - **默认:** _available CPUs_
 
 最大线程数或百分比。还可以使用`VITEST_MAX_THREADS`环境变量进行设置。
-
-##### poolOptions.vmThreads.minThreads<NonProjectOption />
-
-- **类型:** `number | string`
-- **默认值:** _available CPUs_
-
-最小线程数或百分比。还可以使用`VITEST_MIN_THREADS`环境变量进行设置。
 
 ##### poolOptions.vmThreads.memoryLimit<NonProjectOption />
 
@@ -983,13 +962,6 @@ export default defineConfig({
 
 最大线程数或百分比。你也可以使用 `VITEST_MAX_FORKS` 环境变量。
 
-##### poolOptions.vmForks.minForks<NonProjectOption />
-
-- **类型:** `number | string`
-- **默认值:** _available CPUs_
-
-最小线程数或百分比。你也可以使用 `VITEST_MIN_FORKS` 环境变量。
-
 ##### poolOptions.vmForks.memoryLimit<NonProjectOption />
 
 - **类型:** `string | number`
@@ -1025,12 +997,6 @@ export default defineConfig({
 - **类型:** `number | string`
 
 运行测试时设置的最大工作线程数或百分比。`poolOptions。｛threads，vmThreads｝.maxThreads `/`poolOptions.forks.maxForks` 具有更高的优先级。
-
-### minWorkers<NonProjectOption /> {#minworkers}
-
-- **类型:** `number | string`
-
-运行测试时设置的最小工作线程数或百分比。`poolOptions.{threads,vmThreads}.minThreads`/`poolOptions.forks.minForks` 具有更高的优先级。
 
 ### testTimeout
 
@@ -1465,13 +1431,30 @@ statements 的全局阈值。
 
 ##### coverage.thresholds.autoUpdate
 
-- **类型:** `boolean`
+- **类型:** `boolean | function`
 - **默认值:** `false`
 - **可用的测试提供者:** `'v8' | 'istanbul'`
 - **命令行终端:** `--coverage.thresholds.autoUpdate=<boolean>`
 
 如果当前覆盖率优于配置的阈值时，将所有阈值 `lines`、`functions`、`branches` 和 `statements` 更新到配置文件中。
 此选项有助于在覆盖率提高时保持阈值不变。
+
+You can also pass a function for formatting the updated threshold values:
+
+<!-- eslint-skip -->
+```ts
+{
+  coverage: {
+    thresholds: {
+      // Update thresholds without decimals
+      autoUpdate: (newThreshold) => Math.floor(newThreshold),
+
+      // 95.85 -> 95
+      functions: 95,
+    }
+  }
+}
+```
 
 ##### coverage.thresholds.100
 
@@ -1694,7 +1677,7 @@ test('doNotRun', () => {
 
 - **类型:** `PrettyFormatOptions`
 
-测试快照的格式选项。这些选项被传递给 [`pretty-format`](https://www.npmjs.com/package/pretty-format)。
+快照测试的格式选项。这些选项被传递给我们 fork 的 [`pretty-format`](https://www.npmjs.com/package/pretty-format)。除了 `pretty-format` 选项外，我们还支持 `printShadowRoot: boolean`。
 
 ::: tip
 请注意，此对象上的 `plugins` 字段将被忽略。

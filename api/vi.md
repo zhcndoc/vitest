@@ -164,7 +164,7 @@ axios.get(`/apples/${increment(1)}`)
 请注意，如果不调用 `vi.mock` ，模块**不会**被自动模拟。要复制 Jest 的自动锁定行为，可以在 [`setupFiles`](/config/#setupfiles) 中为每个所需的模块调用 `vi.mock` 。
 :::
 
-如果没有提供 `__mocks__` 文件夹或工厂，Vitest 将导入原始模块并自动模拟其所有输出。有关应用的规则，请参阅[模块](/guide/mocking#%E6%A8%A1%E5%9D%97)。
+如果没有提供 `__mocks__` 文件夹或未提供工厂函数，Vitest 将导入原始模块并自动模拟其所有导出。有关应用的规则，请参阅[算法](/guide/mocking/modules#automocking-algorithm)。
 
 ### vi.doMock
 
@@ -290,7 +290,7 @@ vi.mock('./example.js', async () => {
 function importMock<T>(path: string): Promise<MaybeMockedDeep<T>>
 ```
 
-导入模块并模拟其所有属性（包括嵌套属性）。遵循与 [`vi.mock`](#vi-mock) 相同的规则。有关应用的规则，请参阅[模块](/guide/mocking#%E6%A8%A1%E5%9D%97)。
+导入模块并模拟其所有属性（包括嵌套属性）。遵循与 [`vi.mock`](#vi-mock) 相同的规则。有关应用的规则，请参阅[算法](/guide/mocking/modules#automocking-algorithm)。
 
 ### vi.unmock
 
@@ -519,7 +519,7 @@ function restoreAllMocks(): Vitest
 一旦完成还原，即可重新对其进行监视。
 
 ::: warning
-该方法同样不会触及 [automocking](/guide/mocking-modules#mocking-a-module) 期间生成的任何 mock。
+该方法同样不会触及 [automocking](/guide/mocking/modules#mocking-a-module) 期间生成的任何 mock。
 
 注意：与 [`mock.mockRestore`](/api/mock#mockrestore) 不同，`vi.restoreAllMocks` 既不会清空调用历史，也不会重置 mock 的实现。
 :::
@@ -766,7 +766,7 @@ IntersectionObserver === undefined
 
 ## Fake Timers
 
-本节介绍如何使用 [fake timers](/guide/mocking#%E8%AE%A1%E6%97%B6%E5%99%A8) 。
+本节介绍如何使用 [fake timers](/guide/mocking/timers) 。
 
 ### vi.advanceTimersByTime
 

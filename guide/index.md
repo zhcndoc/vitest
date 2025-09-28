@@ -103,7 +103,7 @@ Vitest 的主要优势之一是它与 Vite 的统一配置。如果存在，`vit
 
 - 创建 `vitest.config.ts`，优先级将会最高。
 - 将 `--config` 选项传递给 CLI，例如 `vitest --config ./path/to/vitest.config.ts`。
-- 在 `defineConfig` 上使用 `process.env.VITEST` 或 `mode` 属性（如果没有被覆盖，将设置为 `test`）有条件地在 `vite.config.ts` 中应用不同的配置。
+- 在 `defineConfig` 上使用 `process.env.VITEST` 或 `mode` 属性（如果没有被覆盖，将设置为 `test`）有条件地在 `vite.config.ts` 中应用不同的配置。请注意，像任何其他环境变量一样，`VITEST` 也会在测试中的 `import.meta.env` 上暴露出来
 
 Vitest 支持与 Vite 相同的配置文件扩展名：`.js`、`.mjs`、`.cjs`、`.ts`、`.cts`、`.mts`。 Vitest 不支持 `.json` 扩展名。
 

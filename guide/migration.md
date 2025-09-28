@@ -7,21 +7,7 @@ outline: deep
 
 ## 迁移到 Vitest 4.0 {#vitest-4}
 
-### 移除 `reporters: 'basic'`
-
-Basic 报告器已被移除，它等价于以下配置：
-
-```ts
-export default defineConfig({
-  test: {
-    reporters: [
-      ['default', { summary: false }]
-    ]
-  }
-})
-```
-
-### V8 代码覆盖率重大变更
+### V8 Code Coverage Major Changes
 
 Vitest 的 V8 覆盖率提供器现在使用了更精准的结果映射逻辑，从 Vitest v3 升级后，你可能会看到覆盖率报告的内容有变化。
 
@@ -78,7 +64,7 @@ export default defineConfig({
 - [覆盖率报告中的文件包含与排除](/guide/coverage.html#including-and-excluding-files-from-coverage-report)
 - [性能分析 | 代码覆盖率](/guide/profiling-test-performance.html#code-coverage) 了解调试覆盖率生成的方法
 
-### `spyOn` 支持构造函数
+### `spyOn` and `fn` 支持构造函数
 
 在之前版本中，如果你对构造函数使用 `vi.spyOn`，会收到类似 `Constructor <name> requires 'new'` 的错误。从 Vitest 4 开始，所有用 `new` 调用的 mock 都会正确创建实例，而不是调用 `mock.apply`。这意味着 mock 实现必须使用 `function` 或 `class` 关键字，例如：
 
@@ -187,15 +173,148 @@ Vite 已提供外部化机制，但为降低破坏性，仍保留旧方案；[`s
 
 未使用上述高级功能者，升级无感知。
 
-### 移除废弃的 API
+### `workspace` is Replaced with `projects`
+
+The `workspace` configuration option was renamed to [`projects`](/guide/projects) in Vitest 3.2. They are functionally the same, except you cannot specify another file as the source of your workspace (previously you could specify a file that would export an array of projects). Migrating to `projects` is easy, just move the code from `vitest.workspace.js` to `vitest.config.ts`:
+
+::: code-group
+```ts [vitest.config.js]
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    workspace: './vitest.workspace.js', // [!code --]
+    projects: [ // [!code ++]
+      './packages/*', // [!code ++]
+      { // [!code ++]
+        test: { // [!code ++]
+          name: 'unit', // [!code ++]
+        }, // [!code ++]
+      }, // [!code ++]
+    ] // [!code ++]
+  }
+})
+```
+```ts [vitest.workspace.js]
+import { defineWorkspace } from 'vitest/config' // [!code --]
+
+export default defineWorkspace([ // [!code --]
+  './packages/*', // [!code --]
+  { // [!code --]
+    test: { // [!code --]
+      name: 'unit', // [!code --]
+    }, // [!code --]
+  } // [!code --]
+]) // [!code --]
+```
+:::
+
+### Browser Provider Accepts an Object
+
+In Vitest 4.0, the browser provider now accepts an object instead of a string (`'playwright'`, `'webdriverio'`). This makes it simpler to work with custom options and doesn't require adding `/// <reference` comments anymore.
+
+```ts
+import { playwright } from '@vitest/browser/providers/playwright' // [!code ++]
+
+export default defineConfig({
+  test: {
+    browser: {
+      provider: 'playwright', // [!code --]
+      provider: playwright({ // [!code ++]
+        launchOptions: { // [!code ++]
+          slowMo: 100, // [!code ++]
+        }, // [!code ++]
+      }), // [!code ++]
+      instances: [
+        {
+          browser: 'chromium',
+          launch: { // [!code --]
+            slowMo: 100, // [!code --]
+          }, // [!code --]
+        },
+      ],
+    },
+  },
+})
+```
+
+The naming of properties in `playwright` factory now also aligns with [Playwright documentation](https://playwright.dev/docs/api/class-testoptions#test-options-launch-options) making it easier to find.
+
+### Reporter Updates
+
+Reporter APIs `onCollected`, `onSpecsCollected`, `onPathsCollected`, `onTaskUpdate` and `onFinished` were removed. See [`Reporters API`](/advanced/api/reporters) for new alternatives. The new APIs were introduced in Vitest `v3.0.0`.
+
+The `basic` reporter was removed as it is equal to:
+
+```ts
+export default defineConfig({
+  test: {
+    reporters: [
+      ['default', { summary: false }]
+    ]
+  }
+})
+```
+
+The [`verbose`](/guide/reporters#verbose-reporter) reporter now prints test cases as a flat list. To revert to the previous behaviour, use `--reporter=tree`:
+
+```ts
+export default defineConfig({
+  test: {
+    reporters: ['verbose'], // [!code --]
+    reporters: ['tree'], // [!code ++]
+  }
+})
+```
+
+### Snapshots using custom elements print the shadow root
+
+In Vitest 4.0 snapshots that include custom elements will print the shadow root contents. To restore the previous behavior, set the [`printShadowRoot` option](/config/#snapshotformat) to `false`.
+
+```js
+// before Vite 4.0
+exports[`custom element with shadow root 1`] = `
+"<body>
+  <div>
+    <custom-element />
+  </div>
+</body>"
+`
+
+// after Vite 4.0
+exports[`custom element with shadow root 1`] = `
+"<body>
+  <div>
+    <custom-element>
+      #shadow-root
+        <span
+          class="some-name"
+          data-test-id="33"
+          id="5"
+        >
+          hello
+        </span>
+    </custom-element>
+  </div>
+</body>"
+`
+```
+
+### Deprecated APIs are Removed
 
 Vitest 4.0 移除了以下废弃的配置项：
 
-- `poolMatchGlobs` 配置项，请使用 [`projects`](/guide/projects) 代替。
-- `environmentMatchGlobs` 配置项，请使用 [`projects`](/guide/projects) 代替。
-- `workspace` 配置项，请使用 [`projects`](/guide/projects) 代替。
-- Reporter 的 API 例如 `onCollected`, `onSpecsCollected`, `onPathsCollected`, `onTaskUpdate` 及 `onFinished` 。查看 [`Reporters API`](/advanced/api/reporters) 了解替代方案。这些 API 在 Vitest v3.0.0 中引入。
-- 配置项 `deps.external`, `deps.inline`, `deps.fallbackCJS`。请改用 `server.deps.external`, `server.deps.inline` 或 `server.deps.fallbackCJS`。
+- `poolMatchGlobs` 配置项。请使用 [`projects`](/guide/projects) 代替。
+- `environmentMatchGlobs` 配置项。请使用 [`projects`](/guide/projects) 代替。
+- `deps.external`、`deps.inline`、`deps.fallbackCJS` 配置项。请改用 `server.deps.external`、`server.deps.inline` 或 `server.deps.fallbackCJS`。
+- `browser.testerScripts` 配置项。请使用 [`browser.testerHtmlPath`](/guide/browser/config#browser-testerhtmlpath) 代替。
+- `minWorkers` 配置项。只有 `maxWorkers` 会对测试运行方式产生影响，因此我们正在移除这个公共选项。
+- Vitest 不再支持将测试选项作为第三个参数提供给 `test` 和 `describe`。请改用第二个参数。
+
+```ts
+test('example', () => { /* ... */ }, { retry: 2 }) // [!code --]
+test('example', { retry: 2 }, () => { /* ... */ }) // [!code ++]
+```
 
 同时，所有弃用类型被一次性清理，彻底解决误引 `@types/node` 的问题（[#5481](https://github.com/vitest-dev/vitest/issues/5481)、[#6141](https://github.com/vitest-dev/vitest/issues/6141)）。
 
@@ -280,7 +399,7 @@ Vitest 的测试名使用 `>` 符号连接，方便区分测试与套件，而 J
 
 ### Done 回调
 
-从 Vitest v0.10.0 开始，回调式测试声明被弃用。你可以改写为使用 `async`/`await`，或用 Promise 模拟回调风格。
+Vitest 不支持回调式测试声明。你可以改写为使用 `async`/`await` 函数，或使用 Promise 来模拟回调风格。
 
 <!--@include: ./examples/promise-done.md-->
 
@@ -293,7 +412,7 @@ beforeEach(() => setActivePinia(createTestingPinia())) // [!code --]
 beforeEach(() => { setActivePinia(createTestingPinia()) }) // [!code ++]
 ```
 
-Jest 中钩子顺序执行（逐个执行），Vitest 默认并行执行。若想使用 Jest 行为，可配置 [`sequence.hooks`](/config/#sequence-hooks)：
+在 Jest 中钩子是顺序执行的（一个接一个）。默认情况下，Vitest 在栈中运行钩子。要使用 Jest 的行为，请更新 [`sequence.hooks`](/config/#sequence-hooks) 选项：
 
 ```ts
 export default defineConfig({
@@ -330,23 +449,16 @@ vi.setConfig({ testTimeout: 5_000 }) // [!code ++]
 
 ### Vue 快照
 
-这不是 Jest 特有功能，但如果之前使用 Jest 的 vue-cli preset，需要安装 [`jest-serializer-vue`](https://github.com/eddyerburgh/jest-serializer-vue) 包，并在 [setupFiles](/config/#setupfiles) 中使用：
+这不是 Jest 特有的功能，但如果你之前在 vue-cli 预设中使用 Jest，你需要安装 [`jest-serializer-vue`](https://github.com/eddyerburgh/jest-serializer-vue) 包，并在 [`snapshotSerializers`](/config/#snapshotserializers) 中指定它：
 
-:::code-group
-```js [vite.config.js]
-import { defineConfig } from 'vite'
+```js [vitest.config.js]
+import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
-    setupFiles: ['./tests/unit/setup.js']
+    snapshotSerializers: ['jest-serializer-vue']
   }
 })
 ```
-```js [tests/unit/setup.js]
-import vueSnapshotSerializer from 'jest-serializer-vue'
-
-expect.addSnapshotSerializer(vueSnapshotSerializer)
-```
-:::
 
 否则快照中会出现大量转义的 `"` 字符。
