@@ -2456,7 +2456,7 @@ export interface SnapshotEnvironment {
 
 每次调用 `console` 方法时都输出堆栈追踪信息，这对于排查问题非常有帮助。
 
-### attachmentsDir <Version>3.2.0</Version>
+### attachmentsDir <Version>3.2.0</Version> {#attachmentsdir}
 
 - **类型:** `string`
 - **默认值:** `'.vitest-attachments'`

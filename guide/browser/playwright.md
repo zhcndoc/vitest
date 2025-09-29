@@ -18,7 +18,7 @@ export default defineConfig({
 
 Vitest 在单个页面中运行同一文件中的所有测试。你可以在顶层或实例内部调用 `playwright` 时配置 `launch`、`connect` 和 `context`：
 
-```ts{7-15,22-27} [vitest.config.js]
+```ts{7-14,21-26} [vitest.config.js]
 import { playwright } from '@vitest/browser/providers/playwright'
 import { defineConfig } from 'vitest/config'
 
