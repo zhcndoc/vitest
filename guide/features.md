@@ -281,11 +281,11 @@ export default defineConfig(({ mode }) => ({
 }))
 ```
 
-## Unhandled Errors
+## 未处理的错误
 
-By default, Vitest catches and reports all [unhandled rejections](https://developer.mozilla.org/en-US/docs/Web/API/Window/unhandledrejection_event), [uncaught exceptions](https://nodejs.org/api/process.html#event-uncaughtexception) (in Node.js) and [error](https://developer.mozilla.org/en-US/docs/Web/API/Window/error_event) events (in the [browser](/guide/browser/)).
+默认情况下，Vitest 会捕获并报告所有的 [未处理的拒绝(Promise)](https://developer.mozilla.org/en-US/docs/Web/API/Window/unhandledrejection_event)、[未捕获的异常](https://nodejs.org/api/process.html#event-uncaughtexception)（在 Node.js 中）以及 [错误事件](https://developer.mozilla.org/en-US/docs/Web/API/Window/error_event)（在 [浏览器](/guide/browser/) 中）。
 
-You can disable this behaviour by catching them manually. Vitest assumes the callback is handled by you and won't report the error.
+您可以通过手动捕获这些错误来禁用此行为。Vitest 会认为回调已由您处理，不会再报告该错误。
 
 ::: code-group
 ```ts [setup.node.js]
@@ -310,15 +310,15 @@ window.addEventListener('unhandledrejection', () => {
 ```
 :::
 
-Alternatively, you can also ignore reported errors with a [`dangerouslyIgnoreUnhandledErrors`](/config/#dangerouslyignoreunhandlederrors) option. Vitest will still report them, but they won't affect the test result (exit code won't be changed).
+或者，你也可以使用 [`dangerouslyIgnoreUnhandledErrors`](/config/#dangerouslyignoreunhandlederrors) 选项来忽略报告的错误。Vitest 仍会报告它们，但它们不会影响测试结果（退出码不会改变）。
 
-If you need to test that error was not caught, you can create a test that looks like this:
+如果您需要测试某个错误未被捕获，可以创建如下所示的测试：
 
 ```ts
 test('my function throws uncaught error', async ({ onTestFinished }) => {
   onTestFinished(() => {
-    // if the event was never called during the test,
-    // make sure it's removed before the next test starts
+    // 如果在测试期间从未调用过该事件，
+    // 确保在下一个测试开始前将其移除
     process.removeAllListeners('unhandledrejection')
   })
 
