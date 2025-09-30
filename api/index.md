@@ -51,10 +51,6 @@ test.skip('skipped test', () => {
 test.concurrent.skip('skipped concurrent test', () => {
   // 一些现在失败的逻辑
 })
-
-test.concurrent.skip('skipped concurrent test', () => {
-  // some logic that fails right now
-})
 ```
 
 但我们也可以选择将对象作为第二个参数来使用。
@@ -64,10 +60,6 @@ import { test } from 'vitest'
 
 test('skipped test', { skip: true }, () => {
   // 一些现在失败的逻辑
-})
-
-test('skipped concurrent test', { skip: true, concurrent: true }, () => {
-  // some logic that fails right now
 })
 
 test('skipped concurrent test', { skip: true, concurrent: true }, () => {
