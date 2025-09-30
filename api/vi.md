@@ -1149,27 +1149,6 @@ test('Element render correctly', async () => {
 
 如果使用了 `vi.useFakeTimers` , `vi.waitFor` 会在每次检查回调中自动调用 `vi.advanceTimersByTime(interval)` 。
 
-### vi.waitUntil
-
-- **类型:** `<T>(callback: WaitUntilCallback<T>, options?: number | WaitUntilOptions) => Promise<T>`
-
-这与 `vi.waitFor` 类似，但如果回调抛出任何错误，执行将立即中断并收到一条错误信息。如果回调返回虚假值(falsy) ，下一次检查将继续，直到返回真实值(truthy) 。这在需要等待某项内容存在后再执行下一步时非常有用。
-
-请看下面的示例。我们可以使用 `vi.waitUntil` 等待元素出现在页面上，然后对元素进行操作。
-
-```ts
-import { expect, test, vi } from 'vitest'
-
-test('Element render correctly', async () => {
-  const element = await vi.waitUntil(() => document.querySelector('.element'), {
-    timeout: 500, // default is 1000
-    interval: 20, // default is 50
-  })
-
-  // do something with the element
-  expect(element.querySelector('.element-child')).toBeTruthy()
-})
-```
 
 ### vi.hoisted {#vi-hoisted}
 
