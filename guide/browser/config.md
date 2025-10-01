@@ -128,7 +128,7 @@ HTML 入口点的路径。可以是相对于项目根目录的路径。此文件
 
 配置为浏览器提供代码的 Vite 服务器的选项。不影响 [`test.api`](#api) 选项。默认情况下，Vitest 分配端口 `63315` 以避免与开发服务器冲突，允许我们同时运行两者。
 
-## browser.provider <Badge type="danger">advanced</Badge> {#browser-provider}
+## browser.provider {#browser-provider}
 
 - **类型:** `BrowserProviderOption`
 - **默认值:** `'preview'`
@@ -154,7 +154,7 @@ export default defineConfig({
 
 要配置提供者如何初始化浏览器，你可以将选项传递给工厂函数：
 
-```ts{7-15,22-27}
+```ts{7-13,20-26}
 import { playwright } from '@vitest/browser/providers/playwright'
 
 export default defineConfig({
@@ -188,7 +188,7 @@ export default defineConfig({
 })
 ```
 
-### 自定义提供者
+### Custom Provider <Badge type="danger">advanced</Badge>
 
 ::: danger ADVANCED API
 自定义提供者 API 高度实验性，并且可能在补丁版本之间发生变化。如果你只需要在浏览器中运行测试，请改用 [`browser.instances`](#browser-instances) 选项。
@@ -305,6 +305,50 @@ export interface BrowserScript {
 
 ::: info
 这是浏览器与 Vitest 服务器建立 WebSocket 连接所需的时间。在正常情况下，此超时不应被触发。
+:::
+
+## browser.trace
+
+- **Type:** `'on' | 'off' | 'on-first-retry' | 'on-all-retries' | 'retain-on-failure' | object`
+- **CLI:** `--browser.trace=on`, `--browser.trace=retain-on-failure`
+- **Default:** `'off'`
+
+Capture a trace of your browser test runs. You can preview traces with [Playwright Trace Viewer](https://trace.playwright.dev/).
+
+This options supports the following values:
+
+- `'on'` - capture trace for all tests. (not recommended as it's performance heavy)
+- `'off'` - do not capture traces.
+- `'on-first-retry'` - capture trace only when retrying the test for the first time.
+- `'on-all-retries'` - capture trace on every retry of the test.
+- `'retain-on-failure'` - capture trace only for tests that fail. This will automatically delete traces for tests that pass.
+- `object` - an object with the following shape:
+
+```ts
+interface TraceOptions {
+  mode: 'on' | 'off' | 'on-first-retry' | 'on-all-retries' | 'retain-on-failure'
+  /**
+   * The directory where all traces will be stored. By default, Vitest
+   * stores all traces in `__traces__` folder close to the test file.
+   */
+  tracesDir?: string
+  /**
+   * Whether to capture screenshots during tracing. Screenshots are used to build a timeline preview.
+   * @default true
+   */
+  screenshots?: boolean
+  /**
+   * If this option is true tracing will
+   * - capture DOM snapshot on every action
+   * - record network activity
+   * @default true
+   */
+  snapshots?: boolean
+}
+```
+
+::: danger WARNING
+This option is supported only by the [**playwright**](/guide/browser/playwright) provider.
 :::
 
 ## browser.trackUnhandledErrors

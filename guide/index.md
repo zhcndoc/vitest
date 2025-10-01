@@ -39,7 +39,7 @@ bun add -D vitest
 :::
 
 :::tip
-Vitest 需要 Vite >=v5.0.0 和 Node >=v18.0.0
+Vitest 需要 Vite >=v5.0.0 和 Node >=v20.0.0
 :::
 
 如果在 `package.json` 中安装一份 `vitest` 的副本，可以使用上面列出的方法之一。然而，如果更倾向于直接运行 `vitest` ，可以使用 `npx vitest`（ `npx` 是会随着 npm 和 Node.js 一起被安装）。
@@ -126,25 +126,12 @@ export default defineConfig({
 如果你已经在使用 Vite，请在 Vite 配置中添加 `test` 属性。你还需要使用 [三斜杠指令](https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html#-reference-types-) 在你的配置文件的顶部引用。
 
 ```ts [vite.config.ts]
-/// <reference types="vitest" />
-import { defineConfig } from 'vite'
-
-export default defineConfig({
-  test: {
-    // ...
-  },
-})
-```
-
-`<reference types="vitest" />` 将在下一次主要更新中停止工作，但我们可以开始迁移到 Vitest 2.1 中的 `vitest/config`：
-
-```ts [vite.config.ts]
 /// <reference types="vitest/config" />
 import { defineConfig } from 'vite'
 
 export default defineConfig({
   test: {
-    // ... Specify options here.
+    // ...
   },
 })
 ```

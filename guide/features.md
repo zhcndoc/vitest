@@ -316,24 +316,14 @@ window.addEventListener('unhandledrejection', () => {
 
 ```ts
 test('my function throws uncaught error', async ({ onTestFinished }) => {
+  const unhandledRejectionListener = vi.fn()
+  process.on('unhandledRejection', unhandledRejectionListener)
   onTestFinished(() => {
-    // 如果在测试期间从未调用过该事件，
-    // 确保在下一个测试开始前将其移除
-    process.removeAllListeners('unhandledrejection')
+    process.off('unhandledRejection', unhandledRejectionListener)
   })
 
-  return new Promise((resolve, reject) => {
-    process.once('unhandledrejection', (error) => {
-      try {
-        expect(error.message).toBe('my error')
-        resolve()
-      }
-      catch (error) {
-        reject(error)
-      }
-    })
+  callMyFunctionThatRejectsError()
 
-    callMyFunctionThatRejectsError()
-  })
+  await expect.poll(unhandledRejectionListener).toHaveBeenCalled()
 })
 ```

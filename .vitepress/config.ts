@@ -298,6 +298,11 @@ export default ({ mode }: { mode: string }) => {
                 link: '/guide/browser/visual-regression-testing',
                 docFooterText: '可视化回归测试 | Browser Mode',
               },
+              {
+                text: 'Trace Viewer',
+                link: '/guide/browser/trace-viewer',
+                docFooterText: 'Trace Viewer | Browser Mode',
+              },
             ],
           },
           {

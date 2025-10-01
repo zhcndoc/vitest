@@ -376,6 +376,13 @@ If connection to the browser takes longer, the test suite will fail (default: `6
 
 控制 Vitest 是否捕获未捕获的异常以便报告（默认：`true`）。
 
+### browser.trace
+
+- **CLI:** `--browser.trace <mode>`
+- **Config:** [browser.trace](/guide/browser/config#browser-trace)
+
+Enable trace view mode. Supported: "on", "off", "on-first-retry", "on-all-retries", "retain-on-failure".
+
 ### pool
 
 - **CLI:** `--pool <pool>`

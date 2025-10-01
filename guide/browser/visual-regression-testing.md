@@ -33,7 +33,7 @@ Vitest 原生支持可视化回归测试。它会自动截取 UI 组件或页面
 
 因此，Vitest 会在截图文件名中添加浏览器和平台信息（如 `button-chromium-darwin.png`），避免不同环境的截图互相覆盖。
 
-要获得稳定结果，应使用相同的测试环境。**推荐**采用云端服务（如 [Microsoft Playwright Testing](https://azure.microsoft.com/en-us/products/playwright-testing)）或基于 [Docker containers](https://playwright.dev/docs/docker) 的环境。
+要获得稳定结果，应使用相同的测试环境。**推荐**采用云端服务（如 [Azure App Testing](https://azure.microsoft.com/en-us/products/playwright-testing)）或基于 [Docker containers](https://playwright.dev/docs/docker) 的环境。
 :::
 
 在 Vitest 中，可通过 [`toMatchScreenshot` assertion](/guide/browser/assertion-api.html#tomatchscreenshot) 断言运行可视化回归测试：
@@ -544,7 +544,7 @@ jobs:
           fi
 ```
 
-=== Microsoft Playwright Testing
+=== Azure App Testing
 
 你的测试依旧在本地运行，只是将浏览器托管到云端执行。
 这基于 Playwright 的远程浏览器功能，但所有云端基础设施均由 Microsoft 负责维护与管理。
@@ -556,6 +556,7 @@ jobs:
 
 最为简洁高效的做法，是使用 [Test Projects](/guide/projects) 功能来隔离这些测试。
 
+<!-- eslint-disable style/quote-props -->
 ```ts [vitest.config.ts]
 import { env } from 'node:process'
 import { defineConfig } from 'vitest/config'
@@ -589,15 +590,16 @@ export default defineConfig({
                 browser: 'chromium',
                 viewport: { width: 2560, height: 1440 },
                 connect: {
-                  wsEndpoint: `${env.PLAYWRIGHT_SERVICE_URL}?cap=${JSON.stringify({
+                  wsEndpoint: `${env.PLAYWRIGHT_SERVICE_URL}?${new URLSearchParams({
+                    'api-version': '2025-09-01',
                     os: 'linux', // always use Linux for consistency
                     // helps identifying runs in the service's dashboard
-                    runId: `Vitest ${env.CI ? 'CI' : 'local'} run @${new Date().toISOString()}`,
+                    runName: `Vitest ${env.CI ? 'CI' : 'local'} run @${new Date().toISOString()}`,
                   })}`,
                   options: {
                     exposeNetwork: '<loopback>',
                     headers: {
-                      'x-mpt-access-key': env.PLAYWRIGHT_SERVICE_ACCESS_TOKEN,
+                      Authorization: `Bearer ${env.PLAYWRIGHT_SERVICE_ACCESS_TOKEN}`,
                     },
                     timeout: 30_000,
                   },
@@ -616,6 +618,15 @@ export default defineConfig({
 
 - `PLAYWRIGHT_SERVICE_URL`：指示 Playwright 连接的服务器地址
 - `PLAYWRIGHT_SERVICE_ACCESS_TOKEN`：你的身份验证令牌
+
+<!-- eslint-enable style/quote-props -->
+
+Follow the [official guide to create a Playwright Workspace](https://learn.microsoft.com/en-us/azure/app-testing/playwright-workspaces/quickstart-run-end-to-end-tests?tabs=playwrightcli&pivots=playwright-test-runner#create-a-workspace).
+
+Once your workspace is created, configure Vitest to use it:
+
+1. **Set the endpoint URL**: following the [official guide](https://learn.microsoft.com/en-us/azure/app-testing/playwright-workspaces/quickstart-run-end-to-end-tests?tabs=playwrightcli&pivots=playwright-test-runner#configure-the-browser-endpoint), retrieve the URL and set it as the `PLAYWRIGHT_SERVICE_URL` environment variable.
+2. **Enable token authentication**: [enable access tokens](https://learn.microsoft.com/en-us/azure/app-testing/playwright-workspaces/how-to-manage-authentication?pivots=playwright-test-runner#enable-authentication-using-access-tokens) for your workspace, then [generate a token](https://learn.microsoft.com/en-us/azure/app-testing/playwright-workspaces/how-to-manage-access-tokens#generate-a-workspace-access-token) and set it as the `PLAYWRIGHT_SERVICE_ACCESS_TOKEN` environment variable.
 
 ::: danger 令牌务必保密！
 切勿将 `PLAYWRIGHT_SERVICE_ACCESS_TOKEN` 提交到代码仓库。
