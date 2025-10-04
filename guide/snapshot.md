@@ -96,6 +96,7 @@ it('render basic', async () => {
 
 它将与 `./test/basic.output.html` 的内容进行比较。并且可以用 `--update` 标志写回。
 
+<<<<<<< HEAD
 ## 图像快照
 
 快照图像也可以使用 [`jest-image-snapshot`](https://github.com/americanexpress/jest-image-snapshot)。
@@ -111,6 +112,25 @@ test('image snapshot', () => {
 ```
 
 ## 自定义序列化程序
+=======
+## Visual Snapshots
+
+For visual regression testing of UI components and pages, Vitest provides built-in support through [browser mode](/guide/browser/) with the [`toMatchScreenshot()`](/guide/browser/assertion-api#tomatchscreenshot-experimental) assertion:
+
+```ts
+import { expect, test } from 'vitest'
+import { page } from 'vitest/browser'
+
+test('button looks correct', async () => {
+  const button = page.getByRole('button')
+  await expect(button).toMatchScreenshot('primary-button')
+})
+```
+
+This captures screenshots and compares them against reference images to detect unintended visual changes. Learn more in the [Visual Regression Testing guide](/guide/browser/visual-regression-testing).
+
+## Custom Serializer
+>>>>>>> acda1b080825473c9b4b942ce8972ea56d93a1bc
 
 你可以添加自己的逻辑来修改快照的序列化方式。像 Jest 一样，Vitest 为内置的 JavaScript 类型、HTML 元素、ImmutableJS 和 React 元素提供了默认的序列化程序。
 
