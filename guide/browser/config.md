@@ -4,7 +4,7 @@
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
-import { playwright } from '@vitest/browser/providers/playwright'
+import { playwright } from '@vitest/browser-playwright'
 
 export default defineConfig({
   test: {
@@ -47,14 +47,11 @@ export default defineConfig({
 ## browser.instances
 
 - **类型:** `BrowserConfig`
-- **默认值:** `[{ browser: name }]`
+- **默认值:** `[]`
 
-定义多个浏览器设置。每个配置必须至少有一个 `browser` 字段。配置支持我们的提供者配置：
+定义多个浏览器设置。每个配置必须至少有一个 `browser` 字段。
 
-- [配置 Playwright](/guide/browser/playwright)
-- [配置 WebdriverIO](/guide/browser/webdriverio)
-
-除此之外，你还可以指定大多数[项目选项](/config/)(未标记为<NonProjectOption />图标的选项)和一些 `browser` 选项，例如`browser.testerHtmlPath`。
+你可以指定大部分[项目选项](/config/)(未标记<NonProjectOption />图标的选项)和一些 `browser` 选项，如`browser.testerHtmlPath`。
 
 ::: warning
 每个浏览器配置都从根配置继承选项：
@@ -79,8 +76,6 @@ export default defineConfig({
 })
 ```
 
-在开发过程中，Vitest 仅支持一个 [非无头](#browser-headless) 配置。我们可以通过在配置中指定 `headless: false`，或提供 `--browser.headless=false` 标志，或使用 `--project=chromium` 标志过滤项目来限制有头项目。
-
 有关更多示例，请参阅 ["多设置" 指南](/guide/browser/multiple-setups)。
 :::
 
@@ -94,9 +89,7 @@ export default defineConfig({
 - [`browser.screenshotFailures`](#browser-screenshotfailures)
 - [`browser.provider`](#browser-provider)
 
-默认情况下，Vitest 创建一个包含单个元素的数组，该元素使用 [`browser.name`](#browser-name) 字段作为 `browser`。请注意，此行为将在 Vitest 4 中移除。
-
-在底层，Vitest 将这些实例转换为共享单个 Vite 服务器的单独 [测试项目](/advanced/api/test-project)，以获得更好的缓存性能。
+在底层，Vitest 将这些实例转换为共享单个 Vite 服务器的单独[测试项目](/advanced/api/test-project)，以获得更好的缓存性能。
 
 ## browser.headless
 
@@ -134,12 +127,12 @@ HTML 入口点的路径。可以是相对于项目根目录的路径。此文件
 - **默认值:** `'preview'`
 - **CLI:** `--browser.provider=playwright`
 
-提供者工厂的返回值。你可以从 `@vitest/browser/providers/<provider-name>` 导入工厂函数，或者创建自己的提供者：
+提供者工厂的返回值。你可以从 `@vitest/browser-<provider-name>` 导入工厂函数，或者创建自己的提供者：
 
 ```ts{8-10}
-import { playwright } from '@vitest/browser/providers/playwright'
-import { webdriverio } from '@vitest/browser/providers/webdriverio'
-import { preview } from '@vitest/browser/providers/preview'
+import { playwright } from '@vitest/browser-playwright'
+import { webdriverio } from '@vitest/browser-webdriverio'
+import { preview } from '@vitest/browser-preview'
 
 export default defineConfig({
   test: {
@@ -155,7 +148,7 @@ export default defineConfig({
 要配置提供者如何初始化浏览器，你可以将选项传递给工厂函数：
 
 ```ts{7-13,20-26}
-import { playwright } from '@vitest/browser/providers/playwright'
+import { playwright } from '@vitest/browser-playwright'
 
 export default defineConfig({
   test: {
@@ -294,7 +287,7 @@ export interface BrowserScript {
 - **类型:** `Record<string, BrowserCommand>`
 - **默认值:** `{ readFile, writeFile, ... }`
 
-可以从 `@vitest/browser/commands` 导入的自定义 [命令](/guide/browser/commands)。
+可以在浏览器测试中从 `vitest/browser` 导入的自定义[命令](/guide/browser/commands)。
 
 ## browser.connectTimeout
 

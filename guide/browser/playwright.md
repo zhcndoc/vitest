@@ -1,9 +1,9 @@
 # 配置 Playwright
 
-要使用 playwright 运行测试，你需要在配置中的 `test.browser.provider` 属性中指定它：
+要使用 playwright 运行测试，你需要安装 [`@vitest/browser-playwright`](https://www.npmjs.com/package/@vitest/browser-playwright) npm 包，并在配置中的 `test.browser.provider` 属性中指定其 `playwright` 导出：
 
 ```ts [vitest.config.js]
-import { playwright } from '@vitest/browser/providers/playwright'
+import { playwright } from '@vitest/browser-playwright'
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -16,10 +16,10 @@ export default defineConfig({
 })
 ```
 
-Vitest 在单个页面中运行同一文件中的所有测试。你可以在顶层或实例内部调用 `playwright` 时配置 `launch`、`connect` 和 `context`：
+你可以在顶层或实例内部调用 `playwright` 时配置 [`launchOptions`](https://playwright.dev/docs/api/class-browsertype#browser-type-launch)、[`connectOptions`](https://playwright.dev/docs/api/class-browsertype#browser-type-connect) 和 [`contextOptions`](https://playwright.dev/docs/api/class-browser#browser-new-context)：
 
 ```ts{7-14,21-26} [vitest.config.js]
-import { playwright } from '@vitest/browser/providers/playwright'
+import { playwright } from '@vitest/browser-playwright'
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -52,6 +52,10 @@ export default defineConfig({
   },
 })
 ```
+
+::: warning
+Unlike Playwright test runner, Vitest opens a _single_ page to run all tests that are defined in the same file. This means that isolation is restricted to a single test file, not to every individual test.
+:::
 
 ## launchOptions
 
@@ -94,7 +98,7 @@ Vitest 通过调用 [`browser.newContext()`](https://playwright.dev/docs/api/cla
 我们还可以为每个操作配置操作超时：
 
 ```ts
-import { page, userEvent } from '@vitest/browser/context'
+import { page, userEvent } from 'vitest/browser'
 
 await userEvent.click(page.getByRole('button'), {
   timeout: 1_000,

@@ -4,7 +4,7 @@ title: Context API | Browser Mode
 
 # 上下文
 
-Vitest 通过 `@vitest/browser/context` 入口点公开上下文模块。从 2.0 开始，它公开了一小部分实用程序，这些实用程序可能在测试中对你有用。
+Vitest 通过 `vitest/browser` 入口点公开上下文模块。从 2.0 开始，它公开了一小部分实用程序，这些实用程序可能在测试中对你有用。
 
 ## `userEvent`
 

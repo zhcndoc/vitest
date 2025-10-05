@@ -98,17 +98,19 @@ it('render basic', async () => {
 
 ## 图像快照
 
-快照图像也可以使用 [`jest-image-snapshot`](https://github.com/americanexpress/jest-image-snapshot)。
-
-```bash
-npm i -D jest-image-snapshot
-```
+对于 UI 组件和页面的视觉回归测试，Vitest 通过[浏览器模式](/guide/browser/)提供了内置支持，使用 [`toMatchScreenshot()`](/guide/browser/assertion-api#tomatchscreenshot-experimental) 断言：
 
 ```ts
-test('image snapshot', () => {
-  expect(readFileSync('./test/stubs/input-image.png')).toMatchImageSnapshot()
+import { expect, test } from 'vitest'
+import { page } from 'vitest/browser'
+
+test('button looks correct', async () => {
+  const button = page.getByRole('button')
+  await expect(button).toMatchScreenshot('primary-button')
 })
 ```
+
+它会捕获屏幕截图并与参考图像进行比较，以检测意外的视觉变化。在[视觉回归测试指南](/guide/browser/visual-regression-testing)中了解更多内容。
 
 ## 自定义序列化程序
 
