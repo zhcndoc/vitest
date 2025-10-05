@@ -945,13 +945,8 @@ const test: BrowserCommand<string> = function test(context, selector) {
 ```
 
 ```ts [example.test.ts]
-<<<<<<< HEAD
-import { commands, page } from '@vitest/browser/context'
-import { test } from 'vitest'
-=======
 import { test } from 'vitest'
 import { commands, page } from 'vitest/browser'
->>>>>>> acda1b080825473c9b4b942ce8972ea56d93a1bc
 
 test('works correctly', async () => {
   await commands.test(page.getByText('Hello').selector) // ✅

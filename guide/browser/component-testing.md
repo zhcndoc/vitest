@@ -563,15 +563,9 @@ import { render } from 'vitest-browser-react' // [!code ++]
 
 ### 主要差异
 
-<<<<<<< HEAD
 - 使用 `await expect.element()` 而不是 `expect()` 进行 DOM 断言
-- 使用 `@vitest/browser/context` 进行用户交互而不是 `@testing-library/user-event`
+- 使用 `vitest/browser` 进行用户交互而不是 `@testing-library/user-event`
 - 浏览器模式提供真实的浏览器环境以进行准确的测试
-=======
-- Use `await expect.element()` instead of `expect()` for DOM assertions
-- Use `vitest/browser` for user interactions instead of `@testing-library/user-event`
-- Browser Mode provides real browser environment for accurate testing
->>>>>>> acda1b080825473c9b4b942ce8972ea56d93a1bc
 
 ## 了解更多
 
