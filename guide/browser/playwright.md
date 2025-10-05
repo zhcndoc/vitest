@@ -1,10 +1,6 @@
 # 配置 Playwright
 
-<<<<<<< HEAD
-要使用 playwright 运行测试，你需要在配置中的 `test.browser.provider` 属性中指定它：
-=======
-To run tests using playwright, you need to install the [`@vitest/browser-playwright`](https://www.npmjs.com/package/@vitest/browser-playwright) npm package and specify its `playwright` export in the `test.browser.provider` property of your config:
->>>>>>> acda1b080825473c9b4b942ce8972ea56d93a1bc
+要使用 playwright 运行测试，你需要安装 [`@vitest/browser-playwright`](https://www.npmjs.com/package/@vitest/browser-playwright) npm 包，并在配置中的 `test.browser.provider` 属性中指定其 `playwright` 导出：
 
 ```ts [vitest.config.js]
 import { playwright } from '@vitest/browser-playwright'
@@ -20,11 +16,7 @@ export default defineConfig({
 })
 ```
 
-<<<<<<< HEAD
-Vitest 在单个页面中运行同一文件中的所有测试。你可以在顶层或实例内部调用 `playwright` 时配置 `launch`、`connect` 和 `context`：
-=======
-You can configure the [`launchOptions`](https://playwright.dev/docs/api/class-browsertype#browser-type-launch), [`connectOptions`](https://playwright.dev/docs/api/class-browsertype#browser-type-connect) and [`contextOptions`](https://playwright.dev/docs/api/class-browser#browser-new-context) when calling `playwright` at the top level or inside instances:
->>>>>>> acda1b080825473c9b4b942ce8972ea56d93a1bc
+你可以在顶层或实例内部调用 `playwright` 时配置 [`launchOptions`](https://playwright.dev/docs/api/class-browsertype#browser-type-launch)、[`connectOptions`](https://playwright.dev/docs/api/class-browsertype#browser-type-connect) 和 [`contextOptions`](https://playwright.dev/docs/api/class-browser#browser-new-context)：
 
 ```ts{7-14,21-26} [vitest.config.js]
 import { playwright } from '@vitest/browser-playwright'

@@ -4,11 +4,7 @@
 如果我们的项目尚未使用 WebdriverIO，我们建议从 [Playwright](/guide/browser/playwright) 开始，因为它更易于配置且 API 更灵活。
 :::
 
-<<<<<<< HEAD
-要使用 WebdriverIO 运行测试，你需要在配置中的 `test.browser.provider` 属性中指定它：
-=======
-To run tests using WebdriverIO, you need to install the [`@vitest/browser-webdriverio`](https://www.npmjs.com/package/@vitest/browser-webdriverio) npm package and specify its `webdriverio` export in the `test.browser.provider` property of your config:
->>>>>>> acda1b080825473c9b4b942ce8972ea56d93a1bc
+要使用 WebdriverIO 运行测试，你需要安装 [`@vitest/browser-webdriverio`](https://www.npmjs.com/package/@vitest/browser-webdriverio) npm 包，并在配置中的 `test.browser.provider` 属性中指定其 `webdriverio` 导出：
 
 ```ts [vitest.config.js]
 import { webdriverio } from '@vitest/browser-webdriverio'
@@ -24,11 +20,7 @@ export default defineConfig({
 })
 ```
 
-<<<<<<< HEAD
-Vitest 打开一个页面以在同一文件中运行所有测试。你可以配置 [`remote`](https://webdriver.io/docs/api/modules/#remoteoptions-modifier) 函数接受的所有参数：
-=======
-You can configure all the parameters that [`remote`](https://webdriver.io/docs/api/modules/#remoteoptions-modifier) function accepts:
->>>>>>> acda1b080825473c9b4b942ce8972ea56d93a1bc
+你可以配置 [`remote`](https://webdriver.io/docs/api/modules/#remoteoptions-modifier) 函数接受的所有参数：
 
 ```ts{8-12,19-25} [vitest.config.js]
 import { webdriverio } from '@vitest/browser-webdriverio'
@@ -68,9 +60,5 @@ export default defineConfig({
 ::: tip
 最有用的选项位于 `capabilities` 对象上。WebdriverIO 允许嵌套功能，但 Vitest 将忽略这些选项，因为我们依赖于不同的机制来生成多个浏览器。
 
-<<<<<<< HEAD
-请注意，Vitest 将忽略 `capabilities.browserName`。请改用 [`test.browser.instances.browser`](/guide/browser/config#browser-capabilities-name)。
-=======
-Note that Vitest will ignore `capabilities.browserName` — use [`test.browser.instances.browser`](/guide/browser/config#browser-capabilities-name) instead.
->>>>>>> acda1b080825473c9b4b942ce8972ea56d93a1bc
+请注意，Vitest 将忽略 `capabilities.browserName` — 请改用 [`test.browser.instances.browser`](/guide/browser/config#browser-capabilities-name)。
 :::

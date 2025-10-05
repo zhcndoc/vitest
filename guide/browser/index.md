@@ -363,13 +363,8 @@ npx vitest --browser.headless
 一般情况下，我们不需要任何依赖来使用浏览器模式：
 
 ```js [example.test.js]
-<<<<<<< HEAD
-import { page } from '@vitest/browser/context'
-import { expect, test } from 'vitest'
-=======
 import { expect, test } from 'vitest'
 import { page } from 'vitest/browser'
->>>>>>> acda1b080825473c9b4b942ce8972ea56d93a1bc
 import { render } from './my-render-function.js'
 
 test('properly handles form inputs', async () => {
@@ -406,22 +401,13 @@ test('properly handles form inputs', async () => {
 除了渲染组件和定位元素外，你还需要进行断言。Vitest 基于 [`@testing-library/jest-dom`](https://github.com/testing-library/jest-dom) 库提供了一整套开箱即用的 DOM 断言。更多信息请参阅 [Assertions API](/guide/browser/assertion-api)。
 
 ```ts
-<<<<<<< HEAD
-import { page } from '@vitest/browser/context'
-import { expect } from 'vitest'
-// element is rendered correctly
-await expect.element(page.getByText('Hello World')).toBeInTheDocument()
-```
-Vitest 公开了一个[Context API](/guide/browser/context)，其中包含一小套在测试中可能有用的实用程序。例如，如果我们需要进行交互，如点击元素或在输入框中输入文本，我们可以使用 `@vitest/browser/context` 中的 `userEvent`。更多信息请参阅 [Interactivity API](/guide/browser/interactivity-api)。
-=======
 import { expect } from 'vitest'
 import { page } from 'vitest/browser'
 // element is rendered correctly
 await expect.element(page.getByText('Hello World')).toBeInTheDocument()
 ```
 
-Vitest exposes a [Context API](/guide/browser/context) with a small set of utilities that might be useful to you in tests. For example, if you need to make an interaction, like clicking an element or typing text into an input, you can use `userEvent` from `vitest/browser`. Read more at the [Interactivity API](/guide/browser/interactivity-api).
->>>>>>> acda1b080825473c9b4b942ce8972ea56d93a1bc
+Vitest 暴露了一个[上下文 API](/guide/browser/context)，其中包含一组在测试中可能对你有用的实用程序。例如，如果你需要进行交互操作，比如点击元素或在输入框中输入文本，你可以使用来自 `vitest/browser` 的 `userEvent`。更多内容请参阅[交互性 API](/guide/browser/interactivity-api)。
 
 ```ts
 import { page, userEvent } from 'vitest/browser'
@@ -541,11 +527,7 @@ Vitest 并不支持所有开箱即用的框架，但我们可以使用外部工�
 我们还可以在 [`browser-examples`](https://github.com/vitest-tests/browser-examples) 中查看更多的案例。
 
 ::: warning
-<<<<<<< HEAD
-`testing-library` 提供了一个软件包 `@testing-library/user-event`。我们不建议直接使用它，因为它会模拟事件而非实际触发事件--相反，请使用从 `@vitest/browser/context`导入的 [`userEvent`](/guide/browser/interactivity-api)，它在引擎盖下使用 Chrome DevTools 协议或 Webdriver（取决于provider）。
-=======
-`testing-library` provides a package `@testing-library/user-event`. We do not recommend using it directly because it simulates events instead of actually triggering them - instead, use [`userEvent`](/guide/browser/interactivity-api) imported from `vitest/browser` that uses Chrome DevTools Protocol or Webdriver (depending on the provider) under the hood.
->>>>>>> acda1b080825473c9b4b942ce8972ea56d93a1bc
+`testing-library` 提供了一个软件包 `@testing-library/user-event`。我们不建议直接使用它，因为它会模拟事件而非实际触发事件--相反，请使用从 `vitest/browser`导入的 [`userEvent`](/guide/browser/interactivity-api)，它在引擎盖下使用 Chrome DevTools 协议或 Webdriver（取决于provider）。
 :::
 
 ::: code-group

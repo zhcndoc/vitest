@@ -23,16 +23,10 @@ function setup(): UserEvent
 创建一个新的用户事件实例。如果需要保持键盘状态，以便正确按下和释放按钮，这将非常有用。
 
 ::: warning
-<<<<<<< HEAD
-与 `@testing-library/user-event` 不同，来自 `@vitest/browser/context` 的默认 `userEvent` 实例只创建一次，而不是每次调用其方法时都创建一次！您可以从本代码段中看到其工作方式的不同之处：
-
-```ts
-=======
-Unlike `@testing-library/user-event`, the default `userEvent` instance from `vitest/browser` is created once, not every time its methods are called! You can see the difference in how it works in this snippet:
+与 `@testing-library/user-event` 不同，来自 `vitest/browser` 的默认 `userEvent` 实例只创建一次，而不是每次调用其方法时都创建一次！你可以从本代码段中看到其工作方式的不同之处：
 
 ```ts
 import { userEvent as vitestUserEvent } from 'vitest/browser'
->>>>>>> acda1b080825473c9b4b942ce8972ea56d93a1bc
 import { userEvent as originalUserEvent } from '@testing-library/user-event'
 import { userEvent as vitestUserEvent } from '@vitest/browser/context'
 

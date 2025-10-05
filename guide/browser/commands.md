@@ -38,11 +38,7 @@ it('handles files', async () => {
 
 ## CDP Session
 
-<<<<<<< HEAD
-Vitest 通过 `@vitest/browser/context` 中导出的 `cdp` 方法访问原始 Chrome Devtools 协议。它主要用于库作者在其基础上构建工具。
-=======
-Vitest exposes access to raw Chrome Devtools Protocol via the `cdp` method exported from `vitest/browser`. It is mostly useful to library authors to build tools on top of it.
->>>>>>> acda1b080825473c9b4b942ce8972ea56d93a1bc
+Vitest 通过 `vitest/browser` 中导出的 `cdp` 方法访问原始 Chrome Devtools 协议。它主要用于库作者在其基础上构建工具。
 
 ```ts
 import { cdp } from 'vitest/browser'
@@ -101,11 +97,7 @@ export default function BrowserCommands(): Plugin {
 }
 ```
 
-<<<<<<< HEAD
-然后，你可以通过从 `@vitest/brower/context` 导入它，在测试中调用它：
-=======
-Then you can call it inside your test by importing it from `vitest/browser`:
->>>>>>> acda1b080825473c9b4b942ce8972ea56d93a1bc
+然后，你可以通过从 `vitest/browser` 导入它，在测试中调用它：
 
 ```ts
 import { commands } from 'vitest/browser'
@@ -116,13 +108,8 @@ test('custom command works correctly', async () => {
   expect(result).toEqual({ someValue: true })
 })
 
-<<<<<<< HEAD
-// 如果你使用 TypeScript，你可以扩展模块。
-declare module '@vitest/browser/context' {
-=======
 // if you are using TypeScript, you can augment the module
 declare module 'vitest/browser' {
->>>>>>> acda1b080825473c9b4b942ce8972ea56d93a1bc
   interface BrowserCommands {
     myCustomCommand: (arg1: string, arg2: string) => Promise<{
       someValue: true
