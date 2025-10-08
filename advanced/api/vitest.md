@@ -10,6 +10,7 @@ Vitest 实例需要当前的测试模式。它可以是以下之一：
 - `test`：运行运行时测试时
 - `benchmark`：运行基准测试时 <Badge type="warning">实验性</Badge>
 
+<<<<<<< HEAD
 ::: details Vitest 3 中的新特性
 Vitest 3 在稳定公共 API 方面迈出了一步。为了实现这一点，我们弃用并删除了 `Vitest` 类上的一些先前公开的方法。这些 API 已被私有化：
 
@@ -40,6 +41,11 @@ Vitest 3 在稳定公共 API 方面迈出了一步。为了实现这一点，我
 - `onAfterSetServer`
 
 这些 API 已被弃用：
+=======
+::: details New in Vitest 4
+Vitest 4 added several new APIs (they are marked with a "4.0.0+" badge) and removed deprecated APIs:
+
+>>>>>>> 16ad690152f05ff85a33f9d5b7b966e80631cd34
 - `invalidates`
 - `changedTests`（使用 [`onFilterWatchedSpecification`](#onfilterwatchedspecification) 代替）
 - `server`（使用 [`vite`](#vite) 代替）
@@ -598,9 +604,9 @@ function experimental_parseSpecification(
 该函数会收集文件内的所有测试，但不会执行它们。它借助 Vite 的 `ssrTransform` ，并在其之上使用 rollup 的 `parseAst` 进行静态分析，从而提取所有可识别的测试用例。
 
 ::: warning
-If Vitest could not analyse the name of the test, it will inject a hidden `dynamic: true` property to the test or a suite. The `id` will also have a postfix with `-dynamic` to not break tests that were collected properly.
+If Vitest could not analyse the name of the test, it will inject a `dynamic: true` property to the test or a suite. The `id` will also have a postfix with `-dynamic` to not break tests that were collected properly.
 
-Vitest always injects this property in tests with `for` or `each` modifier or tests with a dynamic name (like, `hello ${property}` or `'hello' + ${property}`). Vitest will still assign a name to the test, but it cannot be used to filter the tests.
+Vitest always injects this property in tests with `for` or `each` modifier or tests with a dynamic name (like, `hello ${property}` or `'hello' + ${property}`). Vitest will still assign a name to the test, but it cannot be used to filter tests.
 
 There is nothing Vitest can do to make it possible to filter dynamic tests, but you can turn a test with `for` or `each` modifier into a name pattern with `escapeTestName` function:
 
