@@ -10,42 +10,9 @@ Vitest 实例需要当前的测试模式。它可以是以下之一：
 - `test`：运行运行时测试时
 - `benchmark`：运行基准测试时 <Badge type="warning">实验性</Badge>
 
-<<<<<<< HEAD
-::: details Vitest 3 中的新特性
-Vitest 3 在稳定公共 API 方面迈出了一步。为了实现这一点，我们弃用并删除了 `Vitest` 类上的一些先前公开的方法。这些 API 已被私有化：
-
-- `configOverride`（使用 [`setGlobalTestNamePattern`](#setglobaltestnamepattern) 或 [`enableSnapshotUpdate`](#enablesnapshotupdate)）
-- `coverageProvider`
-- `filenamePattern`
-- `runningPromise`
-- `closingPromise`
-- `isCancelling`
-- `coreWorkspaceProject`
-- `resolvedProjects`
-- `_browserLastPort`
-- `_options`
-- `reporters`
-- `vitenode`
-- `runner`
-- `pool`
-- `setServer`
-- `_initBrowserServers`
-- `rerunTask`
-- `changeProjectName`
-- `changeNamePattern`
-- `changeFilenamePattern`
-- `rerunFailed`
-- `_createRootProject`（重命名为 `_ensureRootProject`，但仍为私有）
-- `filterTestsBySource`（此方法已移至新的内部 `vitest.specifications` 实例）
-- `runFiles`（使用 [`runTestSpecifications`](#runtestspecifications) 代替）
-- `onAfterSetServer`
-
-这些 API 已被弃用：
-=======
 ::: details New in Vitest 4
-Vitest 4 added several new APIs (they are marked with a "4.0.0+" badge) and removed deprecated APIs:
+Vitest 4 新增了多个 API（它们都标记有 "4.0.0+" 徽章），并移除了已弃用的 API：
 
->>>>>>> 16ad690152f05ff85a33f9d5b7b966e80631cd34
 - `invalidates`
 - `changedTests`（使用 [`onFilterWatchedSpecification`](#onfilterwatchedspecification) 代替）
 - `server`（使用 [`vite`](#vite) 代替）
@@ -573,9 +540,9 @@ function createCoverageProvider(): Promise<CoverageProvider | null>
 function enableCoverage(): Promise<void>
 ```
 
-This method enables coverage for tests that run after this call. `enableCoverage` doesn't run any tests; it only sets up Vitest to collect coverage.
+此方法为在此调用之后运行的测试启用覆盖率收集。`enableCoverage` 不会运行任何测试；它只是设置 Vitest 来收集覆盖率。
 
-It creates a new coverage provider if one doesn't already exist.
+如果尚不存在覆盖率提供者，它将创建一个新的覆盖率提供者。
 
 ## disableCoverage <Version>4.0.0</Version> {#disablecoverage}
 
@@ -583,7 +550,7 @@ It creates a new coverage provider if one doesn't already exist.
 function disableCoverage(): void
 ```
 
-This method disables coverage collection for tests that run afterwards.
+此方法会禁用后续运行的测试的覆盖率收集功能。
 
 ## getSeed <Version>4.0.0</Version> {#getseed}
 
@@ -591,7 +558,7 @@ This method disables coverage collection for tests that run afterwards.
 function getSeed(): number | null
 ```
 
-Returns the seed, if tests are running in a random order.
+如果测试以随机顺序运行，则返回种子值。
 
 ## experimental_parseSpecification <Version>4.0.0</Version> <Badge type="warning">experimental</Badge> {#parsespecification}
 
@@ -604,11 +571,11 @@ function experimental_parseSpecification(
 该函数会收集文件内的所有测试，但不会执行它们。它借助 Vite 的 `ssrTransform` ，并在其之上使用 rollup 的 `parseAst` 进行静态分析，从而提取所有可识别的测试用例。
 
 ::: warning
-If Vitest could not analyse the name of the test, it will inject a `dynamic: true` property to the test or a suite. The `id` will also have a postfix with `-dynamic` to not break tests that were collected properly.
+如果 Vitest 无法解析测试的名称，它将在测试或套件中注入一个 `dynamic: true` 属性。`id` 也会带有 `-dynamic` 后缀，以避免破坏已正确收集的测试。
 
-Vitest always injects this property in tests with `for` or `each` modifier or tests with a dynamic name (like, `hello ${property}` or `'hello' + ${property}`). Vitest will still assign a name to the test, but it cannot be used to filter tests.
+Vitest 总是在带有 `for` 或 `each` 修饰符的测试，或者名称是动态生成的测试（如 `hello ${property}` 或 `'hello' + ${property}`）中注入此属性。Vitest 仍会为测试分配一个名称，但该名称不能用于过滤测试。
 
-There is nothing Vitest can do to make it possible to filter dynamic tests, but you can turn a test with `for` or `each` modifier into a name pattern with `escapeTestName` function:
+Vitest 无法做到让动态测试可以被过滤，但你可以使用 `escapeTestName` 函数将带有 `for` 或 `each` 修饰符的测试转换为名称模式：
 
 若 Vitest 无法解析测试名称，它会在测试或套件中注入一个隐藏的 `dynamic: true` 属性，并在 `id` 后追加 `-dynamic` ，以免破坏已正确收集的测试。
 
