@@ -99,10 +99,12 @@ bun add -D vitest @vitest/browser webdriverio
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
+import { playwright } from '@vitest/browser-playwright'
+
 export default defineConfig({
   test: {
     browser: {
-      provider: 'playwright', // or 'webdriverio'
+      provider: playwright(),
       enabled: true,
       // at least one instance is required
       instances: [
@@ -124,14 +126,14 @@ Vitest 默认分配端口号 `63315` 以避免与开发服务器冲突，允许�
 ::: code-group
 ```ts [react]
 import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vitest/config'
+import { playwright } from '@vitest/browser-playwright'
 
 export default defineConfig({
   plugins: [react()],
   test: {
     browser: {
       enabled: true,
-      provider: 'playwright',
+      provider: playwright(),
       instances: [
         { browser: 'chromium' },
       ],
@@ -140,6 +142,8 @@ export default defineConfig({
 })
 ```
 ```ts [vue]
+import { defineConfig } from 'vitest/config'
+import { playwright } from '@vitest/browser-playwright'
 import vue from '@vitejs/plugin-vue'
 import { defineConfig } from 'vitest/config'
 
@@ -148,7 +152,7 @@ export default defineConfig({
   test: {
     browser: {
       enabled: true,
-      provider: 'playwright',
+      provider: playwright(),
       instances: [
         { browser: 'chromium' },
       ],
@@ -158,14 +162,14 @@ export default defineConfig({
 ```
 ```ts [svelte]
 import { svelte } from '@sveltejs/vite-plugin-svelte'
-import { defineConfig } from 'vitest/config'
+import { playwright } from '@vitest/browser-playwright'
 
 export default defineConfig({
   plugins: [svelte()],
   test: {
     browser: {
       enabled: true,
-      provider: 'playwright',
+      provider: playwright(),
       instances: [
         { browser: 'chromium' },
       ],
@@ -175,14 +179,14 @@ export default defineConfig({
 ```
 ```ts [solid]
 import solidPlugin from 'vite-plugin-solid'
-import { defineConfig } from 'vitest/config'
+import { playwright } from '@vitest/browser-playwright'
 
 export default defineConfig({
   plugins: [solidPlugin()],
   test: {
     browser: {
       enabled: true,
-      provider: 'playwright',
+      provider: playwright(),
       instances: [
         { browser: 'chromium' },
       ],
@@ -192,14 +196,14 @@ export default defineConfig({
 ```
 ```ts [marko]
 import marko from '@marko/vite'
-import { defineConfig } from 'vitest/config'
+import { playwright } from '@vitest/browser-playwright'
 
 export default defineConfig({
   plugins: [marko()],
   test: {
     browser: {
       enabled: true,
-      provider: 'playwright',
+      provider: playwright(),
       instances: [
         { browser: 'chromium' },
       ],
@@ -209,6 +213,8 @@ export default defineConfig({
 ```
 ```ts [qwik]
 import { qwikVite } from '@builder.io/qwik/optimizer'
+import { playwright } from '@vitest/browser-playwright'
+
 // optional, run the tests in SSR mode
 import { testSSR } from 'vitest-browser-qwik/ssr-plugin'
 
@@ -219,7 +225,7 @@ export default defineConfig({
   test: {
     browser: {
       enabled: true,
-      provider: 'playwright',
+      provider: playwright(),
       instances: [{ browser: 'chromium' }]
     },
   },
@@ -233,6 +239,7 @@ export default defineConfig({
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
+import { playwright } from '@vitest/browser-playwright'
 
 export default defineConfig({
   test: {
@@ -260,6 +267,7 @@ export default defineConfig({
           name: 'browser',
           browser: {
             enabled: true,
+            provider: playwright(),
             instances: [
               { browser: 'chromium' },
             ],
@@ -284,49 +292,7 @@ Vitest 中的浏览器选项取决于provider。如果在配置文件中传递 `
   - `webkit`
   - `chromium`
 
-## TypeScript
-
-默认情况下，TypeScript 无法识别 providers 选项和额外的 `expect` 属性。如果我们不使用任何 providers ，请确保在测试、[设置文件](/config/#setupfiles) 或 [配置文件](/config/) 中引用 `@vitest/browser/matchers`，以获取额外的 `expect` 定义。如果我们使用自定义 providers ，请确保在同一文件中添加 `@vitest/browser/providers/playwright` 或 `@vitest/browser/providers/webdriverio`，以便 TypeScript 可以获取自定义选项的定义：
-
-::: code-group
-```ts [default]
-/// <reference types="@vitest/browser/matchers" />
-```
-```ts [playwright]
-/// <reference types="@vitest/browser/providers/playwright" />
-```
-```ts [webdriverio]
-/// <reference types="@vitest/browser/providers/webdriverio" />
-```
-:::
-
-或者，我们也可以将它们添加到 `tsconfig.json` 文件中的 `compilerOptions.types` 字段。请注意，在此字段中指定任何内容将禁用 `@types/*` 包的[自动加载](https://www.typescriptlang.org/tsconfig/#types)功能。
-
-::: code-group
-```json [default]
-{
-  "compilerOptions": {
-    "types": ["@vitest/browser/matchers"]
-  }
-}
-```
-```json [playwright]
-{
-  "compilerOptions": {
-    "types": ["@vitest/browser/providers/playwright"]
-  }
-}
-```
-```json [webdriverio]
-{
-  "compilerOptions": {
-    "types": ["@vitest/browser/providers/webdriverio"]
-  }
-}
-```
-:::
-
-## 浏览器兼容性
+## Browser Compatibility
 
 Vitest 使用 [Vite dev server](https://cn.vitejs.dev/guide/#browser-support) 来运行我们的测试，因此我们只支持 [`esbuild.target`](https://cn.vitejs.dev/config/shared-options#esbuild)选项（默认为 `esnext`）中指定的功能。
 
@@ -367,10 +333,12 @@ headless 模式是浏览器模式下可用的另一个选项。在 headless 模�
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
+import { playwright } from '@vitest/browser-playwright'
+
 export default defineConfig({
   test: {
     browser: {
-      provider: 'playwright',
+      provider: playwright(),
       enabled: true,
       headless: true,
     },
@@ -395,8 +363,8 @@ npx vitest --browser.headless
 一般情况下，我们不需要任何依赖来使用浏览器模式：
 
 ```js [example.test.js]
-import { page } from '@vitest/browser/context'
 import { expect, test } from 'vitest'
+import { page } from 'vitest/browser'
 import { render } from './my-render-function.js'
 
 test('properly handles form inputs', async () => {
@@ -433,15 +401,16 @@ test('properly handles form inputs', async () => {
 除了渲染组件和定位元素外，你还需要进行断言。Vitest 基于 [`@testing-library/jest-dom`](https://github.com/testing-library/jest-dom) 库提供了一整套开箱即用的 DOM 断言。更多信息请参阅 [Assertions API](/guide/browser/assertion-api)。
 
 ```ts
-import { page } from '@vitest/browser/context'
 import { expect } from 'vitest'
+import { page } from 'vitest/browser'
 // element is rendered correctly
 await expect.element(page.getByText('Hello World')).toBeInTheDocument()
 ```
-Vitest 公开了一个[Context API](/guide/browser/context)，其中包含一小套在测试中可能有用的实用程序。例如，如果我们需要进行交互，如点击元素或在输入框中输入文本，我们可以使用 `@vitest/browser/context` 中的 `userEvent`。更多信息请参阅 [Interactivity API](/guide/browser/interactivity-api)。
+
+Vitest 暴露了一个[上下文 API](/guide/browser/context)，其中包含一组在测试中可能对你有用的实用程序。例如，如果你需要进行交互操作，比如点击元素或在输入框中输入文本，你可以使用来自 `vitest/browser` 的 `userEvent`。更多内容请参阅[交互性 API](/guide/browser/interactivity-api)。
 
 ```ts
-import { page, userEvent } from '@vitest/browser/context'
+import { page, userEvent } from 'vitest/browser'
 await userEvent.fill(page.getByLabelText(/username/i), 'Alice')
 // or just locator.fill
 await page.getByLabelText(/username/i).fill('Alice')
@@ -558,7 +527,7 @@ Vitest 并不支持所有开箱即用的框架，但我们可以使用外部工�
 我们还可以在 [`browser-examples`](https://github.com/vitest-tests/browser-examples) 中查看更多的案例。
 
 ::: warning
-`testing-library` 提供了一个软件包 `@testing-library/user-event`。我们不建议直接使用它，因为它会模拟事件而非实际触发事件--相反，请使用从 `@vitest/browser/context`导入的 [`userEvent`](/guide/browser/interactivity-api)，它在引擎盖下使用 Chrome DevTools 协议或 Webdriver（取决于provider）。
+`testing-library` 提供了一个软件包 `@testing-library/user-event`。我们不建议直接使用它，因为它会模拟事件而非实际触发事件--相反，请使用从 `vitest/browser`导入的 [`userEvent`](/guide/browser/interactivity-api)，它在引擎盖下使用 Chrome DevTools 协议或 Webdriver（取决于provider）。
 :::
 
 ::: code-group

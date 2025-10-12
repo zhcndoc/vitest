@@ -39,7 +39,7 @@ bun add -D vitest
 :::
 
 :::tip
-Vitest 需要 Vite >=v5.0.0 和 Node >=v18.0.0
+Vitest 需要 Vite >=v5.0.0 和 Node >=v20.0.0
 :::
 
 如果在 `package.json` 中安装一份 `vitest` 的副本，可以使用上面列出的方法之一。然而，如果更倾向于直接运行 `vitest` ，可以使用 `npx vitest`（ `npx` 是会随着 npm 和 Node.js 一起被安装）。
@@ -103,7 +103,7 @@ Vitest 的主要优势之一是它与 Vite 的统一配置。如果存在，`vit
 
 - 创建 `vitest.config.ts`，优先级将会最高。
 - 将 `--config` 选项传递给 CLI，例如 `vitest --config ./path/to/vitest.config.ts`。
-- 在 `defineConfig` 上使用 `process.env.VITEST` 或 `mode` 属性（如果没有被覆盖，将设置为 `test`）有条件地在 `vite.config.ts` 中应用不同的配置。
+- 在 `defineConfig` 上使用 `process.env.VITEST` 或 `mode` 属性（如果没有被覆盖，将设置为 `test`）有条件地在 `vite.config.ts` 中应用不同的配置。请注意，像任何其他环境变量一样，`VITEST` 也会在测试中的 `import.meta.env` 上暴露出来
 
 Vitest 支持与 Vite 相同的配置文件扩展名：`.js`、`.mjs`、`.cjs`、`.ts`、`.cts`、`.mts`。 Vitest 不支持 `.json` 扩展名。
 
@@ -126,25 +126,12 @@ export default defineConfig({
 如果你已经在使用 Vite，请在 Vite 配置中添加 `test` 属性。你还需要使用 [三斜杠指令](https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html#-reference-types-) 在你的配置文件的顶部引用。
 
 ```ts [vite.config.ts]
-/// <reference types="vitest" />
-import { defineConfig } from 'vite'
-
-export default defineConfig({
-  test: {
-    // ...
-  },
-})
-```
-
-`<reference types="vitest" />` 将在下一次主要更新中停止工作，但我们可以开始迁移到 Vitest 2.1 中的 `vitest/config`：
-
-```ts [vite.config.ts]
 /// <reference types="vitest/config" />
 import { defineConfig } from 'vite'
 
 export default defineConfig({
   test: {
-    // ... Specify options here.
+    // ...
   },
 })
 ```

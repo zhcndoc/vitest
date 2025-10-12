@@ -4,12 +4,13 @@
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
+import { playwright } from '@vitest/browser-playwright'
 
 export default defineConfig({
   test: {
     browser: {
       enabled: true,
-      provider: 'playwright',
+      provider: playwright(),
       instances: [
         {
           browser: 'chromium',
@@ -46,23 +47,11 @@ export default defineConfig({
 ## browser.instances
 
 - **类型:** `BrowserConfig`
-- **默认值:** `[{ browser: name }]`
+- **默认值:** `[]`
 
-定义多个浏览器设置。每个配置必须至少有一个 `browser` 字段。配置支持我们的提供者配置：
+定义多个浏览器设置。每个配置必须至少有一个 `browser` 字段。
 
-- [配置 Playwright](/guide/browser/playwright)
-- [配置 WebdriverIO](/guide/browser/webdriverio)
-
-::: tip
-为了在使用内置提供者时获得更好的类型安全性，我们应该在 [配置文件](/config/) 中引用以下类型之一（针对我们使用的提供者）：
-
-```ts
-/// <reference types="@vitest/browser/providers/playwright" />
-/// <reference types="@vitest/browser/providers/webdriverio" />
-```
-:::
-
-除此之外，我们还可以指定大多数 [项目选项](/config/)（未标记为 <NonProjectOption /> 图标的选项）和一些 `browser` 选项，例如 `browser.testerHtmlPath`。
+你可以指定大部分[项目选项](/config/)(未标记<NonProjectOption />图标的选项)和一些 `browser` 选项，如`browser.testerHtmlPath`。
 
 ::: warning
 每个浏览器配置都从根配置继承选项：
@@ -87,8 +76,6 @@ export default defineConfig({
 })
 ```
 
-在开发过程中，Vitest 仅支持一个 [非无头](#browser-headless) 配置。我们可以通过在配置中指定 `headless: false`，或提供 `--browser.headless=false` 标志，或使用 `--project=chromium` 标志过滤项目来限制有头项目。
-
 有关更多示例，请参阅 ["多设置" 指南](/guide/browser/multiple-setups)。
 :::
 
@@ -100,25 +87,9 @@ export default defineConfig({
 - [`browser.testerHtmlPath`](#browser-testerhtmlpath)
 - [`browser.screenshotDirectory`](#browser-screenshotdirectory)
 - [`browser.screenshotFailures`](#browser-screenshotfailures)
+- [`browser.provider`](#browser-provider)
 
-默认情况下，Vitest 创建一个包含单个元素的数组，该元素使用 [`browser.name`](#browser-name) 字段作为 `browser`。请注意，此行为将在 Vitest 4 中移除。
-
-在底层，Vitest 将这些实例转换为共享单个 Vite 服务器的单独 [测试项目](/advanced/api/test-project)，以获得更好的缓存性能。
-
-## browser&#46;name <Badge type="danger">已弃用</Badge> {#browser-name}
-
-- **类型:** `string`
-- **CLI:** `--browser=safari`
-
-::: danger DEPRECATED
-此 API 已弃用，并将在 Vitest 4 中移除。请改用 [`browser.instances`](#browser-instances) 选项。
-:::
-
-在特定浏览器中运行所有测试。不同提供者中的可能选项：
-
-- `webdriverio`: `firefox`, `chrome`, `edge`, `safari`
-- `playwright`: `firefox`, `webkit`, `chromium`
-- 自定义：任何将传递给提供者的字符串
+在底层，Vitest 将这些实例转换为共享单个 Vite 服务器的单独[测试项目](/advanced/api/test-project)，以获得更好的缓存性能。
 
 ## browser.headless
 
@@ -152,68 +123,84 @@ HTML 入口点的路径。可以是相对于项目根目录的路径。此文件
 
 ## browser.provider {#browser-provider}
 
-- **类型:** `'webdriverio' | 'playwright' | 'preview' | string`
+- **类型:** `BrowserProviderOption`
 - **默认值:** `'preview'`
 - **CLI:** `--browser.provider=playwright`
 
-在运行浏览器测试时使用的提供者路径。Vitest 提供了三个提供者，分别是 `preview`（默认）、`webdriverio` 和 `playwright`。自定义提供者应使用 `default` 导出，并具有以下形状：
+提供者工厂的返回值。你可以从 `@vitest/browser-<provider-name>` 导入工厂函数，或者创建自己的提供者：
 
-```ts
-export interface BrowserProvider {
-  name: string
-  supportsParallelism: boolean
-  getSupportedBrowsers: () => readonly string[]
-  beforeCommand?: (command: string, args: unknown[]) => Awaitable<void>
-  afterCommand?: (command: string, args: unknown[]) => Awaitable<void>
-  getCommandsContext: (sessionId: string) => Record<string, unknown>
-  openPage: (sessionId: string, url: string, beforeNavigate?: () => Promise<void>) => Promise<void>
-  getCDPSession?: (sessionId: string) => Promise<CDPSession>
-  close: () => Awaitable<void>
-  initialize: (
-    ctx: TestProject,
-    options: BrowserProviderInitializationOptions
-  ) => Awaitable<void>
-}
-```
-
-::: danger ADVANCED API
-自定义提供者 API 高度实验性，并且可能在补丁版本之间发生变化。如果你只需要在浏览器中运行测试，请改用 [`browser.instances`](#browser-instances) 选项。
-:::
-
-## browser.providerOptions <Badge type="danger">已弃用</Badge> {#browser-provideroptions}
-
-- **类型:** `BrowserProviderOptions`
-
-::: danger DEPRECATED
-此 API 已弃用，并将在 Vitest 4 中移除。请改用 [`browser.instances`](#browser-instances) 选项。
-:::
-
-调用 `provider.initialize` 时传递给提供者的选项。
-
-```ts
-import { defineConfig } from 'vitest/config'
+```ts{8-10}
+import { playwright } from '@vitest/browser-playwright'
+import { webdriverio } from '@vitest/browser-webdriverio'
+import { preview } from '@vitest/browser-preview'
 
 export default defineConfig({
   test: {
     browser: {
-      providerOptions: {
-        launch: {
-          devtools: true,
-        },
-      },
+      provider: playwright(),
+      provider: webdriverio(),
+      provider: preview(), // default
     },
   },
 })
 ```
 
-::: tip
-为了在使用内置提供者时获得更好的类型安全性，我们应该在 [配置文件](/config/) 中引用以下类型之一（针对我们使用的提供者）：
+要配置提供者如何初始化浏览器，你可以将选项传递给工厂函数：
+
+```ts{7-13,20-26}
+import { playwright } from '@vitest/browser-playwright'
+
+export default defineConfig({
+  test: {
+    browser: {
+      // shared provider options between all instances
+      provider: playwright({
+        launchOptions: {
+          slowMo: 50,
+          channel: 'chrome-beta',
+        },
+        actionTimeout: 5_000,
+      }),
+      instances: [
+        { browser: 'chromium' },
+        {
+          browser: 'firefox',
+          // overriding options only for a single instance
+          // this will NOT merge options with the parent one
+          provider: playwright({
+            launchOptions: {
+              firefoxUserPrefs: {
+                'browser.startup.homepage': 'https://example.com',
+              },
+            },
+          })
+        }
+      ],
+    },
+  },
+})
+```
+
+### Custom Provider <Badge type="danger">advanced</Badge>
+
+::: danger ADVANCED API
+自定义提供者 API 高度实验性，并且可能在补丁版本之间发生变化。如果你只需要在浏览器中运行测试，请改用 [`browser.instances`](#browser-instances) 选项。
+:::
 
 ```ts
-/// <reference types="@vitest/browser/providers/playwright" />
-/// <reference types="@vitest/browser/providers/webdriverio" />
+export interface BrowserProvider {
+  name: string
+  mocker?: BrowserModuleMocker
+  /**
+   * @experimental opt-in into file parallelisation
+   */
+  supportsParallelism: boolean
+  getCommandsContext: (sessionId: string) => Record<string, unknown>
+  openPage: (sessionId: string, url: string) => Promise<void>
+  getCDPSession?: (sessionId: string) => Promise<CDPSession>
+  close: () => Awaitable<void>
+}
 ```
-:::
 
 ## browser.ui
 
@@ -295,25 +282,12 @@ export interface BrowserScript {
 }
 ```
 
-## browser.testerScripts
-
-- **类型:** `BrowserScript[]`
-- **默认值:** `[]`
-
-::: danger DEPRECATED
-此 API 已弃用，并将在 Vitest 4 中移除。请改用 [`browser.testerHtmlPath`](#browser-testerhtmlpath) 字段。
-:::
-
-在测试环境初始化之前应注入到测试器 HTML 中的自定义脚本。这对于注入 Vitest 浏览器实现所需的 polyfill 非常有用。在几乎所有情况下，建议使用 [`setupFiles`](#setupfiles) 代替此选项。
-
-脚本的 `src` 和 `content` 将由 Vite 插件处理。
-
 ## browser.commands
 
 - **类型:** `Record<string, BrowserCommand>`
 - **默认值:** `{ readFile, writeFile, ... }`
 
-可以从 `@vitest/browser/commands` 导入的自定义 [命令](/guide/browser/commands)。
+可以在浏览器测试中从 `vitest/browser` 导入的自定义[命令](/guide/browser/commands)。
 
 ## browser.connectTimeout
 
@@ -324,6 +298,50 @@ export interface BrowserScript {
 
 ::: info
 这是浏览器与 Vitest 服务器建立 WebSocket 连接所需的时间。在正常情况下，此超时不应被触发。
+:::
+
+## browser.trace
+
+- **Type:** `'on' | 'off' | 'on-first-retry' | 'on-all-retries' | 'retain-on-failure' | object`
+- **CLI:** `--browser.trace=on`, `--browser.trace=retain-on-failure`
+- **Default:** `'off'`
+
+Capture a trace of your browser test runs. You can preview traces with [Playwright Trace Viewer](https://trace.playwright.dev/).
+
+This options supports the following values:
+
+- `'on'` - capture trace for all tests. (not recommended as it's performance heavy)
+- `'off'` - do not capture traces.
+- `'on-first-retry'` - capture trace only when retrying the test for the first time.
+- `'on-all-retries'` - capture trace on every retry of the test.
+- `'retain-on-failure'` - capture trace only for tests that fail. This will automatically delete traces for tests that pass.
+- `object` - an object with the following shape:
+
+```ts
+interface TraceOptions {
+  mode: 'on' | 'off' | 'on-first-retry' | 'on-all-retries' | 'retain-on-failure'
+  /**
+   * The directory where all traces will be stored. By default, Vitest
+   * stores all traces in `__traces__` folder close to the test file.
+   */
+  tracesDir?: string
+  /**
+   * Whether to capture screenshots during tracing. Screenshots are used to build a timeline preview.
+   * @default true
+   */
+  screenshots?: boolean
+  /**
+   * If this option is true tracing will
+   * - capture DOM snapshot on every action
+   * - record network activity
+   * @default true
+   */
+  snapshots?: boolean
+}
+```
+
+::: danger WARNING
+This option is supported only by the [**playwright**](/guide/browser/playwright) provider.
 :::
 
 ## browser.trackUnhandledErrors
@@ -458,12 +476,3 @@ resolveScreenshotPath: ({ arg, browserName, ext, root, testFileName }) =>
 resolveDiffPath: ({ arg, attachmentsDir, browserName, ext, root, testFileName }) =>
   `${root}/${attachmentsDir}/screenshot-diffs/${testFileName}/${arg}-${browserName}${ext}`
 ```
-
-::: tip
-为了在使用内置提供程序时获得更好的类型安全性，应在你的 [配置文件](/config/) 中引用这些类型之一（针对你正在使用的提供程序）。
-
-```ts
-/// <reference types="@vitest/browser/providers/playwright" />
-/// <reference types="@vitest/browser/providers/webdriverio" />
-```
-:::

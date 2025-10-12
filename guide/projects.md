@@ -42,7 +42,54 @@ export default defineConfig({
 })
 ```
 
-Vitest 会将 `packages` 中的每个文件夹视为独立项目，即使其中没有配置文件。如果该 glob 模式匹配到 _任意文件_，它将被视为 Vitest 配置，即使文件名中没有包含 `vitest` 或文件扩展名不常见。
+Vitest 会将 `packages` 中的每个文件夹视为独立项目，即使其中没有配置文件。如果 glob 模式匹配到文件，它将验证文件名是否以 `vitest.config`/`vite.config` 开头，或匹配 `(vite|vitest).*.config.*` 模式，以确保它是 Vitest 配置文件。例如，以下配置文件是有效的：
+
+- `vitest.config.ts`
+- `vite.config.js`
+- `vitest.unit.config.ts`
+- `vite.e2e.config.js`
+- `vitest.config.unit.js`
+- `vite.config.e2e.js`
+
+要排除文件夹和文件，你可以使用否定模式：
+
+```ts [vitest.config.ts]
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    // include all folders inside "packages" except "excluded"
+    projects: [
+      'packages/*',
+      '!packages/excluded'
+    ],
+  },
+})
+```
+
+如果你有一个嵌套结构，其中某些文件夹需要成为项目，但其他文件夹有自己的子文件夹，你必须使用括号来避免匹配父文件夹：
+
+```ts [vitest.config.ts]
+import { defineConfig } from 'vitest/config'
+
+// For example, this will create projects:
+// packages/a
+// packages/b
+// packages/business/c
+// packages/business/d
+// Notice that "packages/business" is not a project itself
+
+export default defineConfig({
+  test: {
+    projects: [
+      // matches every folder inside "packages" except "business"
+      'packages/!(business)',
+      // matches every folder inside "packages/business"
+      'packages/business/*',
+    ],
+  },
+})
+```
 
 ::: warning
 Vitest 不会将根目录的 `vitest.config` 文件视为项目，除非在配置中显式指定。因此，根配置只会影响全局选项，如 `reporters` 和 `coverage`。但 Vitest 总会执行根配置文件中指定的某些插件钩子，如 `apply`、`config`、`configResolved` 或 `configureServer`。Vitest 也会使用相同的插件执行全局设置和自定义覆盖提供者。

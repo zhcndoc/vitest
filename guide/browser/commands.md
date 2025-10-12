@@ -20,7 +20,7 @@ outline: deep
 :::
 
 ```ts
-import { server } from '@vitest/browser/context'
+import { server } from 'vitest/browser'
 
 const { readFile, writeFile, removeFile } = server.commands
 
@@ -38,10 +38,10 @@ it('handles files', async () => {
 
 ## CDP Session
 
-Vitest 通过 `@vitest/browser/context` 中导出的 `cdp` 方法访问原始 Chrome Devtools 协议。它主要用于库作者在其基础上构建工具。
+Vitest 通过 `vitest/browser` 中导出的 `cdp` 方法访问原始 Chrome Devtools 协议。它主要用于库作者在其基础上构建工具。
 
 ```ts
-import { cdp } from '@vitest/browser/context'
+import { cdp } from 'vitest/browser'
 
 const input = document.createElement('input')
 document.body.appendChild(input)
@@ -97,10 +97,10 @@ export default function BrowserCommands(): Plugin {
 }
 ```
 
-然后，你可以通过从 `@vitest/brower/context` 导入它，在测试中调用它：
+然后，你可以通过从 `vitest/browser` 导入它，在测试中调用它：
 
 ```ts
-import { commands } from '@vitest/browser/context'
+import { commands } from 'vitest/browser'
 import { expect, test } from 'vitest'
 
 test('custom command works correctly', async () => {
@@ -108,8 +108,8 @@ test('custom command works correctly', async () => {
   expect(result).toEqual({ someValue: true })
 })
 
-// 如果你使用 TypeScript，你可以扩展模块。
-declare module '@vitest/browser/context' {
+// if you are using TypeScript, you can augment the module
+declare module 'vitest/browser' {
   interface BrowserCommands {
     myCustomCommand: (arg1: string, arg2: string) => Promise<{
       someValue: true
@@ -148,26 +148,10 @@ export const myCommand: BrowserCommand<[string, number]> = async (
 }
 ```
 
-::: tip
-如果我们使用的是 TypeScript ，请不要忘记在我们的 [setup 文件](/config/#setupfile)或 [config 文件](/config/) 中引用 `@vitest/browser/providers/playwright` ，以便在配置以及 `userEvent` 和 `page` 选项中获得自动补全功能。
-
-```ts
-/// <reference types="@vitest/browser/providers/playwright" />
-```
-:::
-
-### 自定义命令 `webdriverio`
+### Custom `webdriverio` commands
 
 Vitest 在上下文对象上公开了一些 `webdriverio` 特有属性。
 
 - `browser` 是 `WebdriverIO.Browser` API.
 
 Vitest 会在每条命令执行前自动调用 `browser.switchFrame`，将 `webdriver` 上下文切换至测试 iframe ，因此 `$` 与 `$$` 获取的是 iframe 内的元素，而非 orchestrator 中的元素；非 webdriver API 则仍作用于父级 frame。
-
-::: tip
-如果我们使用的是 TypeScript，请记得在您的 [setup 文件](/config/#setupfile)或 [config 文件](/config/)中引用 `@vitest/browser/providers/webdriverio` ，以便获得自动补全功能。
-
-```ts
-/// <reference types="@vitest/browser/providers/webdriverio" />
-```
-:::

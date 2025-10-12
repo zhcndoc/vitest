@@ -89,7 +89,7 @@
 - **CLI:** `--reporter <name>`
 - **Config:** [reporters](/config/#reporters)
 
-用来选择报告输出格式的类型，可选值包括： default、blob、verbose、dot、json、tap、tap-flat、junit、hanging-process、github-actions。
+指定报告器（default、blob、verbose、dot、json、tap、tap-flat、junit、tree、hanging-process、github-actions）
 
 ### outputFile
 
@@ -191,7 +191,7 @@
 
 ### coverage.thresholds.autoUpdate
 
-- **CLI:** `--coverage.thresholds.autoUpdate`
+- **CLI:** `--coverage.thresholds.autoUpdate <boolean|function>`
 - **Config:** [coverage.thresholds.autoUpdate](/config/#coverage-thresholds-autoupdate)
 
 更新阈值： 当当前覆盖率高于配置的阈值时，将 "lines"、"functions"、"branches"和 "statements"更新到配置文件（默认值：`false`）
@@ -341,13 +341,6 @@ High and low watermarks for functions in the format of `<high>,<low>`
 
 指定执行浏览器测试时所使用的提供程序。部分浏览器仅在特定的提供程序下可用。可选值有 "webdriverio"、"playwright"、"preview"，也可以填写自定义提供程序的路径。更多信息请查看 [`browser.provider`](https://vitest.dev/guide/browser/config.html#browser-provider)（默认值为 "preview"）。
 
-### browser.providerOptions
-
-- **CLI:** `--browser.providerOptions <options>`
-- **Config:** [browser.providerOptions](/guide/browser/config#browser-provideroptions)
-
-传递给浏览器提供程序的选项。更多信息请访问 [`browser.providerOptions`](https://vitest.dev/config/#browser-provideroptions)。
-
 ### browser.isolate
 
 - **CLI:** `--browser.isolate`
@@ -383,6 +376,13 @@ If connection to the browser takes longer, the test suite will fail (default: `6
 
 控制 Vitest 是否捕获未捕获的异常以便报告（默认：`true`）。
 
+### browser.trace
+
+- **CLI:** `--browser.trace <mode>`
+- **Config:** [browser.trace](/guide/browser/config#browser-trace)
+
+Enable trace view mode. Supported: "on", "off", "on-first-retry", "on-all-retries", "retain-on-failure".
+
 ### pool
 
 - **CLI:** `--pool <pool>`
@@ -411,13 +411,6 @@ If connection to the browser takes longer, the test suite will fail (default: `6
 
 运行测试的最大线程数或百分比
 
-### poolOptions.threads.minThreads
-
-- **CLI:** `--poolOptions.threads.minThreads <workers>`
-- **Config:** [poolOptions.threads.minThreads](/config/#pooloptions-threads-minthreads)
-
-运行测试的最小线程数或百分比
-
 ### poolOptions.threads.useAtomics
 
 - **CLI:** `--poolOptions.threads.useAtomics`
@@ -445,13 +438,6 @@ If connection to the browser takes longer, the test suite will fail (default: `6
 - **Config:** [poolOptions.vmThreads.maxThreads](/config/#pooloptions-vmthreads-maxthreads)
 
  运行测试的最大线程数或百分比
-
-### poolOptions.vmThreads.minThreads
-
-- **CLI:** `--poolOptions.vmThreads.minThreads <workers>`
-- **Config:** [poolOptions.vmThreads.minThreads](/config/#pooloptions-vmthreads-minthreads)
-
-运行测试的最小线程数或百分比
 
 ### poolOptions.vmThreads.useAtomics
 
@@ -488,13 +474,6 @@ If connection to the browser takes longer, the test suite will fail (default: `6
 
 运行测试的最大进程数
 
-### poolOptions.forks.minForks
-
-- **CLI:** `--poolOptions.forks.minForks <workers>`
-- **Config:** [poolOptions.forks.minForks](/config/#pooloptions-forks-minforks)
-
-运行测试的最小进程数
-
 ### poolOptions.vmForks.isolate
 
 - **CLI:** `--poolOptions.vmForks.isolate`
@@ -516,13 +495,6 @@ If connection to the browser takes longer, the test suite will fail (default: `6
 
 运行测试的最大进程数
 
-### poolOptions.vmForks.minForks
-
-- **CLI:** `--poolOptions.vmForks.minForks <workers>`
-- **Config:** [poolOptions.vmForks.minForks](/config/#pooloptions-vmforks-minforks)
-
-运行测试的最小进程数
-
 ### poolOptions.vmForks.memoryLimit
 
 - **CLI:** `--poolOptions.vmForks.memoryLimit <limit>`
@@ -543,13 +515,6 @@ VM forks pool 的内存限制。如果你观察到内存泄漏问题，可以尝
 - **Config:** [maxWorkers](/config/#maxworkers)
 
 同时并发执行测试任务的最大线程数或百分比
-
-### minWorkers
-
-- **CLI:** `--minWorkers <workers>`
-- **Config:** [minWorkers](/config/#minworkers)
-
-同时并发执行测试任务的最小线程数或百分比
 
 ### environment
 
