@@ -39,6 +39,36 @@ expect(input).toBe(2) // jest API
 如果表达式没有类型错误，则 `expect` 对测试类型没有影响。 如果你想使用 Vitest 作为[类型检查器](/guide/testing-types)，请使用 [`expectTypeOf`](/api/expect-typeof) 或 [`assertType`](/api/assert-type) 。
 :::
 
+## assert
+
+- **Type:** `Chai.AssertStatic`
+
+Vitest reexports chai's [`assert` API](https://www.chaijs.com/api/assert/) as `expect.assert` for convenience. You can see the supported methods on the [Assert API page](/api/assert).
+
+This is especially useful if you need to narrow down the type, since `expect.to*` methods do not support that:
+
+```ts
+interface Cat {
+  __type: 'Cat'
+  mew(): void
+}
+interface Dog {
+  __type: 'Dog'
+  bark(): void
+}
+type Animal = Cat | Dog
+
+const animal: Animal = { __type: 'Dog', bark: () => {} }
+
+expect.assert(animal.__type === 'Dog')
+// does not show a type error!
+expect(animal.bark()).toBeUndefined()
+```
+
+::: tip
+Note that `expect.assert` also supports other type-narrowing methods (like `assert.isDefined`, `assert.exists` and so on).
+:::
+
 ## soft
 
 - **类型:** `ExpectStatic & (actual: any) => Assertions`
