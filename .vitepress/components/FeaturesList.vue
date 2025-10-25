@@ -41,7 +41,7 @@
       <a target="_blank" href="https://github.com/capricorn86/happy-dom" rel="noopener noreferrer">happy-dom</a>
       模拟 DOM
     </ListItem>
-    <ListItem><a href="https://vitest.dev/guide/browser/" rel="noopener noreferrer">浏览器模式</a>：在浏览器中运行组件测试</ListItem>
+    <ListItem><a href="/guide/browser/" rel="noopener noreferrer">浏览器模式</a>：在浏览器中运行组件测试</ListItem>
     <ListItem>
       通过
       <a target="_blank" href="https://v8.dev/blog/javascript-code-coverage" rel="noopener noreferrer">v8</a>
