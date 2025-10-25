@@ -285,7 +285,7 @@ export default ({ mode }: { mode: string }) => {
             ],
           },
           {
-            text: 'Guides',
+            text: '指南',
             collapsed: false,
             items: [
               {
@@ -304,7 +304,7 @@ export default ({ mode }: { mode: string }) => {
                 docFooterText: '可视化回归测试 | Browser Mode',
               },
               {
-                text: 'Trace Viewer',
+                text: '跟踪查看器',
                 link: '/guide/browser/trace-viewer',
                 docFooterText: 'Trace Viewer | Browser Mode',
               },
@@ -314,7 +314,7 @@ export default ({ mode }: { mode: string }) => {
             items: [
               ...footer(),
               {
-                text: 'Node API Reference',
+                text: 'Node API 索引',
                 link: '/advanced/api/',
               },
             ],
@@ -428,15 +428,15 @@ export default ({ mode }: { mode: string }) => {
           {
             items: [
               {
-                text: 'Browser Mode',
+                text: '浏览器模式',
                 link: '/guide/browser',
               },
               {
-                text: 'Node API Reference',
+                text: 'Node API 索引',
                 link: '/advanced/api',
               },
               {
-                text: 'Comparisons',
+                text: '测试框架对比',
                 link: '/guide/comparisons',
               },
             ],
@@ -452,11 +452,11 @@ export default ({ mode }: { mode: string }) => {
 function footer(): DefaultTheme.SidebarItem[] {
   return [
     {
-      text: 'Config Reference',
+      text: '配置索引',
       link: '/config/',
     },
     {
-      text: 'Test API Reference',
+      text: 'Test API 索引',
       link: '/api/',
     },
   ]
@@ -515,35 +515,35 @@ function guide(): DefaultTheme.SidebarItem[] {
       collapsed: true,
       items: [
         {
-          text: 'Mocking Dates',
+          text: '模拟日期',
           link: '/guide/mocking/dates',
         },
         {
-          text: 'Mocking Functions',
+          text: '模拟函数',
           link: '/guide/mocking/functions',
         },
         {
-          text: 'Mocking Globals',
+          text: '模拟Globals',
           link: '/guide/mocking/globals',
         },
         {
-          text: 'Mocking Modules',
+          text: '模拟模块',
           link: '/guide/mocking/modules',
         },
         {
-          text: 'Mocking the File System',
+          text: '模拟文件系统',
           link: '/guide/mocking/file-system',
         },
         {
-          text: 'Mocking Requests',
+          text: '模拟请求',
           link: '/guide/mocking/requests',
         },
         {
-          text: 'Mocking Timers',
+          text: '模拟计时器',
           link: '/guide/mocking/timers',
         },
         {
-          text: 'Mocking Classes',
+          text: '模拟类',
           link: '/guide/mocking/classes',
         },
       ],
@@ -557,7 +557,7 @@ function guide(): DefaultTheme.SidebarItem[] {
       link: '/guide/testing-types',
     },
     {
-      text: 'Vitest UI',
+      text: 'UI模式',
       link: '/guide/ui',
     },
     {
@@ -604,7 +604,7 @@ function guide(): DefaultTheme.SidebarItem[] {
       ],
     },
     {
-      text: 'Performance',
+      text: '性能',
       collapsed: false,
       items: [
         {
