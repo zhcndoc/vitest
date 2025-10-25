@@ -523,7 +523,7 @@ function guide(): DefaultTheme.SidebarItem[] {
           link: '/guide/mocking/functions',
         },
         {
-          text: '模拟Globals',
+          text: '模拟全局对象',
           link: '/guide/mocking/globals',
         },
         {
