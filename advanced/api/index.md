@@ -98,7 +98,7 @@ function resolveConfig(
 ```ts
 import { resolveConfig } from 'vitest/node'
 
-// vitestConfig only has resolved "test" properties
+// vitestConfig 只解析了 “测试” 属性
 const { vitestConfig, viteConfig } = await resolveConfig({
   mode: 'custom',
   configFile: false,
