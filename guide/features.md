@@ -54,7 +54,7 @@ Vitest 提供了许多缩小测试范围的方法，以便在开发过程中加�
 ```ts
 import { describe, it } from 'vitest'
 
-// The two tests marked with concurrent will be started in parallel
+// 标记为并发的两个测试将并行启动
 describe('suite', () => {
   it('serial test', async () => {
     /* ... */
@@ -73,7 +73,7 @@ describe('suite', () => {
 ```ts
 import { describe, it } from 'vitest'
 
-// All tests within this suite will be started in parallel
+// 该套件的所有测试将并行开始
 describe.concurrent('suite', () => {
   it('concurrent test 1', async ({ expect }) => {
     /* ... */
@@ -149,7 +149,7 @@ $ npm i -D jsdom
 import { defineConfig } from 'vitest/config'
 export default defineConfig({
   test: {
-    environment: 'happy-dom', // or 'jsdom', 'node'
+    environment: 'happy-dom', // 或 'jsdom' 和 'node'
   },
 })
 ```
@@ -192,11 +192,11 @@ Vitest 还提供了一种方式，可以运行与你的代码实现放在一起�
 这使得测试与实现共享相同的闭包，并且能够在不导出的情况下针对私有状态进行测试。同时，它也使开发更加接近反馈循环。
 
 ```ts [src/index.ts]
-// the implementation
+// 实现
 export function add(...args: number[]): number {
   return args.reduce((a, b) => a + b, 0)
 }
-// in-source test suites
+// 源码内联测试套件
 if (import.meta.vitest) {
   const { it, expect } = import.meta.vitest
   it('add', () => {
@@ -248,7 +248,7 @@ test('my types work properly', () => {
   expectTypeOf(mount).toBeFunction()
   expectTypeOf(mount).parameter(0).toExtend<{ name: string }>()
 
-  // @ts-expect-error name is a string
+  // @ts-expect-error 的名称是一个字符串
   assertType(mount({ name: 42 }))
 })
 ```
@@ -275,7 +275,7 @@ import { defineConfig } from 'vitest/config'
 
 export default defineConfig(({ mode }) => ({
   test: {
-    // mode defines what ".env.{mode}" file to choose if exists
+    // 如果存在 mode 定义，则选择什么 “env.{mode}” 文件
     env: loadEnv(mode, process.cwd(), ''),
   },
 }))
@@ -289,23 +289,23 @@ export default defineConfig(({ mode }) => ({
 
 ::: code-group
 ```ts [setup.node.js]
-// in Node.js
+// 在 Node.js
 process.on('unhandledRejection', () => {
-  // your own handler
+  // 你自己的处理程序
 })
 
 process.on('uncaughtException', () => {
-  // your own handler
+  // 你自己的处理程序
 })
 ```
 ```ts [setup.browser.js]
-// in the browser
+// 在浏览器
 window.addEventListener('error', () => {
-  // your own handler
+  // 你自己的处理程序
 })
 
 window.addEventListener('unhandledrejection', () => {
-  // your own handler
+  // 你自己的处理程序
 })
 ```
 :::
