@@ -122,7 +122,7 @@ assertType<string>(answr)
 
 :::
 
-## 运行类型检查 {#running-type-check}
+## 运行类型检查 {#run-typechecking}
 
 要启用类型检查，只需在 `package.json` 文件中的 Vitest 命令中添加 [`--typecheck`](/config/#typecheck) 标志：
 

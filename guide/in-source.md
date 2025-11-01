@@ -2,13 +2,14 @@
 title: 源码内联测试 | 指南
 ---
 
-# 源码内联测试 {#in-source-test}
+# 源码内联测试 {#in-source}
 
 Vitest 还提供了一种方式，可以运行与你的代码实现放在一起的测试，就像是 [Rust 语言的模块测试一样](https://doc.rust-lang.org/book/ch11-03-test-organization.html#the-tests-module-and-cfgtest)。
 
 这允许测试与实现共享相同的闭包，并且能够在不导出的情况下针对私有状态进行测试。同时，它也使开发更加接近反馈循环。
 
-## 指引 {#guidance}
+## 指引 {#setup}
+
 ::: warning
 本指南介绍如何在源代码中编写测试。如果需要在单独的测试文件中编写测试，请参阅["编写测试"指南](/guide/#writing-tests)。
 :::

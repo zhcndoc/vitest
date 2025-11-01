@@ -2,7 +2,7 @@
 title: 测试环境 | 指南
 ---
 
-# 测试环境 {#environment}
+# 测试环境 {#test-environment}
 
 Vitest 提供 [`environment`](/config/#environment) 选项以在特定环境中运行代码。你可以使用 [`environmentOptions`](/config/#environmentoptions) 选项修改环境的行为方式。
 
@@ -25,7 +25,7 @@ Vitest 提供 [`environment`](/config/#environment) 选项以在特定环境中�
 Vitest 并不将 `browser` 视作一种测试环境。如果你想让部分测试在 [浏览器模式](/guide/browser/) 中执行，可以通过创建一个 [测试项目](/guide/browser/#projects-config) 来实现。
 :::
 
-## 特定文件的环境 {#file-specific-environments}
+## 特定文件的环境 {#environments-for-specific-files}
 
 如果配置中设置 `environment` 选项时，它将应用于项目中的所有测试文件。要获得更细粒度的控制，你可以使用控制注释为特定文件指定环境。控制注释是以 `@vitest-environment` 开头，后跟环境名称的注释：
 
