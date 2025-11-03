@@ -12,7 +12,7 @@
     "preview-https": "pnpm run build && serve .vitepress/dist",
     "preview-https-no-prefetch": "pnpm run build-no-prefetch && serve .vitepress/dist",
     "prefetch": "tsx .vitepress/scripts/fetch-avatars.ts",
-    "lint": "eslint .",
+    "lint": "eslint --cache .",
     "lint:fix": "eslint . --fix",
     "generate-pwa-icons": "pwa-assets-generator",
     "prepare": "simple-git-hooks"
