@@ -1,4 +1,4 @@
-# 报告器 「Reporters」
+# 报告器 {#reporters}
 
 ::: warning
 这是一个高级 API。如果我们只想配置内置的报告器，请阅读 ["Reporters"](/guide/reporters) 指南。
