@@ -61,3 +61,16 @@
     <ListItem>报告未捕获的错误</ListItem>
   </ul>
 </template>
+
+<style>
+.features-list li {
+  list-style: none;
+  display: flex;
+  gap: 0.4rem;
+  margin: 0;
+}
+
+.features-list {
+  padding: 0;
+}
+</style>
