@@ -142,7 +142,7 @@ export default defineConfig({
    Duration  1.26s (transform 35ms, setup 1ms, collect 90ms, tests 1.47s, environment 0ms, prepare 267ms)
 ```
 
-If there is only one test file running, Vitest will output the full test tree of that file, simillar to the [`tree`](#tree-reporter) reporter. The default reporter will also print the test tree if there is at least one failed test in the file.
+如果只有一个测试文件在运行，Vitest 将输出该文件的完整测试树，类似于 [`tree`](#tree-reporter) 报告器。如果文件中至少有一个测试失败，default 报告器也会打印测试树。
 
 ```bash
 ✓ __tests__/file1.test.ts (2) 725ms
@@ -196,7 +196,7 @@ Example output:
    Duration  1.26s (transform 35ms, setup 1ms, collect 90ms, tests 1.47s, environment 0ms, prepare 267ms)
 ```
 
-An example with `--includeTaskLocation`:
+一个带有 `--includeTaskLocation` 参数的示例：
 
 ```bash
 ✓ __tests__/file1.test.ts:2:1 > first test file > 2 + 2 should equal 4 1ms
