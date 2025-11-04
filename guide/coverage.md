@@ -85,23 +85,23 @@ Vitest 默认采用 'v8' 作为覆盖率提供器。
 简单来说，插桩就是在你的源文件里加入一段额外的 JavaScript，用于记录代码的执行路径：
 
 ```js
-// Simplified example of branch and function coverage counters
+// 分支和函数覆盖率计数器的简化示例
 const coverage = { // [!code ++]
   branches: { 1: [0, 0] }, // [!code ++]
   functions: { 1: 0 }, // [!code ++]
 } // [!code ++]
 
 export function getUsername(id) {
-  // Function coverage increased when this is invoked  // [!code ++]
+  // 当这个函数被调用时，函数覆盖率会增加  // [!code ++]
   coverage.functions['1']++ // [!code ++]
 
   if (id == null) {
-    // Branch coverage increased when this is invoked  // [!code ++]
+    // 当这个分支被调用时，分支覆盖率会增加  // [!code ++]
     coverage.branches['1'][0]++ // [!code ++]
 
     throw new Error('User ID is required')
   }
-  // Implicit else coverage increased when if-statement condition not met  // [!code ++]
+  // 当 if 语句条件不满足时，隐式的 else 覆盖率会增加  // [!code ++]
   coverage.branches['1'][1]++ // [!code ++]
 
   return database.getUser(id)
@@ -247,10 +247,10 @@ export default defineConfig({
   test: {
     coverage: {
       reporter: [
-        // Specify reporter using name of the NPM package
+        // 使用 NPM 包的名称指定报告器
         ['@vitest/custom-coverage-reporter', { someOption: true }],
 
-        // Specify reporter using local path
+        // 使用本地路径指定报告器
         '/absolute/path/to/custom-reporter.cjs',
       ],
     },
@@ -267,7 +267,7 @@ module.exports = class CustomReporter extends ReportBase {
   constructor(opts) {
     super()
 
-    // Options passed from configuration are available here
+    // 从配置中传递的选项在这里可用
     this.file = opts.file
   }
 
@@ -315,7 +315,7 @@ const CustomCoverageProviderModule: CoverageProviderModule = {
     return new CustomCoverageProvider()
   },
 
-  // Implements rest of the CoverageProviderModule ...
+  // 实现 CoverageProviderModule 的其余部分...
 }
 
 class CustomCoverageProvider implements CoverageProvider {
@@ -326,7 +326,7 @@ class CustomCoverageProvider implements CoverageProvider {
     this.options = ctx.config.coverage
   }
 
-  // Implements rest of the CoverageProvider ...
+  // 实现 CoverageProvider 的其余部分...
 }
 
 export default CustomCoverageProviderModule
@@ -426,8 +426,8 @@ catch (error) {
   console.log('Ignored') // [!code error]
 }
 
-// Requires rolldown-vite due to esbuild's lack of support.
-// See https://vite.dev/guide/rolldown.html#how-to-try-rolldown
+// 由于 esbuild 不支持，需要使用 rolldown-vite。
+// 参阅 https://vite.dev/guide/rolldown.html#how-to-try-rolldown
 try {
   console.log('Included')
 }
@@ -462,9 +462,9 @@ export function ignored() { // [!code error]
 ```
 :::
 
-## Coverage Performance {#coverage-performance}
+## 覆盖率性能 {#coverage-performance}
 
-If code coverage generation is slow on your project, see [Profiling Test Performance | Code coverage](/guide/profiling-test-performance.html#code-coverage).
+如果你的项目中代码覆盖率生成较慢，请参阅[性能测试分析 | 代码覆盖率](/guide/profiling-test-performance.html#code-coverage)。
 
 ## Vitest UI {#vitest-ui}
 
