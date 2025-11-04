@@ -974,9 +974,9 @@ describe.concurrent('suite', () => {
 
 ```ts
 describe.concurrent(/* ... */)
-describe.skip.concurrent(/* ... */) // or describe.concurrent.skip(/* ... */)
-describe.only.concurrent(/* ... */) // or describe.concurrent.only(/* ... */)
-describe.todo.concurrent(/* ... */) // or describe.concurrent.todo(/* ... */)
+describe.skip.concurrent(/* ... */) // 或 describe.concurrent.skip(/* ... */)
+describe.only.concurrent(/* ... */) // 或 describe.concurrent.only(/* ... */)
+describe.todo.concurrent(/* ... */) // 或 describe.concurrent.todo(/* ... */)
 ```
 
 运行并发测试时，快照和断言必须使用本地[测试上下文](/guide/test-context.md)中的 `expect` ，以确保检测到正确的测试。
