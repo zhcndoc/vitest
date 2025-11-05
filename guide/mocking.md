@@ -44,7 +44,7 @@ vi.spyOn(exports, 'getter', 'get').mockReturnValue('mocked')
 此方法在浏览器模式中无法使用。如需替代方案，请查看 [限制部分](/guide/browser/#spying-on-module-exports)。
 :::
 
-### 对模块中导出的函数进行 mock。{#mock-an-exported-function}
+### 对模块中导出的函数进行 mock。 {#mock-an-exported-function}
 
 ```ts
 import * as exports from 'some-path'

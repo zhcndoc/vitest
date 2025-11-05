@@ -9,7 +9,7 @@ outline: deep
 
 Vitest为多个框架提供全面的组件测试支持，包括Vue、React、Svelte、Lit、Preact、Qwik、Solid、Marko等。本指南涵盖了使用Vitest有效测试组件的特定模式、工具和最佳实践。
 
-## 为什么进行组件测试？{#why-component-testing}
+## 为什么进行组件测试？ {#why-component-testing}
 
 组件测试位于单元测试和端到端测试之间，提供了几个优势：
 
@@ -22,7 +22,7 @@ Vitest为多个框架提供全面的组件测试支持，包括Vue、React、Sve
 
 Vitest中的组件测试使用**浏览器模式**在真实浏览器环境中运行测试，支持使用Playwright、WebdriverIO或预览模式。这提供了最准确的测试环境，因为你的组件在真实浏览器中运行，具有实际的DOM实现、CSS渲染和浏览器API。
 
-### 为什么使用浏览器模式？{#why-browser-mode}
+### 为什么使用浏览器模式？ {#why-browser-mode}
 
 浏览器模式是组件测试的推荐方法，因为它提供了最准确的测试环境。与DOM模拟库不同，浏览器模式能够捕获影响用户的真实世界问题。
 
