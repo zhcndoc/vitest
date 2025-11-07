@@ -164,7 +164,47 @@ const plainTeamEmeritiMembers: CoreTeam[] = [
   },
 ]
 
+const plainTranslationTeamMembers: CoreTeam[] = [
+  {
+    avatar: contributorsAvatars.elonehoo,
+    name: 'Elone Hoo',
+    github: 'elonehoo',
+    desc: 'Vitest 中文文档发起者',
+  },
+  {
+    avatar: contributorsAvatars.watonyweng,
+    name: 'Wáng Wěi Tāo',
+    github: 'watonyweng',
+  },
+  {
+    avatar: contributorsAvatars.thinkasany,
+    name: 'thinkasany',
+    github: 'thinkasany',
+    desc: 'Vite & Vitest & antd 中文文档维护者',
+  },
+  {
+    avatar: contributorsAvatars.XieZongChen,
+    name: 'XieZongChen',
+    github: 'XieZongChen',
+    desc: 'Vitest 中文文档维护者',
+  },
+  {
+    avatar: contributorsAvatars.lxKylin,
+    name: 'Kylin',
+    github: 'lxKylin',
+    desc: 'Vite & Vitest 中文文档维护者',
+  },
+  {
+    avatar: contributorsAvatars.NoiseFan,
+    name: 'NoiseFan',
+    github: 'NoiseFan',
+    title: '开源爱好者',
+    desc: 'Vitest 中文文档维护者',
+  },
+]
+
 const teamMembers = plainTeamMembers.map(tm => createLinks(tm))
 const teamEmeritiMembers = plainTeamEmeritiMembers.map(tm => createLinks(tm))
+const translationTeamMembers = plainTranslationTeamMembers.map(tm => createLinks(tm))
 
-export { teamEmeritiMembers, teamMembers }
+export { teamEmeritiMembers, teamMembers, translationTeamMembers }

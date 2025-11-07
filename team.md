@@ -11,7 +11,7 @@ import {
   VPTeamPageSection,
   VPTeamMembers
 } from 'vitepress/theme'
-import { teamMembers, teamEmeritiMembers } from './.vitepress/contributors'
+import { teamMembers, teamEmeritiMembers, translationTeamMembers } from './.vitepress/contributors'
 </script>
 
 <VPTeamPage>
@@ -30,6 +30,15 @@ import { teamMembers, teamEmeritiMembers } from './.vitepress/contributors'
     </template>
     <template #members>
       <VPTeamMembers size="small" :members="teamEmeritiMembers" />
+    </template>
+  </VPTeamPageSection>
+  <VPTeamPageSection>
+    <template #title>中文文档维护者</template>
+    <template #lead>
+      官方中文文档由以下团队成员维护。
+    </template>
+    <template #members>
+      <VPTeamMembers size="small" :members="translationTeamMembers" />
     </template>
   </VPTeamPageSection>
 </VPTeamPage>
