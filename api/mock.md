@@ -60,7 +60,7 @@ const spy = vi.spyOn(person, 'greet').mockImplementation(() => 'mocked')
 expect(person.greet('Alice')).toBe('mocked')
 expect(spy.mock.calls).toEqual([['Alice']])
 
-// clear call history but keep mock implementation
+// 清空历史，但是保留模拟对象的实现
 spy.mockClear()
 expect(spy.mock.calls).toEqual([])
 expect(person.greet('Bob')).toBe('mocked')
@@ -87,7 +87,7 @@ function mockImplementation(fn: T): Mock<T>
 
 ```ts
 const mockFn = vi.fn().mockImplementation((apples: number) => apples + 1)
-// or: vi.fn(apples => apples + 1);
+// 或：vi.fn(apples => apples + 1);
 
 const NelliesBucket = mockFn(0)
 const BobsBucket = mockFn(1)
@@ -110,11 +110,11 @@ function mockImplementationOnce(fn: T): Mock<T>
 ```ts
 const myMockFn = vi
   .fn()
-  .mockImplementationOnce(() => true) // 1st call
-  .mockImplementationOnce(() => false) // 2nd call
+  .mockImplementationOnce(() => true) // 1st 调用
+  .mockImplementationOnce(() => false) // 2nd 调用
 
-myMockFn() // 1st call: true
-myMockFn() // 2nd call: false
+myMockFn() // 1st 调用：true
+myMockFn() // 2nd 调用：false
 ```
 
 当 mock 函数用完所有实现后，如果之前调用过 `vi.fn(() => defaultValue)` 或 `.mockImplementation(() => defaultValue)`，它将调用设置的默认实现：
@@ -163,7 +163,7 @@ myMockFn() // 'original'
 test('async callback', () => {
   const myMockFn = vi.fn(() => 'original')
 
-  // We await this call since the callback is async
+  // 由于回调是异步的，我们要等待这个调用
   await myMockFn.withImplementation(
     () => 'temp',
     async () => {
@@ -188,7 +188,7 @@ function mockRejectedValue(value: unknown): Mock<T>
 ```ts
 const asyncMock = vi.fn().mockRejectedValue(new Error('Async error'))
 
-await asyncMock() // throws Error<'Async error'>
+await asyncMock() // 抛出 Error<'Async error'>
 ```
 
 ## mockRejectedValueOnce
@@ -206,7 +206,7 @@ const asyncMock = vi
   .mockRejectedValueOnce(new Error('Async error'))
 
 await asyncMock() // 'first call'
-await asyncMock() // throws Error<'Async error'>
+await asyncMock() // 抛出 Error<'Async error'>
 ```
 
 ## mockReset
@@ -233,7 +233,7 @@ const spy = vi.spyOn(person, 'greet').mockImplementation(() => 'mocked')
 expect(person.greet('Alice')).toBe('mocked')
 expect(spy.mock.calls).toEqual([['Alice']])
 
-// clear call history and reset implementation, but method is still spied
+// 清空历史和重置实现，但是方法依然是被监视
 spy.mockReset()
 expect(spy.mock.calls).toEqual([])
 expect(person.greet).toBe(spy)
@@ -261,7 +261,7 @@ const spy = vi.spyOn(person, 'greet').mockImplementation(() => 'mocked')
 expect(person.greet('Alice')).toBe('mocked')
 expect(spy.mock.calls).toEqual([['Alice']])
 
-// clear call history and restore spied object method
+// 清空调用历史和恢复被监视对象方法
 spy.mockRestore()
 expect(spy.mock.calls).toEqual([])
 expect(person.greet).not.toBe(spy)
@@ -392,8 +392,8 @@ argument.value = 10
 
 expect(fn).toHaveBeenCalledWith({ value: 0 }) // [!code --]
 
-// The equality check is done against the original argument,
-// but its property was changed between the call and assertion
+// 相等性检查是针对原始参数进行的，
+// 但是，该参数的属性在调用和断言之间发生了更改。
 expect(fn).toHaveBeenCalledWith({ value: 10 }) // [!code ++]
 ```
 
@@ -423,8 +423,8 @@ const lastCall: Parameters<T> | undefined
 interface MockResultReturn<T> {
   type: 'return'
   /**
-   * The value that was returned from the function.
-   * If the function returned a Promise, then this will be a resolved value.
+   * 函数返回的值。
+   * 如果函数返回的是一个 Promise，那么这将是一个已解析的值。
    */
   value: T
 }
@@ -437,7 +437,7 @@ interface MockResultIncomplete {
 interface MockResultThrow {
   type: 'throw'
   /**
-   * An error that was thrown during function execution.
+   * 函数执行过程中抛出的错误。
    */
   value: any
 }
@@ -466,21 +466,21 @@ const fn = vi
     throw new Error('thrown error')
   })
 
-const result = fn() // returned 'result'
+const result = fn() // 返回 'result'
 
 try {
-  fn() // threw Error
+  fn() // 抛出错误
 }
 catch {}
 
 fn.mock.results
 === [
-  // first result
+  // 首个结果
   {
     type: 'return',
     value: 'result',
   },
-  // last result
+  // 最后结果
   {
     type: 'throw',
     value: Error,

@@ -1001,7 +1001,7 @@ await expect.element(queryByTestId('prev')).not.toHaveSelection()
 await expect.element(queryByTestId('next')).toHaveSelection('ne')
 ```
 
-## toMatchScreenshot <Badge type="warning">实验性</Badge>
+## toMatchScreenshot <Badge type="warning">实验性</Badge> {#tomatchscreenshot}
 
 ```ts
 function toMatchScreenshot(
@@ -1018,7 +1018,6 @@ function toMatchScreenshot(
 :::
 
 该断言通过将元素或整页的截图与预先保存的基准图像进行比对，实现视觉回归测试。
-
 
 若差异超出设定阈值，测试即告失败。为便于定位变更，断言会自动生成：
 

@@ -8,7 +8,6 @@ import {
   groupIconMdPlugin,
   groupIconVitePlugin,
 } from 'vitepress-plugin-group-icons'
-import llmstxt from 'vitepress-plugin-llms'
 import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
 import { version } from '../package.json'
 import { teamMembers } from './contributors'
@@ -29,436 +28,502 @@ import { pwa } from './scripts/pwa'
 import { transformHead } from './scripts/transformHead'
 
 export default ({ mode }: { mode: string }) => {
-  return withPwa(defineConfig({
-    lang: 'zh-CN',
-    title: vitestName,
-    titleTemplate: ':title - Vitest 中文文档',
-    description: vitestDescription,
-    srcExclude: [
-      '**/guide/examples/*',
-      '**/guide/cli-generated.md',
-    ],
-    locales: {
-      root: {
-        label: '简体中文',
-        lang: 'zh',
-      },
-      zh: {
-        label: 'English',
-        lang: 'en-US',
-        link: 'https://vitest.dev/',
-      },
-    },
-    head: [
-      ['meta', { name: 'theme-color', content: '#729b1a' }],
-      ['link', { rel: 'icon', href: '/favicon.ico', sizes: '48x48' }],
-      ['link', { rel: 'icon', href: '/logo.svg', sizes: 'any', type: 'image/svg+xml' }],
-      ['meta', { name: 'author', content: `${teamMembers.map(c => c.name).join(', ')} and ${vitestName} contributors` }],
-      ['meta', { name: 'keywords', content: 'vitest, vite, test, coverage, snapshot, react, vue, preact, svelte, solid, lit, marko, ruby, cypress, puppeteer, jsdom, happy-dom, test-runner, jest, typescript, esm, tinypool, tinyspy, node' }],
-      ['meta', { property: 'og:title', content: vitestName }],
-      ['meta', { property: 'og:description', content: vitestDescription }],
-      ['meta', { property: 'og:url', content: ogUrl }],
-      ['meta', { property: 'og:image', content: ogImage }],
-      ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
-      ['link', { rel: 'preload', as: 'style', onload: 'this.onload=null;this.rel=\'stylesheet\'', href: font }],
-      ['noscript', {}, `<link rel="stylesheet" crossorigin="anonymous" href="${font}" />`],
-      ['link', { rel: 'me', href: 'https://m.webtoo.ls/@vitest' }],
-      ['link', { rel: 'mask-icon', href: '/logo.svg', color: '#ffffff' }],
-      ['link', { rel: 'apple-touch-icon', href: '/apple-touch-icon.png', sizes: '180x180' }],
-      ['script', { async: '', src: 'https://www.zhcndoc.com/js/common.js' }],
-    ],
-    lastUpdated: true,
-    vite: {
-      plugins: [
-        groupIconVitePlugin({
-          customIcon: {
-            'CLI': 'vscode-icons:file-type-shell',
-            'vitest.shims': 'vscode-icons:file-type-vitest',
-            'vitest.config': 'vscode-icons:file-type-vitest',
-            'vitest.workspace': 'vscode-icons:file-type-vitest',
-            '.spec.ts': 'vscode-icons:file-type-testts',
-            '.test.ts': 'vscode-icons:file-type-testts',
-            '.spec.js': 'vscode-icons:file-type-testjs',
-            '.test.js': 'vscode-icons:file-type-testjs',
-            'marko': 'vscode-icons:file-type-marko',
-            'qwik': 'logos:qwik-icon',
-            'next': '',
-          },
-        }) as any,
-        llmstxt(),
-      ],
-    },
-    markdown: {
-      config(md) {
-        md.use(tabsMarkdownPlugin)
-        md.use(groupIconMdPlugin)
-      },
-      theme: {
-        light: 'github-light',
-        dark: 'github-dark',
-      },
-      codeTransformers: mode === 'development'
-        ? [transformerNotationWordHighlight()]
-        : [
-            transformerNotationWordHighlight(),
-            transformerTwoslash({
-              processHoverInfo: (info) => {
-                if (info.includes(process.cwd())) {
-                  return info.replace(new RegExp(process.cwd(), 'g'), '')
-                }
-                return info
-              },
-            }),
-          ],
-      languages: ['js', 'jsx', 'ts', 'tsx'],
-    },
-    themeConfig: {
-      logo: '/logo.svg',
-
-      editLink: {
-        pattern: 'https://github.com/vitest-dev/vitest/edit/main/docs/:path',
-        text: 'Suggest changes to this page',
-      },
-
-      search: {
-        provider: 'local',
-      },
-
-      // carbonAds: {
-      //   code: 'CW7DVKJE',
-      //   placement: 'vitestdev',
-      // },
-
-      socialLinks: [
-        { icon: 'bluesky', link: bluesky },
-        { icon: 'mastodon', link: mastodon },
-        { icon: 'discord', link: discord },
-        { icon: 'github', link: github },
-      ],
-
-      footer: {
-          message: `<a target="_blank" href="https://www.zhcndoc.com">简中文档</a>`,
-          copyright: '<a rel="nofollow" target="_blank" href="https://beian.miit.gov.cn">沪ICP备2024070610号-3</a>',
-      },
-
-      nav: [
-        { text: '指南 & API', link: '/guide/', activeMatch: '^/(guide|api)/(?!browser)' },
-        { text: '配置', link: '/config/', activeMatch: '^/config/' },
-        { text: '浏览器模式', link: '/guide/browser', activeMatch: '^/guide/browser/' },
-        {
-          text: '相关链接',
-          items: [
-            {
-              text: '高级 API',
-              link: '/advanced/api/',
-              activeMatch: '^/advanced/',
-            },
-            {
-              items: [
-                {
-                  text: '博客',
-                  link: '/blog',
-                },
-                {
-                  text: '团队',
-                  link: '/team',
-                },
-              ],
-            },
-
-          ],
+  return withPwa(
+    defineConfig({
+      lang: 'zh-CN',
+      title: vitestName,
+      titleTemplate: ':title - Vitest 中文文档',
+      description: vitestDescription,
+      srcExclude: ['**/guide/examples/*', '**/guide/cli-generated.md'],
+      locales: {
+        root: {
+          label: '简体中文',
+          lang: 'zh',
         },
-        {
-          text: `v${version}`,
-          items: [
-            {
-              items: [
-                {
-                  text: `v${version}`,
-                  link: `https://github.com/vitest-dev/vitest/releases/tag/v${version}`,
-                },
-                {
-                  text: '更新日志',
-                  link: releases,
-                },
-                {
-                  text: '贡献指南',
-                  link: contributing,
-                },
-              ],
-            },
-            {
-              items: [
-                {
-                  text: '未发布',
-                  link: 'https://main.vitest.dev/',
-                },
-                {
-                  text: 'v0.x',
-                  link: 'https://v0.vitest.dev/',
-                },
-                {
-                  text: 'v1.x',
-                  link: 'https://v1.vitest.dev/',
-                },
-                {
-                  text: 'v2.x',
-                  link: 'https://v2.vitest.dev/',
-                },
-              ],
-            },
-          ],
+        zh: {
+          label: 'English',
+          lang: 'en-US',
+          link: 'https://vitest.dev/',
         },
-      ],
+      },
+      head: [
+        ['meta', { name: 'theme-color', content: '#729b1a' }],
+        ['link', { rel: 'icon', href: '/favicon.ico', sizes: '48x48' }],
+        [
+          'link',
+          {
+            rel: 'icon',
+            href: '/logo.svg',
+            sizes: 'any',
+            type: 'image/svg+xml',
+          },
+        ],
+        [
+          'meta',
+          {
+            name: 'author',
+            content: `${teamMembers
+              .map(c => c.name)
+              .join(', ')} and ${vitestName} contributors`,
+          },
+        ],
+        [
+          'meta',
+          {
+            name: 'keywords',
+            content:
+              'vitest, vite, test, coverage, snapshot, react, vue, preact, svelte, solid, lit, marko, ruby, cypress, puppeteer, jsdom, happy-dom, test-runner, jest, typescript, esm, tinypool, tinyspy, node',
+          },
+        ],
+        ['meta', { property: 'og:title', content: vitestName }],
+        ['meta', { property: 'og:description', content: vitestDescription }],
+        ['meta', { property: 'og:url', content: ogUrl }],
+        ['meta', { property: 'og:image', content: ogImage }],
+        ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+        [
+          'link',
+          {
+            rel: 'preload',
+            as: 'style',
+            onload: 'this.onload=null;this.rel=\'stylesheet\'',
+            href: font,
+          },
+        ],
+        [
+          'noscript',
+          {},
+          `<link rel="stylesheet" crossorigin="anonymous" href="${font}" />`,
+        ],
+        ['link', { rel: 'me', href: 'https://m.webtoo.ls/@vitest' }],
+        ['link', { rel: 'mask-icon', href: '/logo.svg', color: '#ffffff' }],
+        [
+          'link',
+          {
+            rel: 'apple-touch-icon',
+            href: '/apple-touch-icon.png',
+            sizes: '180x180',
+          },
+        ],
+        ['script', { async: '', src: 'https://www.zhcndoc.com/js/common.js' }],
+    ],
+      lastUpdated: true,
+      vite: {
+        plugins: [
+          groupIconVitePlugin({
+            customIcon: {
+              'CLI': 'vscode-icons:file-type-shell',
+              'vitest.shims': 'vscode-icons:file-type-vitest',
+              'vitest.config': 'vscode-icons:file-type-vitest',
+              'vitest.workspace': 'vscode-icons:file-type-vitest',
+              '.spec.ts': 'vscode-icons:file-type-testts',
+              '.test.ts': 'vscode-icons:file-type-testts',
+              '.spec.js': 'vscode-icons:file-type-testjs',
+              '.test.js': 'vscode-icons:file-type-testjs',
+              'marko': 'vscode-icons:file-type-marko',
+              'qwik': 'logos:qwik-icon',
+              'next': '',
+            },
+          }) as any,
+        ],
+      },
+      markdown: {
+        config(md) {
+          md.use(tabsMarkdownPlugin)
+          md.use(groupIconMdPlugin)
+        },
+        theme: {
+          light: 'github-light',
+          dark: 'github-dark',
+        },
+        codeTransformers:
+          mode === 'development'
+            ? [transformerNotationWordHighlight()]
+            : [
+                transformerNotationWordHighlight(),
+                transformerTwoslash({
+                  processHoverInfo: (info) => {
+                    if (info.includes(process.cwd())) {
+                      return info.replace(new RegExp(process.cwd(), 'g'), '')
+                    }
+                    return info
+                  },
+                }),
+              ],
+        languages: ['js', 'jsx', 'ts', 'tsx'],
+      },
+      themeConfig: {
+        logo: '/logo.svg',
 
-      sidebar: {
-        '/guide/browser': [
+        outline: {
+          label: '页面导航',
+        },
+
+        editLink: {
+          pattern: 'https://github.com/vitest-dev/docs-cn/edit/dev/:path',
+          text: '在 GitHub 上编辑此页面',
+        },
+
+        lastUpdated: {
+          text: '最后更新于',
+          formatOptions: {
+            dateStyle: 'full',
+            timeStyle: 'medium',
+          },
+        },
+
+        search: {
+          provider: 'local',
+        },
+
+        docFooter: {
+          prev: '上一页',
+          next: '下一页',
+        },
+
+        // carbonAds: {
+        //   code: 'CW7DVKJE',
+        //   placement: 'vitestdev',
+        // },
+
+        socialLinks: [
+          { icon: 'bluesky', link: bluesky },
+          { icon: 'mastodon', link: mastodon },
+          { icon: 'discord', link: discord },
+          { icon: 'github', link: github },
+        ],
+
+        footer: {
+          message: 'Released under the MIT License.',
+          copyright:
+            'Copyright © 2021-PRESENT VoidZero Inc. and Vitest contributors',
+        },
+
+        nav: [
           {
-            text: '介绍',
-            collapsed: false,
-            items: [
-              {
-                text: '什么是浏览器模式',
-                link: '/guide/browser/why',
-                docFooterText: 'Why Browser Mode | Browser Mode',
-              },
-              {
-                text: '快速起步',
-                link: '/guide/browser/',
-                docFooterText: 'Getting Started | Browser Mode',
-              },
-            ],
+            text: '指南 & API',
+            link: '/guide/',
+            activeMatch: '^/(guide|api)/(?!browser)',
+          },
+          { text: '配置', link: '/config/', activeMatch: '^/config/' },
+          {
+            text: '浏览器模式',
+            link: '/guide/browser',
+            activeMatch: '^/guide/browser/',
           },
           {
-            text: '配置',
-            collapsed: false,
+            text: '相关链接',
             items: [
               {
-                text: '浏览器模式配置',
-                link: '/guide/browser/config',
-                docFooterText: 'Browser Config Reference | Browser Mode',
-              },
-              {
-                text: '配置 Playwright',
-                link: '/guide/browser/playwright',
-                docFooterText: 'Configuring Playwright | Browser Mode',
-              },
-              {
-                text: '配置 WebdriverIO',
-                link: '/guide/browser/webdriverio',
-                docFooterText: 'Configuring WebdriverIO | Browser Mode',
-              },
-              {
-                text: 'Configuring Preview',
-                link: '/guide/browser/preview',
-                docFooterText: 'Configuring Preview | Browser Mode',
-              },
-            ],
-          },
-          {
-            text: 'API',
-            collapsed: false,
-            items: [
-              {
-                text: '上下文「Context」 API',
-                link: '/guide/browser/context',
-                docFooterText: 'Context API | Browser Mode',
-              },
-              {
-                text: '交互「Interactivity」 API',
-                link: '/guide/browser/interactivity-api',
-                docFooterText: 'Interactivity API | Browser Mode',
-              },
-              {
-                text: '定位「Locators」',
-                link: '/guide/browser/locators',
-                docFooterText: 'Locators | Browser Mode',
-              },
-              {
-                text: 'Assertion API',
-                link: '/guide/browser/assertion-api',
-                docFooterText: 'Assertion API | Browser Mode',
-              },
-              {
-                text: 'Commands API',
-                link: '/guide/browser/commands',
-                docFooterText: 'Commands | Browser Mode',
-              },
-            ],
-          },
-          {
-            text: 'Guides',
-            collapsed: false,
-            items: [
-              {
-                text: '多种设置',
-                link: '/guide/browser/multiple-setups',
-                docFooterText: 'Multiple Setups | Browser Mode',
-              },
-              {
-                text: '组件测试',
-                link: '/guide/browser/component-testing',
-                docFooterText: '组件测试 | Browser Mode',
-              },
-              {
-                text: '可视化回归测试',
-                link: '/guide/browser/visual-regression-testing',
-                docFooterText: '可视化回归测试 | Browser Mode',
-              },
-              {
-                text: 'Trace Viewer',
-                link: '/guide/browser/trace-viewer',
-                docFooterText: 'Trace Viewer | Browser Mode',
-              },
-            ],
-          },
-          {
-            items: [
-              ...footer(),
-              {
-                text: 'Node API Reference',
+                text: '高级 API',
                 link: '/advanced/api/',
+                activeMatch: '^/advanced/',
+              },
+              {
+                items: [
+                  {
+                    text: '博客',
+                    link: '/blog',
+                  },
+                  {
+                    text: '团队',
+                    link: '/team',
+                  },
+                ],
               },
             ],
           },
-        ],
-        '/advanced': [
           {
-            text: 'API',
-            collapsed: false,
+            text: `v${version}`,
             items: [
               {
-                text: 'Node API',
                 items: [
                   {
-                    text: '快速起步',
-                    link: '/advanced/api/',
+                    text: `v${version}`,
+                    link: `https://github.com/vitest-dev/vitest/releases/tag/v${version}`,
                   },
                   {
-                    text: 'Vitest',
-                    link: '/advanced/api/vitest',
+                    text: '更新日志',
+                    link: releases,
                   },
                   {
-                    text: 'TestProject',
-                    link: '/advanced/api/test-project',
-                  },
-                  {
-                    text: 'TestSpecification',
-                    link: '/advanced/api/test-specification',
+                    text: '贡献指南',
+                    link: contributing,
                   },
                 ],
               },
               {
-                text: 'Test Task API',
                 items: [
                   {
-                    text: 'TestCase',
-                    link: '/advanced/api/test-case',
+                    text: '未发布',
+                    link: 'https://main.vitest.dev/',
                   },
                   {
-                    text: 'TestSuite',
-                    link: '/advanced/api/test-suite',
+                    text: 'v0.x',
+                    link: 'https://v0.vitest.dev/',
                   },
                   {
-                    text: 'TestModule',
-                    link: '/advanced/api/test-module',
+                    text: 'v1.x',
+                    link: 'https://v1.vitest.dev/',
                   },
                   {
-                    text: 'TestCollection',
-                    link: '/advanced/api/test-collection',
+                    text: 'v2.x',
+                    link: 'https://v2.vitest.dev/',
                   },
                 ],
               },
-              {
-                text: '插件 API',
-                link: '/advanced/api/plugin',
-              },
-              {
-                text: '运行器「Runner」 API',
-                link: '/advanced/runner',
-              },
-              {
-                text: 'Reporters API',
-                link: '/advanced/api/reporters',
-              },
-              {
-                text: 'Task Metadata',
-                link: '/advanced/metadata',
-              },
-            ],
-          },
-          {
-            text: 'Guides',
-            collapsed: false,
-            items: [
-              {
-                text: 'Running Tests',
-                link: '/advanced/guide/tests',
-              },
-              {
-                text: 'Extending Reporters',
-                link: '/advanced/reporters',
-              },
-              {
-                text: 'Custom Pool',
-                link: '/advanced/pool',
-              },
-            ],
-          },
-          {
-            items: footer(),
-          },
-        ],
-        '/team': [],
-        '/blog': [],
-        '/': [
-          {
-            text: 'Introduction',
-            collapsed: false,
-            items: introduction(),
-          },
-          {
-            text: 'API',
-            collapsed: false,
-            items: api(),
-          },
-          {
-            text: 'Guides',
-            collapsed: false,
-            items: guide(),
-          },
-          {
-            items: [
-              {
-                text: 'Browser Mode',
-                link: '/guide/browser',
-              },
-              {
-                text: 'Node API Reference',
-                link: '/advanced/api',
-              },
-              {
-                text: 'Comparisons',
-                link: '/guide/comparisons',
-              },
             ],
           },
         ],
+
+        sidebar: {
+          '/guide/browser': [
+            {
+              text: '介绍',
+              collapsed: false,
+              items: [
+                {
+                  text: '什么是浏览器模式',
+                  link: '/guide/browser/why',
+                  docFooterText: 'Why Browser Mode | Browser Mode',
+                },
+                {
+                  text: '快速起步',
+                  link: '/guide/browser/',
+                  docFooterText: 'Getting Started | Browser Mode',
+                },
+              ],
+            },
+            {
+              text: '配置',
+              collapsed: false,
+              items: [
+                {
+                  text: '浏览器模式配置',
+                  link: '/guide/browser/config',
+                  docFooterText: 'Browser Config Reference | Browser Mode',
+                },
+                {
+                  text: '配置 Playwright',
+                  link: '/guide/browser/playwright',
+                  docFooterText: 'Configuring Playwright | Browser Mode',
+                },
+                {
+                  text: '配置 WebdriverIO',
+                  link: '/guide/browser/webdriverio',
+                  docFooterText: 'Configuring WebdriverIO | Browser Mode',
+                },
+                {
+                  text: 'Configuring Preview',
+                  link: '/guide/browser/preview',
+                  docFooterText: 'Configuring Preview | Browser Mode',
+                },
+              ],
+            },
+            {
+              text: 'API',
+              collapsed: false,
+              items: [
+                {
+                  text: '上下文「Context」 API',
+                  link: '/guide/browser/context',
+                  docFooterText: 'Context API | Browser Mode',
+                },
+                {
+                  text: '交互「Interactivity」 API',
+                  link: '/guide/browser/interactivity-api',
+                  docFooterText: 'Interactivity API | Browser Mode',
+                },
+                {
+                  text: '定位「Locators」',
+                  link: '/guide/browser/locators',
+                  docFooterText: 'Locators | Browser Mode',
+                },
+                {
+                  text: 'Assertion API',
+                  link: '/guide/browser/assertion-api',
+                  docFooterText: 'Assertion API | Browser Mode',
+                },
+                {
+                  text: 'Commands API',
+                  link: '/guide/browser/commands',
+                  docFooterText: 'Commands | Browser Mode',
+                },
+              ],
+            },
+            {
+              text: '指南',
+              collapsed: false,
+              items: [
+                {
+                  text: '多种设置',
+                  link: '/guide/browser/multiple-setups',
+                  docFooterText: 'Multiple Setups | Browser Mode',
+                },
+                {
+                  text: '组件测试',
+                  link: '/guide/browser/component-testing',
+                  docFooterText: '组件测试 | Browser Mode',
+                },
+                {
+                  text: '可视化回归测试',
+                  link: '/guide/browser/visual-regression-testing',
+                  docFooterText: '可视化回归测试 | Browser Mode',
+                },
+                {
+                  text: '跟踪查看器',
+                  link: '/guide/browser/trace-view',
+                  docFooterText: 'Trace Viewer | Browser Mode',
+                },
+              ],
+            },
+            {
+              items: [
+                ...footer(),
+                {
+                  text: 'Node API 索引',
+                  link: '/advanced/api/',
+                },
+              ],
+            },
+          ],
+          '/advanced': [
+            {
+              text: 'API',
+              collapsed: false,
+              items: [
+                {
+                  text: 'Node API',
+                  items: [
+                    {
+                      text: '快速起步',
+                      link: '/advanced/api/',
+                    },
+                    {
+                      text: 'Vitest',
+                      link: '/advanced/api/vitest',
+                    },
+                    {
+                      text: 'TestProject',
+                      link: '/advanced/api/test-project',
+                    },
+                    {
+                      text: 'TestSpecification',
+                      link: '/advanced/api/test-specification',
+                    },
+                  ],
+                },
+                {
+                  text: 'Test Task API',
+                  items: [
+                    {
+                      text: 'TestCase',
+                      link: '/advanced/api/test-case',
+                    },
+                    {
+                      text: 'TestSuite',
+                      link: '/advanced/api/test-suite',
+                    },
+                    {
+                      text: 'TestModule',
+                      link: '/advanced/api/test-module',
+                    },
+                    {
+                      text: 'TestCollection',
+                      link: '/advanced/api/test-collection',
+                    },
+                  ],
+                },
+                {
+                  text: '插件 API',
+                  link: '/advanced/api/plugin',
+                },
+                {
+                  text: '运行器「Runner」 API',
+                  link: '/advanced/runner',
+                },
+                {
+                  text: 'Reporters API',
+                  link: '/advanced/api/reporters',
+                },
+                {
+                  text: 'Task Metadata',
+                  link: '/advanced/metadata',
+                },
+              ],
+            },
+            {
+              text: '指南',
+              collapsed: false,
+              items: [
+                {
+                  text: 'Running Tests',
+                  link: '/advanced/guide/tests',
+                },
+                {
+                  text: 'Extending Reporters',
+                  link: '/advanced/reporters',
+                },
+                {
+                  text: 'Custom Pool',
+                  link: '/advanced/pool',
+                },
+              ],
+            },
+            {
+              items: footer(),
+            },
+          ],
+          '/team': [],
+          '/blog': [],
+          '/': [
+            {
+              text: '简介',
+              collapsed: false,
+              items: introduction(),
+            },
+            {
+              text: 'API',
+              collapsed: false,
+              items: api(),
+            },
+            {
+              text: '指南',
+              collapsed: false,
+              items: guide(),
+            },
+            {
+              items: [
+                {
+                  text: '浏览器模式',
+                  link: '/guide/browser',
+                },
+                {
+                  text: 'Node API 索引',
+                  link: '/advanced/api',
+                },
+                {
+                  text: '测试框架对比',
+                  link: '/guide/comparisons',
+                },
+              ],
+            },
+          ],
+        },
       },
-    },
-    pwa,
-    transformHead,
-  }))
+      pwa,
+      transformHead,
+    }),
+  )
 }
 
 function footer(): DefaultTheme.SidebarItem[] {
   return [
     {
-      text: 'Config Reference',
+      text: '配置索引',
       link: '/config/',
     },
     {
-      text: 'Test API Reference',
+      text: 'Test API 索引',
       link: '/api/',
     },
   ]
@@ -467,7 +532,7 @@ function footer(): DefaultTheme.SidebarItem[] {
 function introduction(): DefaultTheme.SidebarItem[] {
   return [
     {
-      text: '简介',
+      text: '为什么是vitest？',
       link: '/guide/why',
     },
     {
@@ -500,7 +565,7 @@ function guide(): DefaultTheme.SidebarItem[] {
       link: '/guide/projects',
     },
     {
-      text: '报告器「Reporters」',
+      text: '报告器',
       link: '/guide/reporters',
     },
     {
@@ -517,35 +582,35 @@ function guide(): DefaultTheme.SidebarItem[] {
       collapsed: true,
       items: [
         {
-          text: 'Mocking Dates',
+          text: '模拟日期',
           link: '/guide/mocking/dates',
         },
         {
-          text: 'Mocking Functions',
+          text: '模拟函数',
           link: '/guide/mocking/functions',
         },
         {
-          text: 'Mocking Globals',
+          text: '模拟全局对象',
           link: '/guide/mocking/globals',
         },
         {
-          text: 'Mocking Modules',
+          text: '模拟模块',
           link: '/guide/mocking/modules',
         },
         {
-          text: 'Mocking the File System',
+          text: '模拟文件系统',
           link: '/guide/mocking/file-system',
         },
         {
-          text: 'Mocking Requests',
+          text: '模拟请求',
           link: '/guide/mocking/requests',
         },
         {
-          text: 'Mocking Timers',
+          text: '模拟计时器',
           link: '/guide/mocking/timers',
         },
         {
-          text: 'Mocking Classes',
+          text: '模拟类',
           link: '/guide/mocking/classes',
         },
       ],
@@ -559,7 +624,7 @@ function guide(): DefaultTheme.SidebarItem[] {
       link: '/guide/testing-types',
     },
     {
-      text: 'Vitest UI',
+      text: 'UI模式',
       link: '/guide/ui',
     },
     {
@@ -575,7 +640,7 @@ function guide(): DefaultTheme.SidebarItem[] {
       link: '/guide/environment',
     },
     {
-      text: '扩展断言(Matchers)',
+      text: '扩展断言',
       link: '/guide/extending-matchers',
     },
     {
@@ -606,7 +671,7 @@ function guide(): DefaultTheme.SidebarItem[] {
       ],
     },
     {
-      text: 'Performance',
+      text: '性能',
       collapsed: false,
       items: [
         {
@@ -625,7 +690,7 @@ function guide(): DefaultTheme.SidebarItem[] {
 function api(): DefaultTheme.SidebarItem[] {
   return [
     {
-      text: 'Test API 索引',
+      text: 'Test API',
       link: '/api/',
     },
     {

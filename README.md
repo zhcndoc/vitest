@@ -33,3 +33,5 @@ Vitest
 [@XieZongChen](https://github.com/XieZongChen)
 
 [@lxKylin](https://github.com/lxKylin)
+
+[@NoiseFan](https://github.com/NoiseFan)

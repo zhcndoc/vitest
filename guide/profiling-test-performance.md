@@ -1,4 +1,4 @@
-# 性能测试分析
+# 性能测试分析 {#profiling-test-performance}
 
 当你运行 Vitest 时，会显示你的多个时间指标：
 
@@ -179,7 +179,7 @@ _src_prime-number_ts-525172412.js
 
 ## Code coverage
 
-If code coverage generation is slow on your project you can use `DEBUG=vitest:coverage` environment variable to enable performance logging.
+如果你的项目中代码覆盖率生成较慢，您可以使用 `DEBUG=vitest:coverage` 环境变量来启用性能日志记录。
 
 ```bash
 $ DEBUG=vitest:coverage vitest --run --coverage
@@ -199,9 +199,9 @@ $ DEBUG=vitest:coverage vitest --run --coverage
   vitest:coverage Generate coverage total time 3521 ms
 ```
 
-This profiling approach is great for detecting large files that are accidentally picked by coverage providers.
-For example if your configuration is accidentally including large built minified Javascript files in code coverage, they should appear in logs.
-In these cases you might want to adjust your [`coverage.include`](/config/#coverage-include) and [`coverage.exclude`](/config/#coverage-exclude) options.
+这种性能分析方法非常适合检测被覆盖率提供程序意外包含的大文件。
+例如，如果你的配置意外地将大型构建压缩后的 JavaScript 文件包含在代码覆盖率中，这些文件应该会出现在日志中。
+在这种情况下，你可能需要调整 [`coverage.include`](/config/#coverage-include) 和 [`coverage.exclude`](/config/#coverage-exclude) 选项。
 
 ## Inspecting profiling records
 
