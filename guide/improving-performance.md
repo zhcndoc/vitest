@@ -58,11 +58,11 @@ export default defineConfig({
 
 :::
 
-## Limiting directory search
+## 限制搜索目录 {#limiting-directory-search}
 
-You can limit the working directory when Vitest searches for files using [`test.dir`](/config/#test-dir) option. This should make the search faster if you have unrelated folders and files in the root directory.
+你可以通过 [`test.dir`](/config/#test-dir) 选项限制 Vitest 搜索文件的工作目录。如果根目录中存在不相关的文件夹和文件，这将加快搜索速度。
 
-## Pool
+## 运行池 {#pool}
 
 默认情况下，Vitest 在 `pool: 'forks'` 中运行测试。虽然 `'forks'` 池更适合解决兼容性问题（[hanging process](/guide/common-errors.html#failed-to-terminate-worker) 和[segfaults](/guide/common-errors.html#segfaults-and-native-code-errors)），但在较大的项目中，它可能比 `pool: 'threads'` 稍慢。
 
@@ -86,7 +86,7 @@ export default defineConfig({
 
 :::
 
-## Sharding
+## 分片 {#sharding}
 
 测试分片是将你的测试套件拆分成多个组或分片的过程。当你拥有大量的测试用例，并且有多台机器可以同时运行这些测试的不同子集时，这个功能会非常有用。
 
@@ -106,11 +106,11 @@ vitest run --reporter=blob --shard=3/3 # 3rd machine
 vitest run --merge-reports
 ```
 
-::: details GitHub Actions example
-This setup is also used at https://github.com/vitest-tests/test-sharding.
+::: GitHub Actions 详细示例
+同样方案也应用于 https://github.com/vitest-tests/test-sharding 仓库。
 
 ```yaml
-# Inspired from https://playwright.dev/docs/test-sharding
+# 灵感来至于 https://playwright.dev/docs/test-sharding
 name: Tests
 on:
   push:
@@ -178,17 +178,17 @@ jobs:
 :::
 
 :::tip
-测试分片在多 CPU 数量的机器上也很有用。
+测试分片在多核心 CPU 机器上也很有用。
 
 Vitest 将只在其主线程中运行一个 Vite 服务器。其余的线程用于运行测试文件。
-在高 CPU 计数的机器中，主线程可能会成为瓶颈，因为它无法处理来自线程的所有请求。例如，在 32 CPU 机器中，主线程负责处理来自 31 个测试线程的负载。
+在多核心 CPU 机器中，主线程可能会成为瓶颈，因为它无法处理来自其余线程的所有请求。例如，在 32核 CPU 机器中，主线程负责处理来自 31 个测试线程的负载。
 
-为了减少主线程的 Vite 服务器的负载，可以使用测试分片。负载可以在多个 Vite 服务器上进行平衡。
+为了减少主线程的 Vite 服务器的负载，可以使用测试分片。将负载平均到多个 Vite 服务器上。
 
 ```sh
-# Example for splitting tests on 32 CPU to 4 shards.
-# As each process needs 1 main thread, there's 7 threads for test runners (1+7)*4 = 32
-# Use VITEST_MAX_THREADS or VITEST_MAX_FORKS depending on the pool:
+# 以32核心CPU拆分成4个分片为例。
+# 每个分片需要一个主线程，因此每个分片可以分配7个测试线程 (1+7) *4 =32
+# 使用 VITEST_MAX_THREADS 进行分配:
 VITEST_MAX_THREADS=7 vitest run --reporter=blob --shard=1/4 & \
 VITEST_MAX_THREADS=7 vitest run --reporter=blob --shard=2/4 & \
 VITEST_MAX_THREADS=7 vitest run --reporter=blob --shard=3/4 & \
