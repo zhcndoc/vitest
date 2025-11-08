@@ -48,7 +48,7 @@ expectTypeOf<string | number>().not.toMatchTypeOf<number>()
 
 - **Type:** `<T>(expected: T) => void`
 
-This matcher checks if expect type extends provided type. It is different from `toEqual` and is more similar to [expect's](/api/expect) `toMatchObject()`. With this matcher, you can check if an object "matches" a type.
+这个匹配器用于检查期望类型是否扩展了提供的类型。它与 `toEqual` 不同，更类似于 [expect](/api/expect) 的 `toMatchObject()`。使用这个匹配器，你可以检查一个对象是否"匹配"某个类型。
 
 ```ts
 import { expectTypeOf } from 'vitest'
@@ -62,7 +62,7 @@ expectTypeOf<string | number>().not.toExtend<number>()
 
 - **Type:** `() => void`
 
-This matcher performs a strict check on object types, ensuring that the expected type matches the provided object type. It's stricter than [`toExtend`](#toextend) and is the recommended choice when working with object types as it's more likely to catch issues like readonly properties.
+这个匹配器对对象类型执行严格检查，确保期望的类型与提供的对象类型相匹配。它比 [`toExtend`](#toextend) 更严格，是在处理对象类型时的推荐选择，因为它更有可能捕获到像只读属性这样的问题。
 
 ```ts
 import { expectTypeOf } from 'vitest'
@@ -79,7 +79,7 @@ expectTypeOf(user).toMatchObjectType<{ name: string, address: { city: string } }
 ```
 
 ::: warning
-This matcher only works with plain object types. It will fail for union types and other complex types. For those cases, use [`toExtend`](#toextend) instead.
+这个匹配器只适用于普通对象类型。对于联合类型和其他复杂类型，它将会失败。对于这些情况，请改用 [`toExtend`](#toextend)。
 :::
 
 ## extract
