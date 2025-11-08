@@ -13,24 +13,22 @@ outline: false
 
 如果你不熟悉 `vi.fn`、`vi.mock` 或 `vi.spyOn` 方法，请先查看[API部分](/api/vi)。
 
-Vitest has a comprehensive list of guides regarding mocking:
+Vitest 提供了有关模拟的全部指南：
 
-- [Mocking Classes](/guide/mocking/classes.md)
-- [Mocking Dates](/guide/mocking/dates.md)
-- [Mocking the File System](/guide/mocking/file-system.md)
-- [Mocking Functions](/guide/mocking/functions.md)
-- [Mocking Globals](/guide/mocking/globals.md)
-- [Mocking Modules](/guide/mocking/modules.md)
-- [Mocking Requests](/guide/mocking/requests.md)
-- [Mocking Timers](/guide/mocking/timers.md)
+- [模拟类](/guide/mocking/classes.md)
+- [模拟日期](/guide/mocking/dates.md)
+- [模拟文件系统](/guide/mocking/file-system.md)
+- [模拟函数](/guide/mocking/functions.md)
+- [模拟全局对象](/guide/mocking/globals.md)
+- [模拟模块](/guide/mocking/modules.md)
+- [模拟请求](/guide/mocking/requests.md)
+- [模拟计时器](/guide/mocking/timers.md)
 
 为了更简单快捷地开始使用模拟，你可以查看下面的备忘单。
 
-## 备忘单 {#cheat-sheet}
+## 速查表 {#cheat-sheet}
 
-I want to…
-
-### Mock exported variables
+### 模拟导出变量 {#mock-exported-variables}
 ```js [example.js]
 export const getter = 'variable'
 ```
@@ -41,18 +39,10 @@ vi.spyOn(exports, 'getter', 'get').mockReturnValue('mocked')
 ```
 
 ::: warning
-此方法在浏览器模式中无法使用。如需替代方案，请查看 [限制部分](/guide/browser/#spying-on-module-exports)。
+此方法在浏览器模式中无法使用。如需替代方案，请查看 [限制](/guide/browser/#spying-on-module-exports) 部分。
 :::
 
-### 对模块中导出的函数进行 mock。 {#mock-an-exported-function}
-
-```ts
-import * as exports from 'some-path'
-vi.spyOn(exports, 'getter', 'get')
-vi.spyOn(exports, 'setter', 'set')
-```
-
-### 模拟模块导出函数 {#mock-an-exported-class-implementation}
+### 模拟导出函数 {#mock-an-exported-function}
 
 1. `vi.mock` 的示例：
 
@@ -81,10 +71,10 @@ vi.spyOn(exports, 'method').mockImplementation(() => {})
 ```
 
 ::: warning
-`vi.spyOn` 示例在浏览器模式中无法使用。如需替代方案，请查看 [限制部分](/guide/browser/#spying-on-module-exports)。
+`vi.spyOn` 示例在浏览器模式中无法使用。如需替代方案，请查看 [限制](/guide/browser/#spying-on-module-exports) 部分。
 :::
 
-### `vi.mock` 和 `.prototype` 的示例:
+### 模拟导出类的实现 {#mock-an-exported-class-implementation}
 
 1. 一个使用假 class 的示例：
 ```ts [example.js]
@@ -112,7 +102,7 @@ vi.spyOn(mod, 'SomeClass').mockImplementation(class FakeClass {
 ```
 
 ::: warning
-vi.spyOn 的示例无法在浏览器模式中正常使用。如需替代方案，请查看 [限制部分](/guide/browser/#spying-on-module-exports)。
+vi.spyOn 的示例无法在浏览器模式中正常使用。如需替代方案，请查看 [限制](/guide/browser/#spying-on-module-exports) 部分。
 :::
 
 ### 监听一个函数是否返回了一个对象 {#spy-on-an-object-returned-from-a-function}
