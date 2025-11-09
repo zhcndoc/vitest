@@ -22,30 +22,30 @@ function purchase() {
 
 describe('purchasing flow', () => {
   beforeEach(() => {
-    // tell vitest we use mocked time
+    // 告诉 vitest 我们使用模拟时间
     vi.useFakeTimers()
   })
 
   afterEach(() => {
-    // restoring date after each test run
+    // 在每次测试运行后恢复日期
     vi.useRealTimers()
   })
 
   it('allows purchases within business hours', () => {
-    // set hour within business hours
+    // 设置在营业时间内的小时数
     const date = new Date(2000, 1, 1, 13)
     vi.setSystemTime(date)
 
-    // access Date.now() will result in the date set above
+    // 访问 `Date.now()` 将会返回上面设置的日期
     expect(purchase()).toEqual({ message: 'Success' })
   })
 
   it('disallows purchases outside of business hours', () => {
-    // set hour outside business hours
+    // 设置在营业时间外的小时数
     const date = new Date(2000, 1, 1, 19)
     vi.setSystemTime(date)
 
-    // access Date.now() will result in the date set above
+    // 访问 `Date.now()` 将会返回上面设置的日期
     expect(purchase()).toEqual({ message: 'Error' })
   })
 })

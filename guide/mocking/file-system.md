@@ -10,8 +10,8 @@ Vitest 没有开箱即用地提供任何文件系统模拟 API。你可以使用
 
 ::: code-group
 ```ts [__mocks__/fs.cjs]
-// we can also use `import`, but then
-// every export should be explicitly defined
+// 我们可以使用 `import`，但是那样的话
+// 每个导出都需要明确定义
 
 const { fs } = require('memfs')
 
@@ -19,8 +19,8 @@ module.exports = fs
 ```
 
 ```ts [__mocks__/fs/promises.cjs]
-// we can also use `import`, but then
-// every export should be explicitly defined
+// 我们可以使用 `import`，但是那样的话
+// 每个导出都需要明确定义
 
 const { fs } = require('memfs')
 
