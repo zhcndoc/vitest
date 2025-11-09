@@ -16,5 +16,5 @@ const IntersectionObserverMock = vi.fn(() => ({
 
 vi.stubGlobal('IntersectionObserver', IntersectionObserverMock)
 
-// now you can access it as `IntersectionObserver` or `window.IntersectionObserver`
+// 现在你可以通过 `IntersectionObserver` 或 `window.IntersectionObserver` 来访问它
 ```
