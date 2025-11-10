@@ -32,11 +32,11 @@ Vitest 并不将 `browser` 视作一种测试环境。如果你想让部分测�
 ```ts
 // @vitest-environment jsdom
 
-import { expect, test } from "vitest";
+import { expect, test } from 'vitest'
 
-test("test", () => {
-  expect(typeof window).not.toBe("undefined");
-});
+test('test', () => {
+  expect(typeof window).not.toBe('undefined')
+})
 ```
 
 ## 自定义环境 {#custom-environment}
@@ -44,23 +44,23 @@ test("test", () => {
 你可以创建自己的包来扩展 Vitest 环境。为此，请创建一个名为 `vitest-environment-${name}` 的包，或者指定一个有效的 JS/TS 文件路径。该包应该导出一个形状为 `Environment` 的对象。
 
 ```ts
-import type { Environment } from "vitest/environments";
+import type { Environment } from 'vitest/environments'
 
 export default <Environment>{
-  name: "custom",
-  viteEnvironment: "ssr",
+  name: 'custom',
+  viteEnvironment: 'ssr',
   // optional - only if you support "experimental-vm" pool
   async setupVM() {
-    const vm = await import("node:vm");
-    const context = vm.createContext();
+    const vm = await import('node:vm')
+    const context = vm.createContext()
     return {
       getVmContext() {
-        return context;
+        return context
       },
       teardown() {
         // 在所有使用此环境的测试运行完毕后调用
       },
-    };
+    }
   },
   setup() {
     // 自定义设置
@@ -68,9 +68,9 @@ export default <Environment>{
       teardown() {
         // 在所有使用此环境的测试运行完毕后调用
       },
-    };
+    }
   },
-};
+}
 ```
 
 ::: warning
@@ -80,9 +80,9 @@ Vitest 要求环境对象显式提供 `viteEnvironment` 字段（若省略则取
 你还可以通过 `vitest/environments` 访问默认的 Vitest 环境：
 
 ```ts
-import { builtinEnvironments, populateGlobal } from "vitest/environments";
+import { builtinEnvironments, populateGlobal } from 'vitest/environments'
 
-console.log(builtinEnvironments); // { jsdom, happy-dom, node, edge-runtime }
+console.log(builtinEnvironments) // { jsdom, happy-dom, node, edge-runtime }
 ```
 
 Vitest 还提供了 `populateGlobal` 实用函数，可用于将属性从对象移动到全局命名空间：
@@ -90,20 +90,20 @@ Vitest 还提供了 `populateGlobal` 实用函数，可用于将属性从对象�
 ```ts
 interface PopulateOptions {
   // 非类函数是否应该绑定到全局命名空间
-  bindFunctions?: boolean;
+  bindFunctions?: boolean
 }
 
 interface PopulateResult {
   // 所有被复制的键的列表，即使原始对象上不存在该值
-  keys: Set<string>;
+  keys: Set<string>
   // 可能已被键覆盖的原始对象的映射
   // 你可以在 `teardown` 函数中返回这些值
-  originals: Map<string | symbol, any>;
+  originals: Map<string | symbol, any>
 }
 
 export function populateGlobal(
   global: any,
   original: any,
   options: PopulateOptions
-): PopulateResult;
+): PopulateResult
 ```
