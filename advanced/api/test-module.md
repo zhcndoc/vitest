@@ -26,7 +26,7 @@ if (task.type === 'module') {
 
 ## relativeModuleId
 
-Module id relative to the project. This is the same as `task.name` in the deprecated API.
+相对于项目的模块 ID。这与已弃用 API 中的 `task.name` 相同。
 
 ```ts
 'project/example.test.ts' // ✅
@@ -54,12 +54,12 @@ function meta(): TaskMeta
 import { test } from 'vitest'
 
 describe('the validation works correctly', (task) => {
-  // assign "decorated" during collection
+  // 在收集阶段分配 "decorated"
   task.file.meta.decorated = false
 
   test('some test', ({ task }) => {
-    // assign "decorated" during test run, it will be available
-    // only in onTestCaseReady hook
+    // 在测试运行期间分配 "decorated"，它将可用
+    // 仅在 onTestCaseReady 钩子中
     task.file.meta.decorated = false
   })
 })
@@ -80,43 +80,43 @@ function diagnostic(): ModuleDiagnostic
 ```ts
 interface ModuleDiagnostic {
   /**
-   * The time it takes to import and initiate an environment.
+   * 导入和初始化环境所需的时间。
    */
   readonly environmentSetupDuration: number
   /**
-   * The time it takes Vitest to setup test harness (runner, mocks, etc.).
+   * Vitest 设置测试运行环境（运行器、模拟等）所需的时间。
    */
   readonly prepareDuration: number
   /**
-   * The time it takes to import the test module.
-   * This includes importing everything in the module and executing suite callbacks.
+   * 导入测试模块所需的时间。
+   * 这包括导入模块中的所有内容以及执行套件回调函数。
    */
   readonly collectDuration: number
   /**
-   * The time it takes to import the setup module.
+   * 导入设置模块所需的时间。
    */
   readonly setupDuration: number
   /**
-   * Accumulated duration of all tests and hooks in the module.
+   * 模块中所有测试和钩子函数的累计持续时间。
    */
   readonly duration: number
   /**
-   * The amount of memory used by the module in bytes.
-   * This value is only available if the test was executed with `logHeapUsage` flag.
+   * 模块使用的内存量（以字节为单位）。
+   * 此值仅在使用 `logHeapUsage` 标志执行测试时才可用。
    */
   readonly heap: number | undefined
   /**
-   * The time spent importing every non-externalized dependency that Vitest has processed.
+   * Vitest处理的每个非外部化依赖项的导入时间。
    */
   readonly importDurations: Record<string, ImportDuration>
 }
 
-/** The time spent importing & executing a non-externalized file. */
+/** 导入和执行非外部化文件所花费的时间。 */
 interface ImportDuration {
-  /** The time spent importing & executing the file itself, not counting all non-externalized imports that the file does. */
+  /** 导入和执行文件本身所花费的时间，不包括该文件所依赖的所有非外部化导入。 */
   selfTime: number
 
-  /** The time spent importing & executing the file and all its imports. */
+  /** 导入和执行文件及其所有导入项所花费的时间。 */
   totalTime: number
 }
 ```
