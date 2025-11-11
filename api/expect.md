@@ -332,7 +332,7 @@ test('we don\'t have apples', () => {
 
 ## toBeNullable
 
-- **Type:** `() => Awaitable<void>`
+- **类型:** `() => Awaitable<void>`
 
 `toBeNullable` simply asserts if something is nullable (`null` or `undefined`).
 
