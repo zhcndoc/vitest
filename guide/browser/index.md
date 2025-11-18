@@ -257,7 +257,7 @@ export default defineConfig({
       },
       {
         test: {
-           // 一个基于文件的惯例的例子，
+          // 一个基于文件的惯例的例子，
           // 你不用必需遵守它
           include: [
             'tests/browser/**/*.{test,spec}.ts',
