@@ -106,7 +106,7 @@ export default defineConfig({
     browser: {
       provider: playwright(),
       enabled: true,
-      // at least one instance is required
+      // 至少需要一个实例
       instances: [
         { browser: 'chromium' },
       ],
@@ -214,7 +214,7 @@ export default defineConfig({
 import { qwikVite } from '@builder.io/qwik/optimizer'
 import { playwright } from '@vitest/browser-playwright'
 
-// optional, run the tests in SSR mode
+// 可选项，在 SSR 模式下运行测试
 import { testSSR } from 'vitest-browser-qwik/ssr-plugin'
 
 import { defineConfig } from 'vitest/config'
@@ -245,8 +245,8 @@ export default defineConfig({
     projects: [
       {
         test: {
-          // an example of file based convention,
-          // you don't have to follow it
+          // 一个基于文件的惯例的例子，
+          // 你不用必需遵守它
           include: [
             'tests/unit/**/*.{test,spec}.ts',
             'tests/**/*.unit.{test,spec}.ts',
@@ -257,8 +257,8 @@ export default defineConfig({
       },
       {
         test: {
-          // an example of file based convention,
-          // you don't have to follow it
+          // 一个基于文件的惯例的例子，
+          // 你不用必需遵守它
           include: [
             'tests/browser/**/*.{test,spec}.ts',
             'tests/**/*.browser.{test,spec}.ts',
@@ -278,7 +278,7 @@ export default defineConfig({
 })
 ```
 
-## Browser Option Types
+## 浏览器选项的类型
 
 Vitest 中的浏览器选项取决于provider。如果在配置文件中传递 `--browser` 且未指定其名称，则 Vitest 将失败。可用选项：
 - `webdriverio` 支持这些浏览器:
@@ -291,7 +291,7 @@ Vitest 中的浏览器选项取决于provider。如果在配置文件中传递 `
   - `webkit`
   - `chromium`
 
-## Browser Compatibility
+## 浏览器的兼容性
 
 Vitest 使用 [Vite dev server](https://cn.vitejs.dev/guide/#browser-support) 来运行我们的测试，因此我们只支持 [`esbuild.target`](https://cn.vitejs.dev/config/shared-options#esbuild)选项（默认为 `esnext`）中指定的功能。
 
@@ -302,7 +302,7 @@ Vitest 使用 [Vite dev server](https://cn.vitejs.dev/guide/#browser-support) �
 - Safari >=15.4
 - Edge >=88
 
-## Running Tests
+## 运行测试
 
 要使用 CLI 指定浏览器，请使用 `--browser` 标志后跟浏览器名称，如下所示：
 
@@ -357,7 +357,7 @@ npx vitest --browser.headless
 默认情况下Headless模式不可用。我们需要使用 [`playwright`](https://npmjs.com/package/playwright) 或 [`webdriverio`](https://www.npmjs.com/package/webdriverio) 提供程序来启用此功能。
 :::
 
-## Examples
+## 例子
 
 一般情况下，我们不需要任何依赖来使用浏览器模式：
 
@@ -367,7 +367,7 @@ import { page } from 'vitest/browser'
 import { render } from './my-render-function.js'
 
 test('properly handles form inputs', async () => {
-  render() // mount DOM elements
+  render() // 挂载 DOM 元素
 
   // 断言初始状态。
   await expect.element(page.getByText('Hi, my name is Alice')).toBeInTheDocument()
@@ -402,7 +402,7 @@ test('properly handles form inputs', async () => {
 ```ts
 import { expect } from 'vitest'
 import { page } from 'vitest/browser'
-// element is rendered correctly
+// 元素是正确渲染
 await expect.element(page.getByText('Hello World')).toBeInTheDocument()
 ```
 
@@ -411,7 +411,7 @@ Vitest 暴露了一个[上下文 API](/guide/browser/context)，其中包含一�
 ```ts
 import { page, userEvent } from 'vitest/browser'
 await userEvent.fill(page.getByLabelText(/username/i), 'Alice')
-// or just locator.fill
+// 或只用 locator.fill
 await page.getByLabelText(/username/i).fill('Alice')
 ```
 
@@ -504,7 +504,7 @@ import { render } from 'vitest-browser-qwik'
 import Greeting from './greeting'
 
 test('greeting appears on click', async () => {
-  // renderSSR and renderHook are also available
+  // renderSSR 和 renderHook 也是可用
   const screen = render(<Greeting />)
 
   const button = screen.getByRole('button')
@@ -531,7 +531,7 @@ Vitest 并不支持所有开箱即用的框架，但我们可以使用外部工�
 
 ::: code-group
 ```tsx [solid]
-// based on @testing-library/solid API
+// 基于 @testing-library/solid API
 // https://testing-library.com/docs/solid-testing-library/api
 
 import { render } from '@testing-library/solid'
@@ -558,7 +558,7 @@ it('uses params', async () => {
 })
 ```
 ```ts [marko]
-// based on @testing-library/marko API
+// 基于 @testing-library/marko API
 // https://testing-library.com/docs/marko-testing-library/api
 
 import { render, screen } from '@marko/testing-library'
@@ -591,7 +591,7 @@ test('renders a message', async () => {
 import { vi } from 'vitest'
 import * as module from './module.js'
 
-vi.spyOn(module, 'method') // ❌ throws an error
+vi.spyOn(module, 'method') // ❌ 抛出错误
 ```
 
 为了解决这个限制，Vitest 在 `vi.mock('./module.js')` 中提供了 `{ spy: true }` 选项。启用后，它会自动对模块里所有的导出进行监听，而不会像普通 mock 那样将它们替换成假的实现。
