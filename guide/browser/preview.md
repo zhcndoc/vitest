@@ -24,7 +24,7 @@ This will open a new browser window using your default browser to run the tests.
 
 ## 与其他服务商的差异
 
-与 [Playwright](/guide/browser/playwright) 或 [WebdriverIO](/guide/browser/webdriverio) 等其他供应商相比，预览服务存在一些限制：
+与 [Playwright](/guide/browser/playwright) 或 [WebdriverIO](/guide/browser/webdriverio) 等其他 Providers 相比，预览服务存在一些限制：
 
 - 它不支持无头模式; 浏览器窗口始终可见.
 - 它不支持同一浏览器的多个实例; 每个实例必须使用不同的浏览器.
