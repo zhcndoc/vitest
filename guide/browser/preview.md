@@ -22,7 +22,7 @@ export default defineConfig({
 
 This will open a new browser window using your default browser to run the tests. You can configure which browser to use by setting the `browser` property in the `instances` array. Vitest will try to open that browser automatically, but it might not work in some environments. In that case, you can manually open the provided URL in your desired browser.
 
-## 与其他服务商的差异
+## 与其他 Providers 的差异
 
 与 [Playwright](/guide/browser/playwright) 或 [WebdriverIO](/guide/browser/webdriverio) 等其他 Providers 相比，预览服务存在一些限制：
 
