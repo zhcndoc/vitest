@@ -22,11 +22,11 @@ export default defineConfig({
 
 This will open a new browser window using your default browser to run the tests. You can configure which browser to use by setting the `browser` property in the `instances` array. Vitest will try to open that browser automatically, but it might not work in some environments. In that case, you can manually open the provided URL in your desired browser.
 
-## Differences with Other Providers
+## 与其他服务商的差异
 
-The preview provider has some limitations compared to other providers like [Playwright](/guide/browser/playwright) or [WebdriverIO](/guide/browser/webdriverio):
+与 [Playwright](/guide/browser/playwright) 或 [WebdriverIO](/guide/browser/webdriverio) 等其他供应商相比，预览服务存在一些限制：
 
-- It does not support headless mode; the browser window will always be visible.
-- It does not support multiple instances of the same browser; each instance must use a different browser.
-- It does not support advanced browser capabilities or options; you can only specify the browser name.
-- It does not support CDP (Chrome DevTools Protocol) commands or other low-level browser interactions. Unlike Playwright or WebdriverIO, the [`userEvent`](/guide/browser/interactivity-api) API is just re-exported from [`@testing-library/user-event`](https://www.npmjs.com/package/@testing-library/user-event) and does not have any special integration with the browser.
+- 它不支持无头模式; 浏览器窗口始终可见.
+- 它不支持同一浏览器的多个实例; 每个实例必须使用不同的浏览器.
+- 它不支持高级浏览器功能或选项; 你只能指定浏览器名称.
+- 它不支持 CDP（Chrome DevTools 协议）命令或其他低层浏览器交互. 与 Playwright 或 WebdriverIO 不同, [`userEvent`](/guide/browser/interactivity-api) API 只是从 [`@testing-library/user-event`](https://www.npmjs.com/package/@testing-library/user-event) 重新导出, 没有与浏览器的特殊集成.
