@@ -6,7 +6,7 @@ title: 测试项目 | 指南
 
 ::: tip 示例项目
 
-[GitHub](https://github.com/vitest-dev/vitest/tree/main/examples/projects) - [在线试玩](https://stackblitz.com/fork/github/vitest-dev/vitest/tree/main/examples/projects?initialPath=__vitest__/)
+[GitHub](https://github.com/vitest-dev/vitest/tree/main/examples/projects) - [在线演示](https://stackblitz.com/fork/github/vitest-dev/vitest/tree/main/examples/projects?initialPath=__vitest__/)
 
 :::
 
@@ -58,7 +58,7 @@ import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
-    // include all folders inside "packages" except "excluded"
+    // 包含 "packages" 所有子文件夹，并排除 "excluded" 文件夹
     projects: [
       'packages/*',
       '!packages/excluded'
@@ -72,19 +72,19 @@ export default defineConfig({
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
 
-// For example, this will create projects:
+// 举例来说，像下面这样创建项目：
 // packages/a
 // packages/b
 // packages/business/c
 // packages/business/d
-// Notice that "packages/business" is not a project itself
+// 注意："packages/business" 并不是一个项目
 
 export default defineConfig({
   test: {
     projects: [
-      // matches every folder inside "packages" except "business"
+      // 匹配 "packages" 目录下除 "business" 所有子文件夹
       'packages/!(business)',
-      // matches every folder inside "packages/business"
+      // 匹配 "packages/business" 下所有子文件夹
       'packages/business/*',
     ],
   },

@@ -16,7 +16,7 @@ Vitest 提供 [`environment`](/config/#environment) 选项以在特定环境中�
 ::: info
 当使用 `jsdom` 或 `happy-dom` 环境时，Vitest 在导入 [CSS](https://vitejs.dev/guide/features.html#css) 和 [资源文件](https://vitejs.dev/guide/features.html#static-assets) 时遵循与 Vite 相同的规则。如果在导入外部依赖时出现 `unknown extension .css` 错误，则需要通过将所有相关包添加到 [`server.deps.inline`](/config/#server-deps-inline) 中，手动内联整个导入链。例如，在以下导入链中：`源代码 -> package-1 -> package-2 -> package-3`，如果错误发生在 `package-3`，你需要将这三个包都添加到 `server.deps.inline` 中。
 
-外部依赖中的CSS和资源文件的 `require` 调用会自动解析。
+外部依赖中的 CSS 和资源文件的 `require` 调用会自动解析。
 :::
 
 ::: warning
@@ -58,15 +58,15 @@ export default <Environment>{
         return context
       },
       teardown() {
-        // called after all tests with this env have been run
+        // 在所有使用此环境的测试运行完毕后调用
       },
     }
   },
   setup() {
-    // custom setup
+    // 自定义设置
     return {
       teardown() {
-        // called after all tests with this env have been run
+        // 在所有使用此环境的测试运行完毕后调用
       },
     }
   },
@@ -89,15 +89,15 @@ Vitest 还提供了 `populateGlobal` 实用函数，可用于将属性从对象�
 
 ```ts
 interface PopulateOptions {
-  // should non-class functions be bind to the global namespace
+  // 非类函数是否应该绑定到全局命名空间
   bindFunctions?: boolean
 }
 
 interface PopulateResult {
-  // a list of all keys that were copied, even if value doesn't exist on original object
+  // 所有被复制的键的列表，即使原始对象上不存在该值
   keys: Set<string>
-  // a map of original object that might have been overridden with keys
-  // you can return these values inside `teardown` function
+  // 可能已被键覆盖的原始对象的映射
+  // 你可以在 `teardown` 函数中返回这些值
   originals: Map<string | symbol, any>
 }
 

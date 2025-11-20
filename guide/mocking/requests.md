@@ -6,7 +6,7 @@ Mock Service Worker (MSW) 通过拦截你的测试发出的请求来工作，允
 
 ## 配置 {#configuration}
 
-You can use it like below in your [setup file](/config/#setupfiles)
+你可以像下面这样在你的 [setup 文件](/config/#setupfiles) 中使用它：
 
 ::: code-group
 
@@ -33,13 +33,13 @@ export const restHandlers = [
 
 const server = setupServer(...restHandlers)
 
-// Start server before all tests
+// 在所有测试开始前启动服务器
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
 
-// Close server after all tests
+// 在所有测试结束后关闭服务器
 afterAll(() => server.close())
 
-// Reset handlers after each test for test isolation
+// 在每次测试后重置处理器以实现测试隔离
 afterEach(() => server.resetHandlers())
 ```
 
@@ -68,13 +68,13 @@ const graphqlHandlers = [
 
 const server = setupServer(...graphqlHandlers)
 
-// Start server before all tests
+// 在所有测试开始前启动服务器
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
 
-// Close server after all tests
+// 在所有测试结束后关闭服务器
 afterAll(() => server.close())
 
-// Reset handlers after each test for test isolation
+// 在每次测试后重置处理器以实现测试隔离
 afterEach(() => server.resetHandlers())
 ```
 
@@ -89,7 +89,7 @@ const wsHandlers = [
   chat.addEventListener('connection', ({ client }) => {
     client.addEventListener('message', (event) => {
       console.log('Received message from client:', event.data)
-      // Echo the received message back to the client
+      // 将接收到的消息回显给客户端
       client.send(`Server received: ${event.data}`)
     })
   }),
@@ -97,18 +97,18 @@ const wsHandlers = [
 
 const server = setupServer(...wsHandlers)
 
-// Start server before all tests
+// 在所有测试开始前启动服务器
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
 
-// Close server after all tests
+// 在所有测试结束后关闭服务器
 afterAll(() => server.close())
 
-// Reset handlers after each test for test isolation
+// 在每次测试后重置处理器以实现测试隔离
 afterEach(() => server.resetHandlers())
 ```
 :::
 
-> Configuring the server with `onUnhandledRequest: 'error'` ensures that an error is thrown whenever there is a request that does not have a corresponding request handler.
+> 配置服务器时设置 `onUnhandledRequest: 'error'` 可以确保当存在没有对应请求处理器的请求时抛出错误。
 
 ## 更多信息 {#more}
-There is much more to MSW. You can access cookies and query parameters, define mock error responses, and much more! To see all you can do with MSW, read [their documentation](https://mswjs.io/docs).
+MSW 的功能远不止这些。你可以访问 cookie 和查询参数，定义模拟错误响应，以及更多其他功能！要了解 MSW 的所有功能，请阅读[它们的文档](https://mswjs.io/docs)。

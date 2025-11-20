@@ -122,24 +122,24 @@ vitest --inspect-brk=127.0.0.1:3000 --browser --no-file-parallelism
 
 创建一个 [vitest](https://www.jetbrains.com/help/idea/vitest.html#createRunConfigVitest) 运行配置。使用以下配置在调试模式下运行所有测试：
 
-| Setting                | Value                              |
+| 配置参数                 | 设置值                              |
 | ---------------------- | ---------------------------------- |
 | Working directory      | `/path/to/your-project-root`       |
 
 然后在调试模式下运行此配置。IDE 将在编辑器中设置的 JS/TS 断点处停止。
 
-## Node Inspector, e.g. Chrome DevTools
+## Node 解释器, 例如 Chrome开发者工具
 
 Vitest 还支持在没有 IDE 的情况下调试测试。然而，这要求测试不是并行运行的。可以使用以下命令之一启动 Vitest。
 
 ```sh
-# To run in a single worker
+# 在单个线程内运行测试
 vitest --inspect-brk --pool threads --poolOptions.threads.singleThread
 
-# To run in a single child process
+# 在单个子进程内运行测试
 vitest --inspect-brk --pool forks --poolOptions.forks.singleFork
 
-# To run in browser mode
+# 使用浏览器模式运行测试
 vitest --inspect-brk --browser --no-file-parallelism
 ```
 

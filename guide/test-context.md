@@ -15,7 +15,7 @@ outline: deep
 import { it } from 'vitest'
 
 it('should work', ({ task }) => {
-  // prints name of the testusage
+  // 打印测试的名称
   console.log(task.name)
 })
 ```
@@ -208,11 +208,11 @@ const test = baseTest.extend<{
   archive: []
 })
 
-// todos will not run
+// todos 不会运行
 test('skip', () => {})
 test('skip', ({ archive }) => {})
 
-// todos will run
+// todos 将会运行
 test('run', ({ todos }) => {})
 ```
 
@@ -241,12 +241,12 @@ import { test as base } from 'vitest'
 const test = base.extend({
   fixture: [
     async ({}, use) => {
-      // this function will run
+      // 这个函数将会运行
       setup()
       await use()
       teardown()
     },
-    { auto: true }, // Mark as an automatic fixture
+    { auto: true }, // 标记为自动装置
   ],
 })
 
@@ -255,7 +255,7 @@ test('works correctly')
 
 #### 默认的装置 {#default-fixture}
 
-Since Vitest 3, you can provide different values in different [projects](/guide/projects). To enable this feature, pass down `{ injected: true }` to the options. If the key is not specified in the [project configuration](/config/#provide), then the default value will be used.
+从 Vitest 3 开始，你可以在不同的[项目](/guide/projects)中提供不同的值。要启用此功能，请在选项中传递 `{ injected: true }`。如果在[项目配置](/config/#provide)中未指定该键，则将使用默认值。
 
 :::code-group
 ```ts [fixtures.test.ts]
@@ -263,17 +263,17 @@ import { test as base } from 'vitest'
 
 const test = base.extend({
   url: [
-    // default value if "url" is not defined in the config
+    // 如果配置中未定义"url"，则为默认值
     '/default',
-    // mark the fixture as "injected" to allow the override
+    // 将夹具标记为"注入"以允许覆盖
     { injected: true },
   ],
 })
 
 test('works correctly', ({ url }) => {
-  // url is "/default" in "project-new"
-  // url is "/full" in "project-full"
-  // url is "/empty" in "project-empty"
+  // 在"project-new"中，url是"/default"
+  // 在"project-full"中，url是"/full"
+  // 在"project-empty"中，url是"/empty"
 })
 ```
 ```ts [vitest.config.ts]
@@ -309,9 +309,9 @@ export default defineConfig({
 ```
 :::
 
-#### Scoping Values to Suite <Version>3.1.0</Version> {#scoping-values-to-suite}
+#### 将值限定到套件范围 <Version>3.1.0</Version> {#scoping-values-to-suite}
 
-Since Vitest 3.1, you can override context values per suite and its children by using the `test.scoped` API:
+从 Vitest 3.1 开始，你可以使用 `test.scoped` API 来按套件及其子项覆盖上下文值：
 
 ```ts
 import { test as baseTest, describe, expect } from 'vitest'
@@ -325,27 +325,27 @@ describe('use scoped values', () => {
   test.scoped({ dependency: 'new' })
 
   test('uses scoped value', ({ dependant }) => {
-    // `dependant` uses the new overridden value that is scoped
-    // to all tests in this suite
+    // `dependant` 使用了新的被覆盖的值，该值是限定范围的
+    // 到此套件中的所有测试
     expect(dependant).toEqual({ dependency: 'new' })
   })
 
   describe('keeps using scoped value', () => {
     test('uses scoped value', ({ dependant }) => {
-      // nested suite inherited the value
+      // 嵌套套件继承了该值
       expect(dependant).toEqual({ dependency: 'new' })
     })
   })
 })
 
 test('keep using the default values', ({ dependant }) => {
-  // the `dependency` is using the default
-  // value outside of the suite with .scoped
+  // `dependency` 使用的是默认值
+  // 在使用 `.scoped` 的套件外部的值
   expect(dependant).toEqual({ dependency: 'default' })
 })
 ```
 
-This API is particularly useful if you have a context value that relies on a dynamic variable like a database connection:
+如果你有一个依赖于动态变量（如数据库连接）的上下文值，这个 API 特别有用：
 
 ```ts
 const test = baseTest.extend<{
@@ -373,9 +373,9 @@ describe('another type of schema', () => {
 })
 ```
 
-#### Per-Scope Context <Version>3.2.0</Version>
+#### 作用域上下文 <Version>3.2.0</Version>
 
-You can define context that will be initiated once per file or a worker. It is initiated the same way as a regular fixture with an objects parameter:
+你可以定义每个文件或每个工作线程只初始化一次的上下文。它的初始化方式与带对象参数的常规夹具相同：
 
 ```ts
 import { test as baseTest } from 'vitest'
@@ -392,7 +392,7 @@ export const test = baseTest.extend({
 })
 ```
 
-The value is initialised the first time any test has accessed it, unless the fixture options have `auto: true` - in this case the value is initialised before any test has run.
+该值在任何测试第一次访问它时初始化，除非夹具选项设置了 `auto: true` - 在这种情况下，该值在任何测试运行之前就已初始化。
 
 ```ts
 const test = baseTest.extend({
@@ -400,18 +400,18 @@ const test = baseTest.extend({
     ({}, use) => use([]),
     {
       scope: 'file',
-      // always run this hook before any test
+      // 在任何测试之前总是运行这个钩子
       auto: true
     },
   ],
 })
 ```
 
-The `worker` scope will run the fixture once per worker. The number of running workers depends on various factors. By default, every file runs in a separate worker, so `file` and `worker` scopes work the same way.
+`worker` 作用域将为每个工作线程运行一次夹具。运行的工作线程数量取决于各种因素。默认情况下，每个文件在单独的工作线程中运行，因此 `file` 和 `worker` 作用域的工作方式相同。
 
-However, if you disable [isolation](/config/#isolate), then the number of workers is limited by the [`maxWorkers`](/config/#maxworkers) or [`poolOptions`](/config/#pooloptions) configuration.
+但是，如果你禁用了 [isolation](/config/#isolate)，那么工作线程的数量将受到 [`maxWorkers`](/config/#maxworkers) 或 [`poolOptions`](/config/#pooloptions) 配置的限制。
 
-Note that specifying `scope: 'worker'` when running tests in `vmThreads` or `vmForks` will work the same way as `scope: 'file'`. This limitation exists because every test file has its own VM context, so if Vitest were to initiate it once, one context could leak to another and create many reference inconsistencies (instances of the same class would reference different constructors, for example).
+请注意，在 `vmThreads` 或 `vmForks` 中运行测试时，指定 `scope: 'worker'` 的工作方式与 `scope: 'file'` 相同。这个限制存在是因为每个测试文件都有自己的 VM 上下文，所以如果 Vitest 只初始化一次，一个上下文可能会泄漏到另一个上下文中，并创建许多引用不一致的问题（例如，同一个类的实例会引用不同的构造函数）。
 
 #### TypeScript
 
@@ -458,7 +458,7 @@ test('types are correct', ({
 
 :::
 
-When using `test.extend`, the extended `test` object provides type-safe `beforeEach` and `afterEach` hooks that are aware of the new context:
+当使用 `test.extend` 时，扩展的 `test` 对象提供了类型安全的 `beforeEach` 和 `afterEach` 钩子，这些钩子能够识别新的上下文：
 
 ```ts
 const test = baseTest.extend<{
@@ -469,7 +469,7 @@ const test = baseTest.extend<{
   },
 })
 
-// Unlike global hooks, these hooks are aware of the extended context
+// 与全局钩子不同，这些钩子能够识别扩展的上下文
 test.beforeEach(({ todos }) => {
   todos.push(1)
 })

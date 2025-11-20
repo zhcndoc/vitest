@@ -33,7 +33,7 @@ describe('delayed execution', () => {
   })
   it('should not execute the function', () => {
     executeAfterTwoHours(mock)
-    // advancing by 2ms won't trigger the func
+    // 前进2毫秒不会触发该函数
     vi.advanceTimersByTime(2)
     expect(mock).not.toHaveBeenCalled()
   })
