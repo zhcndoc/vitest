@@ -1,9 +1,9 @@
 ---
-title: Commands | Browser Mode
+title: 命令 | 浏览器模式
 outline: deep
 ---
 
-# Commands
+# 命令
 
 命令是一个函数，它调用服务器上的另一个函数并将结果传递回浏览器。Vitest 公开了几个可以在浏览器测试中使用的内置命令。
 
@@ -108,7 +108,7 @@ test('custom command works correctly', async () => {
   expect(result).toEqual({ someValue: true })
 })
 
-// if you are using TypeScript, you can augment the module
+// 如果使用的是 TypeScript，则可以增强模块
 declare module 'vitest/browser' {
   interface BrowserCommands {
     myCustomCommand: (arg1: string, arg2: string) => Promise<{
