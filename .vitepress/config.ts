@@ -296,9 +296,9 @@ export default ({ mode }: { mode: string }) => {
               collapsed: false,
               items: [
                 {
-                  text: '浏览器模式配置',
+                  text: '浏览器配置',
                   link: '/guide/browser/config',
-                  docFooterText: '浏览器模式配置 | 浏览器模式',
+                  docFooterText: '浏览器配置 | 浏览器模式',
                 },
                 {
                   text: '配置 Playwright',
@@ -353,9 +353,9 @@ export default ({ mode }: { mode: string }) => {
               collapsed: false,
               items: [
                 {
-                  text: '多种设置',
+                  text: '多环境配置',
                   link: '/guide/browser/multiple-setups',
-                  docFooterText: '多种设置 | 浏览器模式',
+                  docFooterText: '多环境配置 | 浏览器模式',
                 },
                 {
                   text: '组件测试',
@@ -567,11 +567,11 @@ function guide(): DefaultTheme.SidebarItem[] {
       link: '/guide/reporters',
     },
     {
-      text: '测试覆盖率',
+      text: '覆盖率',
       link: '/guide/coverage',
     },
     {
-      text: '测试快照',
+      text: '快照',
       link: '/guide/snapshot',
     },
     {
@@ -614,7 +614,7 @@ function guide(): DefaultTheme.SidebarItem[] {
       ],
     },
     {
-      text: '并行执行',
+      text: '并行性',
       link: '/guide/parallelism',
     },
     {
@@ -622,7 +622,7 @@ function guide(): DefaultTheme.SidebarItem[] {
       link: '/guide/testing-types',
     },
     {
-      text: 'UI模式',
+      text: 'UI 模式',
       link: '/guide/ui',
     },
     {
