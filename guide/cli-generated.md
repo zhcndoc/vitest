@@ -173,7 +173,7 @@
 - **命令行终端:** `--coverage.skipFull`
 - **配置:** [coverage.skipFull](/config/#coverage-skipfull)
 
- 不显示语句、分支和函数覆盖率为 100% 的文件（默认值：`false`）
+不显示语句、分支和函数覆盖率为 100% 的文件（默认值：`false`）
 
 ### coverage.thresholds.100
 
@@ -245,25 +245,25 @@
 
 - **命令行终端:** `--coverage.watermarks.statements <watermarks>`
 
-High and low watermarks for statements in the format of `<high>,<low>`
+语句格式的高低标准线 `<high>,<low>`
 
 ### coverage.watermarks.lines
 
 - **命令行终端:** `--coverage.watermarks.lines <watermarks>`
 
-High and low watermarks for lines in the format of `<high>,<low>`
+行格式的高低标准线 `<high>,<low>`
 
 ### coverage.watermarks.branches
 
 - **命令行终端:** `--coverage.watermarks.branches <watermarks>`
 
-High and low watermarks for branches in the format of `<high>,<low>`
+分支格式的高低标准线 `<high>,<low>`
 
 ### coverage.watermarks.functions
 
 - **命令行终端:** `--coverage.watermarks.functions <watermarks>`
 
-High and low watermarks for functions in the format of `<high>,<low>`
+函数格式的高低标准线 `<high>,<low>`
 
 ### mode
 
@@ -381,7 +381,7 @@ High and low watermarks for functions in the format of `<high>,<low>`
 - **命令行终端:** `--browser.trace <mode>`
 - **配置:** [browser.trace](/guide/browser/config#browser-trace)
 
-Enable trace view mode. Supported: "on", "off", "on-first-retry", "on-all-retries", "retain-on-failure".
+开启追踪视图模式。 可选项: "on", "off", "on-first-retry", "on-all-retries", "retain-on-failure"。
 
 ### pool
 
@@ -437,7 +437,7 @@ Enable trace view mode. Supported: "on", "off", "on-first-retry", "on-all-retrie
 - **命令行终端:** `--poolOptions.vmThreads.maxThreads <workers>`
 - **配置:** [poolOptions.vmThreads.maxThreads](/config/#pooloptions-vmthreads-maxthreads)
 
- 运行测试的最大线程数或百分比
+运行测试的最大线程数或百分比
 
 ### poolOptions.vmThreads.useAtomics
 
@@ -591,7 +591,7 @@ VM forks pool 的内存限制。如果你观察到内存泄漏问题，可以尝
 - **命令行终端:** `--sequence.setupFiles <order>`
 - **配置:** [sequence.setupFiles](/config/#sequence-setupfiles)
 
- 更改设置文件的执行顺序。可接受的值有 "list" 和 "parallel"。如果设置为"list"，将按照定义的顺序运行设置文件。如果设置为 "parallel"，将并行运行设置文件（默认值：`"parallel"`）。
+更改设置文件的执行顺序。可接受的值有 "list" 和 "parallel"。如果设置为"list"，将按照定义的顺序运行设置文件。如果设置为 "parallel"，将并行运行设置文件（默认值：`"parallel"`）。
 
 ### inspect
 
@@ -640,28 +640,28 @@ VM forks pool 的内存限制。如果你观察到内存泄漏问题，可以尝
 - **命令行终端:** `--diff.aAnnotation <annotation>`
 - **配置:** [diff.aAnnotation](/config/#diff-aannotation)
 
-Annotation for expected lines (default: `Expected`)
+预期行的注释 (默认值: `Expected`)
 
 ### diff.aIndicator
 
 - **命令行终端:** `--diff.aIndicator <indicator>`
 - **配置:** [diff.aIndicator](/config/#diff-aindicator)
 
-Indicator for expected lines (default: `-`)
+预期行的指标 (默认值: `-`)
 
 ### diff.bAnnotation
 
 - **命令行终端:** `--diff.bAnnotation <annotation>`
 - **配置:** [diff.bAnnotation](/config/#diff-bannotation)
 
-Annotation for received lines (default: `Received`)
+接收行的注释 (默认值: `Received`)
 
 ### diff.bIndicator
 
 - **命令行终端:** `--diff.bIndicator <indicator>`
 - **配置:** [diff.bIndicator](/config/#diff-bindicator)
 
-Indicator for received lines (default: `+`)
+接收行的指标 (默认值: `+`)
 
 ### diff.commonIndicator
 
@@ -675,14 +675,14 @@ Indicator for common lines (default: ` `)
 - **命令行终端:** `--diff.contextLines <lines>`
 - **配置:** [diff.contextLines](/config/#diff-contextlines)
 
-Number of lines of context to show around each change (default: `5`)
+每次更改内容上下显示的上下文行数 (默认值: `5`)
 
 ### diff.emptyFirstOrLastLinePlaceholder
 
 - **命令行终端:** `--diff.emptyFirstOrLastLinePlaceholder <placeholder>`
 - **配置:** [diff.emptyFirstOrLastLinePlaceholder](/config/#diff-emptyfirstorlastlineplaceholder)
 
-Placeholder for an empty first or last line (default: `""`)
+空的第一行或最后一行的占位符 (默认值: `""`)
 
 ### diff.expand
 
@@ -696,42 +696,42 @@ Expand all common lines (default: `true`)
 - **命令行终端:** `--diff.includeChangeCounts`
 - **配置:** [diff.includeChangeCounts](/config/#diff-includechangecounts)
 
-Include comparison counts in diff output (default: `false`)
+在 diff 的输出中输出比较计数 (默认值: `false`)
 
 ### diff.omitAnnotationLines
 
 - **命令行终端:** `--diff.omitAnnotationLines`
 - **配置:** [diff.omitAnnotationLines](/config/#diff-omitannotationlines)
 
-Omit annotation lines from the output (default: `false`)
+省略输出中的注释 (默认值: `false`)
 
 ### diff.printBasicPrototype
 
 - **命令行终端:** `--diff.printBasicPrototype`
 - **配置:** [diff.printBasicPrototype](/config/#diff-printbasicprototype)
 
-Print basic prototype Object and Array (default: `true`)
+打印基础的原型 `Object` 和 `Array` (默认值: `true`)
 
 ### diff.maxDepth
 
 - **命令行终端:** `--diff.maxDepth <maxDepth>`
 - **配置:** [diff.maxDepth](/config/#diff-maxdepth)
 
-Limit the depth to recurse when printing nested objects (default: `20`)
+嵌套对象打印的最深深度 (默认值: `20`)
 
 ### diff.truncateThreshold
 
 - **命令行终端:** `--diff.truncateThreshold <threshold>`
 - **配置:** [diff.truncateThreshold](/config/#diff-truncatethreshold)
 
-Number of lines to show before and after each change (default: `0`)
+每次更改的差异对比行数 (默认值: `0`)
 
 ### diff.truncateAnnotation
 
 - **命令行终端:** `--diff.truncateAnnotation <annotation>`
 - **配置:** [diff.truncateAnnotation](/config/#diff-truncateannotation)
 
-Annotation for truncated lines (default: `... Diff result is truncated`)
+在 diff 结果末尾输出的注释（如果被截断） (默认值: `... Diff result is truncated`)
 
 ### exclude
 
@@ -780,28 +780,28 @@ Annotation for truncated lines (default: `... Diff result is truncated`)
 - **命令行终端:** `--typecheck.allowJs`
 - **配置:** [typecheck.allowJs](/config/#typecheck-allowjs)
 
-允许对 JavaScript 文件进行类型检查。默认值取自 tsconfig.json
+允许对 JavaScript 文件进行类型检查。默认值取自 tsconfig.json。
 
 ### typecheck.ignoreSourceErrors
 
 - **命令行终端:** `--typecheck.ignoreSourceErrors`
 - **配置:** [typecheck.ignoreSourceErrors](/config/#typecheck-ignoresourceerrors)
 
-忽略源文件中的类型错误
+忽略源文件中的类型错误。
 
 ### typecheck.tsconfig
 
 - **命令行终端:** `--typecheck.tsconfig <path>`
 - **配置:** [typecheck.tsconfig](/config/#typecheck-tsconfig)
 
-自定义 tsconfig 文件的路径
+自定义 tsconfig 文件的路径。
 
 ### typecheck.spawnTimeout
 
 - **命令行终端:** `--typecheck.spawnTimeout <time>`
 - **配置:** [typecheck.spawnTimeout](/config/#typecheck-spawntimeout)
 
-Minimum time in milliseconds it takes to spawn the typechecker
+启动类型检查器所需的最短时间（以毫秒为单位）。
 
 ### project
 
@@ -857,21 +857,21 @@ Minimum time in milliseconds it takes to spawn the typechecker
 - **命令行终端:** `--printConsoleTrace`
 - **配置:** [printConsoleTrace](/config/#printconsoletrace)
 
- 始终打印控制台堆栈跟踪
+始终打印控制台堆栈跟踪
 
 ### includeTaskLocation
 
 - **命令行终端:** `--includeTaskLocation`
 - **配置:** [includeTaskLocation](/config/#includetasklocation)
 
-Collect test and suite locations in the `location` property
+收集 `location` 属性中的测试和套件
 
 ### attachmentsDir
 
 - **命令行终端:** `--attachmentsDir <dir>`
 - **配置:** [attachmentsDir](/config/#attachmentsdir)
 
-The directory where attachments from `context.annotate` are stored in (default: `.vitest-attachments`)
+`context.annotate` 方法生成的附件文件的储存目录 (默认值: `.vitest-attachments`)
 
 ### run
 
@@ -889,13 +889,13 @@ The directory where attachments from `context.annotate` are stored in (default: 
 
 - **命令行终端:** `--clearScreen`
 
- watch 模式下重新运行测试时清除终端屏幕（默认值：`true`）。
+watch 模式下重新运行测试时清除终端屏幕（默认值：`true`）。
 
 ### configLoader
 
 - **命令行终端:** `--configLoader <loader>`
 
-Use `bundle` to bundle the config with esbuild or `runner` (experimental) to process it on the fly. This is only available in vite version 6.1.0 and above. (default: `bundle`)
+使用 `bundle` 将配置打包到 esbuild 中，或使用 `runner`（实验性功能）进行动态处理。此功能仅适用于 Vite 6.1.0 及更高版本。 (默认值: `bundle`)
 
 ### standalone
 
