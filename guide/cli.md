@@ -19,7 +19,7 @@ vitest foobar
 
 将仅运行路径中包含 `foobar` 的测试文件。 此过滤器仅检查包含，不支持正则表达式或 glob 模式（除非你的终端在 Vitest 接收过滤器之前对其进行处理）。
 
-从 Vitest 3 开始，您还可以通过文件名和行号指定测试：
+自 vitest 3 起，你还可以通过文件名和行号指定测试：
 
 ```bash
 $ vitest basic/foo.test.ts:10
