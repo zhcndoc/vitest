@@ -103,7 +103,7 @@
 - **命令行终端:** `--coverage.provider <name>`
 - **配置:** [coverage.provider](/config/#coverage-provider)
 
-选择覆盖范围采集工具， 可用值为: "v8", "istanbul" and "custom"
+选择覆盖范围采集工具，可用值为: "v8", "istanbul" and "custom"
 
 ### coverage.enabled
 
@@ -152,7 +152,7 @@
 - **命令行终端:** `--coverage.reporter <name>`
 - **配置:** [coverage.reporter](/config/#coverage-reporter)
 
-使用的报告。更多信息请访问 [`coverage.reporter`](https://vitest.dev/config/#coverage-reporter)。 (默认值: `["text", "html", "clover", "json"]`)
+使用的报告。更多信息请访问 [`coverage.reporter`](https://vitest.dev/config/#coverage-reporter)。(默认值: `["text", "html", "clover", "json"]`)
 
 ### coverage.reportOnFailure
 
@@ -381,7 +381,7 @@
 - **命令行终端:** `--browser.trace <mode>`
 - **配置:** [browser.trace](/guide/browser/config#browser-trace)
 
-开启追踪视图模式。 可选项: "on", "off", "on-first-retry", "on-all-retries", "retain-on-failure"
+启用追踪视图模式。 可选项: "on", "off", "on-first-retry", "on-all-retries", "retain-on-failure"
 
 ### pool
 
@@ -668,42 +668,42 @@ VM forks pool 的内存限制。如果你观察到内存泄漏问题，可以尝
 - **命令行终端:** `--diff.commonIndicator <indicator>`
 - **配置:** [diff.commonIndicator](/config/#diff-commonindicator)
 
-Indicator for common lines (default: ` `)
+公共行标识 （默认值: ` `）
 
 ### diff.contextLines
 
 - **命令行终端:** `--diff.contextLines <lines>`
 - **配置:** [diff.contextLines](/config/#diff-contextlines)
 
-每次更改内容上下显示的上下文行数 (默认值: `5`)
+每次变更显示上下文行数 （默认值: `5`）
 
 ### diff.emptyFirstOrLastLinePlaceholder
 
 - **命令行终端:** `--diff.emptyFirstOrLastLinePlaceholder <placeholder>`
 - **配置:** [diff.emptyFirstOrLastLinePlaceholder](/config/#diff-emptyfirstorlastlineplaceholder)
 
-空的第一行或最后一行的占位符 (默认值: `""`)
+空首行或空末行的占位符 （默认值: `""`）
 
 ### diff.expand
 
 - **命令行终端:** `--diff.expand`
 - **配置:** [diff.expand](/config/#diff-expand)
 
-Expand all common lines (default: `true`)
+展开所有公共行 （默认值: `true`）
 
 ### diff.includeChangeCounts
 
 - **命令行终端:** `--diff.includeChangeCounts`
 - **配置:** [diff.includeChangeCounts](/config/#diff-includechangecounts)
 
-在 diff 的输出中输出比较计数 (默认值: `false`)
+在 diff 的输出中输出比较计数 （默认值: `false`）
 
 ### diff.omitAnnotationLines
 
 - **命令行终端:** `--diff.omitAnnotationLines`
 - **配置:** [diff.omitAnnotationLines](/config/#diff-omitannotationlines)
 
-省略输出中的注释 (默认值: `false`)
+省略输出中的注释行 (默认值: `false`)
 
 ### diff.printBasicPrototype
 
@@ -717,14 +717,14 @@ Expand all common lines (default: `true`)
 - **命令行终端:** `--diff.maxDepth <maxDepth>`
 - **配置:** [diff.maxDepth](/config/#diff-maxdepth)
 
-嵌套对象打印的最深深度 (默认值: `20`)
+打印嵌套对象时，递归深度限制 (默认值: `20`)
 
 ### diff.truncateThreshold
 
 - **命令行终端:** `--diff.truncateThreshold <threshold>`
 - **配置:** [diff.truncateThreshold](/config/#diff-truncatethreshold)
 
-每次更改的差异对比行数 (默认值: `0`)
+显示成每次变更前后的行数 (默认值: `0`)
 
 ### diff.truncateAnnotation
 
@@ -801,7 +801,7 @@ Expand all common lines (default: `true`)
 - **命令行终端:** `--typecheck.spawnTimeout <time>`
 - **配置:** [typecheck.spawnTimeout](/config/#typecheck-spawntimeout)
 
-启动类型检查器所需的最短时间（以毫秒为单位）
+类型检查器启动所需最短时间（以毫秒为单位）
 
 ### project
 
@@ -889,16 +889,16 @@ Expand all common lines (default: `true`)
 
 - **命令行终端:** `--clearScreen`
 
-watch 模式下重新运行测试时清除终端屏幕（默认值：`true`）。
+watch 模式下重新运行测试时清除终端屏幕（默认值：`true`）
 
 ### configLoader
 
 - **命令行终端:** `--configLoader <loader>`
 
-使用 `bundle` 将配置打包到 esbuild 中，或使用 `runner`（实验性功能）进行动态处理。此功能仅适用于 Vite 6.1.0 及更高版本可使用。 (默认值: `bundle`)
+使用 `bundle` 将配置打包到 esbuild 中，或使用 `runner`（实验性功能）进行动态处理。此功能仅适用于 Vite 6.1.0 及更高版本可使用 (默认值: `bundle`)
 
 ### standalone
 
 - **命令行终端:** `--standalone`
 
-启动 Vitest 但不运行测试。只有在文件发生变化时才会运行测试。当通过 CLI 传递了文件过滤器时，此选项将被忽略。（默认值：`false`）
+启动 Vitest 但不运行测试。只有在文件发生变化时才会运行测试。当通过 CLI 传递了文件过滤器时，此选项将被忽略（默认值：`false`）
