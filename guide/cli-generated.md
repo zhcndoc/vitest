@@ -51,7 +51,7 @@
 - **命令行终端:** `--open`
 - **配置:** [open](/config/#open)
 
-自动打开用户界面（默认值：`!process.env.CI`）。
+自动打开用户界面（默认值：`!process.env.CI`）
 
 ### api.port
 
@@ -76,7 +76,7 @@
 - **命令行终端:** `--silent [value]`
 - **配置:** [silent](/config/#silent)
 
-测试的静默控制台输出。使用 `'passed-only'` 仅查看失败测试的日志。
+测试的静默控制台输出。使用 `'passed-only'` 仅查看失败测试的日志
 
 ### hideSkippedTests
 
@@ -110,21 +110,21 @@
 - **命令行终端:** `--coverage.enabled`
 - **配置:** [coverage.enabled](/config/#coverage-enabled)
 
-启用覆盖范围收集。可使用 `--coverage` CLI 选项覆盖（默认值：`false`）。
+启用覆盖范围收集。可使用 `--coverage` CLI 选项覆盖（默认值：`false`）
 
 ### coverage.include
 
 - **命令行终端:** `--coverage.include <pattern>`
 - **配置:** [coverage.include](/config/#coverage-include)
 
-作为通配符模式包含在覆盖率中的文件。在使用多个模式时可以指定多次。默认情况下，只包含被测试覆盖的文件。
+作为通配符模式包含在覆盖率中的文件。在使用多个模式时可以指定多次。默认情况下，只包含被测试覆盖的文件
 
 ### coverage.exclude
 
 - **命令行终端:** `--coverage.exclude <pattern>`
 - **配置:** [coverage.exclude](/config/#coverage-exclude)
 
-覆盖范围中要排除的文件。使用多个扩展名时，可指定多次。
+覆盖范围中要排除的文件。使用多个扩展名时，可指定多次
 
 ### coverage.clean
 
@@ -225,7 +225,7 @@
 - **命令行终端:** `--coverage.ignoreClassMethods <name>`
 - **配置:** [coverage.ignoreClassMethods](/config/#coverage-ignoreclassmethods)
 
-覆盖时要忽略的类方法名称数组。更多信息请访问 [istanbuljs](https://github.com/istanbuljs/nyc#ignoring-methods) 。该选项仅适用于 istanbul providers（默认值：`[]`）。
+覆盖时要忽略的类方法名称数组。更多信息请访问 [istanbuljs](https://github.com/istanbuljs/nyc#ignoring-methods) 。该选项仅适用于 istanbul providers（默认值：`[]`）
 
 ### coverage.processingConcurrency
 
@@ -245,25 +245,25 @@
 
 - **命令行终端:** `--coverage.watermarks.statements <watermarks>`
 
-语句格式的高低标准线 `<high>,<low>`
+语句覆盖率高/低阈值，格式： `<high>,<low>`
 
 ### coverage.watermarks.lines
 
 - **命令行终端:** `--coverage.watermarks.lines <watermarks>`
 
-行格式的高低标准线 `<high>,<low>`
+行覆盖率高/低阈值，格式： `<high>,<low>`
 
 ### coverage.watermarks.branches
 
 - **命令行终端:** `--coverage.watermarks.branches <watermarks>`
 
-分支格式的高低标准线 `<high>,<low>`
+分支覆盖率高/低阈值，格式： `<high>,<low>`
 
 ### coverage.watermarks.functions
 
 - **命令行终端:** `--coverage.watermarks.functions <watermarks>`
 
-函数格式的高低标准线 `<high>,<low>`
+函数覆盖率高/低阈值，格式： `<high>,<low>`
 
 ### mode
 
@@ -339,7 +339,7 @@
 - **命令行终端:** `--browser.provider <name>`
 - **配置:** [browser.provider](/guide/browser/config#browser-provider)
 
-指定执行浏览器测试时所使用的提供程序。部分浏览器仅在特定的提供程序下可用。可选值有 "webdriverio"、"playwright"、"preview"，也可以填写自定义提供程序的路径。更多信息请查看 [`browser.provider`](https://vitest.dev/guide/browser/config.html#browser-provider)（默认值为 "preview"）。
+指定执行浏览器测试时所使用的提供程序。部分浏览器仅在特定的提供程序下可用。可选值有 "webdriverio"、"playwright"、"preview"，也可以填写自定义提供程序的路径。更多信息请查看 [`browser.provider`](https://vitest.dev/guide/browser/config.html#browser-provider)（默认值为 "preview"）
 
 ### browser.isolate
 
@@ -374,14 +374,14 @@
 - **命令行终端:** `--browser.trackUnhandledErrors`
 - **配置:** [browser.trackUnhandledErrors](/guide/browser/config#browser-trackunhandlederrors)
 
-控制 Vitest 是否捕获未捕获的异常以便报告（默认：`true`）。
+控制 Vitest 是否捕获未捕获的异常以便报告（默认：`true`）
 
 ### browser.trace
 
 - **命令行终端:** `--browser.trace <mode>`
 - **配置:** [browser.trace](/guide/browser/config#browser-trace)
 
-开启追踪视图模式。 可选项: "on", "off", "on-first-retry", "on-all-retries", "retain-on-failure"。
+开启追踪视图模式。 可选项: "on", "off", "on-first-retry", "on-all-retries", "retain-on-failure"
 
 ### pool
 
@@ -451,7 +451,7 @@
 - **命令行终端:** `--poolOptions.vmThreads.memoryLimit <limit>`
 - **配置:** [poolOptions.vmThreads.memoryLimit](/config/#pooloptions-vmthreads-memorylimit)
 
-虚拟机线程池的内存限制。如果发现内存泄漏，请尝试调整该值。
+虚拟机线程池的内存限制。如果发现内存泄漏，请尝试调整该值
 
 ### poolOptions.forks.isolate
 
@@ -500,7 +500,7 @@
 - **命令行终端:** `--poolOptions.vmForks.memoryLimit <limit>`
 - **配置:** [poolOptions.vmForks.memoryLimit](/config/#pooloptions-vmforks-memorylimit)
 
-VM forks pool 的内存限制。如果你观察到内存泄漏问题，可以尝试调整这个值。
+VM forks pool 的内存限制。如果你观察到内存泄漏问题，可以尝试调整这个值
 
 ### fileParallelism
 
@@ -591,7 +591,7 @@ VM forks pool 的内存限制。如果你观察到内存泄漏问题，可以尝
 - **命令行终端:** `--sequence.setupFiles <order>`
 - **配置:** [sequence.setupFiles](/config/#sequence-setupfiles)
 
-更改设置文件的执行顺序。可接受的值有 "list" 和 "parallel"。如果设置为"list"，将按照定义的顺序运行设置文件。如果设置为 "parallel"，将并行运行设置文件（默认值：`"parallel"`）。
+更改设置文件的执行顺序。可接受的值有 "list" 和 "parallel"。如果设置为"list"，将按照定义的顺序运行设置文件。如果设置为 "parallel"，将并行运行设置文件（默认值：`"parallel"`）
 
 ### inspect
 
@@ -612,14 +612,14 @@ VM forks pool 的内存限制。如果你观察到内存泄漏问题，可以尝
 - **命令行终端:** `--testTimeout <timeout>`
 - **配置:** [testTimeout](/config/#testtimeout)
 
-测试的默认超时（毫秒）（默认值：`5000`）。使用 `0` 完全禁用超时。
+测试的默认超时（毫秒）（默认值：`5000`）。使用 `0` 完全禁用超时
 
 ### hookTimeout
 
 - **命令行终端:** `--hookTimeout <timeout>`
 - **配置:** [hookTimeout](/config/#hooktimeout)
 
-默认钩子超时（以毫秒为单位）（默认值：`10000`）。使用 `0` 完全禁用超时。
+默认钩子超时（以毫秒为单位）（默认值：`10000`）。使用 `0` 完全禁用超时
 
 ### bail
 
@@ -633,35 +633,35 @@ VM forks pool 的内存限制。如果你观察到内存泄漏问题，可以尝
 - **命令行终端:** `--retry <times>`
 - **配置:** [retry](/config/#retry)
 
-如果测试失败，重试特定次数（默认值： `0`）。
+如果测试失败，重试特定次数（默认值： `0`）
 
 ### diff.aAnnotation
 
 - **命令行终端:** `--diff.aAnnotation <annotation>`
 - **配置:** [diff.aAnnotation](/config/#diff-aannotation)
 
-预期行的注释 (默认值: `Expected`)
+预期值的行注释 (默认值: `Expected`)
 
 ### diff.aIndicator
 
 - **命令行终端:** `--diff.aIndicator <indicator>`
 - **配置:** [diff.aIndicator](/config/#diff-aindicator)
 
-预期行的指标 (默认值: `-`)
+预期值的行标识 (默认值: `-`)
 
 ### diff.bAnnotation
 
 - **命令行终端:** `--diff.bAnnotation <annotation>`
 - **配置:** [diff.bAnnotation](/config/#diff-bannotation)
 
-接收行的注释 (默认值: `Received`)
+实际值的行注释 (默认值: `Received`)
 
 ### diff.bIndicator
 
 - **命令行终端:** `--diff.bIndicator <indicator>`
 - **配置:** [diff.bIndicator](/config/#diff-bindicator)
 
-接收行的指标 (默认值: `+`)
+实际值的行标识 (默认值: `+`)
 
 ### diff.commonIndicator
 
@@ -780,35 +780,35 @@ Expand all common lines (default: `true`)
 - **命令行终端:** `--typecheck.allowJs`
 - **配置:** [typecheck.allowJs](/config/#typecheck-allowjs)
 
-允许对 JavaScript 文件进行类型检查。默认值取自 tsconfig.json。
+允许对 JavaScript 文件进行类型检查。默认值取自 tsconfig.json
 
 ### typecheck.ignoreSourceErrors
 
 - **命令行终端:** `--typecheck.ignoreSourceErrors`
 - **配置:** [typecheck.ignoreSourceErrors](/config/#typecheck-ignoresourceerrors)
 
-忽略源文件中的类型错误。
+忽略源文件中的类型错误
 
 ### typecheck.tsconfig
 
 - **命令行终端:** `--typecheck.tsconfig <path>`
 - **配置:** [typecheck.tsconfig](/config/#typecheck-tsconfig)
 
-自定义 tsconfig 文件的路径。
+自定义 tsconfig 文件的路径
 
 ### typecheck.spawnTimeout
 
 - **命令行终端:** `--typecheck.spawnTimeout <time>`
 - **配置:** [typecheck.spawnTimeout](/config/#typecheck-spawntimeout)
 
-启动类型检查器所需的最短时间（以毫秒为单位）。
+启动类型检查器所需的最短时间（以毫秒为单位）
 
 ### project
 
 - **命令行终端:** `--project <name>`
 - **配置:** [project](/config/#project)
 
-如果我们正在使用 Vitest 的工作区功能，这是要运行的项目名称。这个参数可以重复以指定多个项目：`--project=1 --project=2`。我们还可以使用通配符来过滤项目，例如 `--project=packages*`，以及使用 `--project=!pattern` 来排除项目。
+如果我们正在使用 Vitest 的工作区功能，这是要运行的项目名称。这个参数可以重复以指定多个项目：`--project=1 --project=2`。我们还可以使用通配符来过滤项目，例如 `--project=packages*`，以及使用 `--project=!pattern` 来排除项目
 
 ### slowTestThreshold
 
@@ -864,14 +864,14 @@ Expand all common lines (default: `true`)
 - **命令行终端:** `--includeTaskLocation`
 - **配置:** [includeTaskLocation](/config/#includetasklocation)
 
-收集 `location` 属性中的测试和套件
+在 `location` 属性中收集测试用例和测试套件的位置信息
 
 ### attachmentsDir
 
 - **命令行终端:** `--attachmentsDir <dir>`
 - **配置:** [attachmentsDir](/config/#attachmentsdir)
 
-`context.annotate` 方法生成的附件文件的储存目录 (默认值: `.vitest-attachments`)
+`context.annotate` 方法所生成附件的存储目录 (默认值: `.vitest-attachments`)
 
 ### run
 
@@ -895,7 +895,7 @@ watch 模式下重新运行测试时清除终端屏幕（默认值：`true`）�
 
 - **命令行终端:** `--configLoader <loader>`
 
-使用 `bundle` 将配置打包到 esbuild 中，或使用 `runner`（实验性功能）进行动态处理。此功能仅适用于 Vite 6.1.0 及更高版本。 (默认值: `bundle`)
+使用 `bundle` 将配置打包到 esbuild 中，或使用 `runner`（实验性功能）进行动态处理。此功能仅适用于 Vite 6.1.0 及更高版本可使用。 (默认值: `bundle`)
 
 ### standalone
 
