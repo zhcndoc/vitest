@@ -73,10 +73,11 @@ export default defineConfig({
 
 ### 其他的打包器 {#other-bundlers}
 
-::: details unbuild
-```ts [build.config.ts]
-import { defineBuildConfig } from 'unbuild'
+::: details Rolldown
+```js [rolldown.config.js]
+import { defineConfig } from 'rolldown/config'
 
+<<<<<<< HEAD
 export default defineBuildConfig({
   replace: {
     // [!code ++]
@@ -87,10 +88,22 @@ export default defineBuildConfig({
 ```
 
 了解更多：[unbuild](https://github.com/unjs/unbuild)
+=======
+export default defineConfig({
+  transform: {
+    define: { // [!code ++]
+      'import.meta.vitest': 'undefined', // [!code ++]
+    }, // [!code ++]
+  },
+})
+```
+
+Learn more: [Rolldown](https://rolldown.rs/)
+>>>>>>> 63c27c40d2833c42ec624f3076c90acd960fe8f9
 :::
 
 ::: details Rollup
-```ts [rollup.config.js]
+```js [rollup.config.js]
 import replace from '@rollup/plugin-replace' // [!code ++]
 
 export default {
@@ -106,6 +119,37 @@ export default {
 
 了解更多：[Rollup](https://rollupjs.org/)
 
+:::
+
+::: details unbuild
+```js [build.config.js]
+import { defineBuildConfig } from 'unbuild'
+
+export default defineBuildConfig({
+  replace: { // [!code ++]
+    'import.meta.vitest': 'undefined', // [!code ++]
+  }, // [!code ++]
+  // other options
+})
+```
+
+Learn more: [unbuild](https://github.com/unjs/unbuild)
+:::
+
+::: details webpack
+```js [webpack.config.js]
+const webpack = require('webpack')
+
+module.exports = {
+  plugins: [
+    new webpack.DefinePlugin({ // [!code ++]
+      'import.meta.vitest': 'undefined', // [!code ++]
+    })// [!code ++]
+  ],
+}
+```
+
+Learn more: [webpack](https://webpack.js.org/plugins/define-plugin/)
 :::
 
 ## TypeScript

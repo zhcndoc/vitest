@@ -449,7 +449,7 @@ expect(Cart).toHaveBeenCalled()
 ### vi.mockObject <Version>3.2.0</Version>
 
 ```ts
-function mockObject<T>(value: T): MaybeMockedDeep<T>
+function mockObject<T>(value: T, options?: MockOptions): MaybeMockedDeep<T>
 ```
 
 它与 `vi.mock()` 模拟模块相同，深层模拟给定对象的属性和方法。详见 [自动模拟](/guide/mocking.html#automocking-algorithm)。
@@ -854,7 +854,11 @@ await vi.advanceTimersToNextTimerAsync() // log: 3
 function advanceTimersToNextFrame(): Vitest
 ```
 
+<<<<<<< HEAD
 与 [`vi.advanceTimersByTime`](https://vitest.dev/api/vi#vi-advancetimersbytime) 类似，但会将计时器推进当前使用 `requestAnimationFrame` 安排的回调执行所需的毫秒数。
+=======
+Similar to [`vi.advanceTimersByTime`](/api/vi#vi-advancetimersbytime), but will advance timers by the milliseconds needed to execute callbacks currently scheduled with `requestAnimationFrame`.
+>>>>>>> 63c27c40d2833c42ec624f3076c90acd960fe8f9
 
 ```ts
 let frameRendered = false
