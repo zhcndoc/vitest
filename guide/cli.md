@@ -19,7 +19,7 @@ vitest foobar
 
 将仅运行路径中包含 `foobar` 的测试文件。 此过滤器仅检查包含，不支持正则表达式或 glob 模式（除非你的终端在 Vitest 接收过滤器之前对其进行处理）。
 
-Since Vitest 3, you can also specify the test by filename and line number:
+自 vitest 3 起，你还可以通过文件名和行号指定测试：
 
 ```bash
 $ vitest basic/foo.test.ts:10
@@ -42,6 +42,7 @@ $ vitest ./basic/foo:10 # ❌
 $ vitest basic/foo.test.ts:10, basic/foo.test.ts:25 # ✅
 $ vitest basic/foo.test.ts:10-25 # ❌
 ```
+
 :::
 
 ### `vitest run`
@@ -79,11 +80,11 @@ export default {
 
 ### `vitest bench`
 
-仅运行 [benchmark](/guide/features.html#benchmarking) 测试，用于比较性能结果。
+仅运行 [基准](/guide/features.html#benchmarking) 测试，用于比较性能结果。
 
 ### `vitest init`
 
-`vitest-init<name>` 可以用于设置项目配置。目前，它只支持 [`browser`](/guide/browser/) 值：
+`vitest init <name>` 可以用于设置项目配置。目前，它只支持 [`browser`](/guide/browser/) 值：
 
 ```bash
 vitest init browser

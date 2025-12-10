@@ -9,7 +9,7 @@ Vitest 通过 `vitest/browser` 入口点公开上下文模块。从 2.0 开始�
 ## `userEvent`
 
 ::: tip
-`userEvent` API 的详细说明见[Interactivity API](/guide/browser/interactivity-api).
+`userEvent` API 的详细说明见[Interactivity API](/guide/browser/interactivity-api)。
 :::
 
 ```ts
@@ -43,7 +43,7 @@ export const userEvent: {
 ## `commands`
 
 ::: tip
-Commands API 的详细说明见[Commands API](/guide/browser/commands).
+Commands API 的详细说明见 [Commands API](/guide/browser/commands)。
 :::
 
 ```ts
@@ -86,9 +86,9 @@ export const page: {
    */
   elementLocator(element: Element): Locator
   /**
-   * The iframe locator. This is a document locator that enters the iframe body
-   * and works similarly to the `page` object.
-   * **Warning:** At the moment, this is supported only by the `playwright` provider.
+   * iframe 定位器。这是一个进入 iframe body 的文档定位器
+   * 其工作原理与 `page` 对象类似。
+   * **Warning:** 目前，仅有 `playwright` 提供程序支持该功能。
    */
   frameLocator(iframeElement: Locator): FrameLocator
 
@@ -130,7 +130,7 @@ const frame = page.frameLocator(
 )
 
 await frame.getByText('Hello World').click() // ✅
-await frame.click() // ❌ Not available
+await frame.click() // ❌ 不可用
 ```
 
 ::: danger IMPORTANT
@@ -140,10 +140,6 @@ await frame.click() // ❌ Not available
 :::
 
 ## `cdp`
-
-```ts
-function cdp(): CDPSession
-```
 
 `cdp` 导出返回当前的 Chrome DevTools 协议会话。它主要用于库作者在其基础上构建工具。
 
