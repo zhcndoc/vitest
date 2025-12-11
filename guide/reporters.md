@@ -581,10 +581,8 @@ export default defineConfig({
   },
 })
 ```
+<!-- TODO: translation -->
 
-<<<<<<< HEAD
-### Blob Reporter {#blob-reporter}
-=======
 If you are using [Annotations API](/guide/test-annotations), the reporter will automatically inline them in the GitHub UI. You can disable this by setting `displayAnnotations` option to `false`:
 
 ```ts
@@ -598,7 +596,6 @@ export default defineConfig({
 ```
 
 ### Blob Reporter
->>>>>>> 63c27c40d2833c42ec624f3076c90acd960fe8f9
 
 将测试结果存储在计算机上，以便以后可以使用 [`--merge-reports`](/guide/cli#merge-reports) 命令进行合并。
 默认情况下，将所有结果存储在 `.vitest-reports` 文件夹中，但可以用 `--outputFile` 或 `--outputFile.blob` 标志覆盖。
@@ -638,11 +635,7 @@ export default defineConfig({
 
 :::
 
-<<<<<<< HEAD
-此外，你还可以定义自己的[自定义报告器](/api/advanced/reporters)，并通过指定文件路径来使用它们:
-=======
-Additionally, you can define your own [custom reporters](/guide/advanced/reporters) and use them by specifying their file path:
->>>>>>> 63c27c40d2833c42ec624f3076c90acd960fe8f9
+此外，你还可以定义自己的[自定义报告器](/guide/advanced/reporters)，并通过指定文件路径来使用它们:
 
 ```bash
 npx vitest --reporter=./path/to/reporter.ts

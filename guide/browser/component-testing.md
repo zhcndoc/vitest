@@ -570,14 +570,7 @@ import { render } from 'vitest-browser-react' // [!code ++]
 
 ## 了解更多 {#learn-more}
 
-<<<<<<< HEAD
 - [浏览器模式文档](/api/browser/)
 - [断言API](/api/browser/assertions)
 - [交互性API](/api/browser/interactivity)
 - [示例仓库](https://github.com/vitest-tests/browser-examples)
-=======
-- [Browser Mode Documentation](/api/browser/)
-- [Assertion API](/api/browser/assertions)
-- [Interactivity API](/api/browser/interactivity)
-- [Example Repository](https://github.com/vitest-tests/browser-examples)
->>>>>>> 63c27c40d2833c42ec624f3076c90acd960fe8f9
