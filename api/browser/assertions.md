@@ -7,7 +7,7 @@ title: Assertion API | Browser Mode
 Vitest 默认提供了一组丰富的 DOM 断言，这些断言源自 [`@testing-library/jest-dom`](https://github.com/testing-library/jest-dom) 库，并增加了对定位器的支持以及内置的重试能力。
 
 ::: tip TypeScript Support
-如果你正在使用 [TypeScript](/api/browser/#typescript) 或希望在 `expect` 中获得正确的类型提示，请确保在某个地方引用了 `vitest/browser`。如果你从未从该模块导入过，可以在 `tsconfig.json` 覆盖范围内的任何文件中添加一个 `reference` 注释：
+如果你正在使用 [TypeScript](/guide/browser/#typescript) 或希望在 `expect` 中获得正确的类型提示，请确保在某个地方引用了 `vitest/browser`。如果你从未从该模块导入过，可以在 `tsconfig.json` 覆盖范围内的任何文件中添加一个 `reference` 注释：
 
 ```ts
 /// <reference types="vitest/browser" />
@@ -1038,7 +1038,7 @@ function toMatchScreenshot(
 - GPU 驱动及硬件加速策略
 - 字体渲染与系统字体差异
 
-建议先阅读 [视觉回归测试指南](/api/browser/visual-regression-testing)，再落地实施。
+建议先阅读 [视觉回归测试指南](/guide/browser/visual-regression-testing)，再落地实施。
 :::
 
 ::: tip

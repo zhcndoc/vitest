@@ -125,7 +125,7 @@ expect(exampleObject.answer).toHaveBeenCalled()
 ```
 
 ::: danger Browser Mode Support
-这种方式在 [浏览器模式](/api/browser/) 下无法使用，因为浏览器会依赖原生的 ESM 机制来加载模块，
+这种方式在 [浏览器模式](/guide/browser/) 下无法使用，因为浏览器会依赖原生的 ESM 机制来加载模块，
 而模块的命名空间对象是密封的（sealed），无法被重新配置。
 
 为绕过这一限制，Vitest 在 `vi.mock('./example.js')` 中提供了 `{ spy: true }` 选项。

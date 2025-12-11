@@ -58,7 +58,7 @@ ndb npm run test
 
 ### 浏览器模式 {#browser-mode}
 
-要调试 [Vitest 浏览器模式](/api/browser/index.md)，请在 CLI 中传递 `--inspect` 或 `--inspect-brk`，或在 Vitest 配置中定义它：
+要调试 [Vitest 浏览器模式](/guide/browser/)，请在 CLI 中传递 `--inspect` 或 `--inspect-brk`，或在 Vitest 配置中定义它：
 
 ::: code-group
 ```bash [CLI]

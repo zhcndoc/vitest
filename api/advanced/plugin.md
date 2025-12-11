@@ -53,7 +53,7 @@ Vitest 通过  `Vite` namespace 重新导出所有仅 Vite 类型的导入，我
 ```
 :::
 
-与 [`reporter.onInit`](/api/advanced/reporters#oninit) 不同，此 hooks 在 Vitest 生命周期的早期运行，允许我们更改 `coverage` 和 `reporters` 等配置。更值得注意的变化是，如果我们的插件是在项目中定义而不是在全局配置中定义的，我们可以从 [工作区项目](/api/guide/projects) 操作全局配置。
+与 [`reporter.onInit`](/api/advanced/reporters#oninit) 不同，此 hooks 在 Vitest 生命周期的早期运行，允许我们更改 `coverage` 和 `reporters` 等配置。更值得注意的变化是，如果我们的插件是在项目中定义而不是在全局配置中定义的，我们可以从 [工作区项目](/guide/projects) 操作全局配置。
 
 ## Context
 

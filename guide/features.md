@@ -287,7 +287,7 @@ export default defineConfig(({ mode }) => ({
 
 ## 未处理的错误 {#unhandled-errors}
 
-默认情况下，Vitest 会捕获并报告所有的 [未处理的拒绝(Promise)](https://developer.mozilla.org/en-US/docs/Web/API/Window/unhandledrejection_event)、[未捕获的异常](https://nodejs.org/api/process.html#event-uncaughtexception)（在 Node.js 中）以及 [错误事件](https://developer.mozilla.org/en-US/docs/Web/API/Window/error_event)（在 [浏览器](/api/browser/) 中）。
+默认情况下，Vitest 会捕获并报告所有的 [未处理的拒绝(Promise)](https://developer.mozilla.org/en-US/docs/Web/API/Window/unhandledrejection_event)、[未捕获的异常](https://nodejs.org/api/process.html#event-uncaughtexception)（在 Node.js 中）以及 [错误事件](https://developer.mozilla.org/en-US/docs/Web/API/Window/error_event)（在 [浏览器](/guide/browser/) 中）。
 
 您可以通过手动捕获这些错误来禁用此行为。Vitest 会认为回调已由您处理，不会再报告该错误。
 

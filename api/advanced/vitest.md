@@ -206,7 +206,7 @@ function mergeReports(directory?: string): Promise<TestRunResult>
 
 请注意，`directory` 将始终相对于工作目录解析。
 
-如果设置了 `config.mergeReports`，则此方法由 [`startVitest`](/api/advanced/guide/tests) 自动调用。
+如果设置了 `config.mergeReports`，则此方法由 [`startVitest`](/guide/advanced/) 自动调用。
 
 ## collect
 
@@ -236,7 +236,7 @@ function start(filters?: string[]): Promise<TestRunResult>
 如果还调用了 [`vitest.init()`](#init)，则不应调用此方法。如果我们需要在 Vitest 初始化后运行测试，请使用 [`runTestSpecifications`](#runtestspecifications) 或 [`rerunTestSpecifications`](#reruntestspecifications)。
 :::
 
-如果未设置 `config.mergeReports` 和 `config.standalone`，则此方法由 [`startVitest`](/api/advanced/guide/tests) 自动调用。
+如果未设置 `config.mergeReports` 和 `config.standalone`，则此方法由 [`startVitest`](/guide/advanced/tests) 自动调用。
 
 ## init
 
@@ -676,5 +676,5 @@ export interface SourceModuleDiagnostic {
 Returns module's diagnostic. If [`testModule`](/api/advanced/test-module) is not provided, `selfTime` and `totalTime` will be aggregated across all tests that were running the last time. If the module was not transformed or executed, the diagnostic will be empty.
 
 ::: warning
-At the moment, the [browser](/api/browser/) modules are not supported.
+At the moment, the [browser](/guide/browser/) modules are not supported.
 :::

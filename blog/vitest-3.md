@@ -86,7 +86,7 @@ export default defineConfig({
 
 ## 多浏览器配置 {#multi-browser-configuration}
 
-Vitest 3 引入了一种更高效的方式来在不同的浏览器或设置中运行浏览器测试。你可以定义一个 [实例数组](/api/browser/multiple-setups) 来在不同的设置中运行浏览器测试，而不是使用工作区：
+Vitest 3 引入了一种更高效的方式来在不同的浏览器或设置中运行浏览器测试。你可以定义一个 [实例数组](/guide/browser/multiple-setups) 来在不同的设置中运行浏览器测试，而不是使用工作区：
 
 ```jsx
 import { defineConfig } from 'vitest/config'

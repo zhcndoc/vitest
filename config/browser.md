@@ -82,7 +82,7 @@ export default defineConfig({
 })
 ```
 
-有关更多示例，请参阅 ["多设置" 指南](/api/browser/multiple-setups)。
+有关更多示例，请参阅 ["多设置" 指南](/guide/browser/multiple-setups)。
 :::
 
 可用的 `browser` 选项列表：
@@ -583,7 +583,7 @@ The `reference` and `actual` images are decoded using the appropriate codec (cur
 - **Alpha channel**: always present. Images without transparency have alpha values set to `255` (fully opaque)
 
 ::: tip Performance Considerations
-The `createDiff` option indicates whether a diff image is needed. During [stable screenshot detection](/api/browser/visual-regression-testing#how-visual-tests-work), Vitest calls comparators with `createDiff: false` to avoid unnecessary work.
+The `createDiff` option indicates whether a diff image is needed. During [stable screenshot detection](/guide/browser/visual-regression-testing#how-visual-tests-work), Vitest calls comparators with `createDiff: false` to avoid unnecessary work.
 
 **Respect this flag to keep your tests fast**.
 :::

@@ -39,7 +39,7 @@ Vitest中的组件测试使用**浏览器模式**在真实浏览器环境中运�
 
 本指南专门介绍使用Vitest功能的**组件测试模式和最佳实践**。虽然许多示例使用浏览器模式（因为这是推荐的方法），但这里的重点是组件特定的测试策略，而不是浏览器配置细节。
 
-有关详细的浏览器设置、配置选项和高级浏览器功能，请参阅[浏览器模式文档](/api/browser/)。
+有关详细的浏览器设置、配置选项和高级浏览器功能，请参阅[浏览器模式文档](/guide/browser/)。
 
 ## 什么是好的组件测试 {#what-makes-a-good-component-test}
 
@@ -570,7 +570,7 @@ import { render } from 'vitest-browser-react' // [!code ++]
 
 ## 了解更多 {#learn-more}
 
-- [浏览器模式文档](/api/browser/)
+- [浏览器模式文档](/guide/browser/)
 - [断言API](/api/browser/assertions)
 - [交互性API](/api/browser/interactivity)
 - [示例仓库](https://github.com/vitest-tests/browser-examples)
