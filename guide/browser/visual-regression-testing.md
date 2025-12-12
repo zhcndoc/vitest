@@ -36,7 +36,7 @@ Vitest 原生支持可视化回归测试。它会自动截取 UI 组件或页面
 要获得稳定结果，应使用相同的测试环境。**推荐**采用云端服务（如 [Azure App Testing](https://azure.microsoft.com/en-us/products/playwright-testing)）或基于 [Docker containers](https://playwright.dev/docs/docker) 的环境。
 :::
 
-在 Vitest 中，可通过 [`toMatchScreenshot` assertion](/guide/browser/assertion-api.html#tomatchscreenshot) 断言运行可视化回归测试：
+在 Vitest 中，可通过 [`toMatchScreenshot` assertion](/api/browser/assertions.html#tomatchscreenshot) 断言运行可视化回归测试：
 
 ```ts
 import { expect, test } from 'vitest'
@@ -101,12 +101,31 @@ $ vitest --update
 
 提交前务必核对更新后的截图，确保改动符合预期。
 
+<!-- TODO: translation -->
+## How Visual Tests Work
+
+Visual regression tests need stable screenshots to compare against. But pages aren't instantly stable as images load, animations finish, fonts render, and layouts settle.
+
+Vitest handles this automatically through "Stable Screenshot Detection":
+
+1. Vitest takes a first screenshot (or uses the reference screenshot if available) as baseline
+1. It takes another screenshot and compares it with the baseline
+    - If the screenshots match, the page is stable and testing continues
+    - If they differ, Vitest uses the newest screenshot as the baseline and repeats
+1. This continues until stability is achieved or the timeout is reached
+
+This ensures that transient visual changes (like loading spinners or animations) don't cause false failures. If something never stops animating though, you'll hit the timeout, so consider [disabling animations during testing](#disable-animations).
+
+If a stable screenshot is captured after retries (one or more) and a reference screenshot exists, Vitest performs a final comparison with the reference using `createDiff: true`. This will generate a diff image if they don't match.
+
+During stability detection, Vitest calls comparators with `createDiff: false` since it only needs to know if screenshots match. This keeps the detection process fast.
+
 ## 配置可视化测试 {#configuring-visual-tests}
 
 ### 全局配置 {#global-configuration}
 
-可在 [Vitest 配置文件](/guide/browser/config#browser-expect-tomatchscreenshot) 中设定可视化回归测试的默认规则：
-
+可在 [Vitest 配置文件](/config/browser/expect#tomatchscreenshot) 中设定可视化回归测试的默认规则：
+<!-- TODO: translation -->
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
 
@@ -132,7 +151,7 @@ export default defineConfig({
 ### 单测试配置 {#per-test-configuration}
 
 若某个测试需要不同的比较标准，可在调用时覆盖全局设置：
-
+<!-- TODO: translation -->
 ```ts
 await expect(element).toMatchScreenshot('button-hover', {
   comparatorName: 'pixelmatch',
@@ -148,7 +167,7 @@ await expect(element).toMatchScreenshot('button-hover', {
 ### 聚焦测试目标元素 {#test-specific-elements}
 
 除非确实需要测试整个页面，否则应优先只对目标组件截图，这能显著减少因页面其他部分变化而造成的误报。
-
+<!-- TODO: translation -->
 ```ts
 // ❌ Captures entire page; prone to unrelated changes
 await expect(page).toMatchScreenshot()
@@ -614,7 +633,7 @@ export default defineConfig({
 ```
 
 该服务会提供两个关键环境变量：
-
+<!-- TODO: translation -->
 - `PLAYWRIGHT_SERVICE_URL`：指示 Playwright 连接的服务器地址
 - `PLAYWRIGHT_SERVICE_ACCESS_TOKEN`：你的身份验证令牌
 

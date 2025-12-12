@@ -98,7 +98,7 @@ it('render basic', async () => {
 
 ## 图像快照 {#visual-snapshots}
 
-对于 UI 组件和页面的视觉回归测试，Vitest 通过[浏览器模式](/guide/browser/)提供了内置支持，使用 [`toMatchScreenshot()`](/guide/browser/assertion-api#tomatchscreenshot-experimental) 断言：
+对于 UI 组件和页面的视觉回归测试，Vitest 通过[浏览器模式](/guide/browser/)提供了内置支持，使用 [`toMatchScreenshot()`](/api/browser/assertions#tomatchscreenshot-experimental) 断言：
 
 ```ts
 import { expect, test } from 'vitest'

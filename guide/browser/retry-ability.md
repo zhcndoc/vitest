@@ -1,5 +1,5 @@
 ---
-title: Retry-ability | Browser Mode
+title: Retry-ability | 浏览器模式
 ---
 
 # Retry-ability

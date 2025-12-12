@@ -33,7 +33,8 @@
     </ListItem>
     <ListItem>
       内置
-      <a target="_blank" href="https://github.com/Aslemammad/tinyspy" rel="noopener noreferrer">Tinyspy</a> 用于对象 Mock
+      <a target="_blank" href="https://github.com/Aslemammad/tinyspy" rel="noopener noreferrer">Tinyspy</a> 用于对象
+      Mock
     </ListItem>
     <ListItem>
       使用

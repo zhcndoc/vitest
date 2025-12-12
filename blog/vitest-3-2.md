@@ -10,7 +10,7 @@ head:
       content: website
   - - meta
     - property: og:title
-      content: Vitest 3.2 发布了
+      content: Vitest 3.2 发布了!
   - - meta
     - property: og:image
       content: https://cn.vitest.dev/og-vitest-3-2.png
@@ -110,7 +110,7 @@ export default defineConfig({
 
 ## 自定义浏览器定位器 API {#custom-browser-locators-api}
 
-当内置定位器无法满足应用需求时。与其降级使用 CSS 选择器，并牺牲 Vitest 定位器 API 提供的重试保护机制，不如推荐你使用 [`locators.extend` API](/guide/browser/locators#custom-locators) 扩展定位器。
+当内置定位器无法满足应用需求时。与其降级使用 CSS 选择器，并牺牲 Vitest 定位器 API 提供的重试保护机制，不如推荐你使用 [`locators.extend` API](/api/browser/locators#custom-locators) 扩展定位器。
 
 ```ts
 import { locators } from '@vitest/browser/context'
@@ -172,7 +172,7 @@ locators.extend({
 await page.getByRole('textbox').clickAndFill('Hello World')
 ```
 
-请参阅 [`locators.extend` API](/guide/browser/locators#custom-locators) 获取更多信息。
+请参阅 [`locators.extend` API](/api/browser/locators#custom-locators) 获取更多信息。
 
 ## `vi.spyOn` 和 `vi.fn` 中的显式资源管理 {#explicit-resource-management-in-vi-spyon-and-vi-fn}
 

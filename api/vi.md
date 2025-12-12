@@ -231,7 +231,7 @@ function mocked<T>(
 ): MaybeMockedDeep<T>
 function mocked<T>(
   object: T,
-  options?: { partial?: boolean, deep?: boolean }
+  options?: { partial?: boolean; deep?: boolean }
 ): MaybePartiallyMockedDeep<T>
 ```
 
@@ -854,7 +854,7 @@ await vi.advanceTimersToNextTimerAsync() // log: 3
 function advanceTimersToNextFrame(): Vitest
 ```
 
-与 [`vi.advanceTimersByTime`](https://vitest.dev/api/vi#vi-advancetimersbytime) 类似，但会将计时器推进当前使用 `requestAnimationFrame` 安排的回调执行所需的毫秒数。
+与 [`vi.advanceTimersByTime`](/api/vi#vi-advancetimersbytime) 类似，但会将计时器推进当前使用 `requestAnimationFrame` 安排的回调执行所需的毫秒数。
 
 ```ts
 let frameRendered = false
