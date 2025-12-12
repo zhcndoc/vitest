@@ -1,5 +1,5 @@
 ---
-title: Assertion API | Browser Mode
+title: Assertion API | 浏览器模式
 ---
 
 # Assertion API

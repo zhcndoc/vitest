@@ -1,5 +1,5 @@
 ---
-title: Why Browser Mode | Browser Mode
+title: Why Browser Mode | 浏览器模式
 outline: deep
 ---
 

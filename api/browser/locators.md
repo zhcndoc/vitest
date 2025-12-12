@@ -1,5 +1,5 @@
 ---
-title: Locators | Browser Mode
+title: Locators | 浏览器模式
 outline: [2, 3]
 ---
 

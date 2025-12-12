@@ -10,7 +10,7 @@ head:
       content: website
   - - meta
     - property: og:title
-      content: Announcing Vitest 4.0
+      content: Vitest 4.0 发布了！
   - - meta
     - property: og:image
       content: https://vitest.dev/og-vitest-4.jpg

@@ -1,5 +1,5 @@
 ---
-title: Context API | Browser Mode
+title: Context API | 浏览器模式
 ---
 
 # 上下文 {#context-api}

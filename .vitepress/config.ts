@@ -37,13 +37,13 @@ export default ({ mode }: { mode: string }) => {
     ],
     locales: {
       root: {
-        label: 'English',
-        lang: 'en-US',
-      },
-      zh: {
         label: '简体中文',
         lang: 'zh',
-        link: 'https://cn.vitest.dev/',
+      },
+      zh: {
+        label: 'English',
+        lang: 'en-US',
+        link: 'https://vitest.dev/',
       },
     },
     head: [
@@ -112,8 +112,8 @@ export default ({ mode }: { mode: string }) => {
       logo: '/logo.svg',
 
       editLink: {
-        pattern: 'https://github.com/vitest-dev/vitest/edit/main/docs/:path',
-        text: 'Suggest changes to this page',
+        pattern: 'https://github.com/vitest-dev/docs-cn/edit/dev/:path',
+        text: '在 GitHub 上编辑此页面',
       },
 
       search: {
@@ -147,11 +147,11 @@ export default ({ mode }: { mode: string }) => {
       },
 
       nav: [
-        { text: 'Guides', link: '/guide/', activeMatch: '^/guide/' },
+        { text: '指南', link: '/guide/', activeMatch: '^/guide/' },
         { text: 'API', link: '/api/', activeMatch: '^/api/' },
-        { text: 'Config', link: '/config/', activeMatch: '^/config/' },
+        { text: '配置', link: '/config/', activeMatch: '^/config/' },
         {
-          text: 'Blog',
+          text: '博客',
           link: '/blog',
         },
         {
@@ -164,15 +164,15 @@ export default ({ mode }: { mode: string }) => {
                   link: `https://github.com/vitest-dev/vitest/releases/tag/v${version}`,
                 },
                 {
-                  text: 'Releases Notes',
+                  text: '更新日志',
                   link: releases,
                 },
                 {
-                  text: 'Contributing',
+                  text: '贡献指南',
                   link: contributing,
                 },
                 {
-                  text: 'Team',
+                  text: '团队',
                   link: '/team',
                 },
               ],
@@ -180,7 +180,7 @@ export default ({ mode }: { mode: string }) => {
             {
               items: [
                 {
-                  text: 'unreleased',
+                  text: '未发布',
                   link: 'https://main.vitest.dev/',
                 },
                 {
@@ -197,7 +197,7 @@ export default ({ mode }: { mode: string }) => {
                 },
                 {
                   text: 'v3.x',
-                  link: 'https://v3.vitest.dev/',
+                  link: 'https://v3.cn.vitest.dev/',
                 },
               ],
             },
@@ -657,195 +657,195 @@ export default ({ mode }: { mode: string }) => {
         ],
         '/guide': [
           {
-            text: 'Introduction',
+            text: '简介',
             collapsed: false,
             items: [
               {
-                text: 'Why Vitest',
+                text: '为什么是 Vitest?',
                 link: '/guide/why',
               },
               {
-                text: 'Getting Started',
+                text: '快速起步',
                 link: '/guide/',
               },
               {
-                text: 'Features',
+                text: '主要功能',
                 link: '/guide/features',
               },
             ],
           },
           {
-            text: 'Browser Mode',
+            text: '浏览器模式',
             collapsed: false,
             items: [
               {
-                text: 'Why Browser Mode',
+                text: '什么是浏览器模式？',
                 link: '/guide/browser/why',
-                docFooterText: 'Why Browser Mode | Browser Mode',
+                docFooterText: '什么是浏览器模式？ | 浏览器模式',
               },
               {
-                text: 'Getting Started',
+                text: '快速起步',
                 link: '/guide/browser/',
-                docFooterText: 'Getting Started | Browser Mode',
+                docFooterText: '快速起步 | 浏览器模式',
               },
               {
-                text: 'Multiple Setups',
+                text: '多环境配置',
                 link: '/guide/browser/multiple-setups',
-                docFooterText: 'Multiple Setups | Browser Mode',
+                docFooterText: '多环境配置 | 浏览器模式',
               },
               {
-                text: 'Component Testing',
+                text: '组件测试',
                 link: '/guide/browser/component-testing',
-                docFooterText: 'Component Testing | Browser Mode',
+                docFooterText: '组件测试 | 浏览器模式',
               },
               {
-                text: 'Visual Regression Testing',
+                text: '可视化回归测试',
                 link: '/guide/browser/visual-regression-testing',
-                docFooterText: 'Visual Regression Testing | Browser Mode',
+                docFooterText: '可视化回归测试 | 浏览器模式',
               },
               {
-                text: 'Trace View',
+                text: '追踪查看器',
                 link: '/guide/browser/trace-view',
-                docFooterText: 'Trace View | Browser Mode',
+                docFooterText: '追踪查看器 | 浏览器模式',
               },
             ],
           },
           {
-            text: 'Guides',
+            text: '指南',
             collapsed: false,
             items: [
               {
-                text: 'CLI',
+                text: '命令行界面',
                 link: '/guide/cli',
               },
               {
-                text: 'Test Filtering',
+                text: '测试筛选',
                 link: '/guide/filtering',
               },
               {
-                text: 'Test Context',
+                text: '测试上下文',
                 link: '/guide/test-context',
               },
               {
-                text: 'Test Environment',
+                text: '测试环境',
                 link: '/guide/environment',
               },
               {
-                text: 'Snapshot',
+                text: '快照',
                 link: '/guide/snapshot',
               },
               {
-                text: 'Mocking',
+                text: '模拟对象',
                 link: '/guide/mocking',
                 collapsed: true,
                 items: [
                   {
-                    text: 'Mocking Dates',
+                    text: '模拟日期',
                     link: '/guide/mocking/dates',
                   },
                   {
-                    text: 'Mocking Functions',
+                    text: '模拟函数',
                     link: '/guide/mocking/functions',
                   },
                   {
-                    text: 'Mocking Globals',
+                    text: '模拟全局对象',
                     link: '/guide/mocking/globals',
                   },
                   {
-                    text: 'Mocking Modules',
+                    text: '模拟模块',
                     link: '/guide/mocking/modules',
                   },
                   {
-                    text: 'Mocking the File System',
+                    text: '模拟文件系统',
                     link: '/guide/mocking/file-system',
                   },
                   {
-                    text: 'Mocking Requests',
+                    text: '模拟请求',
                     link: '/guide/mocking/requests',
                   },
                   {
-                    text: 'Mocking Timers',
+                    text: '模拟计时器',
                     link: '/guide/mocking/timers',
                   },
                   {
-                    text: 'Mocking Classes',
+                    text: '模拟类',
                     link: '/guide/mocking/classes',
                   },
                 ],
               },
               {
-                text: 'Parallelism',
+                text: '并行测试',
                 link: '/guide/parallelism',
               },
               {
-                text: 'Test Projects',
+                text: '测试项目',
                 link: '/guide/projects',
               },
               {
-                text: 'Reporters',
+                text: '报告器',
                 link: '/guide/reporters',
               },
               {
-                text: 'Coverage',
+                text: '覆盖率',
                 link: '/guide/coverage',
               },
               {
-                text: 'Testing Types',
+                text: '类型测试',
                 link: '/guide/testing-types',
               },
               {
-                text: 'Vitest UI',
+                text: 'UI 模式',
                 link: '/guide/ui',
               },
               {
-                text: 'In-Source Testing',
+                text: '内联测试',
                 link: '/guide/in-source',
               },
               {
-                text: 'Test Annotations',
+                text: '测试注释',
                 link: '/guide/test-annotations',
               },
               {
-                text: 'Extending Matchers',
+                text: '扩展断言',
                 link: '/guide/extending-matchers',
               },
               {
-                text: 'IDE Integration',
+                text: 'IDE 插件',
                 link: '/guide/ide',
               },
               {
-                text: 'Debugging',
+                text: '调试',
                 link: '/guide/debugging',
               },
               {
-                text: 'Common Errors',
+                text: '常见错误',
                 link: '/guide/common-errors',
               },
               {
-                text: 'Migration Guide',
+                text: '迁移指南',
                 link: '/guide/migration',
                 collapsed: false,
                 items: [
                   {
-                    text: 'Migrating to Vitest 4.0',
+                    text: '迁移到 Vitest 4',
                     link: '/guide/migration#vitest-4',
                   },
                   {
-                    text: 'Migrating from Jest',
+                    text: '从 Jest 迁移',
                     link: '/guide/migration#jest',
                   },
                 ],
               },
               {
-                text: 'Performance',
+                text: '性能',
                 collapsed: false,
                 items: [
                   {
-                    text: 'Profiling Test Performance',
+                    text: '性能测试分析',
                     link: '/guide/profiling-test-performance',
                   },
                   {
-                    text: 'Improving Performance',
+                    text: '性能优化',
                     link: '/guide/improving-performance',
                   },
                 ],
@@ -857,23 +857,23 @@ export default ({ mode }: { mode: string }) => {
             ],
           },
           {
-            text: 'Advanced',
+            text: '高级指南',
             collapsed: true,
             items: [
               {
-                text: 'Getting Started',
+                text: '快速开始',
                 link: '/guide/advanced/',
               },
               {
-                text: 'Running Tests via API',
+                text: '运行测试 API',
                 link: '/guide/advanced/tests',
               },
               {
-                text: 'Extending Reporters',
+                text: '扩展报告器',
                 link: '/guide/advanced/reporters',
               },
               {
-                text: 'Custom Pool',
+                text: '自定义运行池',
                 link: '/guide/advanced/pool',
               },
             ],
@@ -885,7 +885,7 @@ export default ({ mode }: { mode: string }) => {
                 link: '/guide/recipes',
               },
               {
-                text: 'Comparisons',
+                text: '测试框架比较',
                 link: '/guide/comparisons',
               },
             ],
@@ -893,7 +893,7 @@ export default ({ mode }: { mode: string }) => {
         ],
         '/api': [
           {
-            text: 'Test API Reference',
+            text: 'Test API',
             link: '/api/',
           },
           {
@@ -921,14 +921,14 @@ export default ({ mode }: { mode: string }) => {
             link: '/api/assert-type',
           },
           {
-            text: 'Browser Mode',
+            text: '浏览器模式',
             items: [
               {
-                text: 'Context',
+                text: 'Context API',
                 link: '/api/browser/context',
               },
               {
-                text: 'Interactivity',
+                text: 'Interactivity API',
                 link: '/api/browser/interactivity',
               },
               {
@@ -936,17 +936,17 @@ export default ({ mode }: { mode: string }) => {
                 link: '/api/browser/locators',
               },
               {
-                text: 'Assertions',
+                text: 'Assertions API',
                 link: '/api/browser/assertions',
               },
               {
-                text: 'Commands',
+                text: 'Commands API',
                 link: '/api/browser/commands',
               },
             ],
           },
           {
-            text: 'Advanced',
+            text: '高级 API',
             collapsed: true,
             items: [
               {

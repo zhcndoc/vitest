@@ -10,7 +10,7 @@ head:
       content: website
   - - meta
     - property: og:title
-      content: Vitest 3.2 发布了
+      content: Vitest 3.2 发布了!
   - - meta
     - property: og:image
       content: https://cn.vitest.dev/og-vitest-3-2.png
