@@ -1,9 +1,9 @@
 # 追踪视图 {#trace-view}
 
-Vitest 浏览器模式支持生成 Playwright 的 [追踪文件](https://playwright.dev/docs/trace-viewer#viewing-remote-traces)。要启用追踪功能，需要在 `test.browser` 配置中设置 [`trace`](/guide/browser/config#browser-trace) 选项。
+Vitest 浏览器模式支持生成 Playwright 的 [追踪文件](https://playwright.dev/docs/trace-viewer#viewing-remote-traces)。要启用追踪功能，需要在 `test.browser` 配置中设置 [`trace`](/config/browser/trace) 选项。
 
 ::: warning
-生成追踪文件仅在使用 [Playwright provider](/guide/browser/playwright) 时可用。
+生成追踪文件仅在使用 [Playwright provider](/config/browser/playwright) 时可用。
 :::
 
 ::: code-group
@@ -69,6 +69,6 @@ npx playwright show-trace "path-to-trace-file"
 
 或者，你可以在浏览器中打开 https://trace.playwright.dev 并在那里上传追踪文件。
 
-## 限制 {#limitations}
+## 局限性 {#limitations}
 
 目前，Vitest 无法填充 Trace Viewer 中的 "Sources" 标签页。这意味着虽然你可以看到测试期间捕获的操作和截图，但无法直接在 Trace Viewer 中查看测试的源代码。你需要返回代码编辑器查看测试实现。

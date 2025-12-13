@@ -22,17 +22,34 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   test: {
     isolate: false,
-    // 你还可以仅对特定池禁用隔离
-    poolOptions: {
-      forks: {
-        isolate: false,
-      },
-    },
   },
 })
 ```
 
 :::
+
+You can also disable isolation for specific files only by using `projects`:
+
+```ts [vitest.config.js]
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    projects: [
+      {
+        name: 'Isolated',
+        isolate: true, // (default value)
+        exclude: ['**.non-isolated.test.ts'],
+      },
+      {
+        name: 'Non-isolated',
+        isolate: false,
+        include: ['**.non-isolated.test.ts'],
+      }
+    ]
+  },
+})
+```
 
 :::tip
 如果使用的是 `vmThreads` 池，则不能禁用隔离。请改用 `threads` 池来提高测试性能。
@@ -186,7 +203,7 @@ Vitest 将只在其主线程中运行一个 Vite 服务器。其余的线程用�
 为了减少主线程的 Vite 服务器的负载，可以使用测试分片。将负载平均到多个 Vite 服务器上。
 
 ```sh
-# 以32核心CPU拆分成4个分片为例。
+# 以 32 核心 CPU 拆分成 4 个分片为例。
 # 每个分片需要一个主线程，因此每个分片可以分配7个测试线程 (1+7) *4 =32
 # 使用 VITEST_MAX_THREADS 进行分配:
 VITEST_MAX_THREADS=7 vitest run --reporter=blob --shard=1/4 & \

@@ -427,8 +427,27 @@ test.each([
   expect(a + b).toBe(expected)
 })
 ```
+<!-- TODO: translation -->
+You can also access Object attributes with `.`, if you are using objects as arguments:
 
-如果使用对象作为参数，也可以使用 `.` 访问对象属性：
+  ```ts
+  test.each`
+  a               | b      | expected
+  ${{ val: 1 }}   | ${'b'} | ${'1b'}
+  ${{ val: 2 }}   | ${'b'} | ${'2b'}
+  ${{ val: 3 }}   | ${'b'} | ${'3b'}
+  `('add($a.val, $b) -> $expected', ({ a, b, expected }) => {
+    expect(a.val + b).toBe(expected)
+  })
+
+  // this will return
+  // ✓ add(1, b) -> 1b
+  // ✓ add(2, b) -> 2b
+  // ✓ add(3, b) -> 3b
+  ```
+
+* First row should be column names, separated by `|`;
+* One or more subsequent rows of data supplied as template literal expressions using `${value}` syntax.
 
 ```ts
 import { expect, test } from 'vitest'
@@ -1084,8 +1103,6 @@ describe.each([
 })
 ```
 
-从 Vitest 0.25.3 开始，还可以使用模板字符串表。
-
 - 第一行应为列名，用 `|` 分隔；
 - 使用 `${value}` 语法，以模板字面表达式的形式提供后面一行或多行数据。
 
@@ -1204,8 +1221,9 @@ afterEach(async () => {
 
 在这里，`afterEach` 可确保在每次测试运行后清除测试数据。
 
+<!-- TODO: translation -->
 ::: tip
-Vitest 在 1.3.0 新增 [`onTestFinished`](#ontestfinished)。你可以在测试执行过程中调用它，以便在测试运行结束后清理任何状态。
+You can also use [`onTestFinished`](#ontestfinished) during the test execution to cleanup any state after the test has finished running.
 :::
 
 ### beforeAll

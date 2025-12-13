@@ -5,7 +5,7 @@ outline: deep
 
 # 测试注释 {#test-annotations}
 
-Vitest 支持通过 [`context.annotate`](/guide/test-context#annotate) API 为测试添加自定义消息和文件注释。这些注释会附加到测试用例上，并通过 [`onTestAnnotate`](/advanced/api/reporters#ontestannotate) 钩子传递给报告器。
+Vitest 支持通过 [`context.annotate`](/guide/test-context#annotate) API 为测试添加自定义消息和文件注释。这些注释会附加到测试用例上，并通过 [`onTestAnnotate`](/api/advanced/reporters#ontestannotate) 钩子传递给报告器。
 
 ```ts
 test('hello world', async ({ annotate }) => {
