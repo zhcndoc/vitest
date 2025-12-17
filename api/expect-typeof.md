@@ -553,6 +553,7 @@ expectTypeOf(obj).toHaveProperty('b').toBeString()
 expectTypeOf(obj).toHaveProperty('a').not.toBeString()
 ```
 
+<!-- TODO: translation -->
 ## branded
 
 - **Type:** `ExpectTypeOf<BrandedType>`
