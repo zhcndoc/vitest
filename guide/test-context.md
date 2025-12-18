@@ -405,20 +405,16 @@ const test = baseTest.extend({
   ],
 })
 ```
+<!-- TODO: translation -->
 
-<<<<<<< HEAD
-`worker` 作用域将为每个工作线程运行一次夹具。运行的工作线程数量取决于各种因素。默认情况下，每个文件在单独的工作线程中运行，因此 `file` 和 `worker` 作用域的工作方式相同。
-=======
 ::: warning
 The built-in [`task`](#task) test context is **not available** in file-scoped or worker-scoped fixtures. These fixtures receive a different context object (file or worker context) that does not include test-specific properties like `task`.
 
 If you need access to file-level metadata like the file path, use `expect.getState().testPath` instead.
 :::
 
-The `worker` scope will run the fixture once per worker. The number of running workers depends on various factors. By default, every file runs in a separate worker, so `file` and `worker` scopes work the same way.
->>>>>>> 5493fcff8e077092a53aca95d367f08b822b2b95
+`worker` 作用域将为每个工作线程运行一次夹具。运行的工作线程数量取决于各种因素。默认情况下，每个文件在单独的工作线程中运行，因此 `file` 和 `worker` 作用域的工作方式相同。
 
-<!-- TODO: translation -->
 However, if you disable [isolation](/config/#isolate), then the number of workers is limited by the [`maxWorkers`](/config/#maxworkers) configuration.
 
 请注意，在 `vmThreads` 或 `vmForks` 中运行测试时，指定 `scope: 'worker'` 的工作方式与 `scope: 'file'` 相同。这个限制存在是因为每个测试文件都有自己的 VM 上下文，所以如果 Vitest 只初始化一次，一个上下文可能会泄漏到另一个上下文中，并创建许多引用不一致的问题（例如，同一个类的实例会引用不同的构造函数）。

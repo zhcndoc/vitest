@@ -2,7 +2,7 @@
 title: resolveSnapshotPath | Config
 outline: deep
 ---
-
+<!-- TODO: translation -->
 # resolveSnapshotPath <CRoot />
 
 - **Type**: `(testPath: string, snapExtension: string, context: { config: SerializedConfig }) => string`
