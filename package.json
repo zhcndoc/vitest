@@ -36,11 +36,16 @@
     "vitest": "^4.0.15",
     "eslint": "^9.38.0",
     "https-localhost": "^4.7.1",
+<<<<<<< HEAD
     "lint-staged": "^16.2.7",
     "simple-git-hooks": "^2.13.1",
     "tinyglobby": "^0.2.15",
     "unocss": "^66.5.9",
     "unplugin-vue-components": "^0.28.0",
+=======
+    "tinyglobby": "catalog:",
+    "unocss": "catalog:",
+>>>>>>> d2d9dd3404fbcb5e52d5c1b9877d4a3cf92377d9
     "vite": "^6.3.5",
     "vite-plugin-pwa": "^0.21.2",
     "vitepress": "2.0.0-alpha.15",

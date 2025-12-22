@@ -7,8 +7,13 @@ import { h } from 'vue'
 import CRoot from '../components/CRoot.vue'
 import Deprecated from '../components/Deprecated.vue'
 import Experimental from '../components/Experimental.vue'
+<<<<<<< HEAD
 import HomePage from '../components/HomePage.vue'
 import Version from '../components/Version.vue'
+=======
+import Advanced from '../components/Advanced.vue'
+import CourseLink from '../components/CourseLink.vue'
+>>>>>>> d2d9dd3404fbcb5e52d5c1b9877d4a3cf92377d9
 import '../style/main.css'
 import '../style/vars.css'
 import 'uno.css'
@@ -50,6 +55,8 @@ export default {
     app.component('CRoot', CRoot)
     app.component('Experimental', Experimental)
     app.component('Deprecated', Deprecated)
+    app.component('Advanced', Advanced)
+    app.component('CourseLink', CourseLink)
     app.use(TwoslashFloatingVue)
     enhanceAppWithTabs(app)
   },

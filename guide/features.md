@@ -5,6 +5,10 @@ outline: deep
 
 # 主要功能 {#features}
 
+<script setup>
+import FeaturesList from '../.vitepress/components/FeaturesList.vue'
+</script>
+
 <FeaturesList class="!gap-1 text-lg" />
 
 <CourseLink href="https://vueschool.io/lessons/your-first-test?friend=vueuse">通过视频了解如何编写你的第一个测试</CourseLink>

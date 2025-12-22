@@ -63,6 +63,11 @@ Vitest 默认采用 `v8` 作为覆盖率提供器。
 - ⚠️ 存在 V8 引擎自身的一些小限制，详见 [`ast-v8-to-istanbul` 的限制说明](https://github.com/AriPerkkio/ast-v8-to-istanbul?tab=readme-ov-file#limitations)
 - ❌ 不支持非 V8 环境，比如 Firefox、Bun；也不适用于不通过 profiler 提供 V8 覆盖率的环境，例如 Cloudflare Workers
 
+<script setup>
+import ArrowDown from '../.vitepress/components/ArrowDown.vue'
+import Box from '../.vitepress/components/Box.vue'
+</script>
+
 <div style="display: flex; flex-direction: column; align-items: center; padding: 2rem 0; max-width: 20rem;">
   <Box>Test file</Box>
   <ArrowDown />

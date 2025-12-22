@@ -120,9 +120,15 @@ export default defineConfig({
 ```
 
 ::: info
+<<<<<<< HEAD
 Vitest 默认分配端口号 `63315` 以避免与开发服务器冲突，允许我们同时并行运行两者。我们可以通过 [`browser.api`](/config/#browser-api) 选项来更改这个端口号。
 <!-- TODO: translation -->
 The CLI does not prints the Vite server URL automatically. You can press "b" to print the URL when running in watch mode.
+=======
+Vitest assigns port `63315` to avoid conflicts with the development server, allowing you to run both in parallel. You can change that with the [`browser.api`](/config/#browser-api) option.
+
+The CLI does not print the Vite server URL automatically. You can press "b" to print the URL when running in watch mode.
+>>>>>>> d2d9dd3404fbcb5e52d5c1b9877d4a3cf92377d9
 :::
 
 如果之前未使用过 Vite，请确保已安装框架插件并在配置中指定。有些框架可能需要额外配置才能运行，请查看其 Vite 相关文档以确定。
@@ -585,7 +591,11 @@ test('renders a message', async () => {
 
 使用 Vitest 浏览器时，需要注意的是像 `alert` 或 `confirm` 这样的线程阻塞对话框不能在本地使用。这是因为它们阻塞了网页，这意味着 Vitest 无法继续与该页面通信，导致执行挂起。
 
+<<<<<<< HEAD
 在这类情况下，Vitest 会为相关 API 提供带有默认返回值的内置 mock，从而避免用户不小心使用同步弹窗等 Web API 时导致程序卡死。不过，仍然强烈建议用户自行对这些 Web API 进行 mock，以获得更稳定、可控的测试体验。更多内容可参考 [模拟](/guide/mocking) 章节。
+=======
+In such situations, Vitest provides default mocks with default returned values for these APIs. This ensures that if the user accidentally uses synchronous popup web APIs, the execution would not hang. However, it's still recommended for the user to mock these web APIs for a better experience. Read more in [Mocking](/guide/mocking).
+>>>>>>> d2d9dd3404fbcb5e52d5c1b9877d4a3cf92377d9
 
 ### 对模块的导出内容进行监听（Spy） {#spying-on-module-exports}
 
