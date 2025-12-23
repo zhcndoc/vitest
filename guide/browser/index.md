@@ -122,7 +122,7 @@ export default defineConfig({
 ::: info
 Vitest 默认分配端口号 `63315` 以避免与开发服务器冲突，允许我们同时并行运行两者。我们可以通过 [`browser.api`](/config/#browser-api) 选项来更改这个端口号。
 <!-- TODO: translation -->
-The CLI does not prints the Vite server URL automatically. You can press "b" to print the URL when running in watch mode.
+The CLI does not print the Vite server URL automatically. You can press "b" to print the URL when running in watch mode.
 :::
 
 如果之前未使用过 Vite，请确保已安装框架插件并在配置中指定。有些框架可能需要额外配置才能运行，请查看其 Vite 相关文档以确定。
