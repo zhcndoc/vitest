@@ -133,13 +133,13 @@ vitest --inspect-brk=127.0.0.1:3000 --browser --no-file-parallelism
 Vitest 还支持在没有 IDE 的情况下调试测试。然而，这要求测试不是并行运行的。可以使用以下命令之一启动 Vitest。
 
 ```sh
-# To run in a single worker
+# 在单个线程内运行测试
 vitest --inspect-brk --no-file-parallelism
 
 # 使用浏览器模式运行测试
 vitest --inspect-brk --browser --no-file-parallelism
 ```
 
-Once Vitest starts it will stop execution and wait for you to open developer tools that can connect to [Node.js inspector](https://nodejs.org/en/docs/guides/debugging-getting-started/). You can use Chrome DevTools for this by opening `chrome://inspect` on browser.
+一旦 Vitest 启动，它将停止执行并等待你打开可以连接到 [Node.js inspector](https://nodejs.org/en/docs/guides/debugging-getting-started/) 的开发者工具。你可以通过在浏览器上打开 `chrome://inspect` 来使用 Chrome DevTools。
 
-In watch mode you can keep the debugger open during test re-runs by using the `--isolate false` options.
+在监视模式下，你可以使用 `--poolOptions.threads.isolate false` 选项在测试重新运行期间保持调试器打开。
