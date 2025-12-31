@@ -86,7 +86,7 @@ export default defineConfig({
 })
 ```
 
-Learn more: [Rolldown](https://rolldown.rs/)
+了解更多：[Rolldown](https://rolldown.rs/)
 :::
 
 ::: details Rollup
@@ -120,7 +120,7 @@ export default defineBuildConfig({
 })
 ```
 
-Learn more: [unbuild](https://github.com/unjs/unbuild)
+了解更多：[unbuild](https://github.com/unjs/unbuild)
 :::
 
 ::: details webpack
@@ -136,7 +136,7 @@ module.exports = {
 }
 ```
 
-Learn more: [webpack](https://webpack.js.org/plugins/define-plugin/)
+了解更多：[webpack](https://webpack.js.org/plugins/define-plugin/)
 :::
 
 ## TypeScript
