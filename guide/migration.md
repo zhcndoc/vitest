@@ -18,7 +18,11 @@ Vitest 的 V8 覆盖率提供器现在使用了更精准的结果映射逻辑，
 - 已移除 `coverage.experimentalAstAwareRemapping` 选项。此功能现已默认启用，并成为唯一的映射方式。
 - 现在 V8 提供器也支持 `coverage.ignoreClassMethods`。
 
+<<<<<<< HEAD
 ### 移除 `coverage.all` 和 `coverage.extensions` 选项 {#removed-options-coverage-all-and-coverage-extensions}
+=======
+### Removed Options `coverage.all` and `coverage.extensions`
+>>>>>>> b2d8febfad9f50536b8e8bd01ff1bc116497f6f5
 
 在之前的版本中，Vitest 会默认把所有未覆盖的文件包含到报告中。这是因为 `coverage.all` 默认为 `true`，`coverage.include` 默认为 `**`。这样设计是因为测试工具无法准确判断用户源码所在位置。
 
@@ -168,7 +172,11 @@ expect(AutoMockedClass.prototype.method).toHaveBeenCalledTimes(4)
 - 执行 `vi.fn(implementation).mockReset()` 后，`.getMockImplementation()` 现可正确返回原 mock 实现。
 - `vi.fn().mock.invocationCallOrder` 现以 `1` 起始，与 Jest 保持一致。
 
+<<<<<<< HEAD
 ### 带文件名过滤器的独立模式 {#standalone-mode-with-filename-filter}
+=======
+### Standalone Mode with Filename Filter
+>>>>>>> b2d8febfad9f50536b8e8bd01ff1bc116497f6f5
 
 为了提升用户体验，当 [`--standalone`](/guide/cli#standalone) 与文件名过滤器一起使用时，Vitest 现在会直接开始运行匹配到的文件。
 
@@ -313,7 +321,7 @@ New pool architecture allows Vitest to simplify many previously complex configur
 
 - `maxThreads` and `maxForks` are now `maxWorkers`.
 - Environment variables `VITEST_MAX_THREADS` and `VITEST_MAX_FORKS` are now `VITEST_MAX_WORKERS`.
-- `singleThread` and `singleFork` are now `maxWorkers: 1, isolate: false`. If your tests were relying on module reset between tests, you'll need to add [setupFile](/config/#setupfiles) that calls [`vi.resetModules()`](/api/vi.html#vi-resetmodules) in [`beforeAll` test hook](/api/#beforeall).
+- `singleThread` and `singleFork` are now `maxWorkers: 1, isolate: false`. If your tests were relying on module reset between tests, you'll need to add [setupFile](/config/setupfiles) that calls [`vi.resetModules()`](/api/vi.html#vi-resetmodules) in [`beforeAll` test hook](/api/#beforeall).
 - `poolOptions` is removed. All previous `poolOptions` are now top-level options. The `memoryLimit` of VM pools is renamed to `vmMemoryLimit`.
 - `threads.useAtomics` is removed. If you have a use case for this, feel free to open a new feature request.
 - Custom pool interface has been rewritten, see [Custom Pool](/guide/advanced/pool#custom-pool)
@@ -431,7 +439,11 @@ export default defineConfig({
 })
 ```
 
+<<<<<<< HEAD
 ### 使用自定义元素打印阴影根的快照 {#snapshots-using-custom-elements-print-the-shadow-root}
+=======
+### Snapshots using Custom Elements Print the Shadow Root
+>>>>>>> b2d8febfad9f50536b8e8bd01ff1bc116497f6f5
 
 在 Vitest 4.0 中，包含自定义元素的快照将打印阴影根内容。要恢复以前的行为，请将 [`printShadowRoot` option](/config/#snapshotformat) 设为`false`。
 
@@ -531,7 +543,11 @@ vi.mock('./some-path', () => ({ // [!code ++]
 
 ### 自动 Mock 行为 {#auto-mocking-behaviour}
 
+<<<<<<< HEAD
 与 Jest 不同，Vitest 仅在调用 `vi.mock()` 时加载 `<root>/__mocks__` 中的模块。如果你需要像 Jest 一样在每个测试中自动 mock，可以在 [`setupFiles`](/config/#setupfiles) 中调用 mock。
+=======
+Unlike Jest, mocked modules in `<root>/__mocks__` are not loaded unless `vi.mock()` is called. If you need them to be mocked in every test, like in Jest, you can mock them inside [`setupFiles`](/config/setupfiles).
+>>>>>>> b2d8febfad9f50536b8e8bd01ff1bc116497f6f5
 
 ### 导入被 Mock 包的原始模块 {#importing-the-original-of-a-mocked-package}
 

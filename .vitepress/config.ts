@@ -735,7 +735,15 @@ export default ({ mode }: { mode: string }) => {
                 link: '/guide/environment',
               },
               {
+<<<<<<< HEAD
                 text: '快照',
+=======
+                text: 'Test Run Lifecycle',
+                link: '/guide/lifecycle',
+              },
+              {
+                text: 'Snapshot',
+>>>>>>> b2d8febfad9f50536b8e8bd01ff1bc116497f6f5
                 link: '/guide/snapshot',
               },
               {
@@ -861,8 +869,13 @@ export default ({ mode }: { mode: string }) => {
             ],
           },
           {
+<<<<<<< HEAD
             text: '高级指南',
             collapsed: true,
+=======
+            text: 'Advanced',
+            collapsed: false,
+>>>>>>> b2d8febfad9f50536b8e8bd01ff1bc116497f6f5
             items: [
               {
                 text: '快速开始',
@@ -950,8 +963,13 @@ export default ({ mode }: { mode: string }) => {
             ],
           },
           {
+<<<<<<< HEAD
             text: '高级 API',
             collapsed: true,
+=======
+            text: 'Advanced',
+            collapsed: false,
+>>>>>>> b2d8febfad9f50536b8e8bd01ff1bc116497f6f5
             items: [
               {
                 text: 'Vitest',
