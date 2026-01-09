@@ -63,6 +63,12 @@ Vitest 默认采用 `v8` 作为覆盖率提供器。
 - ⚠️ 存在 V8 引擎自身的一些小限制，详见 [`ast-v8-to-istanbul` 的限制说明](https://github.com/AriPerkkio/ast-v8-to-istanbul?tab=readme-ov-file#limitations)
 - ❌ 不支持非 V8 环境，比如 Firefox、Bun；也不适用于不通过 profiler 提供 V8 覆盖率的环境，例如 Cloudflare Workers
 
+<!-- TODO: translation -->
+<script setup>
+import ArrowDown from '../.vitepress/components/ArrowDown.vue'
+import Box from '../.vitepress/components/Box.vue'
+</script>
+
 <div style="display: flex; flex-direction: column; align-items: center; padding: 2rem 0; max-width: 20rem;">
   <Box>Test file</Box>
   <ArrowDown />
@@ -464,7 +470,7 @@ export function ignored() { // [!code error]
 
 ## 覆盖率性能 {#coverage-performance}
 
-如果你的项目中代码覆盖率生成较慢，请参阅[性能测试分析 | 代码覆盖率](/guide/profiling-test-performance.html#code-coverage)。
+如果你的项目中代码覆盖率生成较慢，请参阅 [性能测试分析 | 代码覆盖率](/guide/profiling-test-performance.html#code-coverage)。
 
 ## UI 模式 {#vitest-ui}
 

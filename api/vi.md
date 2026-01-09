@@ -57,7 +57,7 @@ const result = calculator(1, 2)
 
 expect(result).toBe(3)
 expect(calculator).toHaveBeenCalledWith(1, 2)
-expect(calculator).toHaveReturned(3)
+expect(calculator).toHaveReturnedWith(3)
 ```
 
 Vitest 还在 `vi.mock` 和 `vi.doMock` 方法中支持 module promise 而非字符串，以获得更好的集成开发环境支持。当文件被移动时，路径会被更新，`importOriginal` 也会自动继承类型。使用此签名还将强制工厂返回类型与原始模块兼容（但每次导出都是可选的）。
@@ -320,7 +320,7 @@ import { increment } from './increment.js'
 // increment 已被模拟, 因为 vi.mock 已导入声明提升
 increment(1) === 100
 
-// 此处存在函数提升，工厂函数会在第1行 import 之前被调用
+// 此处存在函数提升，工厂函数会在第 1 行 import 之前被调用
 vi.mock('./increment.js', () => ({ increment: () => 100 }))
 
 // 所有调用均被模拟，并且 `increment` 始终返回100
