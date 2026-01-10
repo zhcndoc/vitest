@@ -120,10 +120,7 @@ describe('another suite', () => {
 })
 ```
 
-<<<<<<< HEAD
-## 未实现的测试套件和测试 {#unimplemented-suites-and-tests}
-=======
-Run Vitest with a file filter and a line number:
+运行 Vitest 时指定文件过滤器和行号：
 
 ```shell
 vitest ./test/example.test.ts:5
@@ -133,15 +130,14 @@ vitest ./test/example.test.ts:5
 import { assert, describe, it } from 'vitest'
 
 describe('suite', () => {
-  // Run only this test
+  // 仅运行此测试
   it('test', () => {
     assert.equal(Math.sqrt(4), 3)
   })
 })
 ```
 
-## Unimplemented Suites and Tests
->>>>>>> d219e88c3a6540307e358d3a8c9744db61786c5b
+## 未实现的测试套件和测试 {#unimplemented-suites-and-tests}
 
 使用 `.todo` 留存将要实施的测试套件和测试的待办事项
 
