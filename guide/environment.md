@@ -77,11 +77,7 @@ export default <Environment>{
 Vitest 要求环境对象显式提供 `viteEnvironment` 字段（若省略则取 Vitest 环境名）。该字段必须设为 `ssr`、`client` 或任意自定义 [Vite 环境](https://cn.vite.dev/guide/api-environment) 名称，用于指定处理测试文件的目标环境。
 :::
 
-<<<<<<< HEAD
-你还可以通过 `vitest/environments` 访问默认的 Vitest 环境：
-=======
-You also have access to default Vitest environments through `vitest/runtime` entry:
->>>>>>> e5566a4235c1789dd61a639b5c5fc821ea5f080f
+你还可以通过 `vitest/runtime` 访问默认的 Vitest 环境：
 
 ```ts
 import { builtinEnvironments, populateGlobal } from 'vitest/runtime'
