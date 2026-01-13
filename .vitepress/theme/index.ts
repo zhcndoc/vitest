@@ -1,6 +1,7 @@
 import type { Theme } from 'vitepress'
 import TwoslashFloatingVue from '@shikijs/vitepress-twoslash/client'
 import { inBrowser } from 'vitepress'
+<<<<<<< HEAD
 import { enhanceAppWithTabs } from 'vitepress-plugin-tabs/client'
 import DefaultTheme from 'vitepress/theme'
 import { h } from 'vue'
@@ -14,6 +15,17 @@ import Version from '../components/Version.vue'
 import '../style/main.css'
 import '../style/vars.css'
 import 'uno.css'
+=======
+import VitestTheme from '@voidzero-dev/vitepress-theme/src/vitest'
+import { enhanceAppWithTabs } from 'vitepress-plugin-tabs/client'
+import Version from '../components/Version.vue'
+import CRoot from '../components/CRoot.vue'
+import Deprecated from '../components/Deprecated.vue'
+import Experimental from '../components/Experimental.vue'
+import Advanced from '../components/Advanced.vue'
+import CourseLink from '../components/CourseLink.vue'
+import './styles.css'
+>>>>>>> bc4f029f46abb198f1cfffc663b28b434cc02122
 import '@shikijs/vitepress-twoslash/style.css'
 import 'virtual:group-icons.css'
 
@@ -22,12 +34,7 @@ if (inBrowser) {
 }
 
 export default {
-  extends: DefaultTheme,
-  Layout() {
-    return h(DefaultTheme.Layout, null, {
-      'home-features-after': () => h(HomePage),
-    })
-  },
+  extends: VitestTheme as unknown as any,
   enhanceApp({ app, router }) {
     router.onBeforeRouteChange = (to) => {
       if (typeof location === 'undefined') {

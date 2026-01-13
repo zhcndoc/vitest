@@ -1,8 +1,6 @@
 ---
-layout: home
-sidebar: false
-
 title: Vitest
+<<<<<<< HEAD
 titleTemplate: 下一代测试框架
 
 hero:
@@ -39,4 +37,15 @@ features:
   - title: ESM、TypeScript、JSX 支持
     icon: <span class="i-logos:typescript-icon"></span>
     details: 内置 ESM、TypeScript 和 JSX 支持，由 esbuild 提供动力。
+=======
+titleTemplate: Next Generation testing framework
+layout: home
+theme: dark
+>>>>>>> bc4f029f46abb198f1cfffc663b28b434cc02122
 ---
+
+<script setup>
+import Home from './.vitepress/theme/Home.vue'
+</script>
+
+<Home />
