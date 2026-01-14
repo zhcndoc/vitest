@@ -114,10 +114,13 @@ export default new MyReporter()
 ```
 :::
 
+<<<<<<< HEAD
 ::: tip 弃用通知
 此方法在 Vitest 3 中添加，取代了 `onPathsCollected` 和 `onSpecsCollected`，这两个方法现在已被弃用。
 :::
 
+=======
+>>>>>>> 64dad8266d7688c9b47bfd8eac25284c55fe0464
 ## onTestRunEnd
 
 ```ts
@@ -181,10 +184,13 @@ export default new MyReporter()
 ```
 :::
 
+<<<<<<< HEAD
 ::: tip 弃用通知
 此方法在 Vitest 3 中添加，取代了 `onFinished`，后者现在已被弃用。
 :::
 
+=======
+>>>>>>> 64dad8266d7688c9b47bfd8eac25284c55fe0464
 ## onCoverage
 
 ```ts
