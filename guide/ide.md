@@ -2,16 +2,12 @@
 title: IDE 插件 | 指南
 ---
 
-<<<<<<< HEAD
-# IDE 插件 {#ide-integrations}
-=======
 <script setup>
 import { useData } from 'vitepress'
 const { isDark } = useData()
 </script>
 
-# IDE Integrations
->>>>>>> beb9ed0234ced21cb7eff99345453a433cdc9664
+# IDE 插件 {#ide-integrations}
 
 ## VS Code <Badge>Official</Badge> {#vs-code}
 

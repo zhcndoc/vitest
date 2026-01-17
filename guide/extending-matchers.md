@@ -4,11 +4,7 @@ title: 扩展断言 | 指南
 
 # 扩展断言 {#extending-matchers}
 
-<<<<<<< HEAD
-由于 Vitest 兼容 Chai 和 Jest，所以可以根据个人喜好使用 `chai.use` API 或者 `expect.extend`。
-=======
-Since Vitest is compatible with both Chai and Jest, you can use either the [`chai.use`](https://www.chaijs.com/guide/plugins/) API or `expect.extend`, whichever you prefer.
->>>>>>> beb9ed0234ced21cb7eff99345453a433cdc9664
+由于 Vitest 兼容 Chai 和 Jest，所以可以根据个人喜好使用 [`chai.use`](https://www.chaijs.com/guide/plugins/) API 或者 `expect.extend`。
 
 本文将以 `expect.extend` 为例探讨扩展断言。如果你对 Chai 的 API 更感兴趣，可以查看 [他们的指南](https://www.chaijs.com/guide/plugins/)。
 
@@ -27,11 +23,7 @@ expect.extend({
 })
 ```
 
-<<<<<<< HEAD
-如果你使用 TypeScript，你可以使用以下代码在环境声明文件（例如：`vitest.d.ts`）中扩展默认的 `Assertion` 接口：
-=======
-If you are using TypeScript, you can extend default `Matchers` interface in an ambient declaration file (e.g: `vitest.d.ts`) with the code below:
->>>>>>> beb9ed0234ced21cb7eff99345453a433cdc9664
+如果你使用 TypeScript，你可以使用以下代码在环境声明文件（例如：`vitest.d.ts`）中扩展默认的 `Matchers` 接口：
 
 ```ts
 import 'vitest'
@@ -44,14 +36,11 @@ declare module 'vitest' {
 ```
 
 ::: tip
-<<<<<<< HEAD
-从 Vitest 3.2 版本开始，你可以通过扩展 `Matchers` 接口，让 `expect.extend` 、`expect().*` 和 `expect.*` 方法同时具备类型安全的断言支持。而在此之前，你需要为这几种用法分别单独定义接口。
-=======
-Importing `vitest` makes TypeScript think this is an ES module file, type declaration won't work without it.
->>>>>>> beb9ed0234ced21cb7eff99345453a433cdc9664
+导入 `vitest` 会使 TypeScript 将其视为 ES 模块文件，若无此声明则类型检查将无法生效。
 :::
 
 Extending the `Matchers` interface will add a type to `expect.extend`, `expect().*`, and `expect.*` methods at the same time.
+扩展 `Matchers` 接口，让 `expect.extend` 、`expect().*` 和 `expect.*` 方法同时具备类型安全的断言支持。
 
 ::: warning
 不要忘记在 `tsconfig.json` 中包含声明文件。
@@ -71,11 +60,7 @@ interface MatcherResult {
 ```
 
 ::: warning
-<<<<<<< HEAD
 如果你实现了一个异步匹配器，记得在测试里对它的结果使用 `await` （例如：`await expect('foo').toBeFoo()` ），否则可能不会按预期执行：
-=======
-If you create an asynchronous matcher, don't forget to `await` the result (`await expect('foo').toBeFoo()`) in the test itself:
->>>>>>> beb9ed0234ced21cb7eff99345453a433cdc9664
 
 ```ts
 expect.extend({
@@ -88,33 +73,30 @@ await expect().toBeAsyncAssertion()
 ```
 :::
 
-<<<<<<< HEAD
-断言的第一个参数是接收值(即 `expect(received)` 中的 received )，其余参数将直接传给断言。
-=======
-The first argument inside a matcher's function is the received value (the one inside `expect(received)`). The rest are arguments passed directly to the matcher. Since version 4.1, Vitest exposes several types that can be used by your custom matcher:
+断言的第一个参数是接收值(即 `expect(received)` 中的 received )，其余参数将直接传给断言。其余参数将直接传递给匹配器。自 4.1 起，Vitest 提供了多个类型供自定义匹配器使用：
 
 ```ts
 import type {
-  // the function type
+  // 函数类型
   Matcher,
-  // the return value
+  // 返回值
   MatcherResult,
-  // state available as `this`
+  // 通过 `this` 访问的状态
   MatcherState,
 } from 'vitest'
 import { expect } from 'vitest'
 
-// a simple matcher, using "function" to have access to "this"
+// 使用 "function" 关键字定义以访问 "this" 的简单匹配器
 const customMatcher: Matcher = function (received) {
   // ...
 }
 
-// a matcher with arguments
+// 带参数的匹配器
 const customMatcher: Matcher<MatcherState, [arg1: unknown, arg2: unknown]> = function (received, arg1, arg2) {
   // ...
 }
 
-// a matcher with custom annotations
+// 带自定义注解的匹配器
 function customMatcher(this: MatcherState, received: unknown, arg1: unknown, arg2: unknown): MatcherResult {
   // ...
   return {
@@ -125,17 +107,12 @@ function customMatcher(this: MatcherState, received: unknown, arg1: unknown, arg
 
 expect.extend({ customMatcher })
 ```
->>>>>>> beb9ed0234ced21cb7eff99345453a433cdc9664
 
 断言方法可以访问上下文 `this` 对象中的这些属性:
 
 ### `isNot`
 
-<<<<<<< HEAD
-如果断言是在 `not` 方法上调用的( `expect(received).not.toBeFoo()` )，则返回 true。
-=======
-Returns true, if matcher was called on `not` (`expect(received).not.toBeFoo()`). You do not need to respect it, Vitest will reverse the value of `pass` automatically.
->>>>>>> beb9ed0234ced21cb7eff99345453a433cdc9664
+如果断言是在 `not` 方法上调用的( `expect(received).not.toBeFoo()` )，则返回 true。你无需手动处理该逻辑，Vitest 会自动反转 `pass` 的值。
 
 ### `promise`
 
@@ -165,20 +142,16 @@ When using the global `expect` with concurrent tests, `this.task` is `undefined`
 
 ### `testPath`
 
-<<<<<<< HEAD
 当前正在执行的测试文件路径。
-=======
-File path to the current test.
 
 ### `environment`
 
-The name of the current [`environment`](/config/environment) (for example, `jsdom`).
+当前 [`environment`](/config/environment) 的名称（例如 `jsdom`）。
 
 ### `soft`
 
-Was assertion called as a [`soft`](/api/expect#soft) one. You don't need to respect it, Vitest will always catch the error.
+断言是否以 [`soft`](/api/expect#soft) 方式调用。您无需手动处理该逻辑，Vitest 始终会捕获错误。
 
 ::: tip
-These are not all of the available properties, only the most useful ones. The other state values are used by Vitest internally.
+以上并非全部可用属性，仅列出最实用的部分。其他状态值由 Vitest 内部使用。
 :::
->>>>>>> beb9ed0234ced21cb7eff99345453a433cdc9664
