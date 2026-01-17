@@ -1,19 +1,16 @@
 import type { Theme } from 'vitepress'
 import TwoslashFloatingVue from '@shikijs/vitepress-twoslash/client'
+import VitestTheme from '@voidzero-dev/vitepress-theme/src/vitest'
 import { inBrowser } from 'vitepress'
 import { enhanceAppWithTabs } from 'vitepress-plugin-tabs/client'
-import DefaultTheme from 'vitepress/theme'
 import { h } from 'vue'
 import Advanced from '../components/Advanced.vue'
 import CourseLink from '../components/CourseLink.vue'
 import CRoot from '../components/CRoot.vue'
 import Deprecated from '../components/Deprecated.vue'
 import Experimental from '../components/Experimental.vue'
-import HomePage from '../components/HomePage.vue'
 import Version from '../components/Version.vue'
-import '../style/main.css'
-import '../style/vars.css'
-import 'uno.css'
+import './styles.css'
 import '@shikijs/vitepress-twoslash/style.css'
 import 'virtual:group-icons.css'
 
@@ -22,17 +19,16 @@ if (inBrowser) {
 }
 
 export default {
-  extends: DefaultTheme,
+  extends: VitestTheme as unknown as any,
   Layout() {
-    return h(DefaultTheme.Layout, null, {
-      'home-features-after': () => h(HomePage),
-      'aside-outline-after': () => h('div', {
-        class: 'wwads-cn wwads-vertical',
-        'data-id': '354'
+    return h(VitestTheme.Layout, null, {
+      'aside-outline-before': () => h('div', {
+        'class': 'wwads-cn wwads-vertical mt-0! mb-4',
+        'data-id': '354',
       }),
-      'doc-footer-before': () => h('div', {
-        class: 'wwads-cn wwads-horizontal my-4 xl:!hidden',
-        'data-id': '354'
+      'doc-after': () => h('div', {
+        'class': 'wwads-cn wwads-horizontal mt-4',
+        'data-id': '354',
       }),
     })
   },

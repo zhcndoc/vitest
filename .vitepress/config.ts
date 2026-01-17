@@ -1,10 +1,12 @@
 import { transformerNotationWordHighlight } from '@shikijs/transformers'
 import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
 import { withPwa } from '@vite-pwa/vitepress'
+import { extendConfig } from '@voidzero-dev/vitepress-theme/config'
 import { defineConfig } from 'vitepress'
 import {
   groupIconMdPlugin,
   groupIconVitePlugin,
+  localIconLoader,
 } from 'vitepress-plugin-group-icons'
 import llmstxt from 'vitepress-plugin-llms'
 import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
@@ -27,8 +29,8 @@ import { pwa } from './scripts/pwa'
 import { transformHead } from './scripts/transformHead'
 
 export default ({ mode }: { mode: string }) => {
-  return withPwa(defineConfig({
-    lang: 'en-US',
+  return withPwa(extendConfig(defineConfig({
+    lang: 'zh-CN',
     title: vitestName,
     description: vitestDescription,
     srcExclude: [
@@ -47,9 +49,8 @@ export default ({ mode }: { mode: string }) => {
       },
     },
     head: [
-      ['meta', { name: 'theme-color', content: '#729b1a' }],
-      ['link', { rel: 'icon', href: '/favicon.ico', sizes: '48x48' }],
-      ['link', { rel: 'icon', href: '/logo.svg', sizes: 'any', type: 'image/svg+xml' }],
+      ['meta', { name: 'theme-color', content: '#22FF84' }],
+      ['link', { rel: 'icon', href: '/logo-without-border.svg', type: 'image/svg+xml' }],
       ['meta', { name: 'author', content: `${teamMembers.map(c => c.name).join(', ')} and ${vitestName} contributors` }],
       ['meta', { name: 'keywords', content: 'vitest, vite, test, coverage, snapshot, react, vue, preact, svelte, solid, lit, marko, ruby, cypress, puppeteer, jsdom, happy-dom, test-runner, jest, typescript, esm, tinyspy, node' }],
       ['meta', { property: 'og:title', content: vitestName }],
@@ -62,6 +63,7 @@ export default ({ mode }: { mode: string }) => {
       ['link', { rel: 'me', href: 'https://m.webtoo.ls/@vitest' }],
       ['link', { rel: 'mask-icon', href: '/logo.svg', color: '#ffffff' }],
       ['link', { rel: 'apple-touch-icon', href: '/apple-touch-icon.png', sizes: '180x180' }],
+      ['script', { async: '', src: 'https://www.zhcndoc.com/js/common.js' }],
     ],
     lastUpdated: true,
     vite: {
@@ -69,9 +71,9 @@ export default ({ mode }: { mode: string }) => {
         groupIconVitePlugin({
           customIcon: {
             'CLI': 'vscode-icons:file-type-shell',
-            'vitest.shims': 'vscode-icons:file-type-vitest',
-            'vitest.config': 'vscode-icons:file-type-vitest',
-            'vitest.workspace': 'vscode-icons:file-type-vitest',
+            'vitest.shims': localIconLoader(import.meta.url, '../public/logo-without-border.svg'),
+            'vitest.config': localIconLoader(import.meta.url, '../public/logo-without-border.svg'),
+            'vitest.workspace': localIconLoader(import.meta.url, '../public/logo-without-border.svg'),
             '.spec.ts': 'vscode-icons:file-type-testts',
             '.test.ts': 'vscode-icons:file-type-testts',
             '.spec.js': 'vscode-icons:file-type-testjs',
@@ -79,6 +81,7 @@ export default ({ mode }: { mode: string }) => {
             'marko': 'vscode-icons:file-type-marko',
             'qwik': 'logos:qwik-icon',
             'next': '',
+            'vite.config': localIconLoader(import.meta.url, '../public/logo-without-border-vite.svg'),
           },
         }) as any,
         llmstxt(),
@@ -109,6 +112,7 @@ export default ({ mode }: { mode: string }) => {
       languages: ['js', 'jsx', 'ts', 'tsx'],
     },
     themeConfig: {
+      variant: 'vitest',
       logo: '/logo.svg',
       lastUpdatedText: '最后更新',
       docFooter: {
@@ -122,21 +126,28 @@ export default ({ mode }: { mode: string }) => {
 
       search: {
         provider: 'local',
-        /* provider: 'algolia',
         options: {
-          appId: 'ZTF29HGJ69',
-          apiKey: '9c3ced6fed60d2670bb36ab7e8bed8bc',
-          indexName: 'vitest',
-          // searchParameters: {
-          //   facetFilters: ['tags:en'],
-          // },
-        }, */
+          translations: {
+            button: {
+              buttonText: '搜索',
+            },
+            modal: {
+              resetButtonTitle: '清除查询条件',
+              noResultsText: '无法找到相关结果',
+              footer: {
+                selectText: '选择',
+                navigateText: '切换',
+                closeText: '关闭',
+              },
+            },
+          },
+        },
       },
 
-      carbonAds: {
-        code: 'CW7DVKJE',
-        placement: 'vitestdev',
-      },
+      // carbonAds: {
+      //   code: 'CW7DVKJE',
+      //   placement: 'vitestdev',
+      // },
 
       socialLinks: [
         { icon: 'bluesky', link: bluesky },
@@ -146,8 +157,49 @@ export default ({ mode }: { mode: string }) => {
       ],
 
       footer: {
-        message: 'Released under the MIT License.',
-        copyright: 'Copyright © 2021-PRESENT VoidZero Inc. and Vitest contributors',
+        copyright: `© ${new Date().getFullYear()} VoidZero Inc. and Vitest contributors.`,
+        nav: [
+          {
+            title: 'Vitest',
+            items: [
+              { text: '指南', link: '/guide/' },
+              { text: 'API', link: '/api/' },
+              { text: '配置', link: '/config/' },
+            ],
+          },
+          {
+            title: '资源',
+            items: [
+              { text: '团队', link: '/team' },
+              { text: '博客', link: '/blog' },
+              { text: '更新日志', link: releases },
+            ],
+          },
+          {
+            title: '版本',
+            items: [
+              { text: '未发布', link: 'https://main.vitest.dev/' },
+              { text: 'Vitest v3 文档', link: 'https://v3.cn.vitest.dev/' },
+              { text: 'Vitest v2 文档', link: 'https://v2.vitest.dev/' },
+              { text: 'Vitest v1 文档', link: 'https://v1.vitest.dev/' },
+              { text: 'Vitest v0 文档', link: 'https://v0.vitest.dev/' },
+            ],
+          },
+          /* {
+            title: 'Legal',
+            items: [
+              { text: 'Terms & Conditions', link: 'https://voidzero.dev/terms' },
+              { text: 'Privacy Policy', link: 'https://voidzero.dev/privacy' },
+              { text: 'Cookie Policy', link: 'https://voidzero.dev/cookies' },
+            ],
+          }, */
+        ],
+        social: [
+          { icon: 'github', link: github },
+          { icon: 'discord', link: discord },
+          // { icon: 'mastodon', link: mastodon }, -- the link shows github
+          { icon: 'bluesky', link: bluesky },
+        ],
       },
 
       nav: [
@@ -188,20 +240,20 @@ export default ({ mode }: { mode: string }) => {
                   link: 'https://main.vitest.dev/',
                 },
                 {
-                  text: 'v0.x',
-                  link: 'https://v0.vitest.dev/',
-                },
-                {
-                  text: 'v1.x',
-                  link: 'https://v1.vitest.dev/',
+                  text: 'v3.x',
+                  link: 'https://v3.cn.vitest.dev/',
                 },
                 {
                   text: 'v2.x',
                   link: 'https://v2.vitest.dev/',
                 },
                 {
-                  text: 'v3.x',
-                  link: 'https://v3.cn.vitest.dev/',
+                  text: 'v1.x',
+                  link: 'https://v1.vitest.dev/',
+                },
+                {
+                  text: 'v0.x',
+                  link: 'https://v0.vitest.dev/',
                 },
               ],
             },
@@ -735,6 +787,10 @@ export default ({ mode }: { mode: string }) => {
                 link: '/guide/environment',
               },
               {
+                text: 'Test Run Lifecycle',
+                link: '/guide/lifecycle',
+              },
+              {
                 text: '快照',
                 link: '/guide/snapshot',
               },
@@ -837,6 +893,10 @@ export default ({ mode }: { mode: string }) => {
                   {
                     text: '从 Jest 迁移',
                     link: '/guide/migration#jest',
+                  },
+                  {
+                    text: 'Migrating from Mocha + Chai + Sinon',
+                    link: '/guide/migration#mocha-chai-sinon',
                   },
                 ],
               },
@@ -1090,5 +1150,5 @@ export default ({ mode }: { mode: string }) => {
     },
     pwa,
     transformHead,
-  }))
+  })))
 }
