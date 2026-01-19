@@ -6,7 +6,6 @@ import { defineConfig } from 'vitepress'
 import {
   groupIconMdPlugin,
   groupIconVitePlugin,
-  localIconLoader,
 } from 'vitepress-plugin-group-icons'
 import llmstxt from 'vitepress-plugin-llms'
 import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
@@ -72,17 +71,11 @@ export default ({ mode }: { mode: string }) => {
         groupIconVitePlugin({
           customIcon: {
             'CLI': 'vscode-icons:file-type-shell',
-            'vitest.shims': localIconLoader(import.meta.url, '../public/logo-without-border.svg'),
-            'vitest.config': localIconLoader(import.meta.url, '../public/logo-without-border.svg'),
-            'vitest.workspace': localIconLoader(import.meta.url, '../public/logo-without-border.svg'),
             '.spec.ts': 'vscode-icons:file-type-testts',
             '.test.ts': 'vscode-icons:file-type-testts',
             '.spec.js': 'vscode-icons:file-type-testjs',
             '.test.js': 'vscode-icons:file-type-testjs',
-            'marko': 'vscode-icons:file-type-marko',
-            'qwik': 'logos:qwik-icon',
             'next': '',
-            'vite.config': localIconLoader(import.meta.url, '../public/logo-without-border-vite.svg'),
           },
         }) as any,
         llmstxt(),
