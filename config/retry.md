@@ -5,6 +5,8 @@ outline: deep
 
 # retry
 
+<!-- TODO: translation -->
+
 Retry the test specific number of times if it fails.
 
 - **Type:** `number | { count?: number, delay?: number, condition?: RegExp }`

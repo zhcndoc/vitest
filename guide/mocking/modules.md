@@ -2,8 +2,7 @@
 
 ## 模块的定义 {#defining-a-module}
 
-<!-- TODO: translation -->
-Before mocking a "module", we should define what it is. In Vitest context, the "module" is a file that exports something. Using [plugins](https://vite.dev/guide/api-plugin.html), any file can be turned into a JavaScript module. The "module object" is a namespace object that holds dynamic references to exported identifiers. Simply put, it's an object with exported methods and properties. In this example, `example.js` is a module that exports `answer` and `variable`:
+在模拟一个 “模块” 之前，我们首先需要明确其定义。在 Vitest 上下文中，“模块” 是指导出某些内容的文件。通过 [Vite 插件](https://vite.dev/guide/api-plugin.html)，任何文件都可以被转为 JavaScript 模块。而 “模拟对象” 则是一个摸命名空间对象，它持有对导出标识符的动态引用。简而言之，模拟对象就是一个包含导出方法的和属性的普通对象。在以下示例中，`example.js` 就是一个导出 `answer` 和 `variable` 的模块：
 
 ```js [example.js]
 export function answer() {
@@ -40,13 +39,11 @@ import { answer, variable } from './example.js'
 要完全替换一个模块，可以使用 [`vi.mock` API](/api/vi#vi-mock)。
 在调用 `vi.mock` 时，通过传入一个工厂函数作为第二个参数，该函数返回的新模块将动态替代原模块。
 
-<!-- TODO: translation -->
 ```ts
 import { vi } from 'vitest'
 
-// The ./example.js module will be replaced with
-// the result of a factory function, and the
-// original ./example.js module will never be called
+// ./example.js 模块将被替换为工厂函数的执行结果
+// 而原始的 ./example.js 模块将永远不会被调用
 vi.mock(import('./example.js'), () => {
   return {
     answer() {
@@ -336,8 +333,7 @@ vi.mock('./answer.js')
 const __vitest_module_0__ = await __handle_mock__(
   () => import('./answer.js')
 )
-// to keep the live binding, we have to access
-// the export on the module namespace
+// 为了保持实时绑定，我们必须通过模块命名空间上的导出
 console.log(__vitest_module_0__.answer())
 ```
 :::
@@ -437,12 +433,12 @@ export function foobar() {
 import { vi } from 'vitest'
 import * as mod from './foobar.js'
 
-// this will only affect "foo" outside of the original module
+// 这只会影响原始模块外部的 "foo"
 vi.spyOn(mod, 'foo')
 vi.mock(import('./foobar.js'), async (importOriginal) => {
   return {
     ...await importOriginal(),
-    // this will only affect "foo" outside of the original module
+    // 这只会影响原始模块外部的 "foo"
     foo: () => 'mocked'
   }
 })
@@ -455,7 +451,7 @@ import * as mod from './foobar.js'
 
 vi.spyOn(mod, 'foo')
 
-// exported foo references mocked method
+// 导出的 foo 引用的是被 mock 的方法
 mod.foobar(mod.foo)
 ```
 

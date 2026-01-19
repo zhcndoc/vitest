@@ -2,7 +2,7 @@
 title: 交互性 API | 浏览器模式
 ---
 
-# 交互性 API
+# 交互性 API {#interactivity-api}
 
 Vitest 使用 [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/) 或 [webdriver](https://www.w3.org/TR/webdriver/) 实现了 [`@testing-library/user-event`](https://testing-library.com/docs/user-event/intro) 库的子集 API，而不是伪造事件，这使得浏览器行为更加可靠和一致，符合用户与页面交互的方式。
 
@@ -61,28 +61,27 @@ test('clicks on an element', async () => {
   // 或者你可以直接从定位器上访问
   await logo.click()
 
-  // With WebdriverIO, this uses either ElementClick (with no arguments) or
-  // actions (with arguments). Use an empty object to force the use of actions.
+  // 在 WebdriverIO 中，该方法根据参数情况使用 ElementClick（无参数时）或行为链（有参数时）
+  // 传入空对象可以强制使用行为链
   await logo.click({})
 })
 ```
-<!-- TODO: translation -->
-### Clicking with a modifier
 
-With either WebdriverIO or Playwright:
+### 使用修饰键点击 {#clicking-with-a-modifier}
+
+使用 WebdriverIO 或 Playwright：
 
 ```ts
 await userEvent.keyboard('{Shift>}')
-// By using an empty object as the option, this opts in to using a chain of actions
-// instead of an ElementClick in webdriver.
-// Firefox has a bug that makes this necessary.
-// Follow https://bugzilla.mozilla.org/show_bug.cgi?id=1456642 to know when this
-// will be fixed.
+// 通过传入空对象作为选项参数，该方法强制会选择使用行为链
+// 而非 webdriver 的原生 ElementClick
+// 由于 Firefox 存在一个 bug ，所以必须使用这种方式
+// 关注 https://bugzilla.mozilla.org/show_bug.cgi?id=1456642 以获取该问题的修复进展
 await userEvent.click(element, {})
 await userEvent.keyboard('{/Shift}')
 ```
 
-With Playwright:
+使用 Playwright：
 ```ts
 await userEvent.click(element, { modifiers: ['Shift'] })
 ```

@@ -1,9 +1,9 @@
-<!-- TODO: translation -->
 ---
-title: Browser Config Reference | Config
+title: 浏览器配置 | 配置
 outline: deep
 ---
-# 浏览器配置参考 {#browser-config-reference}
+
+# 浏览器配置 {#browser-config-reference}
 
 我们可以通过更新 [配置文件](/config/) 中的 `test.browser` 字段来更改浏览器配置。一个简单的配置文件示例如下：
 
@@ -27,7 +27,7 @@ export default defineConfig({
 })
 ```
 
-请参阅 ["配置参考"](/config/) 文章以获取不同的配置示例。
+请参阅 [“配置文件”](/config/) 文章以获取不同的配置示例。
 
 ::: warning
 此页面上列出的 _所有选项_ 都位于配置中的 `test` 属性内：
@@ -54,10 +54,9 @@ export default defineConfig({
 - **类型:** `BrowserConfig`
 - **默认值:** `[]`
 
-定义多个浏览器设置。每个配置必须至少有一个 `browser` 字段。
+定义多个浏览器实例。每个配置必须至少有一个 `browser` 字段。
 
-<!-- TODO: translation -->
-You can specify most of the [project options](/config/) (not marked with a <CRoot /> icon) and some of the `browser` options like `browser.testerHtmlPath`.
+你可以指定大多数 [项目选项](/config/)（未标记 <CRoot /> 图标的）和一些 `browser` 配置项，如 `browser.testerHtmlPath`。
 
 ::: warning
 每个浏览器配置都从根配置继承选项：
@@ -95,7 +94,7 @@ export default defineConfig({
 - [`browser.screenshotFailures`](#browser-screenshotfailures)
 - [`browser.provider`](#browser-provider)
 
-在底层，Vitest 将这些实例转换为共享单个 Vite 服务器的单独[测试项目](/api/advanced/test-project)，以获得更好的缓存性能。
+在底层，Vitest 将这些实例转换为共享单个 Vite 服务器的单独 [测试项目](/api/advanced/test-project)，以获得更好的缓存性能。
 
 ## browser.headless
 
@@ -105,17 +104,16 @@ export default defineConfig({
 
 在 `headless` 模式下运行浏览器。如果我们在 CI 中运行 Vitest，则默认启用此模式。
 
-<!-- TODO: translation -->
 ## browser.isolate <Deprecated />
 
 - **类型:** `boolean`
-- **Default:** the same as [`--isolate`](/config/#isolate)
+- **默认值:** 与 [`--isolate`](/config/#isolate) 相同
 - **CLI:** `--browser.isolate`, `--browser.isolate=false`
 
 在单独的 iframe 中运行每个测试。
 
-::: danger DEPRECATED
-This option is deprecated. Use [`isolate`](/config/#isolate) instead.
+::: danger 已弃用
+此选项已弃用。请改用 [`isolate`](/config/#isolate)。
 :::
 
 ## browser.testerHtmlPath
@@ -192,9 +190,9 @@ export default defineConfig({
 })
 ```
 
-### 自定义提供者 <Badge type="danger">高级</Badge>
+### 自定义提供者 <Badge type="danger">高级</Badge> {#custom-provider-advanced}
 
-::: danger ADVANCED API
+::: danger 高级 API
 自定义提供者 API 高度实验性，并且可能在补丁版本之间发生变化。如果你只需要在浏览器中运行测试，请改用 [`browser.instances`](#browser-instances) 选项。
 :::
 
@@ -491,16 +489,16 @@ resolveDiffPath: ({ arg, attachmentsDir, browserName, ext, root, testFileName })
 
 #### browser.expect.toMatchScreenshot.comparators
 
-- **Type:** `Record<string, Comparator>`
+- **类型:** `Record<string, Comparator>`
 
-Register custom screenshot comparison algorithms, like [SSIM](https://en.wikipedia.org/wiki/Structural_similarity_index_measure) or other perceptual similarity metrics.
+注册自定义屏幕截图比较算法，例如 [SSIM](https://en.wikipedia.org/wiki/Structural_similarity_index_measure) 或其他感知相似度指标。
 
-To create a custom comparator, you need to register it in your config. If using TypeScript, declare its options in the `ScreenshotComparatorRegistry` interface.
+要创建自定义比较器，你需要在配置文件中进行注册。如果使用 TypeScript，请将其选项声明在 `ScreenshotComparatorRegistry` 接口中。
 
 ```ts
 import { defineConfig } from 'vitest/config'
 
-// 1. Declare the comparator's options type
+// 1. 声明比较器的选项类型
 declare module 'vitest/browser' {
   interface ScreenshotComparatorRegistry {
     myCustomComparator: {
@@ -510,7 +508,7 @@ declare module 'vitest/browser' {
   }
 }
 
-// 2. Implement the comparator
+// 2. 实现比较器函数
 export default defineConfig({
   test: {
     browser: {
@@ -521,12 +519,12 @@ export default defineConfig({
               reference,
               actual,
               {
-                createDiff, // always provided by Vitest
+                createDiff, // 始终由 Vitest 提供
                 sensitivity = 0.01,
                 ignoreColors = false,
               }
             ) => {
-              // ...algorithm implementation
+              // 算法实现...
               return { pass, diff, message }
             },
           },
@@ -537,7 +535,7 @@ export default defineConfig({
 })
 ```
 
-Then use it in your tests:
+然后在测试中使用它：
 
 ```ts
 await expect(locator).toMatchScreenshot({
@@ -549,7 +547,7 @@ await expect(locator).toMatchScreenshot({
 })
 ```
 
-**Comparator Function Signature:**
+**比较器函数签名：**
 
 ```ts
 type Comparator<Options> = (
@@ -574,22 +572,22 @@ type Comparator<Options> = (
   message: string | null
 }
 ```
-<!-- TODO: translation -->
-The `reference` and `actual` images are decoded using the appropriate codec (currently only PNG). The `data` property is a flat `TypedArray` (`Buffer`, `Uint8Array`, or `Uint8ClampedArray`) containing pixel data in RGBA format:
 
-- **4 bytes per pixel**: red, green, blue, alpha (from `0` to `255` each)
-- **Row-major order**: pixels are stored left-to-right, top-to-bottom
-- **Total length**: `width × height × 4` bytes
-- **Alpha channel**: always present. Images without transparency have alpha values set to `255` (fully opaque)
+`reference` 和 `actual` 图像使用对应的编解码器（目前仅支持 PNG）进行解码。`data` 属性是一个扁平的 `TypedArray`（`Buffer`、`Uint8Array` 或 `Uint8ClampedArray`），包含 RGBA 格式的像素数据：
 
-::: tip Performance Considerations
-The `createDiff` option indicates whether a diff image is needed. During [stable screenshot detection](/guide/browser/visual-regression-testing#how-visual-tests-work), Vitest calls comparators with `createDiff: false` to avoid unnecessary work.
+- **每像素 4 字节**：红色、绿色、蓝色、alpha 通道（每个从 `0` 到 `255`）
+- **行主序**：像素按从左到右、从上到下的顺序存储
+- **总长度**：`width × height × 4` 字节
+- **Alpha 通道**：始终存在。没有透明度的图像的 alpha 值设置为 `255`（完全不透明）
 
-**Respect this flag to keep your tests fast**.
+::: tip 性能考虑
+`createDiff` 选项指示是否需要差异图像。在 [稳定截图检测](/guide/browser/visual-regression-testing#how-visual-tests-work) 期间，Vitest 会调用比较器并设置 `createDiff: false` 以避免不必要的工作。
+
+**尊重此标志以保持测试快速**。
 :::
 
-::: warning Handle Missing Options
-The `options` parameter in `toMatchScreenshot()` is optional, so users might not provide all your comparator options. Always make them optional with default values:
+::: warning 处理缺失选项
+`toMatchScreenshot()` 中的 `options` 参数是可选的，因此用户可能不会提供所有比较器选项。始终使用默认值使它们成为可选的：
 
 ```ts
 myCustomComparator: (
@@ -597,7 +595,7 @@ myCustomComparator: (
   actual,
   { createDiff, threshold = 0.1, maxDiff = 100 },
 ) => {
-  // ...comparison logic
+  // 比较逻辑...
 }
 ```
 :::
