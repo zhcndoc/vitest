@@ -105,6 +105,8 @@ await userEvent.click(page.getByRole('button'), {
 })
 ```
 
+<!-- TODO: translation -->
+
 ## `persistentContext` <Version>4.1.0</Version> {#persistentcontext}
 
 - **Type:** `boolean | string`

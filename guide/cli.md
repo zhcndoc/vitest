@@ -123,9 +123,8 @@ tests/test1.test.ts
 tests/test2.test.ts
 ```
 
-<<<<<<< HEAD
-## 选项 {#options}
-=======
+<!-- TODO: translation -->
+
 ## Shell Autocompletions
 
 Vitest provides shell autocompletions for commands, options, and option values powered by [`@bomb.sh/tab`](https://github.com/bombshell-dev/tab).
@@ -169,8 +168,7 @@ bun vitest <Tab>
 
 For package manager autocompletions, you should install [tab's package manager completions](https://github.com/bombshell-dev/tab?tab=readme-ov-file#package-manager-completions) separately.
 
-## Options
->>>>>>> 859948151f5ba2b073798691c36e1e4457e6cc66
+## 选项 {#options}
 
 ::: tip
 Vitest 支持 CLI 参数的 both camel case 和 kebab case 。例如，`--passWithNoTests` 和 `--pass-with-no-tests` 都有效（`--no-color` 和 `--inspect-brk` 是例外）。
