@@ -91,7 +91,7 @@ export default defineConfig({
 })
 ```
 
-请注意，即使插件选择退出模块缓存机制，你仍然可以定义缓存键生成器。
+请注意，即使插件选择禁用缓存模块，你仍然可以定义缓存键生成器。
 
 ## experimental.fsModuleCachePath <Version type="experimental">4.0.11</Version> {#experimental-fsmodulecachepath}
 
@@ -196,3 +196,146 @@ export default defineConfig({
 ::: info
 [Vitest UI](/guide/ui#import-breakdown) 会在至少一个文件加载时间超过 500 毫秒时自动显示导入耗时分析。你可手动将此选项设为 `false` 来禁用该功能。
 :::
+
+<!-- TODO: translation -->
+
+## experimental.viteModuleRunner <Version type="experimental">4.1.0</Version> {#experimental-vitemodulerunner}
+
+- **Type:** `boolean`
+- **Default:** `true`
+
+Controls whether Vitest uses Vite's [module runner](https://vite.dev/guide/api-environment-runtimes#modulerunner) to run the code or fallback to the native `import`.
+
+If this option is defined in the root config, all [projects](/guide/projects) will inherit it automatically.
+
+Consider disabling the module runner if you are running tests in the same environment as your code (server backend or simple scripts, for example). However, we still recommend running `jsdom`/`happy-dom` tests with Vite's module runner or in [the browser](/guide/browser/) since it doesn't require any additional configuration.
+
+Disabling this flag will disable _all_ file transforms:
+
+- test files and your source code are not processed by Vite
+- your global setup files are not processed
+- your custom runner/pool/environment files are not processed
+- your config file is still processed by Vite (this happens before Vitest knows the `viteModuleRunner` flag)
+
+::: warning
+At the moment, Vitest still requires Vite for certain functionality like the module graph or watch mode.
+
+Also note that this option only works with `forks` or `threads` [pools](/config/pool).
+:::
+
+### Module Runner
+
+By default, Vitest runs tests in a very permissive module runner sandbox powered by Vite's [Environment API](https://vite.dev/guide/api-environment.html#environment-api). Every file is categorized as either an "inline" module or an "external" module.
+
+Module runner runs all "inlined" modules. It provides `import.meta.env`, `require`, `__dirname`, `__filename`, static `import`, and has its own module resolution mechanism. This makes it very easy to run code when you don't want to configure the environment and just need to test that the bare JavaScript logic you wrote works as intended.
+
+All "external" modules run in native mode, meaning they are executed outside of the module runner sandbox. If you are running tests in Node.js, these files are imported with the native `import` keyword and processed by Node.js directly.
+
+While running JSDOM/happy-dom tests in a permissive fake environment might be justified, running Node.js tests in a non-Node.js environment can hide and silence potential errors you may encounter in production, especially if your code doesn't require any additional transformations provided by Vite plugins.
+
+### Known Limitations
+
+Some Vitest features rely on files being transformed. Vitest uses synchronous [Node.js Loaders API](https://nodejs.org/api/module.html#customization-hooks) to transform test files and setup files to support these features:
+
+- [`import.meta.vitest`](/guide/in-source)
+- [`vi.mock`](/api/vi#vi-mock)
+- [`vi.hoisted`](/api/vi#vi-hoisted)
+
+::: warning
+This means that Vitest requires at least Node 22.15 for those features to work. At the moment, they also do not work in Deno or Bun.
+
+Vitest will only detect `vi.mock` and `vi.hoisted` inside of test files, they will not be hoisted inside imported modules.
+:::
+
+This could affect performance because Vitest needs to read the file and process it. If you do not use these features, you can disable the transforms by setting `experimental.nodeLoader` to `false`. Vitest only reads test files and setup files while looking for `vi.mock` or `vi.hoisted`. Using these in other files won't hoist them to the top of the file and can lead to unexpected behavior.
+
+Some features will not work due to the nature of `viteModuleRunner`, including:
+
+- no `import.meta.env`: `import.meta.env` is a Vite feature, use `process.env` instead
+- no `plugins`: plugins are not applied because there is no transformation phase, use [customization hooks](https://nodejs.org/api/module.html#customization-hooks) via [`execArgv`](/config/execargv) instead
+- no `alias`: aliases are not applied because there is no transformation phase
+- `istanbul` coverage provider doesn't work because there is no transformation phase, use `v8` instead
+
+::: warning Coverage Support
+At the momemnt Vitest supports coverage via `v8` provider as long as files can be transformed into JavaScript. To transform TypeScript, Vitest uses [`module.stripTypeScriptTypes`](https://nodejs.org/api/module.html#modulestriptypescripttypescode-options) which is available in Node.js since v22.13. If you are using a custom [module loader](https://nodejs.org/api/module.html#customization-hooks), Vitest is not able to reuse it to transform files for analysis.
+:::
+
+With regards to mocking, it is also important to point out that ES modules do not support property override. This means that code like this won't work anymore:
+
+```ts
+import * as fs from 'node:fs'
+import { vi } from 'vitest'
+
+vi.spyOn(fs, 'readFileSync').mockImplementation(() => '42') // ❌
+```
+
+However, Vitest supports auto-spying on modules without overriding their implementation. When `vi.mock` is called with a `spy: true` argument, the module is mocked in a way that preserves original implementations, but all exported functions are wrapped in a `vi.fn()` spy:
+
+```ts
+import * as fs from 'node:fs'
+import { vi } from 'vitest'
+
+vi.mock('node:fs', { spy: true })
+
+fs.readFileSync.mockImplementation(() => '42') // ✅
+```
+
+Factory mocking is implemented using a top-level await. This means that mocked modules cannot be loaded with `require()` in your source code:
+
+```ts
+vi.mock('node:fs', async (importOriginal) => {
+  return {
+    ...await importOriginal(),
+    readFileSync: vi.fn(),
+  }
+})
+
+const fs = require('node:fs') // throws an error
+```
+
+This limitation exists because factories can be asynchronous. This should not be a problem because Vitest doesn't mock builtin modules inside `node_modules`, which is simillar to how Vitest works by default.
+
+### TypeScript
+
+If you are using Node.js 22.18/23.6 or higher, TypeScript will be [transformed natively](https://nodejs.org/en/learn/typescript/run-natively) by Node.js.
+
+::: warning TypeScript with Node.js 22.6-22.18
+If you are using Node.js version between 22.6 and 22.18, you can also enable native TypeScript support via `--experimental-strip-types` flag:
+
+```shell
+NODE_OPTIONS="--experimental-strip-types" vitest
+```
+
+If you are using TypeScript and Node.js version lower than 22.6, then you will need to either:
+
+- build your test files and source code and run those files directly
+- import a [custom loader](https://nodejs.org/api/module.html#customization-hooks) via `execArgv` flag
+
+```ts
+import { defineConfig } from 'vitest/config'
+
+const tsxApi = import.meta.resolve('tsx/esm/api')
+
+export default defineConfig({
+  test: {
+    execArgv: [
+      `--import=data:text/javascript,import * as tsx from "${tsxApi}";tsx.register()`,
+    ],
+    experimental: {
+      viteModuleRunner: false,
+    },
+  },
+})
+```
+
+If you are running tests in Deno, TypeScript files are processed by the runtime without any additional configurations.
+:::
+
+## experimental.nodeLoader <Version type="experimental">4.1.0</Version> {#experimental-nodeloader}
+
+- **Type:** `boolean`
+- **Default:** `true`
+
+If module runner is disabled, Vitest uses a native [Node.js module loader](https://nodejs.org/api/module.html#customization-hooks) to transform files to support `import.meta.vitest`, `vi.mock` and `vi.hoisted`.
+
+If you don't use these features, you can disable this to improve performance.

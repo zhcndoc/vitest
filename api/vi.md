@@ -34,6 +34,8 @@ function mock<T>(
 
 用另一个模块替换提供的 `path` 中的所有导入模块。我们可以在路径内使用配置的 Vite 别名。对 `vi.mock` 的调用是悬挂式的，因此在何处调用并不重要。它总是在所有导入之前执行。如果需要在其作用域之外引用某些变量，可以在 [`vi.hoisted`](/api/vi#vi-hoisted)中定义它们，并在 `vi.mock` 中引用它们。
 
+建议仅在测试文件中使用 `vi.mock` 或 `vi.hoisted`。若禁用 Vite 的 [module runner](/config/experimental#experimental-vitemodulerunner)，这些模拟声明将不会被提升。此设计作为性能优化手段，可避免预加载不必要的文件。
+
 ::: warning
 `vi.mock` 仅对使用 `import` 关键字导入的模块有效。它对 `require` 无效。
 
