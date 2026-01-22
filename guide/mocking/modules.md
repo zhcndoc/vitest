@@ -346,18 +346,9 @@ Vitest 所使用的模块模拟插件，
 
 ### JSDOM, happy-dom, Node {#jsdom-happy-dom-node}
 
-当你在模拟（ emulated ）环境中运行测试时， Vitest 会创建一个可执行 Vite 转译代码的 [module runner](https://vite.dev/guide/api-environment-runtimes.html#modulerunner)。
+当你在模拟（emulated）环境中运行测试时，Vitest 会创建一个能够解析 Vite 代码的 [Moudule Runner](https://cn.vite.dev/guide/api-environment-runtimes.html#modulerunner)。该运行器的设计使得 Vitest 可以介入模块评估过程，并在已注册模拟对象时进行替换。这意味着 Vitest 在类 ESM 环境中执行你的代码，但并未直接使用原生 ESM 机制。这种设计允许测试运行器绕过 ES 模块的不可变性限制，使得开发者能够对类 ES 模块的对象调用 `vi.spyOn`。
 
-<<<<<<< HEAD
-这个 module runner 的设计，使得 Vitest 能够在模块执行阶段进行拦截，并在已注册 mock 的情况下用它替换原模块。
-=======
-If module runner is [disabled](/config/experimental#experimental-vitemodulerunner) and [node loader](/config/experimental#experimental-nodeloader) is not explicitly disabled, Vitest will [register a loader hook](https://nodejs.org/api/module.html#customization-hooks) that transforms original modules into mocked ones. In this mode users cannot call `vi.spyOn` on an ES Module because Vitest uses a native loader mechanism with all its guard rails. In addition to that, Vitest also has to inject a `mock` query into every mocked module which is visible in the stack trace.
-
-### Browser Mode
->>>>>>> 4f6a98c33c36fc256f60d75449728eacfa38394c
-
-换句话说， Vitest 会在一个“ 类 ESM ”环境中运行测试代码，但并不直接依赖原生 ESM 机制。
-这使得测试运行器能够打破 ES Modules 的不可变性规则，让你可以在看似 ES Module 的模块上调用 `vi.spyOn`。
+如果 [Moudule Runner](/config/experimental#experimental-vitemodulerunner) 被禁用且未显式禁用 [Node loader](/config/experimental#experimental-nodeloader)，Vitest 将 [注册加载器钩子](https://nodejs.org/api/module.html#customization-hooks) 将原始模块转换为模拟模块。在此模式下，用户无法对 ES 模块调用 `vi.spyOn`，因为 Vitest 使用了带有所有保护机制的原生加载器方案。此外，Vitest 还必须在每个模拟模块中注入可见于调用堆栈的 `mock` 查询参数。
 
 ### 浏览器模式 {#browser-mode}
 

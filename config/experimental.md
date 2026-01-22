@@ -7,13 +7,8 @@ outline: deep
 
 ## experimental.fsModuleCache <Version type="experimental">4.0.11</Version> {#experimental-fsmodulecache}
 
-<<<<<<< HEAD
 ::: tip 功能反馈
 请将关于此功能反馈提交至 [GitHub Discussion](https://github.com/vitest-dev/vitest/discussions/9221)。
-=======
-::: tip FEEDBACK
-Please leave feedback regarding this feature in a [GitHub Discussion](https://github.com/vitest-dev/vitest/discussions/9221).
->>>>>>> 4f6a98c33c36fc256f60d75449728eacfa38394c
 :::
 
 - **类型:** `boolean`
@@ -35,15 +30,9 @@ DEBUG=vitest:cache:fs vitest --experimental.fsModuleCache
 
 ### 已知问题 {#known-issues}
 
-<<<<<<< HEAD
 Vitest 基于文件内容、文件 id、vite 的环境配置及覆盖率状态生成持久性文件哈希值。虽然 Vitest 会尽可能利用所有可获取的配置信息，但目前仍存在局限性。由于缺乏标准接口支持，当前无法追踪插件选项的变更情况。
 
 如果你的插件依赖文件内容或公开配置之外的因素（例如读取其他文件或目录），则可能出现缓存失效的情况。要解决这个问题，你可以定义一个 [缓存键生成器](/api/advanced/plugin#definecachekeygenerator) 来指定动态选项，或选择对该模块禁用缓存：
-=======
-Vitest creates a persistent file hash based on file content, its id, Vite's environment configuration and coverage status. Vitest tries to use as much information as it has about the configuration, but it is still incomplete. At the moment, it is not possible to track your plugin options because there is no standard interface for it.
-
-If you have a plugin that relies on things outside the file content or the public configuration (like reading another file or a folder), it's possible that the cache will get stale. To work around that, you can define a [cache key generator](/api/advanced/plugin#definecachekeygenerator) to specify a dynamic option or to opt out of caching for that module:
->>>>>>> 4f6a98c33c36fc256f60d75449728eacfa38394c
 
 ```js [vitest.config.js]
 import { defineConfig } from 'vitest/config'
@@ -76,13 +65,9 @@ export default defineConfig({
 ```
 如果你是插件作者，当你的插件可以通过不同配置选项影响转换结果时，建议在插件中定义 [缓存键生成器](/api/advanced/plugin#definecachekeygenerator)。
 
-<<<<<<< HEAD
-另一方面，如果你的插件不应该影响缓存键，你可以通过将 `api.vitest.experimental.ignoreFsModuleCache` 设置为 `true` 来退出缓存机制：
-=======
 If you are a plugin author, consider defining a [cache key generator](/api/advanced/plugin#definecachekeygenerator) in your plugin if it can be registered with different options that affect the transform result.
 
 On the other hand, if your plugin should not affect the cache key, you can opt out by setting `api.vitest.experimental.ignoreFsModuleCache` to `true`:
->>>>>>> 4f6a98c33c36fc256f60d75449728eacfa38394c
 
 ```js [vitest.config.js]
 import { defineConfig } from 'vitest/config'
@@ -108,11 +93,7 @@ export default defineConfig({
 })
 ```
 
-<<<<<<< HEAD
-请注意，即使插件选择退出模块缓存机制，你仍然可以定义缓存键生成器。
-=======
-Note that you can still define the cache key generator even if the plugin opts out of module caching.
->>>>>>> 4f6a98c33c36fc256f60d75449728eacfa38394c
+请注意，即使插件选择禁用缓存模块，你仍然可以定义缓存键生成器。
 
 ## experimental.fsModuleCachePath <Version type="experimental">4.0.11</Version> {#experimental-fsmodulecachepath}
 
@@ -127,13 +108,8 @@ Note that you can still define the cache key generator even if the plugin opts o
 
 ## experimental.openTelemetry <Version type="experimental">4.0.11</Version> {#experimental-opentelemetry}
 
-<<<<<<< HEAD
 ::: tip 功能反馈
 请将关于此功能反馈提交至 [GitHub Discussion](https://github.com/vitest-dev/vitest/discussions/9222)。
-=======
-::: tip FEEDBACK
-Please leave feedback regarding this feature in a [GitHub Discussion](https://github.com/vitest-dev/vitest/discussions/9222).
->>>>>>> 4f6a98c33c36fc256f60d75449728eacfa38394c
 :::
 
 - **类型:**
@@ -203,13 +179,8 @@ export default defineConfig({
 
 ## experimental.printImportBreakdown <Version type="experimental">4.0.15</Version> {#experimental-printimportbreakdown}
 
-<<<<<<< HEAD
-::: tip 功能反馈
-请将关于此功能反馈提交至 [GitHub Discussion](https://github.com/vitest-dev/vitest/discussions/9224)。
-=======
 ::: tip FEEDBACK
 Please leave feedback regarding this feature in a [GitHub Discussion](https://github.com/vitest-dev/vitest/discussions/9224).
->>>>>>> 4f6a98c33c36fc256f60d75449728eacfa38394c
 :::
 
 - **类型:** `boolean`
@@ -227,6 +198,8 @@ Please leave feedback regarding this feature in a [GitHub Discussion](https://gi
 ::: info
 [Vitest UI](/guide/ui#import-breakdown) 会在至少一个文件加载时间超过 500 毫秒时自动显示导入耗时分析。你可手动将此选项设为 `false` 来禁用该功能。
 :::
+
+<!-- TODO: translation -->
 
 ## experimental.viteModuleRunner <Version type="experimental">4.1.0</Version> {#experimental-vitemodulerunner}
 
