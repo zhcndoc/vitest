@@ -32,10 +32,15 @@
     "@unocss/reset": "^66.5.12",
     "@vite-pwa/assets-generator": "^1.0.2",
     "@vite-pwa/vitepress": "^1.1.0",
+<<<<<<< HEAD
     "@vitejs/plugin-vue": "^6.0.3",
     "eslint": "^9.39.2",
     "@iconify/vue": "^5.0.0",
     "@voidzero-dev/vitepress-theme": "^4.1.1",
+=======
+    "@vitejs/plugin-vue": "catalog:",
+    "@voidzero-dev/vitepress-theme": "^4.3.0",
+>>>>>>> 63347c76fb8a523dac2f41258d8984ff4a29d386
     "https-localhost": "^4.7.1",
     "lint-staged": "^16.2.7",
     "pathe": "^2.0.3",
