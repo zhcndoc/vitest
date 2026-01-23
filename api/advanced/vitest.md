@@ -480,8 +480,8 @@ function onCancel(fn: (reason: CancelReason) => Awaitable<void>): () => void
 
 注册一个处理程序，当测试运行被 [`vitest.cancelCurrentRun`](#cancelcurrentrun) 取消时调用。
 
-::: warning EXPERIMENTAL
-Since 4.0.10, `onCancel` returns a teardown function that will remove the listener.
+::: warning 实验性
+自 4.0.10 起，`onCancel` 会返回一个用于移除监听器的清理函数。
 :::
 
 ## onClose
@@ -628,8 +628,8 @@ function experimental_parseSpecifications(
   }
 ): Promise<TestModule[]>
 ```
-<!-- TODO: translation -->
-This method will [collect tests](#parsespecification) from an array of specifications. By default, Vitest will run only `os.availableParallelism()` number of specifications at a time to reduce the potential performance degradation. You can specify a different number in a second argument.
+
+此方法将从规范数组中 [收集测试用例](#parsespecification)。默认情况下，Vitest 每次仅会并行运行 `os.availableParallelism()` 数量的规范，以降低潜在的性能损耗。你可以通过第二个参数指定不同的并发数量。
 
 ## experimental_clearCache <Version type="experimental">4.0.11</Version> <Experimental /> {#clearcache}
 
@@ -637,7 +637,7 @@ This method will [collect tests](#parsespecification) from an array of specifica
 function experimental_clearCache(): Promise<void>
 ```
 
-Deletes all Vitest caches, including [`experimental.fsModuleCache`](/config/experimental#experimental-fsmodulecache).
+删除所有 Vitest 缓存，包括 [`experimental.fsModuleCache`](/config/experimental#experimental-fsmodulecache)。
 
 ## experimental_getSourceModuleDiagnostic <Version type="experimental">4.0.15</Version> <Experimental /> {#getsourcemodulediagnostic}
 
@@ -648,7 +648,7 @@ export function experimental_getSourceModuleDiagnostic(
 ): Promise<SourceModuleDiagnostic>
 ```
 
-::: details Types
+::: details 类型
 ```ts
 export interface ModuleDefinitionLocation {
   line: number
@@ -690,8 +690,8 @@ export interface SourceModuleDiagnostic {
 ```
 :::
 
-Returns module's diagnostic. If [`testModule`](/api/advanced/test-module) is not provided, `selfTime` and `totalTime` will be aggregated across all tests that were running the last time. If the module was not transformed or executed, the diagnostic will be empty.
+返回模块的诊断信息。如果未提供 [`testModule`](/api/advanced/test-module)，则 `selfTime` 和 `totalTime` 将聚合上次运行的所有测试。如果模块未被转换或执行，诊断信息将为空。
 
 ::: warning
-At the moment, the [browser](/guide/browser/) modules are not supported.
+[浏览器模式](/guide/browser/) 暂不支持。
 :::

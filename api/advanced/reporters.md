@@ -322,7 +322,6 @@ onTestAnnotate 是与 [`context.annotate`](/guide/test-context#annotate) 方法�
 
 如果在注解中指定了文件路径， Vitest 会将附件保存到一个独立的目录（该目录通过 [`attachmentsDir`](/config/#attachmentsdir) 配置），并自动更新 path 属性，使其指向存储后的文件位置。
 
-<!-- TODO: translation -->
 ## onTestCaseArtifactRecord <Version type="experimental">4.0.11</Version> {#ontestcaseartifactrecord}
 
 ```ts
@@ -332,8 +331,8 @@ function onTestCaseArtifactRecord(
 ): Awaitable<void>
 ```
 
-The `onTestCaseArtifactRecord` hook is associated with the [`recordArtifact`](/api/advanced/artifacts#recordartifact) utility. When `recordArtifact` is invoked, Vitest serialises it and sends the same attachment to the main thread where reporter can interact with it.
+`onTestCaseArtifactRecord` 钩子与 [`recordArtifact`](/api/advanced/artifacts#recordartifact) 工具相关联。当调用 `recordArtifact` 时，Vitest 会将其序列化并将相同的附件发送到主线程，报告器可以在那里与其交互。
 
-If the path is specified, Vitest stores it in a separate directory (configured by [`attachmentsDir`](/config/#attachmentsdir)) and modifies the `path` property to reference it.
+如果指定了路径，Vitest 会将其存储在单独的目录中（由 [`attachmentsDir`](/config/#attachmentsdir) 配置），并修改 `path` 属性以引用它。
 
-Note: annotations, [even though they're built on top of this feature](/api/advanced/artifacts#relationship-with-annotations), won't hit this hook and won't appear in the `task.artifacts` array for backwards compatibility reasons until the next major version.
+注意：注解，[即使它们是基于此功能构建的](/api/advanced/artifacts#relationship-with-annotations)，出于向后兼容性原因，在下一个主要版本之前不会触发此钩子，也不会出现在 `task.artifacts` 数组中。

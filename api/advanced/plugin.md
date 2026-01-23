@@ -124,7 +124,6 @@ vitest.config.project.push('my-project-name')
 请注意，这也将继承 `name` - Vitest 不允许多个项目使用相同的名称，因此这将引发错误。请确保我们指定了不同的名称。我们可以通过 `project.name` 属性访问当前名称，并且所有使用的名称都可以在 `vitest.projects` 数组中找到。
 :::
 
-<!-- TODO: translation -->
 ### experimental_defineCacheKeyGenerator <Version type="experimental">4.0.11</Version> <Experimental /> {#definecachekeygenerator}
 
 ```ts
@@ -139,11 +138,11 @@ function experimental_defineCacheKeyGenerator(
 ): void
 ```
 
-Define a generator that will be applied before hashing the cache key.
+定义一个缓存键生成器，它将在缓存键哈希之前运行。
 
-Use this to make sure Vitest generates correct hash. It is a good idea to define this function if your plugin can be registered with different options.
+如果你的插件支持通过不同的参数选项注册，建议通过这种方式，确保 Vitest 生成正确的哈希值。
 
-This is called only if [`experimental.fsModuleCache`](/config/experimental#experimental-fsmodulecache) is defined.
+仅当定义了 [`experimental.fsModuleCache`](/config/experimental#experimental-fsmodulecache) 时才会调用此方法。
 
 ```ts
 interface PluginOptions {
@@ -162,8 +161,8 @@ export function plugin(options: PluginOptions) {
     },
     configureVitest({ experimental_defineCacheKeyGenerator }) {
       experimental_defineCacheKeyGenerator(() => {
-        // since these options affect the transform result,
-        // return them together as a unique string
+        // 由于这些选项会影响转换结果，
+        // 将它们组合成一个唯一字符串并返回
         return options.replacePropertyKey + options.replacePropertyValue
       })
     }
@@ -171,4 +170,4 @@ export function plugin(options: PluginOptions) {
 }
 ```
 
-If `false` is returned, the module will not be cached on the file system.
+如果返回 `false`，模块将不会缓存在文件系统上。

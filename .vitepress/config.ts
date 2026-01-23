@@ -6,7 +6,6 @@ import { defineConfig } from 'vitepress'
 import {
   groupIconMdPlugin,
   groupIconVitePlugin,
-  localIconLoader,
 } from 'vitepress-plugin-group-icons'
 import llmstxt from 'vitepress-plugin-llms'
 import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
@@ -50,6 +49,7 @@ export default ({ mode }: { mode: string }) => {
     },
     head: [
       ['meta', { name: 'theme-color', content: '#22FF84' }],
+      ['link', { rel: 'icon', href: '/favicon.ico', sizes: '48x48' }],
       ['link', { rel: 'icon', href: '/logo-without-border.svg', type: 'image/svg+xml' }],
       ['meta', { name: 'author', content: `${teamMembers.map(c => c.name).join(', ')} and ${vitestName} contributors` }],
       ['meta', { name: 'keywords', content: 'vitest, vite, test, coverage, snapshot, react, vue, preact, svelte, solid, lit, marko, ruby, cypress, puppeteer, jsdom, happy-dom, test-runner, jest, typescript, esm, tinyspy, node' }],
@@ -71,17 +71,11 @@ export default ({ mode }: { mode: string }) => {
         groupIconVitePlugin({
           customIcon: {
             'CLI': 'vscode-icons:file-type-shell',
-            'vitest.shims': localIconLoader(import.meta.url, '../public/logo-without-border.svg'),
-            'vitest.config': localIconLoader(import.meta.url, '../public/logo-without-border.svg'),
-            'vitest.workspace': localIconLoader(import.meta.url, '../public/logo-without-border.svg'),
             '.spec.ts': 'vscode-icons:file-type-testts',
             '.test.ts': 'vscode-icons:file-type-testts',
             '.spec.js': 'vscode-icons:file-type-testjs',
             '.test.js': 'vscode-icons:file-type-testjs',
-            'marko': 'vscode-icons:file-type-marko',
-            'qwik': 'logos:qwik-icon',
             'next': '',
-            'vite.config': localIconLoader(import.meta.url, '../public/logo-without-border-vite.svg'),
           },
         }) as any,
         llmstxt(),
