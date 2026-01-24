@@ -29,8 +29,15 @@ interface TestOptions {
    * @default 0
    */
   repeats?: number
+  /**
+   * Custom tags of the test. Useful for filtering tests.
+   */
+  tags?: string[] | string
 }
 ```
+<!-- TODO: translation -->
+
+<!-- TODO: rewrite this into separate test files with options highlighted -->
 
 当测试函数返回一个 promise 时，运行器会等待它解析结束收集异步的结果。如果 promise 被拒绝，测试就会失败。
 

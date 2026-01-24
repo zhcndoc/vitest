@@ -470,6 +470,14 @@ export default ({ mode }: { mode: string }) => {
                 link: '/config/sequence',
               },
               {
+                text: 'tags',
+                link: '/config/tags',
+              },
+              {
+                text: 'strictTags',
+                link: '/config/stricttags',
+              },
+              {
                 text: 'typecheck',
                 link: '/config/typecheck',
               },
@@ -771,6 +779,10 @@ export default ({ mode }: { mode: string }) => {
               {
                 text: '测试筛选',
                 link: '/guide/filtering',
+              },
+              {
+                text: '测试标签',
+                link: '/guide/test-tags',
               },
               {
                 text: '测试上下文',

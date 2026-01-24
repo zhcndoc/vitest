@@ -518,12 +518,28 @@ Changes the order in which hooks are executed. Accepted values are: "stack", "li
 
 当指定数量的测试失败时停止测试执行（默认值：`0`）
 
-### retry
+### retry.count
 
-- **命令行终端:** `--retry <times>`
-- **配置:** [retry](/config/retry)
+- **命令行终端:** `--retry.count <times>`
+- **Config:** [retry.count](/config/retry#retry-count)
 
 如果测试失败，重试特定次数（默认值： `0`）
+
+### retry.delay
+
+- **命令行终端:** `--retry.delay <ms>`
+- **配置:** [retry.delay](/config/retry#retry-delay)
+
+<!-- TODO: translation -->
+
+Delay in milliseconds between retry attempts (default: `0`)
+
+### retry.condition
+
+- **命令行终端:** `--retry.condition <pattern>`
+- **配置:** [retry.condition](/config/retry#retry-condition)
+
+Regex pattern to match error messages that should trigger a retry. Only errors matching this pattern will cause a retry (default: retry on all errors)
 
 ### diff.aAnnotation
 
@@ -786,17 +802,38 @@ watch 模式下重新运行测试时清除终端屏幕（默认值：`true`）
 
 使用 `bundle` 将配置打包到 esbuild 中，或使用 `runner`（实验性功能）进行动态处理。此功能仅适用于 Vite 6.1.0 及更高版本可使用 (默认值: `bundle`)
 
+<!-- TODO: translation -->
+
 ### standalone
 
 - **命令行终端:** `--standalone`
 
 Start Vitest without running tests. Tests will be running only on change. This option is ignored when CLI file filters are passed. (default: `false`)
 
+### listTags
+
+- **CLI:** `--listTags [type]`
+
+List all available tags instead of running tests. `--list-tags=json` will output tags in JSON format, unless there are no tags.
+
 ### clearCache
 
 - **命令行终端:** `--clearCache`
 
 Delete all Vitest caches, including `experimental.fsModuleCache`, without running any tests. This will reduce the performance in the subsequent test run.
+
+### tagsFilter
+
+- **CLI:** `--tagsFilter <expression>`
+
+Run only tests with the specified tags. You can use logical operators `&&` (and), `||` (or) and `!` (not) to create complex expressions, see [Test Tags](/guide/test-tags#syntax) for more information.
+
+### strictTags
+
+- **CLI:** `--strictTags`
+- **Config:** [strictTags](/config/stricttags)
+
+Should Vitest throw an error if test has a tag that is not defined in the config. (default: `true`)
 
 ### experimental.fsModuleCache
 
