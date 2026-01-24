@@ -12,7 +12,7 @@ const specification = project.createSpecification(
     testNamePattern: /hello world/,
     testIds: ['1223128da3_0_0_0', '1223128da3_0_0'],
     testTagsFilter: ['frontend and backend'],
-  } // optional test filters
+  } // 可选的测试过滤器
 )
 ```
 

@@ -116,7 +116,7 @@ interface TaskOptions {
 
 ## tags <Version>4.1.0</Version> {#tags}
 
-[Tags](/guide/test-tags) that were implicitly or explicitly assigned to the test.
+隐式或显式分配给测试的 [标签](/guide/test-tags)。
 
 ## ok
 

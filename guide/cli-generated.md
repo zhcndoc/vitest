@@ -520,31 +520,26 @@ Changes the order in which hooks are executed. Accepted values are: "stack", "li
 
 ### retry.count
 
-<<<<<<< HEAD
-- **命令行终端:** `--retry <times>`
-- **配置:** [retry](/config/retry)
-
-如果测试失败，重试特定次数（默认值： `0`）
-=======
-- **CLI:** `--retry.count <times>`
+- **命令行终端:** `--retry.count <times>`
 - **Config:** [retry.count](/config/retry#retry-count)
 
-Number of times to retry a test if it fails (default: `0`)
+如果测试失败，重试特定次数（默认值： `0`）
 
 ### retry.delay
 
-- **CLI:** `--retry.delay <ms>`
-- **Config:** [retry.delay](/config/retry#retry-delay)
+- **命令行终端:** `--retry.delay <ms>`
+- **配置:** [retry.delay](/config/retry#retry-delay)
+
+<!-- TODO: translation -->
 
 Delay in milliseconds between retry attempts (default: `0`)
 
 ### retry.condition
 
-- **CLI:** `--retry.condition <pattern>`
-- **Config:** [retry.condition](/config/retry#retry-condition)
+- **命令行终端:** `--retry.condition <pattern>`
+- **配置:** [retry.condition](/config/retry#retry-condition)
 
 Regex pattern to match error messages that should trigger a retry. Only errors matching this pattern will cause a retry (default: retry on all errors)
->>>>>>> 63347c76fb8a523dac2f41258d8984ff4a29d386
 
 ### diff.aAnnotation
 
@@ -806,6 +801,8 @@ watch 模式下重新运行测试时清除终端屏幕（默认值：`true`）
 - **命令行终端:** `--configLoader <loader>`
 
 使用 `bundle` 将配置打包到 esbuild 中，或使用 `runner`（实验性功能）进行动态处理。此功能仅适用于 Vite 6.1.0 及更高版本可使用 (默认值: `bundle`)
+
+<!-- TODO: translation -->
 
 ### standalone
 

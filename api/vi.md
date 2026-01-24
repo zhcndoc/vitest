@@ -257,11 +257,7 @@ function mocked<T>(
 
 TypeScript 的类型助手。只返回传入的对象。
 
-<<<<<<< HEAD
-当 `partial` 为 `true` 时，它将期望一个 `Partial<T>` 作为返回值。默认情况下，这只会让 TypeScript 认为第一层的值是模拟的。我们可以将 `{ deep: true }` 作为第二个参数传递给 TypeScript，告诉它整个对象都是模拟的（如果实际上是的话）。
-=======
-When `partial` is `true` it will expect a `Partial<T>` as a return value. By default, this will only make TypeScript believe that the first level values are mocked. You can pass down `{ deep: true }` as a second argument to tell TypeScript that the whole object is mocked, if it actually is. You can pass down `{ partial: true, deep: true }` to make nested objects also partial recursively.
->>>>>>> 63347c76fb8a523dac2f41258d8984ff4a29d386
+当 `partial` 为 `true` 时，它将期望一个 `Partial<T>` 作为返回值。默认情况下，这只会让 TypeScript 认为第一层的值是模拟的。我们可以将 `{ deep: true }` 作为第二个参数传递给 TypeScript，告诉它整个对象都是模拟的（如果实际上是的话）。还可以传递 `{ partial: true, deep: true }` 来使嵌套对象也以递归方式进行部分模拟。
 
 ```ts [example.ts]
 export function add(x: number, y: number): number {

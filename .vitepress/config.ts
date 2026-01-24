@@ -781,15 +781,11 @@ export default ({ mode }: { mode: string }) => {
                 link: '/guide/filtering',
               },
               {
-<<<<<<< HEAD
-                text: '测试上下文',
-=======
-                text: 'Test Tags',
+                text: '测试标签',
                 link: '/guide/test-tags',
               },
               {
-                text: 'Test Context',
->>>>>>> 63347c76fb8a523dac2f41258d8984ff4a29d386
+                text: '测试上下文',
                 link: '/guide/test-context',
               },
               {

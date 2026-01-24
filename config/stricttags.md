@@ -3,6 +3,8 @@ title: strictTags | Config
 outline: deep
 ---
 
+<!-- TODO: translation -->
+
 # strictTags <Version>4.1.0</Version> {#stricttags}
 
 - **Type:** `boolean`

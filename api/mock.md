@@ -50,6 +50,8 @@ fn.length // == 2
 以下类型中的自定义函数实现使用泛型 `<T>` 进行标记。
 :::
 
+<!-- TODO: translation -->
+
 ::: warning Class Support {#class-support}
 Shorthand methods like `mockReturnValue`, `mockReturnValueOnce`, `mockResolvedValue` and others cannot be used on a mocked class. Class constructors have [unintuitive behaviour](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/constructor) regarding the return value:
 
