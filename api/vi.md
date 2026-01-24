@@ -632,7 +632,11 @@ it('calls console.log', () => {
 :::
 
 ::: tip
+<<<<<<< HEAD
 在每个测试后，于 [`afterEach`](/api/#aftereach) 中调用 [`vi.restoreAllMocks`](#vi-restoreallmocks) 或开启配置项 [`test.restoreMocks`](/config/#restoreMocks)，即可将所有方法还原为原始实现。此操作会恢复其 [对象描述符](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty)，除非重新对其进行 spy ，否则无法再次修改方法实现。
+=======
+You can call [`vi.restoreAllMocks`](#vi-restoreallmocks) inside [`afterEach`](/api/hooks#aftereach) (or enable [`test.restoreMocks`](/config/#restoreMocks)) to restore all methods to their original implementations after every test. This will restore the original [object descriptor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty), so you won't be able to change method's implementation anymore, unless you spy again:
+>>>>>>> bd33ef125c480598f84a12804342385cf0be513d
 
 ```ts
 const cart = {

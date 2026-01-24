@@ -156,9 +156,15 @@ export default ({ mode }: { mode: string }) => {
           {
             title: 'Vitest',
             items: [
+<<<<<<< HEAD
               { text: '指南', link: '/guide/' },
               { text: 'API', link: '/api/' },
               { text: '配置', link: '/config/' },
+=======
+              { text: 'Guides', link: '/guide/' },
+              { text: 'API', link: '/api/test' },
+              { text: 'Config', link: '/config/' },
+>>>>>>> bd33ef125c480598f84a12804342385cf0be513d
             ],
           },
           {
@@ -197,9 +203,15 @@ export default ({ mode }: { mode: string }) => {
       },
 
       nav: [
+<<<<<<< HEAD
         { text: '指南', link: '/guide/', activeMatch: '^/guide/' },
         { text: 'API', link: '/api/', activeMatch: '^/api/' },
         { text: '配置', link: '/config/', activeMatch: '^/config/' },
+=======
+        { text: 'Guides', link: '/guide/', activeMatch: '^/guide/' },
+        { text: 'API', link: '/api/test', activeMatch: '^/api/' },
+        { text: 'Config', link: '/config/', activeMatch: '^/config/' },
+>>>>>>> bd33ef125c480598f84a12804342385cf0be513d
         {
           text: '博客',
           link: '/blog',
@@ -963,8 +975,26 @@ export default ({ mode }: { mode: string }) => {
         ],
         '/api': [
           {
+<<<<<<< HEAD
             text: 'Test API',
             link: '/api/',
+=======
+            text: 'Test API Reference',
+            items: [
+              {
+                text: 'Test',
+                link: '/api/test',
+              },
+              {
+                text: 'Describe',
+                link: '/api/describe',
+              },
+              {
+                text: 'Hooks',
+                link: '/api/hooks',
+              },
+            ],
+>>>>>>> bd33ef125c480598f84a12804342385cf0be513d
           },
           {
             text: 'Mocks',

@@ -33,7 +33,11 @@ expect(input).to.equal(2) // chai API
 expect(input).toBe(2) // jest API
 ```
 
+<<<<<<< HEAD
 从技术上讲，这个示例没有使用 [`test`](/api/#test) 函数，因此在控制台中你将看到 Nodejs 错误而不是 Vitest 输出。 要了解更多关于 `test` 的信息，请阅读[Test API](/api/)。
+=======
+Technically this example doesn't use [`test`](/api/test) function, so in the console you will see Node.js error instead of Vitest output. To learn more about `test`, please read [Test API Reference](/api/test).
+>>>>>>> bd33ef125c480598f84a12804342385cf0be513d
 
 此外，`expect` 可以静态地使用来访问匹配器函数，稍后将会介绍。
 
@@ -100,7 +104,11 @@ test('expect.soft test', () => {
 ```
 
 ::: warning
+<<<<<<< HEAD
 `expect.soft` 只能在 [`test`](/api/#test) 函数的内部使用。
+=======
+`expect.soft` can only be used inside the [`test`](/api/test) function.
+>>>>>>> bd33ef125c480598f84a12804342385cf0be513d
 :::
 
 ## poll
