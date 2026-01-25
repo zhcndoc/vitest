@@ -3,11 +3,15 @@ title: Test Tags | Guide
 outline: deep
 ---
 
+<<<<<<< HEAD
 <!-- TODO: translation -->
 
 # Test Tags <Version>4.1.0</Version>
+=======
+# Test Tags <Version>4.1.0</Version> {#test-tags}
+>>>>>>> c70970f662a70dcc9c67c40222d66f680badc59d
 
-[`Tags`](/config/tags) allow you to mark tests and change their options based on the tag's definition.
+[`Tags`](/config/tags) let you label tests so you can filter what runs and override their options when needed.
 
 ## Defining Tags
 
