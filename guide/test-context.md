@@ -119,19 +119,11 @@ it('stop request when test times out', async ({ signal }) => {
 
 #### `onTestFailed`
 
-<<<<<<< HEAD
-[`onTestFailed`](/api/#ontestfailed) 与当前测试用例绑定。当你并发执行多个测试并希望只对某个具体测试进行特殊处理时，这个 API 会非常有用。
+[`onTestFailed`](/api/hooks#ontestfailed) 与当前测试用例绑定。当你并发执行多个测试并希望只对某个具体测试进行特殊处理时，这个 API 会非常有用。
 
 #### `onTestFinished`
 
-[`onTestFinished`](/api/#ontestfailed) 与当前测试用例绑定。当你并发执行多个测试并希望只对某个特定测试进行特殊处理时，这个 API 会非常有帮助。
-=======
-The [`onTestFailed`](/api/hooks#ontestfailed) hook bound to the current test. This API is useful if you are running tests concurrently and need to have a special handling only for this specific test.
-
-#### `onTestFinished`
-
-The [`onTestFinished`](/api/hooks#ontestfailed) hook bound to the current test. This API is useful if you are running tests concurrently and need to have a special handling only for this specific test.
->>>>>>> bd33ef125c480598f84a12804342385cf0be513d
+[`onTestFinished`](/api/hooks#ontestfailed) 与当前测试用例绑定。当你并发执行多个测试并希望只对某个特定测试进行特殊处理时，这个 API 会非常有帮助。
 
 ## 扩展测试上下文 {#extend-test-context}
 

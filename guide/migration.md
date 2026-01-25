@@ -568,11 +568,7 @@ Just like Jest, Vitest sets `NODE_ENV` to `test`, if it wasn't set before. Vites
 
 ### 替换属性 {#replace-property}
 
-<<<<<<< HEAD
-如果想修改对象，Jest 使用 [replaceProperty API](https://jestjs.io/docs/jest-object#jestreplacepropertyobject-propertykey-value)，Vitest 可使用 [`vi.stubEnv`](/api/#vi-stubenv) 或 [`vi.spyOn`](/api/vi#vi-spyon) 达成相同效果。
-=======
-If you want to modify the object, you will use [replaceProperty API](https://jestjs.io/docs/jest-object#jestreplacepropertyobject-propertykey-value) in Jest, you can use [`vi.stubEnv`](/api/vi#vi-stubenv) or [`vi.spyOn`](/api/vi#vi-spyon) to do the same also in Vitest.
->>>>>>> bd33ef125c480598f84a12804342385cf0be513d
+如果想修改对象，Jest 使用 [replaceProperty API](https://jestjs.io/docs/jest-object#jestreplacepropertyobject-propertykey-value)，Vitest 可使用 [`vi.stubEnv`](/api/vi#vi-stubenv) 或 [`vi.spyOn`](/api/vi#vi-spyon) 达成相同效果。
 
 ### Done 回调 {#done-callback}
 
@@ -582,11 +578,7 @@ Vitest 不支持回调式测试声明。你可以改写为使用 `async`/`await`
 
 ### Hooks {#hooks}
 
-<<<<<<< HEAD
-Vitest 中 `beforeAll`/`beforeEach` 钩子可返回 [清理函数](/api/#setup-and-teardown)。因此，如果钩子返回非 `undefined` 或 `null`，可能需改写：
-=======
-`beforeAll`/`beforeEach` hooks may return [teardown function](/api/hooks#beforeach) in Vitest. Because of that you may need to rewrite your hooks declarations, if they return something other than `undefined` or `null`:
->>>>>>> bd33ef125c480598f84a12804342385cf0be513d
+Vitest 中 `beforeAll`/`beforeEach` 钩子可返回 [清理函数](/api/hooks#setup-and-teardown)。因此，如果钩子返回非 `undefined` 或 `null`，可能需改写：
 
 ```ts
 beforeEach(() => setActivePinia(createTestingPinia())) // [!code --]

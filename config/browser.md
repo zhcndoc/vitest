@@ -460,12 +460,7 @@ export default defineConfig({
 
 - `testName: string`
 
-<<<<<<< HEAD
-  [`test`](/api/#test) 的名称，包括父级 [`describe`](/api/#describe) ，已清理。
-=======
-  The [`test`](/api/test)'s name, including parent
-  [`describe`](/api/describe), sanitized.
->>>>>>> bd33ef125c480598f84a12804342385cf0be513d
+  [`test`](/api/test) 的名称，包括父级 [`describe`](/api/describe) ，已清理。
 
 - `attachmentsDir: string`
 

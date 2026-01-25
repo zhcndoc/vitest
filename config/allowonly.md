@@ -3,6 +3,8 @@ title: allowOnly | Config
 outline: deep
 ---
 
+<!-- TODO: translation -->
+
 # allowOnly
 
 - **Type**: `boolean`

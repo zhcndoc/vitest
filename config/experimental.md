@@ -177,16 +177,12 @@ export default defineConfig({
 
 ## experimental.importDurations <Version type="experimental">4.1.0</Version> {#experimental-importdurations}
 
+<!-- TODO: translation -->
+
 ::: tip 功能反馈
 请将关于此功能反馈提交至 [GitHub Discussion](https://github.com/vitest-dev/vitest/discussions/9224)。
 :::
 
-<<<<<<< HEAD
-- **类型:** `boolean`
-- **默认值:** `false`
-
-在测试运行完成后显示导入耗时明细。此选项仅适用于 [`default`](/guide/reporters#default)、[`verbose`](/guide/reporters#verbose) 或 [`tree`](/guide/reporters#tree) 报告器。
-=======
 - **Type:**
 
 ```ts
@@ -207,7 +203,6 @@ interface ImportDurationsOptions {
 Configure import duration collection and display.
 
 The `print` option controls CLI terminal output. The `limit` option controls how many imports to collect and display. [Vitest UI](/guide/ui#import-breakdown) can always toggle the breakdown display regardless of the `print` setting.
->>>>>>> bd33ef125c480598f84a12804342385cf0be513d
 
 - Self：模块导入耗时，不包括静态导入；
 - Total：模块导入耗时，包括静态导入。请注意，这不包括当前模块的 `transform` 时间。
