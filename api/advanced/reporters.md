@@ -6,6 +6,7 @@
 
 Vitest 拥有自己的测试运行生命周期。这些生命周期通过报告器的方法来表示：
 
+<<<<<<< HEAD
 - [报告器 {#reporters}](#报告器-reporters)
   - [onInit](#oninit)
   - [onBrowserInit {#onbrowserinit}](#onbrowserinit-onbrowserinit)
@@ -24,6 +25,30 @@ Vitest 拥有自己的测试运行生命周期。这些生命周期通过报告�
   - [onTestCaseResult](#ontestcaseresult)
   - [onTestAnnotate 3.2.0 {#ontestannotate}](#ontestannotate-320-ontestannotate)
   - [onTestCaseArtifactRecord 4.0.11 {#ontestcaseartifactrecord}](#ontestcaseartifactrecord-4011-ontestcaseartifactrecord)
+=======
+- [`onInit`](#oninit)
+- [`onTestRunStart`](#ontestrunstart)
+  - [`onTestModuleQueued`](#ontestmodulequeued)
+  - [`onTestModuleCollected`](#ontestmodulecollected)
+  - [`onTestModuleStart`](#ontestmodulestart)
+    - [`onTestSuiteReady`](#ontestsuiteready)
+      - [`onHookStart(beforeAll)`](#onhookstart)
+      - [`onHookEnd(beforeAll)`](#onhookend)
+        - [`onTestCaseReady`](#ontestcaseready)
+          - [`onTestCaseAnnotate`](#ontestcaseannotate) <Version>3.2.0</Version>
+          - [`onTestCaseArtifactRecord`](#ontestcaseartifactrecord) <Version type="experimental">4.0.11</Version>
+          - [`onHookStart(beforeEach)`](#onhookstart)
+          - [`onHookEnd(beforeEach)`](#onhookend)
+          - [`onHookStart(afterEach)`](#onhookstart)
+          - [`onHookEnd(afterEach)`](#onhookend)
+        - [`onTestCaseResult`](#ontestcaseresult)
+      - [`onHookStart(afterAll)`](#onhookstart)
+      - [`onHookEnd(afterAll)`](#onhookend)
+    - [`onTestSuiteResult`](#ontestsuiteresult)
+  - [`onTestModuleEnd`](#ontestmoduleend)
+  - [`onCoverage`](#oncoverage)
+- [`onTestRunEnd`](#ontestrunend)
+>>>>>>> 4a2cb45c70fd529187caa33f464836923f2fd444
 
 除非被跳过，否则单个模块中的测试和 reporters 将按顺序报告。所有跳过的测试将在 reporters /模块的末尾报告。
 
@@ -309,16 +334,20 @@ function onTestCaseResult(testCase: TestCase): Awaitable<void>
 
 此时，[`testCase.result()`](/api/advanced/test-case#result) 已不再是挂起状态。
 
-## onTestAnnotate <Version>3.2.0</Version> {#ontestannotate}
+## onTestCaseAnnotate <Version>3.2.0</Version> {#ontestcaseannotate}
 
 ```ts
-function onTestAnnotate(
+function onTestCaseAnnotate(
   testCase: TestCase,
   annotation: TestAnnotation,
 ): Awaitable<void>
 ```
 
+<<<<<<< HEAD
 onTestAnnotate 是与 [`context.annotate`](/guide/test-context#annotate) 方法配套使用的钩子。当你在测试中调用 annotate 后， Vitest 会将注解内容序列化，并将其发送到主线程，从而让报告器可以处理这些附加信息。
+=======
+The `onTestCaseAnnotate` hook is associated with the [`context.annotate`](/guide/test-context#annotate) method. When `annotate` is invoked, Vitest serialises it and sends the same attachment to the main thread where reporter can interact with it.
+>>>>>>> 4a2cb45c70fd529187caa33f464836923f2fd444
 
 如果在注解中指定了文件路径， Vitest 会将附件保存到一个独立的目录（该目录通过 [`attachmentsDir`](/config/#attachmentsdir) 配置），并自动更新 path 属性，使其指向存储后的文件位置。
 
