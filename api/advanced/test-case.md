@@ -106,11 +106,17 @@ interface TaskOptions {
   readonly shuffle: boolean | undefined
   readonly retry: number | undefined
   readonly repeats: number | undefined
+  readonly tags: string[] | undefined
+  readonly timeout: number | undefined
   readonly mode: 'run' | 'only' | 'skip' | 'todo'
 }
 ```
 
 收集测试时使用的选项。
+
+## tags <Version>4.1.0</Version> {#tags}
+
+隐式或显式分配给测试的 [标签](/guide/test-tags)。
 
 ## ok
 

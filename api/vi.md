@@ -257,7 +257,7 @@ function mocked<T>(
 
 TypeScript 的类型助手。只返回传入的对象。
 
-当 `partial` 为 `true` 时，它将期望一个 `Partial<T>` 作为返回值。默认情况下，这只会让 TypeScript 认为第一层的值是模拟的。我们可以将 `{ deep: true }` 作为第二个参数传递给 TypeScript，告诉它整个对象都是模拟的（如果实际上是的话）。
+当 `partial` 为 `true` 时，它将期望一个 `Partial<T>` 作为返回值。默认情况下，这只会让 TypeScript 认为第一层的值是模拟的。我们可以将 `{ deep: true }` 作为第二个参数传递给 TypeScript，告诉它整个对象都是模拟的（如果实际上是的话）。还可以传递 `{ partial: true, deep: true }` 来使嵌套对象也以递归方式进行部分模拟。
 
 ```ts [example.ts]
 export function add(x: number, y: number): number {
@@ -266,6 +266,10 @@ export function add(x: number, y: number): number {
 
 export function fetchSomething(): Promise<Response> {
   return fetch('https://vitest.dev/')
+}
+
+export function getUser(): { name: string; address: { city: string; zip: string } } {
+  return { name: 'John', address: { city: 'New York', zip: '10001' } }
 }
 ```
 
@@ -285,6 +289,13 @@ test('mock return value with only partially correct typing', async () => {
     ok: false,
   })
   // vi.mocked(example.someFn).mockResolvedValue({ ok: false }) // 这是一个错误类型
+})
+
+test('mock return value with deep partial typing', async () => {
+  vi.mocked(example.getUser, { partial: true, deep: true }).mockReturnValue({
+    address: { city: 'Los Angeles' },
+  })
+  expect(example.getUser().address.city).toBe('Los Angeles')
 })
 ```
 
@@ -621,7 +632,7 @@ it('calls console.log', () => {
 :::
 
 ::: tip
-在每个测试后，于 [`afterEach`](/api/#aftereach) 中调用 [`vi.restoreAllMocks`](#vi-restoreallmocks) 或开启配置项 [`test.restoreMocks`](/config/#restoreMocks)，即可将所有方法还原为原始实现。此操作会恢复其 [对象描述符](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty)，除非重新对其进行 spy ，否则无法再次修改方法实现。
+在每个测试后，于 [`afterEach`](/api/hooks#aftereach) 中调用 [`vi.restoreAllMocks`](#vi-restoreallmocks) 或开启配置项 [`test.restoreMocks`](/config/#restoreMocks)，即可将所有方法还原为原始实现。此操作会恢复其 [对象描述符](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty)，除非重新对其进行 spy ，否则无法再次修改方法实现。
 
 ```ts
 const cart = {
