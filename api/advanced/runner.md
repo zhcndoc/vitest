@@ -42,13 +42,8 @@ export interface VitestRunner {
    */
   onAfterTryTask?: (test: Test, options: { retry: number; repeats: number }) => unknown
   /**
-<<<<<<< HEAD
    * 在重试结果确定后调用。与 `onAfterTryTask` 不同，此时测试已进入新的状态，
    * 并且所有的 `after` 钩子此时也已被执行。
-=======
-   * Called after the retry resolution happened. Unlike `onAfterTryTask`, the test now has a new state.
-   * All `after` hooks were also called by this point.
->>>>>>> 4a2cb45c70fd529187caa33f464836923f2fd444
    */
   onAfterRetryTask?: (test: Test, options: { retry: number; repeats: number }) => unknown
 

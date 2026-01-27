@@ -29,13 +29,6 @@ for (const testModule of testModules) {
 }
 ```
 
-<<<<<<< HEAD
-::: tip
-[`TestModule`](/api/advanced/test-module), [`TestSuite`](/api/advanced/test-suite) 和 [`TestCase`](/api/advanced/test-case) API 从 Vitest 2.1 开始不再是实验性的，并且遵循 SemVer。
-:::
-
-=======
->>>>>>> 4a2cb45c70fd529187caa33f464836923f2fd444
 ## `createVitest`
 
 创建一个 [Vitest](/api/advanced/vitest) 实例而不运行测试。

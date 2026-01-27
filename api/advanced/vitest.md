@@ -480,13 +480,8 @@ function onCancel(fn: (reason: CancelReason) => Awaitable<void>): () => void
 
 注册一个处理程序，当测试运行被 [`vitest.cancelCurrentRun`](#cancelcurrentrun) 取消时调用。
 
-<<<<<<< HEAD
-::: warning 实验性
-自 4.0.10 起，`onCancel` 会返回一个用于移除监听器的清理函数。
-:::
-=======
+<!-- TODO: translation -->
 Since 4.0.10, `onCancel` experimentally returns a teardown function that will remove the listener. Since 4.1.0 this behaviour is considered stable.
->>>>>>> 4a2cb45c70fd529187caa33f464836923f2fd444
 
 ## onClose
 

@@ -49,11 +49,7 @@ import type { Environment } from 'vitest/runtime'
 export default <Environment>{
   name: 'custom',
   viteEnvironment: 'ssr',
-<<<<<<< HEAD
-  // 可选 - 仅在支持 "experimental-vm" 的情况下使用
-=======
-  // optional - only if you support "vmForks" or "vmThreads" pools
->>>>>>> 4a2cb45c70fd529187caa33f464836923f2fd444
+  // 可选 - 仅在支持 "vmForks" 或 "vmThreads" 线程池时需要设置
   async setupVM() {
     const vm = await import('node:vm')
     const context = vm.createContext()
