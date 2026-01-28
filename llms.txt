@@ -1,0 +1,227 @@
+# Vitest 中文文档
+
+> 由 Vite 驱动的下一代测试框架
+
+## Table of Contents
+
+### Config Reference
+
+- [配置 Vitest {#configuring-vitest}](/config.md)
+- [include | Config](/config/include.md)
+- [exclude | Config](/config/exclude.md)
+- [includeSource | Config](/config/include-source.md)
+- [name | Config](/config/name.md)
+- [server | Config](/config/server.md)
+- [deps | Config](/config/deps.md)
+- [runner | Config](/config/runner.md)
+- [benchmark | Config](/config/benchmark.md)
+- [alias | Config](/config/alias.md)
+- [globals | Config](/config/globals.md)
+- [environment | Config](/config/environment.md)
+- [environmentOptions | Config](/config/environmentoptions.md)
+- [watch | Config](/config/watch.md)
+- [watchTriggerPatterns | Config](/config/watchtriggerpatterns.md)
+- [root | Config](/config/root.md)
+- [dir | Config](/config/dir.md)
+- [reporters | Config](/config/reporters.md)
+- [outputFile | Config](/config/outputfile.md)
+- [pool | Config](/config/pool.md)
+- [execArgv | Config](/config/execargv.md)
+- [vmMemoryLimit | Config](/config/vmmemorylimit.md)
+- [fileParallelism | Config](/config/fileparallelism.md)
+- [maxWorkers | Config](/config/maxworkers.md)
+- [testTimeout | Config](/config/testtimeout.md)
+- [hookTimeout | Config](/config/hooktimeout.md)
+- [teardownTimeout | Config](/config/teardowntimeout.md)
+- [silent | Config](/config/silent.md)
+- [setupFiles | Config](/config/setupfiles.md)
+- [provide | Config](/config/provide.md)
+- [globalSetup | Config](/config/globalsetup.md)
+- [forceRerunTriggers | Config](/config/forcereruntriggers.md)
+- [coverage | Config](/config/coverage.md)
+- [testNamePattern | Config](/config/testnamepattern.md)
+- [ui | Config](/config/ui.md)
+- [open | Config](/config/open.md)
+- [api | Config](/config/api.md)
+- [clearMocks | Config](/config/clearmocks.md)
+- [mockReset | Config](/config/mockreset.md)
+- [restoreMocks | Config](/config/restoremocks.md)
+- [unstubEnvs | Config](/config/unstubenvs.md)
+- [unstubGlobals | Config](/config/unstubglobals.md)
+- [snapshotFormat | Config](/config/snapshotformat.md)
+- [snapshotSerializers | Config](/config/snapshotserializers.md)
+- [resolveSnapshotPath | Config](/config/resolvesnapshotpath.md)
+- [allowOnly | Config](/config/allowonly.md)
+- [passWithNoTests | Config](/config/passwithnotests.md)
+- [logHeapUsage | Config](/config/logheapusage.md)
+- [css | Config](/config/css.md)
+- [maxConcurrency | Config](/config/maxconcurrency.md)
+- [cache | Config](/config/cache.md)
+- [sequence | Config](/config/sequence.md)
+- [tags | Config](/config/tags.md)
+- [strictTags | Config](/config/stricttags.md)
+- [typecheck | Config](/config/typecheck.md)
+- [slowTestThreshold | Config](/config/slowtestthreshold.md)
+- [chaiConfig | Config](/config/chaiconfig.md)
+- [bail | Config](/config/bail.md)
+- [retry | Config](/config/retry.md)
+- [onConsoleLog | Config](/config/onconsolelog.md)
+- [onStackTrace | Config](/config/onstacktrace.md)
+- [onUnhandledError | Config](/config/onunhandlederror.md)
+- [dangerouslyIgnoreUnhandledErrors | Config](/config/dangerouslyignoreunhandlederrors.md)
+- [diff | Config](/config/diff.md)
+- [fakeTimers | Config](/config/faketimers.md)
+- [projects | Config](/config/projects.md)
+- [isolate | Config](/config/isolate.md)
+- [includeTaskLocation | Config](/config/includetasklocation.md)
+- [snapshotEnvironment | Config](/config/snapshotenvironment.md)
+- [env | Config](/config/env.md)
+- [expect | Config](/config/expect.md)
+- [printConsoleTrace | Config](/config/printconsoletrace.md)
+- [attachmentsDir | Config](/config/attachmentsdir.md)
+- [hideSkippedTests | Config](/config/hideskippedtests.md)
+- [mode | Config](/config/mode.md)
+- [expandSnapshotDiff | Config](/config/expandsnapshotdiff.md)
+- [disableConsoleIntercept | Config](/config/disableconsoleintercept.md)
+- [实验性 | Config](/config/experimental.md)
+
+### Browser Mode
+
+- [browser.enabled | Config](/config/browser/enabled.md)
+- [browser.instances | Config](/config/browser/instances.md)
+- [browser.headless | Config](/config/browser/headless.md)
+- [browser.isolate | Config](/config/browser/isolate.md)
+- [browser.testerHtmlPath | Config](/config/browser/testerhtmlpath.md)
+- [browser.api | Config](/config/browser/api.md)
+- [browser.provider | Config](/config/browser/provider.md)
+- [browser.ui | Config](/config/browser/ui.md)
+- [browser.viewport | Config](/config/browser/viewport.md)
+- [browser.locators | Config](/config/browser/locators.md)
+- [browser.screenshotDirectory | Config](/config/browser/screenshotdirectory.md)
+- [browser.screenshotFailures | Config](/config/browser/screenshotfailures.md)
+- [browser.orchestratorScripts | Config](/config/browser/orchestratorscripts.md)
+- [browser.commands | Config](/config/browser/commands.md)
+- [browser.connectTimeout | Config](/config/browser/connecttimeout.md)
+- [browser.trace | Config](/config/browser/trace.md)
+- [browser.trackUnhandledErrors | Config](/config/browser/trackunhandlederrors.md)
+- [browser.expect | Config](/config/browser/expect.md)
+
+#### Providers
+
+- [配置 Playwright {#configuring-playwright}](/config/browser/playwright.md)
+- [配置 WebdriverIO {#configuring-webdriverio}](/config/browser/webdriverio.md)
+- [配置预览](/config/browser/preview.md)
+
+### 简介
+
+- [为什么是 Vitest | 指南](/guide/why.md)
+- [快速起步 | 指南](/guide.md)
+- [主要功能 | 指南](/guide/features.md)
+
+### 浏览器模式
+
+- [Why Browser Mode | 浏览器模式](/guide/browser/why.md)
+- [浏览器模式 | 指南](/guide/browser.md)
+- [多环境配置 {#multiple-setups}](/guide/browser/multiple-setups.md)
+- [组件测试 | 指南](/guide/browser/component-testing.md)
+- [可视化回归测试](/guide/browser/visual-regression-testing.md)
+- [追踪视图 {#trace-view}](/guide/browser/trace-view.md)
+
+### 指南
+
+- [命令行界面 | 指南](/guide/cli.md)
+- [测试筛选 | 指南](/guide/filtering.md)
+- [Test Tags | Guide](/guide/test-tags.md)
+- [测试上下文 | 指南](/guide/test-context.md)
+- [测试环境 | 指南](/guide/environment.md)
+- [Test Run Lifecycle | Guide](/guide/lifecycle.md)
+- [测试快照 | 指南](/guide/snapshot.md)
+- [模拟对象 | 指南](/guide/mocking.md)
+- [并行性 | Guide](/guide/parallelism.md)
+- [测试项目 | 指南](/guide/projects.md)
+- [报告器 | 指南](/guide/reporters.md)
+- [测试覆盖率 | 指南](/guide/coverage.md)
+- [类型测试 | 指南](/guide/testing-types.md)
+- [Vitest UI | 指南](/guide/ui.md)
+- [源码内联测试 | 指南](/guide/in-source.md)
+- [Test Annotations | Guide](/guide/test-annotations.md)
+- [扩展断言 | 指南](/guide/extending-matchers.md)
+- [IDE 插件 | 指南](/guide/ide.md)
+- [调试 | 指南](/guide/debugging.md)
+- [常见错误 | 指南](/guide/common-errors.md)
+- [迁移指南 | 指南](/guide/migration.md)
+- [Open Telemetry 支持  {#open-telemetry-support}](/guide/open-telemetry.md)
+
+#### 模拟对象
+
+- [模拟日期 {#mocking-dates}](/guide/mocking/dates.md)
+- [模拟函数 {#mocking-functions}](/guide/mocking/functions.md)
+- [模拟全局对象 {#mocking-globals}](/guide/mocking/globals.md)
+- [模拟模块 {#mocking-modules}](/guide/mocking/modules.md)
+- [模拟文件系统 {#mocking-the-file-system}](/guide/mocking/file-system.md)
+- [模拟请求 {#mocking-requests}](/guide/mocking/requests.md)
+- [模拟计时器 {#timers}](/guide/mocking/timers.md)
+- [模拟类 {#mocking-classes}](/guide/mocking/classes.md)
+
+#### 性能
+
+- [性能测试分析 {#profiling-test-performance}](/guide/profiling-test-performance.md)
+- [性能优化 | 指南](/guide/improving-performance.md)
+
+### 高级指南
+
+- [Advanced API](/guide/advanced.md)
+- [运行测试 advanced {#running-tests}](/guide/advanced/tests.md)
+- [扩展默认报告器 advanced {#extending-reporters}](/guide/advanced/reporters.md)
+- [Custom Pool advanced {#custom-pool}](/guide/advanced/pool.md)
+
+- [Recipes | Guide](/guide/recipes.md)
+- [与其他测试框架对比 | 指南](/guide/comparisons.md)
+
+### Test API
+
+- [Test](/api/test.md)
+- [describe](/api/describe.md)
+- [Hooks](/api/hooks.md)
+
+### 浏览器模式
+
+- [Context API | 浏览器模式](/api/browser/context.md)
+- [交互性 API | 浏览器模式](/api/browser/interactivity.md)
+- [Locators | 浏览器模式](/api/browser/locators.md)
+- [Assertion API | 浏览器模式](/api/browser/assertions.md)
+- [命令 | 浏览器模式](/api/browser/commands.md)
+
+### 高级 API
+
+- [Vitest API](/api/advanced/vitest.md)
+- [TestProject](/api/advanced/test-project.md)
+- [TestSpecification](/api/advanced/test-specification.md)
+- [TestCase](/api/advanced/test-case.md)
+- [TestSuite](/api/advanced/test-suite.md)
+- [TestModule](/api/advanced/test-module.md)
+- [TestCollection](/api/advanced/test-collection.md)
+- [插件 API](/api/advanced/plugin.md)
+- [运行器 API advanced](/api/advanced/runner.md)
+- [报告器 {#reporters}](/api/advanced/reporters.md)
+- [任务元数据 advanced](/api/advanced/metadata.md)
+- [Test Artifacts](/api/advanced/artifacts.md)
+
+### Other
+
+- [assert](/api/assert.md)
+- [assertType](/api/assert-type.md)
+- [expect](/api/expect.md)
+- [expectTypeOf](/api/expect-typeof.md)
+- [Mocks](/api/mock.md)
+- [Retry-ability | 浏览器模式](/guide/browser/retry-ability.md)
+- [Test API 索引 {#test-api-reference}](/api.md)
+- [Untitled](/README.md)
+- [Untitled](/api/advanced/import-example.md)
+- [Untitled](/guide/cli-table.md)
+- [update | Config](/config/update.md)
+- [Vi](/api/vi.md)
+- [使用插件 | 指南](/guide/using-plugins.md)
+- [浏览器配置 | 配置](/config/browser.md)
+- [管理 Vitest 配置文件](/config/file.md)
+- [自定义运行池](/advanced/pool.md)
