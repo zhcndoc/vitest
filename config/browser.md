@@ -93,6 +93,7 @@ export default defineConfig({
 - [`browser.screenshotDirectory`](#browser-screenshotdirectory)
 - [`browser.screenshotFailures`](#browser-screenshotfailures)
 - [`browser.provider`](#browser-provider)
+- [`browser.detailsPanelPosition`](#browser-detailspanelposition)
 
 在底层，Vitest 将这些实例转换为共享单个 Vite 服务器的单独 [测试项目](/api/advanced/test-project)，以获得更好的缓存性能。
 
@@ -219,6 +220,14 @@ export interface BrowserProvider {
 - **CLI:** `--browser.ui=false`
 
 是否应将 Vitest UI 注入页面。默认情况下，在开发期间注入 UI iframe。
+
+## browser.detailsPanelPosition
+
+- **Type:** `'right' | 'bottom'`
+- **Default:** `'right'`
+- **CLI:** `--browser.detailsPanelPosition=bottom`, `--browser.detailsPanelPosition=right`
+
+Controls the default position of the details panel in the Vitest UI when running browser tests. See [`browser.detailsPanelPosition`](/config/browser/detailspanelposition) for more details.
 
 ## browser.viewport
 

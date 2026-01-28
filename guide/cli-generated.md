@@ -13,10 +13,17 @@
 
 ### update
 
+<<<<<<< HEAD
 - **命令行终端:** `-u, --update`
 - **配置:** [update](/config/update)
 
 更新快照
+=======
+- **CLI:** `-u, --update [type]`
+- **Config:** [update](/config/update)
+
+Update snapshot (accepts boolean, "new" or "all")
+>>>>>>> cab0eecf1e6b75209665d8cd596aef7969948543
 
 ### watch
 
@@ -345,6 +352,13 @@ Run all tests in a specific browser. Some browsers are only available for specif
 - **配置:** [browser.ui](/config/browser/ui)
 
 运行测试时显示 Vitest UI (默认值: `!process.env.CI`)
+
+### browser.detailsPanelPosition
+
+- **CLI:** `--browser.detailsPanelPosition <position>`
+- **Config:** [browser.detailsPanelPosition](/config/browser/detailspanelposition)
+
+Default position for the details panel in browser mode. Either `right` (horizontal split) or `bottom` (vertical split) (default: `right`)
 
 ### browser.fileParallelism
 
