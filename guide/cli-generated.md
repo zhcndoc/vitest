@@ -13,17 +13,10 @@
 
 ### update
 
-<<<<<<< HEAD
-- **命令行终端:** `-u, --update`
+- **命令行终端:** `-u, --update [type]`
 - **配置:** [update](/config/update)
 
-更新快照
-=======
-- **CLI:** `-u, --update [type]`
-- **Config:** [update](/config/update)
-
-Update snapshot (accepts boolean, "new" or "all")
->>>>>>> cab0eecf1e6b75209665d8cd596aef7969948543
+更新快照（接受 boolean, "new" 或 "all"）
 
 ### watch
 
@@ -352,6 +345,8 @@ Run all tests in a specific browser. Some browsers are only available for specif
 - **配置:** [browser.ui](/config/browser/ui)
 
 运行测试时显示 Vitest UI (默认值: `!process.env.CI`)
+
+<!-- TODO: translation -->
 
 ### browser.detailsPanelPosition
 

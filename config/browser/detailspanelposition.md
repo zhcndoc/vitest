@@ -3,6 +3,8 @@ title: browser.detailsPanelPosition | Config
 outline: deep
 ---
 
+<!-- TODO: translation -->
+
 # browser.detailsPanelPosition
 
 - **Type:** `'right' | 'bottom'`

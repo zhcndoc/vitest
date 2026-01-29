@@ -3,6 +3,8 @@ title: update | Config
 outline: deep
 ---
 
+<!-- TODO: translation -->
+
 # update <CRoot /> {#update}
 
 - **Type:** `boolean | 'new' | 'all'`

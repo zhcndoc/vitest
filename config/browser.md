@@ -221,6 +221,8 @@ export interface BrowserProvider {
 
 是否应将 Vitest UI 注入页面。默认情况下，在开发期间注入 UI iframe。
 
+<!-- TODO: translation -->
+
 ## browser.detailsPanelPosition
 
 - **Type:** `'right' | 'bottom'`
