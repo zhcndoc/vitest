@@ -70,6 +70,20 @@
 
 设置为 true 时，如果端口已被使用，则退出，而不是自动尝试下一个可用端口
 
+### api.allowExec
+
+- **CLI:** `--api.allowExec`
+- **Config:** [api.allowExec](/config/api#api-allowexec)
+
+Allow API to execute code. (Be careful when enabling this option in untrusted environments)
+
+### api.allowWrite
+
+- **CLI:** `--api.allowWrite`
+- **Config:** [api.allowWrite](/config/api#api-allowwrite)
+
+Allow API to edit files. (Be careful when enabling this option in untrusted environments)
+
 ### silent
 
 - **命令行终端:** `--silent [value]`
@@ -331,6 +345,20 @@ Run all tests in a specific browser. Some browsers are only available for specif
 - **配置:** [browser.api.strictPort](/config/browser/api#api-strictport)
 
 设置为 true 时，如果端口已被使用，则退出，而不是自动尝试下一个可用端口
+
+### browser.api.allowExec
+
+- **CLI:** `--browser.api.allowExec`
+- **Config:** [browser.api.allowExec](/config/browser/api#api-allowexec)
+
+Allow API to execute code. (Be careful when enabling this option in untrusted environments)
+
+### browser.api.allowWrite
+
+- **CLI:** `--browser.api.allowWrite`
+- **Config:** [browser.api.allowWrite](/config/browser/api#api-allowwrite)
+
+Allow API to edit files. (Be careful when enabling this option in untrusted environments)
 
 ### browser.isolate
 
@@ -853,10 +881,10 @@ Enable caching of modules on the file system between reruns.
 
 ### experimental.importDurations.print
 
-- **CLI:** `--experimental.importDurations.print`
+- **CLI:** `--experimental.importDurations.print <boolean|on-warn>`
 - **Config:** [experimental.importDurations.print](/config/experimental#experimental-importdurations-print)
 
-Print import breakdown to CLI terminal after tests finish (default: false).
+When to print import breakdown to CLI terminal. Use `true` to always print, `false` to never print, or `on-warn` to print only when imports exceed the warn threshold (default: false).
 
 ### experimental.importDurations.limit
 
@@ -864,6 +892,27 @@ Print import breakdown to CLI terminal after tests finish (default: false).
 - **Config:** [experimental.importDurations.limit](/config/experimental#experimental-importdurations-limit)
 
 Maximum number of imports to collect and display (default: 0, or 10 if print or UI is enabled).
+
+### experimental.importDurations.failOnDanger
+
+- **CLI:** `--experimental.importDurations.failOnDanger`
+- **Config:** [experimental.importDurations.failOnDanger](/config/experimental#experimental-importdurations-failondanger)
+
+Fail the test run if any import exceeds the danger threshold (default: false).
+
+### experimental.importDurations.thresholds.warn
+
+- **CLI:** `--experimental.importDurations.thresholds.warn <number>`
+- **Config:** [experimental.importDurations.thresholds.warn](/config/experimental#experimental-importdurations-thresholds-warn)
+
+Warning threshold - imports exceeding this are shown in yellow/orange (default: 100).
+
+### experimental.importDurations.thresholds.danger
+
+- **CLI:** `--experimental.importDurations.thresholds.danger <number>`
+- **Config:** [experimental.importDurations.thresholds.danger](/config/experimental#experimental-importdurations-thresholds-danger)
+
+Danger threshold - imports exceeding this are shown in red (default: 500).
 
 ### experimental.viteModuleRunner
 
