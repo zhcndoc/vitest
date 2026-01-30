@@ -17,6 +17,9 @@ outline: deep
 
 ::: tip
 此 API 遵循 [`server.fs`](https://vitejs.dev/config/server-options.html#server-fs-allow) 出于安全原因的限制。
+
+<!-- TODO: translation -->
+If [`browser.api.allowWrite`](/config/browser/api) or [`api.allowWrite`](/config/api#api-allowwrite) are disabled, `writeFile` and `removeFile` functions won't do anything.
 :::
 
 ```ts

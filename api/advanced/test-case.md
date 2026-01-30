@@ -143,8 +143,15 @@ test('the validation works correctly', ({ task }) => {
   task.meta.decorated = false
 })
 ```
+<!-- TODO: translation reference history -->
 
-如果测试尚未完成运行，元数据将是一个空对象。
+If the test did not finish running yet, the meta will be an empty object, unless it has static meta:
+
+```ts
+test('the validation works correctly', { meta: { decorated: true } })
+```
+
+Since Vitest 4.1, Vitest inherits [`meta`](/api/advanced/test-suite#meta) property defined on the [suite](/api/advanced/test-suite).
 
 ## result
 

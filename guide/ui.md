@@ -107,7 +107,9 @@ npx vite preview --outDir ./html
 
 "Source" 窗口中的所有静态导入显示当前模块评估它们的总耗时。如果导入已在模块图中被评估过，它将显示 `0ms`，因为此时已被缓存。
 
-如果模块加载时间超过 500 毫秒，时间将以红色显示。如果模块加载时间超过 100 毫秒，时间将以橙色显示。
+<!-- TODO: translation reference history -->
+
+If the module took longer than the [`danger` threshold](/config/experimental#experimental-importdurations-thresholds) (default: 500ms) to load, the time will be displayed in red. If the module took longer than the [`warn` threshold](/config/experimental#experimental-importdurations-thresholds) (default: 100ms), the time will be displayed in orange.
 
 你可以点击导入源代码跳转到该模块并进一步遍历图表（注意下面的 `./support/assertions/index.ts`）。
 
@@ -144,8 +146,8 @@ The Module Graph tab also provides an Import Breakdown with a list of modules th
 
 分析列表包含自用耗时、总耗时以及相对于加载整个测试文件所花费时间的百分比。
 
-如果至少有一个文件加载时间超过 500 毫秒，"Show Import Breakdown" 图标将显示红色；如果至少有一个文件加载时间超过 100 毫秒，它将显示橙色。
+<!-- TODO: translation reference history -->
 
-<!-- TODO: translation -->
+The "Show Import Breakdown" icon will have a red color if there is at least one file that took longer than the [`danger` threshold](/config/experimental#experimental-importdurations-thresholds) (default: 500ms) to load, and it will be orange if there is at least one file that took longer than the [`warn` threshold](/config/experimental#experimental-importdurations-thresholds) (default: 100ms).
 
 You can use [`experimental.importDurations.limit`](/config/experimental#experimental-importdurationslimit) to control the number of imports displayed.
