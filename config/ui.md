@@ -3,6 +3,8 @@ title: ui | Config
 outline: deep
 ---
 
+<!-- TODO: translation -->
+
 # ui <CRoot />
 
 - **Type:** `boolean`

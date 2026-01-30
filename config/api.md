@@ -3,6 +3,8 @@ title: api | Config
 outline: deep
 ---
 
+<!-- TODO: translation -->
+
 # api
 
 - **Type:** `boolean | number | object`

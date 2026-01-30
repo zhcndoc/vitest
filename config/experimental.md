@@ -225,12 +225,8 @@ The `print` option controls CLI terminal output. The `limit` option controls how
 - Self：模块导入耗时，不包括静态导入；
 - Total：模块导入耗时，包括静态导入。请注意，这不包括当前模块的 `transform` 时间。
 
-<<<<<<< HEAD
 <img alt="终端中导入耗时明细的示例" src="/reporter-import-breakdown.png" />
-=======
-<img alt="An example of import breakdown in the terminal" src="/reporter-import-breakdown.png" img-dark />
-<img alt="An example of import breakdown in the terminal" src="/reporter-import-breakdown-light.png" img-light />
->>>>>>> 9bd9b3245caacaafea5b3a97030b59efc4b59517
+<img alt="终端中导入耗时明细的示例" src="/reporter-import-breakdown-light.png" />
 
 请注意，如果文件路径太长，Vitest 会从开头截断它，最多显示 45 个字符。
 
@@ -276,11 +272,7 @@ Duration thresholds in milliseconds for coloring and warnings:
 - `danger`: Threshold for red/danger color and `failOnDanger` (default: 500ms)
 
 ::: info
-<<<<<<< HEAD
-[Vitest UI](/guide/ui#import-breakdown) 会在至少一个文件加载时间超过 500 毫秒时自动显示导入耗时分析。你可手动将此选项设为 `false` 来禁用该功能。
-=======
-[Vitest UI](/guide/ui#import-breakdown) shows a breakdown of imports automatically if at least one file took longer than the `danger` threshold to load.
->>>>>>> 9bd9b3245caacaafea5b3a97030b59efc4b59517
+[Vitest UI](/guide/ui#import-breakdown) 会在至少一个文件的加载时间超过 `danger` 阈值时，自动显示导入耗时分析。
 :::
 
 <!-- TODO: translation -->

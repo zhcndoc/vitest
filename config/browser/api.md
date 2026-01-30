@@ -3,6 +3,8 @@ title: browser.api | Config
 outline: deep
 ---
 
+<!-- TODO: translation -->
+
 # browser.api
 
 - **Type:** `number | object`

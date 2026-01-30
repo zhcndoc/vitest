@@ -16,13 +16,10 @@ outline: deep
 默认情况下，Vitest 使用 `utf-8` 编码，但你可以使用选项覆盖它。
 
 ::: tip
-<<<<<<< HEAD
 此 API 遵循 [`server.fs`](https://vitejs.dev/config/server-options.html#server-fs-allow) 出于安全原因的限制。
-=======
-This API follows [`server.fs`](https://vitejs.dev/config/server-options.html#server-fs-allow) limitations for security reasons.
 
+<!-- TODO: translation -->
 If [`browser.api.allowWrite`](/config/browser/api) or [`api.allowWrite`](/config/api#api-allowwrite) are disabled, `writeFile` and `removeFile` functions won't do anything.
->>>>>>> 9bd9b3245caacaafea5b3a97030b59efc4b59517
 :::
 
 ```ts

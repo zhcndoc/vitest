@@ -70,6 +70,8 @@
 
 设置为 true 时，如果端口已被使用，则退出，而不是自动尝试下一个可用端口
 
+<!-- TODO: translation -->
+
 ### api.allowExec
 
 - **CLI:** `--api.allowExec`
@@ -345,6 +347,8 @@ Run all tests in a specific browser. Some browsers are only available for specif
 - **配置:** [browser.api.strictPort](/config/browser/api#api-strictport)
 
 设置为 true 时，如果端口已被使用，则退出，而不是自动尝试下一个可用端口
+
+<!-- TODO: translation -->
 
 ### browser.api.allowExec
 
