@@ -188,17 +188,35 @@ export default defineConfig({
 ```ts
 interface ImportDurationsOptions {
   /**
-   * Print import breakdown to CLI terminal after tests finish.
+   * When to print import breakdown to CLI terminal.
+   * - false: Never print (default)
+   * - true: Always print
+   * - 'on-warn': Print only when any import exceeds warn threshold
    */
-  print?: boolean
+  print?: boolean | 'on-warn'
+  /**
+   * Fail the test run if any import exceeds the danger threshold.
+   * When enabled and threshold exceeded, breakdown is always printed.
+   * @default false
+   */
+  failOnDanger?: boolean
   /**
    * Maximum number of imports to collect and display.
    */
   limit?: number
+  /**
+   * Duration thresholds in milliseconds for coloring and warnings.
+   */
+  thresholds?: {
+    /** Threshold for yellow/warning color. @default 100 */
+    warn?: number
+    /** Threshold for red/danger color and failOnDanger. @default 500 */
+    danger?: number
+  }
 }
 ```
 
-- **Default:** `{ print: false, limit: 0 }` (`limit` is 10 if `print` or UI is enabled)
+- **Default:** `{ print: false, failOnDanger: false, limit: 0, thresholds: { warn: 100, danger: 500 } }` (`limit` is 10 if `print` or UI is enabled)
 
 Configure import duration collection and display.
 
@@ -208,25 +226,53 @@ The `print` option controls CLI terminal output. The `limit` option controls how
 - Total：模块导入耗时，包括静态导入。请注意，这不包括当前模块的 `transform` 时间。
 
 <img alt="终端中导入耗时明细的示例" src="/reporter-import-breakdown.png" />
+<img alt="终端中导入耗时明细的示例" src="/reporter-import-breakdown-light.png" />
 
 请注意，如果文件路径太长，Vitest 会从开头截断它，最多显示 45 个字符。
 
 ### experimental.importDurations.print {#experimental-importdurationsprint}
 
+- **Type:** `boolean | 'on-warn'`
+- **Default:** `false`
+
+Controls when to print import breakdown to CLI terminal after tests finish. This only works with [`default`](/guide/reporters#default), [`verbose`](/guide/reporters#verbose), or [`tree`](/guide/reporters#tree) reporters.
+
+- `false`: Never print breakdown
+- `true`: Always print breakdown
+- `'on-warn'`: Print only when any import exceeds the `thresholds.warn` value
+
+### experimental.importDurations.failOnDanger {#experimental-importdurationsfailondanger}
+
 - **Type:** `boolean`
 - **Default:** `false`
 
-Print import breakdown to CLI terminal after tests finish. This only works with [`default`](/guide/reporters#default), [`verbose`](/guide/reporters#verbose), or [`tree`](/guide/reporters#tree) reporters.
+Fail the test run if any import exceeds the `thresholds.danger` value. When enabled and the threshold is exceeded, the breakdown is always printed regardless of the `print` setting.
+
+This is useful for enforcing import performance budgets in CI:
+
+```bash
+vitest --experimental.importDurations.failOnDanger
+```
 
 ### experimental.importDurations.limit {#experimental-importdurationslimit}
 
 - **Type:** `number`
-- **Default:** `0` (or `10` if `print` or UI is enabled)
+- **Default:** `0` (or `10` if `print`, `failOnDanger`, or UI is enabled)
 
 Maximum number of imports to collect and display in CLI output, [Vitest UI](/guide/ui#import-breakdown), and third-party reporters.
 
+### experimental.importDurations.thresholds {#experimental-importdurationsthresholds}
+
+- **Type:** `{ warn?: number; danger?: number }`
+- **Default:** `{ warn: 100, danger: 500 }`
+
+Duration thresholds in milliseconds for coloring and warnings:
+
+- `warn`: Threshold for yellow/warning color (default: 100ms)
+- `danger`: Threshold for red/danger color and `failOnDanger` (default: 500ms)
+
 ::: info
-[Vitest UI](/guide/ui#import-breakdown) 会在至少一个文件加载时间超过 500 毫秒时自动显示导入耗时分析。你可手动将此选项设为 `false` 来禁用该功能。
+[Vitest UI](/guide/ui#import-breakdown) 会在至少一个文件的加载时间超过 `danger` 阈值时，自动显示导入耗时分析。
 :::
 
 <!-- TODO: translation -->

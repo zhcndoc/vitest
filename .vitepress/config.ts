@@ -648,6 +648,10 @@ export default ({ mode }: { mode: string }) => {
                 link: '/config/browser/ui',
               },
               {
+                text: 'browser.detailsPanelPosition',
+                link: '/config/browser/detailspanelposition',
+              },
+              {
                 text: 'browser.viewport',
                 link: '/config/browser/viewport',
               },
@@ -951,7 +955,7 @@ export default ({ mode }: { mode: string }) => {
           {
             items: [
               {
-                text: 'Recipes',
+                text: '测试技巧',
                 link: '/guide/recipes',
               },
               {

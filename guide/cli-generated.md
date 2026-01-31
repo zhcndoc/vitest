@@ -13,10 +13,10 @@
 
 ### update
 
-- **命令行终端:** `-u, --update`
+- **命令行终端:** `-u, --update [type]`
 - **配置:** [update](/config/update)
 
-更新快照
+更新快照（接受 boolean, "new" 或 "all"）
 
 ### watch
 
@@ -69,6 +69,22 @@
 - **命令行终端:** `--api.strictPort`
 
 设置为 true 时，如果端口已被使用，则退出，而不是自动尝试下一个可用端口
+
+<!-- TODO: translation -->
+
+### api.allowExec
+
+- **CLI:** `--api.allowExec`
+- **Config:** [api.allowExec](/config/api#api-allowexec)
+
+Allow API to execute code. (Be careful when enabling this option in untrusted environments)
+
+### api.allowWrite
+
+- **CLI:** `--api.allowWrite`
+- **Config:** [api.allowWrite](/config/api#api-allowwrite)
+
+Allow API to edit files. (Be careful when enabling this option in untrusted environments)
 
 ### silent
 
@@ -332,6 +348,22 @@ Run all tests in a specific browser. Some browsers are only available for specif
 
 设置为 true 时，如果端口已被使用，则退出，而不是自动尝试下一个可用端口
 
+<!-- TODO: translation -->
+
+### browser.api.allowExec
+
+- **CLI:** `--browser.api.allowExec`
+- **Config:** [browser.api.allowExec](/config/browser/api#api-allowexec)
+
+Allow API to execute code. (Be careful when enabling this option in untrusted environments)
+
+### browser.api.allowWrite
+
+- **CLI:** `--browser.api.allowWrite`
+- **Config:** [browser.api.allowWrite](/config/browser/api#api-allowwrite)
+
+Allow API to edit files. (Be careful when enabling this option in untrusted environments)
+
 ### browser.isolate
 
 - **命令行终端:** `--browser.isolate`
@@ -345,6 +377,15 @@ Run all tests in a specific browser. Some browsers are only available for specif
 - **配置:** [browser.ui](/config/browser/ui)
 
 运行测试时显示 Vitest UI (默认值: `!process.env.CI`)
+
+<!-- TODO: translation -->
+
+### browser.detailsPanelPosition
+
+- **CLI:** `--browser.detailsPanelPosition <position>`
+- **Config:** [browser.detailsPanelPosition](/config/browser/detailspanelposition)
+
+Default position for the details panel in browser mode. Either `right` (horizontal split) or `bottom` (vertical split) (default: `right`)
 
 ### browser.fileParallelism
 
@@ -844,10 +885,10 @@ Enable caching of modules on the file system between reruns.
 
 ### experimental.importDurations.print
 
-- **CLI:** `--experimental.importDurations.print`
+- **CLI:** `--experimental.importDurations.print <boolean|on-warn>`
 - **Config:** [experimental.importDurations.print](/config/experimental#experimental-importdurations-print)
 
-Print import breakdown to CLI terminal after tests finish (default: false).
+When to print import breakdown to CLI terminal. Use `true` to always print, `false` to never print, or `on-warn` to print only when imports exceed the warn threshold (default: false).
 
 ### experimental.importDurations.limit
 
@@ -855,6 +896,27 @@ Print import breakdown to CLI terminal after tests finish (default: false).
 - **Config:** [experimental.importDurations.limit](/config/experimental#experimental-importdurations-limit)
 
 Maximum number of imports to collect and display (default: 0, or 10 if print or UI is enabled).
+
+### experimental.importDurations.failOnDanger
+
+- **CLI:** `--experimental.importDurations.failOnDanger`
+- **Config:** [experimental.importDurations.failOnDanger](/config/experimental#experimental-importdurations-failondanger)
+
+Fail the test run if any import exceeds the danger threshold (default: false).
+
+### experimental.importDurations.thresholds.warn
+
+- **CLI:** `--experimental.importDurations.thresholds.warn <number>`
+- **Config:** [experimental.importDurations.thresholds.warn](/config/experimental#experimental-importdurations-thresholds-warn)
+
+Warning threshold - imports exceeding this are shown in yellow/orange (default: 100).
+
+### experimental.importDurations.thresholds.danger
+
+- **CLI:** `--experimental.importDurations.thresholds.danger <number>`
+- **Config:** [experimental.importDurations.thresholds.danger](/config/experimental#experimental-importdurations-thresholds-danger)
+
+Danger threshold - imports exceeding this are shown in red (default: 500).
 
 ### experimental.viteModuleRunner
 

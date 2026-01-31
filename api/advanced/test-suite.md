@@ -199,23 +199,28 @@ describe('collection failed', () => {
 ```ts
 function meta(): TaskMeta
 ```
-在执行或收集过程中附加到套件的自定义[元数据](/api/advanced/metadata)。在测试运行期间，可以通过向 `task.meta` 对象分配属性来附加 meta：
+在执行或收集过程中附加到套件的自定义 [元数据](/api/advanced/metadata)。在测试运行期间，可以通过向 `task.meta` 对象分配属性来附加 meta：
 
-```ts {6,11}
+<!-- TODO: translation reference history -->
+
+Custom [metadata](/api/advanced/metadata) that was attached to the suite during its execution or collection. Since Vitest 4.1, the meta can be attached by providing a `meta` object during test collection:
+
+```ts {7,10}
 import { describe, test, TestRunner } from 'vitest'
 
-describe('the validation works correctly', () => {
-  // 在收集期间分配 "decorated"
-  const { suite } = TestRunner.getCurrentSuite()
-  suite!.meta.decorated = true
-
+describe('the validation works correctly', { meta: { decorated: true } }, () => {
   test('some test', ({ task }) => {
     // 在测试运行期间分配 "decorated"，它将可用
     // 仅在 onTestCaseReady hook 中
     task.suite.meta.decorated = false
+
+    // tests inherit suite's metadata
+    task.meta.decorated === true
   })
 })
 ```
+
+Note that suite metadata will be inherited by tests since Vitest 4.1.
 
 :::tip
 如果元数据是在收集阶段（而非 `test` 函数内部）附加的，那么它将在 available 的 [`onTestModuleCollected`](./reporters#ontestmodulecollected) 中可用。
