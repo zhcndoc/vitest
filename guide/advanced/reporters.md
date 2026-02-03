@@ -4,7 +4,7 @@
 这是一个高级 API。如果我们只是想配置内置报告器，请阅读 [报告器](/guide/reporters) 指南。
 :::
 
-我们可以从 `vitest/reporters` 导入报告器并扩展它们来创建自定义报告器。
+我们可以从 `vitest/node` 导入报告器并扩展它们来创建自定义报告器。
 
 ## 扩展内置报告器 {#extending-built-in-reporters}
 
@@ -17,30 +17,26 @@ export default class MyDefaultReporter extends DefaultReporter {
   // 在此实现自定义功能
 }
 ```
+<!-- TODO: translation -->
 
-当然，我们可以从头开始创建报告器。只需扩展 `BaseReporter` 类并实现我们需要的方法即可。
+::: warning
+However, note that exposed reports are not considered stable and can change the shape of their API within a minor version.
+:::
+
+Of course, you can create your reporter from scratch. Just implement the [`Reporter`](/api/advanced/reporters) interface:
 
 这是自定义报告器的示例：
-
-```ts [custom-reporter.js]
-import { BaseReporter } from 'vitest/node'
-
-export default class CustomReporter extends BaseReporter {
-  onTestModuleCollected() {
-    const files = this.ctx.state.getFiles(this.watchFilters)
-    this.reportTestSummary(files)
-  }
-}
-```
-
-或者实现 `Reporter` 接口：
 
 ```ts [custom-reporter.js]
 import type { Reporter } from 'vitest/node'
 
 export default class CustomReporter implements Reporter {
-  onTestModuleCollected() {
-    // print something
+  onTestModuleCollected(testModule) {
+    console.log(testModule.moduleId, 'is finished')
+
+    for (const test of testModule.children.allTests()) {
+      console.log(test.name, test.result().state)
+    }
   }
 }
 ```
@@ -60,9 +56,9 @@ export default defineConfig({
 
 ## 报告的任务 {#reported-tasks}
 
-建议使用 Reported Tasks API，而不是使用报告器接收到的任务。
+<!-- TODO: translation -->
 
-我们可以通过调用 `vitest.state.getReportedEntity(runnerTask)` 访问此 API：
+Reported [events](/api/advanced/reporters) receive tasks for [tests](/api/advanced/test-case), [suites](/api/advanced/test-suite) and [modules](/api/advanced/test-module):
 
 ```ts twoslash
 import type { Reporter, TestModule } from 'vitest/node'
@@ -94,10 +90,6 @@ class MyReporter implements Reporter {
 7. `TapFlatReporter`
 8. `HangingProcessReporter`
 9. `TreeReporter`
-
-### 基础抽象报告器: {#base-abstract-reporters}
-
-1. `BaseReporter`
 
 ### 接口报告器: {#interface-reporters}
 
