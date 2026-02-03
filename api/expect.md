@@ -782,7 +782,11 @@ test('the number of elements must match exactly', () => {
 
 ## toThrowError
 
+<<<<<<< HEAD
 - **类型:** `(received: any) => Awaitable<void>`
+=======
+- **Type:** `(expected?: any) => Awaitable<void>`
+>>>>>>> 6777bfb4d65ef81facc3a8f09bbe129e90871655
 
 - **别名:** `toThrow`
 
@@ -790,9 +794,15 @@ test('the number of elements must match exactly', () => {
 
 我们可以提供一个可选参数来测试是否抛出了特定的错误：
 
+<<<<<<< HEAD
 - `RegExp`: 错误消息匹配该模式
 - `string`: 错误消息包含该子字符串
 - `Error`, `AsymmetricMatcher`: 与接收到的对象进行比较，类似于 `toEqual(received)`
+=======
+- `RegExp`: error message matches the pattern
+- `string`: error message includes the substring
+- any other value: compare with thrown value using deep equality (similar to `toEqual`)
+>>>>>>> 6777bfb4d65ef81facc3a8f09bbe129e90871655
 
 :::tip
 必须将代码包装在一个函数中，否则错误将无法被捕获，测试将失败。
@@ -851,6 +861,17 @@ test('throws on pineapples', async () => {
 })
 ```
 
+:::
+
+:::tip
+You can also test non-Error values that are thrown:
+
+```ts
+test('throws non-Error values', () => {
+  expect(() => { throw 42 }).toThrowError(42)
+  expect(() => { throw { message: 'error' } }).toThrowError({ message: 'error' })
+})
+```
 :::
 
 ## toMatchSnapshot
