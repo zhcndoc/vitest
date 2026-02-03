@@ -433,12 +433,12 @@ export default defineConfig({
 })
 ```
 
-### 使用自定义元素打印阴影根的快照 {#snapshots-using-custom-elements-print-the-shadow-root}
+### 使用自定义元素打印 Shadow Root 快照 {#snapshots-using-custom-elements-print-the-shadow-root}
 
 在 Vitest 4.0 中，包含自定义元素的快照将打印阴影根内容。要恢复以前的行为，请将 [`printShadowRoot` option](/config/#snapshotformat) 设为`false`。
 
 ```js{15-22}
-// before Vitest 4.0
+// 自 Vitest 4.0 前
 exports[`custom element with shadow root 1`] = `
 "<body>
   <div>
@@ -447,7 +447,7 @@ exports[`custom element with shadow root 1`] = `
 </body>"
 `
 
-// after Vitest 4.0
+// 自 Vitest 4.0 后
 exports[`custom element with shadow root 1`] = `
 "<body>
   <div>

@@ -125,50 +125,21 @@ it('stop request when test times out', async ({ signal }) => {
 
 [`onTestFinished`](/api/hooks#ontestfailed) 与当前测试用例绑定。当你并发执行多个测试并希望只对某个特定测试进行特殊处理时，这个 API 会非常有帮助。
 
+<!-- TODO: translation -->
+
 ## 扩展测试上下文 {#extend-test-context}
 
-<<<<<<< HEAD
-Vitest 提供了两种不同的方式来帮助你扩展测试上下文。
-=======
 Vitest allows you to extend the test context with custom fixtures using `test.extend`.
->>>>>>> 47a54389b1993fcc0b8e5ade4f6dcedeba9ad8f4
 
 The `test.extend` method lets you create a custom test API with fixtures - reusable values that are automatically set up and torn down for your tests. Vitest supports two syntaxes: the builder pattern (recommended) and the object syntax (Playwright-compatible).
 
-<<<<<<< HEAD
-与 [Playwright](https://playwright.dev/docs/api/class-test#test-extend) 一样，你可以使用此方法通过自定义装置定义你自己的 `test` API，并在任何地方重复使用它。
-
-比如说，我们先创建一个包含 `todos` 和 `archive` 两个夹具的 `test` 收集器。
-=======
 ### Builder Pattern <Version>4.1.0</Version> {#builder-pattern}
 
 The builder pattern is the recommended way to define fixtures because it provides automatic type inference. TypeScript infers the type of each fixture from its return value, so you don't need to declare types manually.
->>>>>>> 47a54389b1993fcc0b8e5ade4f6dcedeba9ad8f4
 
 ```ts [my-test.ts]
 import { test as baseTest } from 'vitest'
 
-<<<<<<< HEAD
-const todos = []
-const archive = []
-
-export const test = baseTest.extend({
-  todos: async ({}, use) => {
-    // 在每次测试函数运行之前设置固定装置
-    todos.push(1, 2, 3)
-
-    // 使用固定装置的值
-    await use(todos)
-
-    // 在每次测试函数运行之后清除固定装置
-    todos.length = 0
-  },
-  archive,
-})
-```
-
-然后我们就可以导入使用了。
-=======
 export const test = baseTest
   // Simple value - type is inferred as { port: number; host: string }
   .extend('config', { port: 3000, host: 'localhost' })
@@ -180,7 +151,6 @@ export const test = baseTest
 ```
 
 Then use it in your tests:
->>>>>>> 47a54389b1993fcc0b8e5ade4f6dcedeba9ad8f4
 
 ```ts [my-test.test.ts]
 import { expect } from 'vitest'
@@ -195,23 +165,13 @@ test('server uses correct port', ({ config, server }) => {
 })
 ```
 
-<<<<<<< HEAD
-我们还可以通过对 `test` 进行扩展来新增夹具或覆盖已有的夹具配置。
-=======
 #### Setup and Cleanup with `onCleanup`
 
 For fixtures that need setup or cleanup logic, use a function. The `onCleanup` callback registers teardown logic that runs after the fixture's scope ends:
->>>>>>> 47a54389b1993fcc0b8e5ade4f6dcedeba9ad8f4
 
 ```ts
 import { test as baseTest } from 'vitest'
 
-<<<<<<< HEAD
-export const test = todosTest.extend({
-  settings: {
-    // ...
-  },
-=======
 export const test = baseTest
   .extend('tempFile', async ({}, { onCleanup }) => {
     const filePath = `/tmp/test-${Date.now()}.txt`
@@ -364,14 +324,10 @@ export const test = baseTest.extend({
     await page.close()
   },
   baseUrl: 'http://localhost:3000'
->>>>>>> 47a54389b1993fcc0b8e5ade4f6dcedeba9ad8f4
 })
 ```
 #### 初始化固定装置 {#fixture-initialization}
 
-<<<<<<< HEAD
-Vitest 运行器将智能地初始化你的固定装置并根据使用情况将它们注入到测试上下文中。
-=======
 The key difference from the builder pattern is the `use()` callback pattern for cleanup:
 
 ```ts
@@ -453,7 +409,6 @@ const test = baseTest.extend({
 ### Fixture Initialization
 
 Vitest runner will smartly initialize your fixtures and inject them into the test context based on usage.
->>>>>>> 47a54389b1993fcc0b8e5ade4f6dcedeba9ad8f4
 
 ```ts
 import { test as baseTest } from 'vitest'
@@ -467,18 +422,6 @@ const test = baseTest
     return createCache()
   })
 
-<<<<<<< HEAD
-// todos 不会运行
-test('skip', () => {})
-test('skip', ({ archive }) => {})
-
-// todos 将会运行
-test('run', ({ todos }) => {})
-```
-
-::: warning
-在固定装置中使用 `test.extend()` 时，需要始终使用对象解构模式 `{ todos }` 来访问固定装置函数和测试函数中的上下文。
-=======
 // database will not run
 test('no fixtures needed', () => {})
 test('only cache', ({ cache }) => {})
@@ -489,7 +432,6 @@ test('needs database', ({ database }) => {})
 
 ::: warning
 When using `test.extend()` with fixtures, you should always use the object destructuring pattern `{ database }` to access context both in fixture function and test function.
->>>>>>> 47a54389b1993fcc0b8e5ade4f6dcedeba9ad8f4
 
 ```ts
 test('context must be destructured', (context) => { // [!code --]
@@ -502,39 +444,13 @@ test('context must be destructured', ({ database }) => { // [!code ++]
 ```
 :::
 
-<<<<<<< HEAD
-#### 自动化装置 {#automatic-fixture}
-
-Vitest 还支持 fixture 的元组语法，允许你传递每个 fixture 的选项。例如，你可以使用它来显式初始化固定装置，即使它没有在测试中使用。
-=======
 ### Extending Extended Tests
 
 You can extend an already extended test to add more fixtures:
->>>>>>> 47a54389b1993fcc0b8e5ade4f6dcedeba9ad8f4
 
 ```ts
 import { test as dbTest } from './my-test.js'
 
-<<<<<<< HEAD
-const test = base.extend({
-  fixture: [
-    async ({}, use) => {
-      // 这个函数将会运行
-      setup()
-      await use()
-      teardown()
-    },
-    { auto: true }, // 标记为自动装置
-  ],
-})
-
-test('works correctly')
-```
-
-#### 默认的装置 {#default-fixture}
-
-从 Vitest 3 开始，你可以在不同的 [项目](/guide/projects) 中提供不同的值。要启用此功能，请在选项中传递 `{ injected: true }`。如果在 [项目配置](/config/#provide) 中未指定该键，则将使用默认值。
-=======
 export const test = dbTest
   .extend('user', ({ database }) => {
     return database.createUser()
@@ -738,25 +654,13 @@ This provides the same compile-time safety as the builder pattern, catching scop
 ### Default Fixture (Injected)
 
 Since Vitest 3, you can provide different values in different [projects](/guide/projects). To enable this, pass `{ injected: true }` in the options. If the key is not specified in the [project configuration](/config/#provide), the default value will be used.
->>>>>>> 47a54389b1993fcc0b8e5ade4f6dcedeba9ad8f4
 
 :::code-group
 ```ts [fixtures.test.ts]
 import { test as baseTest } from 'vitest'
 
-<<<<<<< HEAD
-const test = base.extend({
-  url: [
-    // 如果配置中未定义"url"，则为默认值
-    '/default',
-    // 将夹具标记为"注入"以允许覆盖
-    { injected: true },
-  ],
-})
-=======
 const test = baseTest
   .extend('url', { injected: true }, '/default')
->>>>>>> 47a54389b1993fcc0b8e5ade4f6dcedeba9ad8f4
 
 test('works correctly', ({ url }) => {
   // 在"project-new"中，url是"/default"
@@ -797,11 +701,6 @@ export default defineConfig({
 ```
 :::
 
-<<<<<<< HEAD
-#### 将值限定到套件范围 <Version>3.1.0</Version> {#scoping-values-to-suite}
-
-从 Vitest 3.1 开始，你可以使用 `test.scoped` API 来按套件及其子项覆盖上下文值：
-=======
 ### Overriding Fixture Values <Version>4.1.0</Version> {#overriding-fixture-values}
 
 You can override fixture values for a specific suite and its children using `test.override`. This is useful when you need different fixture values for different test scenarios.
@@ -811,7 +710,6 @@ Vitest will automatically inherit the options, if they are not provided when ove
 :::
 
 #### Builder Pattern (Recommended)
->>>>>>> 47a54389b1993fcc0b8e5ade4f6dcedeba9ad8f4
 
 ```ts
 import { test as baseTest, describe, expect } from 'vitest'
@@ -830,21 +728,6 @@ describe('production environment', () => {
   })
 })
 
-<<<<<<< HEAD
-describe('use scoped values', () => {
-  test.scoped({ dependency: 'new' })
-
-  test('uses scoped value', ({ dependant }) => {
-    // `dependant` 使用了新的被覆盖的值，该值是限定范围的
-    // 到此套件中的所有测试
-    expect(dependant).toEqual({ dependency: 'new' })
-  })
-
-  describe('keeps using scoped value', () => {
-    test('uses scoped value', ({ dependant }) => {
-      // 嵌套套件继承了该值
-      expect(dependant).toEqual({ dependency: 'new' })
-=======
 describe('with custom server', () => {
   // Override with a function that can access other fixtures
   test.override('server', ({ config }) => {
@@ -931,145 +814,16 @@ describe('level 1', () => {
 
     test('uses level 2 value', ({ value }) => {
       expect(value).toBe('two')
->>>>>>> 47a54389b1993fcc0b8e5ade4f6dcedeba9ad8f4
     })
   })
 
-<<<<<<< HEAD
-test('keep using the default values', ({ dependant }) => {
-  // `dependency` 使用的是默认值
-  // 在使用 `.scoped` 的套件外部的值
-  expect(dependant).toEqual({ dependency: 'default' })
-})
-```
-
-如果你有一个依赖于动态变量（如数据库连接）的上下文值，这个 API 特别有用：
-
-```ts
-const test = baseTest.extend<{
-  db: Database
-  schema: string
-}>({
-  db: async ({ schema }, use) => {
-    const db = await createDb({ schema })
-    await use(db)
-    await cleanup(db)
-  },
-  schema: '',
-})
-
-describe('one type of schema', () => {
-  test.scoped({ schema: 'schema-1' })
-
-  // ... tests
-})
-
-describe('another type of schema', () => {
-  test.scoped({ schema: 'schema-2' })
-
-  // ... tests
-})
-```
-
-#### 作用域上下文 <Version>3.2.0</Version> {#per-scope-context-3-2-0}
-
-你可以定义每个文件或每个工作线程只初始化一次的上下文。它的初始化方式与带对象参数的常规夹具相同：
-
-```ts
-import { test as baseTest } from 'vitest'
-
-export const test = baseTest.extend({
-  perFile: [
-    ({}, use) => use([]),
-    { scope: 'file' },
-  ],
-  perWorker: [
-    ({}, use) => use([]),
-    { scope: 'worker' },
-  ],
-})
-```
-
-该值在任何测试第一次访问它时初始化，除非夹具选项设置了 `auto: true`， 在这种情况下，该值在任何测试运行之前就已初始化。
-
-```ts
-const test = baseTest.extend({
-  perFile: [
-    ({}, use) => use([]),
-    {
-      scope: 'file',
-      // 在任何测试之前总是运行这个钩子
-      auto: true
-    },
-  ],
-=======
   test('still uses level 1 value', ({ value }) => {
     expect(value).toBe('one')
   })
->>>>>>> 47a54389b1993fcc0b8e5ade4f6dcedeba9ad8f4
 })
 ```
 
 ::: warning
-<<<<<<< HEAD
-内置的 [`task`](#task) 测试上下文在文件作用域或工作线程作用域的 fixtures 中 **不可用**。这些 fixtures 接收的是不同的上下文对象（文件或工作线程上下文），其中不包含 `task` 等测试特定属性。
-
-如需访问文件路径等文件级元数据，请改用 `expect.getState().testPath`。
-:::
-
-`worker` 作用域将为每个工作线程运行一次 fixtures。运行的工作线程数量取决于多种因素。默认情况下，每个文件在独立的工作线程中运行，因此 `file` 和 `worker` 作用域的行为方式相同。
-
-但是，如果你禁用 [隔离](/config/#isolate) 配置，则工作线程数量将受到 [`maxWorkers`](/config/#maxworkers) 配置限制。
-
-请注意，在 `vmThreads` 或 `vmForks` 中运行测试时，指定 `scope: 'worker'` 的工作方式与 `scope: 'file'` 相同。这个限制存在是因为每个测试文件都有自己的 VM 上下文，所以如果 Vitest 只初始化一次，一个上下文可能会泄漏到另一个上下文中，并创建许多引用不一致的问题（例如，同一个类的实例会引用不同的构造函数）。
-
-#### TypeScript
-
-要为所有自定义上下文提供固定装置类型，你可以将固定装置类型作为泛型(generic)传递。
-
-```ts
-interface MyFixtures {
-  todos: number[]
-  archive: number[]
-}
-
-const test = baseTest.extend<MyFixtures>({
-  todos: [],
-  archive: [],
-})
-
-test('types are defined correctly', ({ todos, archive }) => {
-  expectTypeOf(todos).toEqualTypeOf<number[]>()
-  expectTypeOf(archive).toEqualTypeOf<number[]>()
-})
-```
-
-::: info 类型推断
-请注意，Vitest 不支持在调用 `use` 函数时推断类型。在调用 `test.extend` 时，最好将整个上下文类型作为泛型类型传递：
-
-```ts
-import { test as baseTest } from 'vitest'
-
-const test = baseTest.extend<{
-  todos: number[]
-  schema: string
-}>({
-  todos: ({ schema }, use) => use([]),
-  schema: 'test'
-})
-
-test('types are correct', ({
-  todos, // number[]
-  schema, // string
-}) => {
-  // ...
-})
-```
-
-:::
-
-当使用 `test.extend` 时，扩展的 `test` 对象提供了类型安全的 `beforeEach` 和 `afterEach` 钩子，这些钩子能够识别新的上下文：
-=======
 Note that you cannot introduce new fixtures inside `test.override`. Extend the test context with `test.extend` instead.
 :::
 
@@ -1080,21 +834,14 @@ Note that you cannot introduce new fixtures inside `test.override`. Extend the t
 ### Type-Safe Hooks
 
 When using `test.extend`, the extended `test` object provides type-safe `beforeEach` and `afterEach` hooks that are aware of the new context:
->>>>>>> 47a54389b1993fcc0b8e5ade4f6dcedeba9ad8f4
 
 ```ts
 const test = baseTest
   .extend('counter', { value: 0, increment() { this.value++ } })
 
-<<<<<<< HEAD
-// 与全局钩子不同，这些钩子能够识别扩展的上下文
-test.beforeEach(({ todos }) => {
-  todos.push(1)
-=======
 // Unlike global hooks, these hooks are aware of the extended context
 test.beforeEach(({ counter }) => {
   counter.increment()
->>>>>>> 47a54389b1993fcc0b8e5ade4f6dcedeba9ad8f4
 })
 
 test.afterEach(({ counter }) => {

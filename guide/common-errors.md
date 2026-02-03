@@ -8,14 +8,8 @@ title: 常见错误 | 指南
 
 如果你收到一个 **module cannot be found** 的报错，则可能意味着几种不同情况：
 
-<<<<<<< HEAD
-- 1.你拼错了路径。确保路径正确。
-- 2.你可能依赖于 `tsconfig.json` 中的 `baseUrl`。默认情况下，Vite 不考虑 `tsconfig.json`，因此如果你依赖此行为，你可能需要自己安装 [`vite-tsconfig-paths`](https://www.npmjs.com/package/vite-tsconfig-paths) 。
-=======
-1. You misspelled the path. Make sure the path is correct.
-
-2. It's possible that you rely on `baseUrl` in your `tsconfig.json`. Vite doesn't take into account `tsconfig.json` by default, so you might need to install [`vite-tsconfig-paths`](https://www.npmjs.com/package/vite-tsconfig-paths) yourself, if you rely on this behavior.
->>>>>>> 47a54389b1993fcc0b8e5ade4f6dcedeba9ad8f4
+1. 你拼错了路径。确保路径正确。
+2. 你可能依赖于 `tsconfig.json` 中的 `baseUrl`。默认情况下，Vite 不考虑 `tsconfig.json`，因此如果你依赖此行为，你可能需要自己安装 [`vite-tsconfig-paths`](https://www.npmjs.com/package/vite-tsconfig-paths)。
 
 ```ts
 import tsconfigPaths from 'vite-tsconfig-paths'
@@ -33,11 +27,7 @@ export default defineConfig({
 + import helpers from '../src/helpers'
 ```
 
-<<<<<<< HEAD
-- 3. 确保你没有使用相对路径的 [别名](/config/#alias)。Vite 将它们视为相对于导入所在的文件而不是根目录。
-=======
-3. Make sure you don't have relative [aliases](/config/#alias). Vite treats them as relative to the file where the import is instead of the root.
->>>>>>> 47a54389b1993fcc0b8e5ade4f6dcedeba9ad8f4
+3. 确保你没有使用相对路径的 [别名](/config/#alias)。Vite 将它们视为相对于导入所在的文件而不是根目录。
 
 ```ts
 import { defineConfig } from 'vitest/config'
@@ -51,16 +41,13 @@ export default defineConfig({
   },
 })
 ```
+<!-- TODO: translation -->
 
 ## Failed to Terminate Worker
 
 当 NodeJS 的 fetch 与默认的 [`pool: 'threads'`](/config/#threads) 一起使用时，可能会发生此错误。问题可以在 [issue#3077](https://github.com/vitest-dev/vitest/issues/3077) 上进行持续更新。
 
-<<<<<<< HEAD
 作为解决方法，我们可以切换到 [`pool: 'forks'`](/config/#forks) 或 [`pool: 'vmForks'`](/config/#vmforks)。
-=======
-As a workaround, you can switch to [`pool: 'forks'`](/config/#forks) or [`pool: 'vmForks'`](/config/#vmforks).
->>>>>>> 47a54389b1993fcc0b8e5ade4f6dcedeba9ad8f4
 
 ::: code-group
 
@@ -136,11 +123,7 @@ You can learn more about Vite environments and Vitest environments in [`environm
 - `Abort trap: 6`
 - `internal error: entered unreachable code`
 
-<<<<<<< HEAD
 在这些情况下，原生模块可能不是为多线程安全而构建的。在解决方案中，你可以切换到 `pool: 'forks'`，它在多个 `node:child_process` 而不是多个 `node:worker_threads` 中运行测试用例。
-=======
-In these cases the native module is likely not built to be multi-thread safe. As a workaround, you can switch to `pool: 'forks'` which runs the test cases in multiple `node:child_process` instead of multiple `node:worker_threads`.
->>>>>>> 47a54389b1993fcc0b8e5ade4f6dcedeba9ad8f4
 
 ::: code-group
 
