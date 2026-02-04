@@ -69,6 +69,7 @@ export default antfu(
       'no-self-compare': 'off',
       'import/no-mutable-exports': 'off',
       'no-restricted-globals': 'off',
+      'no-throw-literal': 'off',
     },
   },
 )
