@@ -1,7 +1,7 @@
 ---
 outline: deep
 ---
-
+<!-- TODO: translation -->
 # vitest-browser-react
 
 The community [`vitest-browser-react`](https://www.npmjs.com/package/vitest-browser-react) package renders [React](https://react.dev/) components in [Browser Mode](/guide/browser/).

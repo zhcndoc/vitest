@@ -993,9 +993,6 @@ export default ({ mode }: { mode: string }) => {
             text: '浏览器模式',
             items: [
               {
-<<<<<<< HEAD
-                text: 'Context API',
-=======
                 text: 'Render Function',
                 collapsed: false,
                 items: [
@@ -1018,8 +1015,7 @@ export default ({ mode }: { mode: string }) => {
                 ],
               },
               {
-                text: 'Context',
->>>>>>> fdac771581b0899a5d1495889ea0b464d0748b0d
+                text: 'Context API',
                 link: '/api/browser/context',
               },
               {

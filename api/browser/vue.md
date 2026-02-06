@@ -1,7 +1,7 @@
 ---
 outline: deep
 ---
-
+<!-- TODO: translation -->
 # vitest-browser-vue
 
 The community [`vitest-browser-vue`](https://www.npmjs.com/package/vitest-browser-vue) package renders [Vue](https://vuejs.org/) components in [Browser Mode](/guide/browser/).

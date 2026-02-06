@@ -45,33 +45,9 @@ export default defineConfig({
 
 ## Failed to Terminate Worker
 
-<<<<<<< HEAD
-当 NodeJS 的 fetch 与默认的 [`pool: 'threads'`](/config/#threads) 一起使用时，可能会发生此错误。问题可以在 [issue#3077](https://github.com/vitest-dev/vitest/issues/3077) 上进行持续更新。
-
-作为解决方法，我们可以切换到 [`pool: 'forks'`](/config/#forks) 或 [`pool: 'vmForks'`](/config/#vmforks)。
-
-::: code-group
-
-```ts [vitest.config.js]
-import { defineConfig } from 'vitest/config'
-
-export default defineConfig({
-  test: {
-    pool: 'forks',
-  },
-})
-```
-
-```bash [CLI]
-vitest --pool=forks
-```
-
-:::
-=======
 This error can happen when NodeJS's `fetch` is used with [`pool: 'threads'`](/config/pool#threads). See [#3077](https://github.com/vitest-dev/vitest/issues/3077) for details.
 
 The default [`pool: 'forks'`](/config/pool#forks) does not have this issue. If you've explicitly set `pool: 'threads'`, switching back to `'forks'` or using [`'vmForks'`](/config/pool#vmforks) will resolve it.
->>>>>>> fdac771581b0899a5d1495889ea0b464d0748b0d
 
 ## Custom package conditions are not resolved
 

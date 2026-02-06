@@ -831,15 +831,13 @@ function query(): Element | null
 
 如果多个元素匹配该选择器，此方法将抛出错误。如果你需要所有匹配的 DOM 元素，可以使用 [`.elements()`](#elements)；如果你需要匹配选择器的定位器数组，可以使用 [`.all()`](#all)。
 
-<<<<<<< HEAD
-考虑以下 DOM 结构：
-=======
+<!-- TODO: translation -->
+
 ::: danger
 This is an escape hatch for external APIs that do not support locators. Prefer using locator methods instead.
 :::
 
-Consider the following DOM structure:
->>>>>>> fdac771581b0899a5d1495889ea0b464d0748b0d
+考虑以下 DOM 结构：
 
 ```html
 <div>Hello <span>World</span></div>
@@ -875,15 +873,12 @@ function element(): Element
 
 如果 _多个元素_ 匹配该选择器，则会抛出错误。如果你需要所有匹配的 DOM 元素，可以使用 [`.elements()`](#elements)；如果你需要匹配选择器的定位器数组，可以使用 [`.all()`](#all)。
 
-<<<<<<< HEAD
-::: tip
-此方法在需要将其传递给外部库时非常有用。当定位器与 `expect.element` 一起使用时，每次断言 [重试](/api/browser/assertions) 时都会自动调用此方法：
-=======
+<!-- TODO: translation reference history -->
+
 ::: danger
 This is an escape hatch for external APIs that do not support locators. Prefer using locator methods instead.
 
 It is called automatically when locator is used with `expect.element` every time the assertion is [retried](/api/browser/assertions):
->>>>>>> fdac771581b0899a5d1495889ea0b464d0748b0d
 
 ```ts
 await expect.element(page.getByRole('button')).toBeDisabled()
