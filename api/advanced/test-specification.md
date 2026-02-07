@@ -42,12 +42,16 @@ Vite 模块图中的模块 ID。通常，它是一个使用 POSIX 分隔符的�
 
 ## pool {#pool}
 
+<<<<<<< HEAD
 测试模块将运行的 [`pool`](/config/#pool)。
 
 <!-- TODO: translation -->
+=======
+The [`pool`](/config/pool) in which the test module will run.
+>>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
 
 ::: danger
-It's possible to have multiple pools in a single test project with [`typecheck.enabled`](/config/#typecheck-enabled). This means it's possible to have several specifications with the same `moduleId` but different `pool`. In later versions, the project will only support a single pool.
+It's possible to have multiple pools in a single test project with [`typecheck.enabled`](/config/typecheck#typecheck-enabled). This means it's possible to have several specifications with the same `moduleId` but different `pool`. In later versions, the project will only support a single pool.
 :::
 
 ## testLines

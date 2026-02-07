@@ -74,7 +74,11 @@ test('ratio works', () => {
 ```
 :::
 
+<<<<<<< HEAD
 在这个例子中，Vitest 将在 `chromium` 浏览器中运行所有测试，但仅在第一个配置中执行 `'./ratio-setup.ts'` 文件，并根据 [`provide` 字段](/config/#provide) 注入不同的 `ratio` 值。
+=======
+In this example Vitest will run all tests in `chromium` browser, but execute a `'./ratio-setup.ts'` file only in the first configuration and inject a different `ratio` value depending on the [`provide` field](/config/provide).
+>>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
 
 ::: warning
 请注意，如果你使用相同的浏览器名称，则需要定义自定义的 `name` 值，因为否则 Vitest 会将 `browser` 作为项目名称。

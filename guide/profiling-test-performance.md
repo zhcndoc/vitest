@@ -15,11 +15,19 @@
 >   # Time metrics ^^
 > ```
 
+<<<<<<< HEAD
 - Transform：转换文件所用的时间。详情请参阅 [文件转换](#file-transform)。
 - Setup：执行 [`setupFiles`](/config/#setupfiles) 文件所花费的时间。
 - Import：导入测试文件及其依赖项所花费的时间。这也包括收集所有测试所花费的时间。注意，这不包括测试内部的动态导入。
 - Tests：实际执行测试用例所用的时间。
 - Environment：[`配置测试`](/config/#environment) 环境（比如 JSDOM）所需的时间。
+=======
+- Transform: How much time was spent transforming the files. See [File Transform](#file-transform).
+- Setup: Time spent for running the [`setupFiles`](/config/setupfiles) files.
+- Import: Time it took to import your test files and their dependencies. This also includes the time spent collecting all tests. Note that this doesn't include dynamic imports inside of tests.
+- Tests: Time spent for actually running the test cases.
+- Environment: Time spent for setting up the test [`environment`](/config/environment), for example JSDOM.
+>>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
 
 ## 测试运行器 {#test-runner}
 
@@ -57,8 +65,13 @@ export default defineConfig({
 
 ## 主线程 {#main-thread}
 
+<<<<<<< HEAD
 对主线程进行性能分析有助于调试 Vitest 的 Vite 使用情况和 [`globalSetup`](/config/#globalsetup) 文件。
 这也是 Vite 插件运行的地方。
+=======
+Profiling main thread is useful for debugging Vitest's Vite usage and [`globalSetup`](/config/globalsetup) files.
+This is also where your Vite plugins are running.
+>>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
 
 :::tip
 可以查看 [性能 | Vite](https://cn.vitejs.dev/guide/performance) 以获取更多关于 Vite 特定性能分析的提示。
@@ -148,9 +161,15 @@ $ DEBUG=vitest:coverage vitest --run --coverage
   vitest:coverage Generate coverage total time 3521 ms
 ```
 
+<<<<<<< HEAD
 这种性能分析方法非常适合检测被覆盖率提供程序意外包含的大文件。
 例如，如果你的配置意外地将大型构建压缩后的 JavaScript 文件包含在代码覆盖率中，这些文件应该会出现在日志中。
 在这种情况下，你可能需要调整 [`coverage.include`](/config/#coverage-include) 和 [`coverage.exclude`](/config/#coverage-exclude) 选项。
+=======
+This profiling approach is great for detecting large files that are accidentally picked by coverage providers.
+For example if your configuration is accidentally including large built minified Javascript files in code coverage, they should appear in logs.
+In these cases you might want to adjust your [`coverage.include`](/config/coverage#coverage-include) and [`coverage.exclude`](/config/coverage#coverage-exclude) options.
+>>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
 
 ## 性能记录分析 {#inspecting-profiling-records}
 

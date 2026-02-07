@@ -255,12 +255,16 @@ Vitest 支持对“虚拟模块”进行模拟（mock）。
 默认情况下，如果 Vitest 无法找到导入模块的源文件，它会在代码转换阶段报错。
 为避免这种情况，需要在配置文件中进行声明。
 
+<<<<<<< HEAD
 你可以选择：
 
 - 始终将该导入重定向到某个真实文件；
 - 或仅告知 Vite 忽略它，再通过 `vi.mock` 工厂函数来定义模块的导出。
 
 若要进行导入重定向，可以使用 [`test.alias`](/config/#alias) 配置选项：
+=======
+To redirect the import, use [`test.alias`](/config/alias) config option:
+>>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
 
 ```ts [vitest.config.ts]
 import { resolve } from 'node:path'

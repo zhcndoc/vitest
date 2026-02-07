@@ -50,7 +50,11 @@ export default defineConfig({
 npx vite preview --outDir ./html
 ```
 
+<<<<<<< HEAD
 你可以使用 [`outputFile`](/config/#outputfile) 配置选项配置输出。你需要在那里指定 `.html` 路径。例如，`./html/index.html` 是默认值。
+=======
+You can configure output with [`outputFile`](/config/outputfile) config option. You need to specify `.html` path there. For example, `./html/index.html` is the default value.
+>>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
 :::
 
 ## 模块图 {#module-graph}

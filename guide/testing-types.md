@@ -10,9 +10,15 @@ title: 类型测试 | 指南
 
 :::
 
+<<<<<<< HEAD
 Vitest 允许你使用 `expectTypeOf` 或 `assertType` 语法为你的类型编写测试。默认情况下，`*.test-d.ts` 文件中的所有测试都被视为类型测试，但你可以使用 [`typecheck.include`](/config/#typecheck-include) 配置选项更改它。
 
 在这里，Vitest 调用 `tsc` 或 `vue-tsc`，具体取决于你的配置，并解析结果。如果发现任何类型错误，Vitest 还会在你的源代码中打印出类型错误。你可以使用 [`typecheck.ignoreSourceErrors`](/config/#typecheck-ignoresourceerrors) 配置选项禁用它。
+=======
+Vitest allows you to write tests for your types, using `expectTypeOf` or `assertType` syntaxes. By default all tests inside `*.test-d.ts` files are considered type tests, but you can change it with [`typecheck.include`](/config/typecheck#typecheck-include) config option.
+
+Under the hood Vitest calls `tsc` or `vue-tsc`, depending on your config, and parses results. Vitest will also print out type errors in your source code, if it finds any. You can disable it with [`typecheck.ignoreSourceErrors`](/config/typecheck#typecheck-ignoresourceerrors) config option.
+>>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
 
 请记住，Vitest 不会运行这些文件，编译器只会对它们进行静态分析。也就是说，如果您使用动态名称或 `test.each` 或 `test.for`，测试名称将不会被评估，它将原样显示。
 
@@ -111,7 +117,11 @@ assertType<string>(answer)
 ```
 
 ::: tip
+<<<<<<< HEAD
 使用 `@ts-expect-error` 语法时，你可能想确保没有输入错误。你可以通过在 [`test.include`](/config/#include) 配置选项中包含你的类型文件来做到这一点，因此 Vitest 实际上也会*运行*这些测试并因 `ReferenceError` 而失败。
+=======
+When using `@ts-expect-error` syntax, you might want to make sure that you didn't make a typo. You can do that by including your type files in [`test.include`](/config/include) config option, so Vitest will also actually *run* these tests and fail with `ReferenceError`.
+>>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
 
 这将通过，因为它预计会出现错误，但 “answer” 这个词有错别字，所以这是一个误报错误：
 
@@ -124,7 +134,11 @@ assertType<string>(answr)
 
 ## 运行类型检查 {#run-typechecking}
 
+<<<<<<< HEAD
 要启用类型检查，只需在 `package.json` 文件中的 Vitest 命令中添加 [`--typecheck`](/config/#typecheck) 标志：
+=======
+To enable typechecking, just add [`--typecheck`](/config/typecheck) flag to your Vitest command in `package.json`:
+>>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
 
 ```json [package.json]
 {

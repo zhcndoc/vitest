@@ -2,7 +2,11 @@
 
 你可以使用 [`vi.stubGlobal`](/api/vi#vi-stubglobal) 助手来模拟 `jsdom` 或 `node` 中不存在的全局变量。它会将全局变量的值放入 `globalThis` 对象中。
 
+<<<<<<< HEAD
 默认情况下，Vitest 不会重置这些全局变量，但你可以在配置中开启 [`unstubGlobals`](/config/#unstubglobals) 选项，以便在每次测试后恢复原始值，或者手动调用 [`vi.unstubAllGlobals()`](/api/vi#vi-unstuballglobals)。
+=======
+By default, Vitest does not reset these globals, but you can turn on the [`unstubGlobals`](/config/unstubglobals) option in your config to restore the original values after each test or call [`vi.unstubAllGlobals()`](/api/vi#vi-unstuballglobals) manually.
+>>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
 
 ```ts
 import { vi } from 'vitest'
