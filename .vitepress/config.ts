@@ -597,24 +597,6 @@ export default ({ mode }: { mode: string }) => {
                   },
                 ],
               },
-              // {
-              //   text: 'Render Function',
-              //   collapsed: true,
-              //   items: [
-              //     {
-              //       text: 'react',
-              //       link: '/config/browser/react',
-              //     },
-              //     {
-              //       text: 'vue',
-              //       link: '/config/browser/vue',
-              //     },
-              //     {
-              //       text: 'svelte',
-              //       link: '/config/browser/svelte',
-              //     },
-              //   ],
-              // },
               {
                 text: 'browser.enabled',
                 link: '/config/browser/enabled',
@@ -1010,6 +992,28 @@ export default ({ mode }: { mode: string }) => {
           {
             text: '浏览器模式',
             items: [
+              {
+                text: 'Render Function',
+                collapsed: false,
+                items: [
+                  {
+                    text: 'react',
+                    link: '/api/browser/react',
+                  },
+                  {
+                    text: 'vue',
+                    link: '/api/browser/vue',
+                  },
+                  {
+                    text: 'svelte',
+                    link: '/api/browser/svelte',
+                  },
+                  // {
+                  //   text: 'angular',
+                  //   link: '/api/browser/angular',
+                  // },
+                ],
+              },
               {
                 text: 'Context API',
                 link: '/api/browser/context',

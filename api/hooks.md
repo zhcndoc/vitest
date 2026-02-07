@@ -13,7 +13,7 @@ Test hooks are called in a stack order ("after" hooks are reversed) by default, 
 
 ```ts
 function beforeEach(
-  body: () => unknown,
+  body: (context: TestContext) => unknown,
   timeout?: number,
 ): void
 ```
@@ -55,7 +55,7 @@ beforeEach(async () => {
 
 ```ts
 function afterEach(
-  body: () => unknown,
+  body: (context: TestContext) => unknown,
   timeout?: number,
 ): void
 ```
@@ -83,7 +83,7 @@ You can also use [`onTestFinished`](#ontestfinished) during the test execution t
 
 ```ts
 function beforeAll(
-  body: () => unknown,
+  body: (context: ModuleContext) => unknown,
   timeout?: number,
 ): void
 ```
@@ -123,7 +123,7 @@ beforeAll(async () => {
 
 ```ts
 function afterAll(
-  body: () => unknown,
+  body: (context: ModuleContext) => unknown,
   timeout?: number,
 ): void
 ```
@@ -147,7 +147,10 @@ Here the `afterAll` ensures that `stopMocking` method is called after all tests 
 
 ```ts
 function aroundEach(
-  body: (runTest: () => Promise<void>, context: TestContext) => Promise<void>,
+  body: (
+    runTest: () => Promise<void>,
+    context: TestContext,
+  ) => Promise<void>,
   timeout?: number,
 ): void
 ```
@@ -254,7 +257,10 @@ test('insert user', async ({ db, user }) => {
 
 ```ts
 function aroundAll(
-  body: (runSuite: () => Promise<void>) => Promise<void>,
+  body: (
+    runSuite: () => Promise<void>,
+    context: ModuleContext,
+  ) => Promise<void>,
   timeout?: number,
 ): void
 ```
