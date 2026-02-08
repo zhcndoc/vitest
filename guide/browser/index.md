@@ -118,11 +118,7 @@ export default defineConfig({
 ```
 
 ::: info
-<<<<<<< HEAD
-Vitest 默认分配端口号 `63315` 以避免与开发服务器冲突，允许我们同时并行运行两者。我们可以通过 [`browser.api`](/config/#browser-api) 选项来更改这个端口号。
-=======
-Vitest assigns port `63315` to avoid conflicts with the development server, allowing you to run both in parallel. You can change that with the [`browser.api`](/config/browser/api) option.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+Vitest 默认分配端口号 `63315` 以避免与开发服务器冲突，允许我们同时并行运行两者。我们可以通过 [`browser.api`](/config/browser/api) 选项来更改这个端口号。
 
 CLI 不会自动打印 Vite 服务器 URL。在观察模式下运行时，你可以按 "b" 键来打印 URL。
 :::
@@ -326,11 +322,7 @@ npx vitest --browser.headless
 自 Vitest 3.2 起，如果你在配置文件中没有设置 browser 选项，却在命令行中使用了 `--browser` 参数， Vitest 会直接报错，因为它无法确定当前配置是为浏览器测试准备的还是用于 Node.js 测试。
 :::
 
-<<<<<<< HEAD
-Vitest 默认会在开发模式下自动打开浏览器界面，测试会在页面中央的 iframe 中执行。你可以通过选择界面中的预设尺寸、在测试中调用 `page.viewport` 方法，或者在 [配置文件](/config/#browser-viewport) 中设置默认值来调整视口大小。
-=======
-By default, Vitest will automatically open the browser UI for development. Your tests will run inside an iframe in the center. You can configure the viewport by selecting the preferred dimensions, calling `page.viewport` inside the test, or setting default values in [the config](/config/browser/viewport).
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+Vitest 默认会在开发模式下自动打开浏览器界面，测试会在页面中央的 iframe 中执行。你可以通过选择界面中的预设尺寸、在测试中调用 `page.viewport` 方法，或者在 [配置文件](/config/browser/viewport) 中设置默认值来调整视口大小。
 
 ## 无头模式 {#headless}
 

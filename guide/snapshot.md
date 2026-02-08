@@ -135,12 +135,7 @@ expect.addSnapshotSerializer({
   },
 })
 ```
-<<<<<<< HEAD
-我们还支持 [snapshotSerializers](/config/#snapshotserializers) 选项，可以隐式添加自定义序列化器。
-=======
-
-We also support [snapshotSerializers](/config/snapshotserializers) option to implicitly add custom serializers.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+我们还支持 [snapshotSerializers](/config/snapshotserializers) 选项，可以隐式添加自定义序列化器。
 
 ```ts [path/to/custom-serializer.ts]
 import { SnapshotSerializer } from 'vitest'

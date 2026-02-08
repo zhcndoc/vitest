@@ -4,11 +4,7 @@ outline: deep
 
 # Vi
 
-<<<<<<< HEAD
-Vitest 通过 `vi` 工具函数提供实用功能。可以全局访问它（当启用 [globals 配置](/config/#globals) 时），也可以直接从 `vitest` 中导入：
-=======
-Vitest provides utility functions to help you out through its `vi` helper. You can access it globally (when [globals configuration](/config/globals) is enabled), or import it from `vitest` directly:
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+Vitest 通过 `vi` 工具函数提供实用功能。可以全局访问它（当启用 [globals 配置](/config/globals) 时），也可以直接从 `vitest` 中导入：
 
 ```js
 import { vi } from 'vitest'
@@ -43,11 +39,7 @@ function mock<T>(
 ::: warning
 `vi.mock` 仅对使用 `import` 关键字导入的模块有效。它对 `require` 无效。
 
-<<<<<<< HEAD
-为了提升 `vi.mock` ，Vitest 会静态分析文件。它会指出不能使用未直接从 `vitest` 软件包导入的 `vi` （例如，从某个实用程序文件导入）。使用 `vi.mock` 与从 `vitest` 导入的 `vi` 一起使用，或者启用 [`globals`](/config/#globals) 配置选项。
-=======
-In order to hoist `vi.mock`, Vitest statically analyzes your files. It indicates that `vi` that was not directly imported from the `vitest` package (for example, from some utility file) cannot be used. Use `vi.mock` with `vi` imported from `vitest`, or enable [`globals`](/config/globals) config option.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+为了提升 `vi.mock` ，Vitest 会静态分析文件。它会指出不能使用未直接从 `vitest` 软件包导入的 `vi` （例如，从某个实用程序文件导入）。使用 `vi.mock` 与从 `vitest` 导入的 `vi` 一起使用，或者启用 [`globals`](/config/globals) 配置选项。
 
 Vitest 不会模拟 [setup file](/config/setupfiles) 中导入的模块，因为这些模块在运行测试文件时已被缓存。我们可以在 [`vi.hoisted`](#vi-hoisted) 中调用 [`vi.resetModules()`](#vi-resetmodules) ，在运行测试文件前清除所有模块缓存。
 :::
@@ -135,15 +127,9 @@ vi.mock('./path/to/module.js', () => {
 ```
 
 :::
-如果要模拟的文件旁边有一个 `__mocks__` 文件夹，且没有提供工厂，Vitest 将尝试在 `__mocks__` 子文件夹中找到一个同名文件，并将其作为实际模块使用。如果模拟的是依赖关系，Vitest 会尝试在项目的 [root](/config/#root)（默认为 `process.cwd()` ）中找到 `__mocks__` 文件夹。我们可以通过 [`deps.moduleDirectories`](/config/#deps-moduledirectories) 配置选项告诉 Vitest 依赖项的位置。
+如果要模拟的文件旁边有一个 `__mocks__` 文件夹，且没有提供工厂，Vitest 将尝试在 `__mocks__` 子文件夹中找到一个同名文件，并将其作为实际模块使用。如果模拟的是依赖关系，Vitest 会尝试在项目的 [root](/config/root)（默认为 `process.cwd()` ）中找到 `__mocks__` 文件夹。我们可以通过 [`deps.moduleDirectories`](/config/#deps-moduledirectories) 配置选项告诉 Vitest 依赖项的位置。
 
-<<<<<<< HEAD
 例如，我们有这样的文件结构：
-=======
-If there is a `__mocks__` folder alongside a file that you are mocking, and the factory is not provided, Vitest will try to find a file with the same name in the `__mocks__` subfolder and use it as an actual module. If you are mocking a dependency, Vitest will try to find a `__mocks__` folder in the [root](/config/root) of the project (default is `process.cwd()`). You can tell Vitest where the dependencies are located through the [`deps.moduleDirectories`](/config/deps#deps-moduledirectories) config option.
-
-For example, you have this file structure:
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
 
 ```
 - __mocks__
@@ -646,11 +632,7 @@ it('calls console.log', () => {
 :::
 
 ::: tip
-<<<<<<< HEAD
-在每个测试后，于 [`afterEach`](/api/hooks#aftereach) 中调用 [`vi.restoreAllMocks`](#vi-restoreallmocks) 或开启配置项 [`test.restoreMocks`](/config/#restoreMocks)，即可将所有方法还原为原始实现。此操作会恢复其 [对象描述符](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty)，除非重新对其进行 spy ，否则无法再次修改方法实现。
-=======
-You can call [`vi.restoreAllMocks`](#vi-restoreallmocks) inside [`afterEach`](/api/hooks#aftereach) (or enable [`test.restoreMocks`](/config/restoremocks)) to restore all methods to their original implementations after every test. This will restore the original [object descriptor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty), so you won't be able to change method's implementation anymore, unless you spy again:
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+在每个测试后，于 [`afterEach`](/api/hooks#aftereach) 中调用 [`vi.restoreAllMocks`](#vi-restoreallmocks) 或开启配置项 [`test.restoreMocks`](/config/restoremocks)，即可将所有方法还原为原始实现。此操作会恢复其 [对象描述符](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty)，除非重新对其进行 spy ，否则无法再次修改方法实现。
 
 ```ts
 const cart = {
@@ -963,11 +945,7 @@ function runAllTicks(): Vitest
 function runAllTimers(): Vitest
 ```
 
-<<<<<<< HEAD
-该方法将调用每个已经启动的定时器，直到定时器队列为空。这意味着在 `runAllTimers` 期间调用的每个定时器都会被触发。如果时间间隔为无限，则会在尝试 10000 次后触发（可使用 [`fakeTimers.loopLimit`](/config/#faketimers-looplimit) 进行配置）。
-=======
-This method will invoke every initiated timer until the timer queue is empty. It means that every timer called during `runAllTimers` will be fired. If you have an infinite interval, it will throw after 10 000 tries (can be configured with [`fakeTimers.loopLimit`](/config/faketimers#faketimers-looplimit)).
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+该方法将调用每个已经启动的定时器，直到定时器队列为空。这意味着在 `runAllTimers` 期间调用的每个定时器都会被触发。如果时间间隔为无限，则会在尝试 10000 次后触发（可使用 [`fakeTimers.loopLimit`](/config/faketimers#faketimers-looplimit) 进行配置）。
 
 ```ts
 let i = 0
@@ -992,13 +970,8 @@ vi.runAllTimers()
 function runAllTimersAsync(): Promise<Vitest>
 ```
 
-<<<<<<< HEAD
 该方法将异步调用每个已启动的定时器，直到定时器队列为空。这意味着在 `runAllTimersAsync` 期间调用的每个定时器都会被触发，即使是异步定时器。如果我们有一个无限的时间间隔、
-会在尝试 10000 次后抛出（可使用 [`fakeTimers.loopLimit`](/config/#faketimers-looplimit) ）。
-=======
-This method will asynchronously invoke every initiated timer until the timer queue is empty. It means that every timer called during `runAllTimersAsync` will be fired even asynchronous timers. If you have an infinite interval,
-it will throw after 10 000 tries (can be configured with [`fakeTimers.loopLimit`](/config/faketimers#faketimers-looplimit)).
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+会在尝试 10000 次后抛出（可使用 [`fakeTimers.loopLimit`](/config/faketimers#faketimers-looplimit) ）。
 
 ```ts
 setTimeout(async () => {
@@ -1367,10 +1340,9 @@ vi.setConfig({
 function resetConfig(): void
 ```
 
-<<<<<<< HEAD
 如果之前调用过 [`vi.setConfig`](#vi-setconfig) ，则会将配置重置为原始状态。
-=======
-If [`vi.setConfig`](#vi-setconfig) was called before, this will reset config to the original state.
+
+<!-- TODO: translation -->
 
 ### vi.defineHelper <Version>4.1.0</Version> {#vi-defineHelper}
 
@@ -1410,4 +1382,3 @@ Received: "left"
        |   ^
       9| })
 ```
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94

@@ -140,11 +140,7 @@ function onTestRunEnd(
 - `failed`: 测试运行至少有一个错误（由于收集期间的语法错误或测试执行期间的实际错误）
 - `interrupted`: 测试被 [`vitest.cancelCurrentRun`](/api/advanced/vitest#cancelcurrentrun) 调用或在终端中按下 `Ctrl+C` 中断（请注意，在这种情况下仍然有可能导致测试失败）
 
-<<<<<<< HEAD
-如果 Vitest 没有找到任何要运行的测试文件，此事件将以空的模块和错误数组调用，状态将取决于 [`config.passWithNoTests`](/config/#passwithnotests) 的值。
-=======
-If Vitest didn't find any test files to run, this event will be invoked with empty arrays of modules and errors, and the state will depend on the value of [`config.passWithNoTests`](/config/passwithnotests).
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+如果 Vitest 没有找到任何要运行的测试文件，此事件将以空的模块和错误数组调用，状态将取决于 [`config.passWithNoTests`](/config/passwithnotests) 的值。
 
 ::: details 示例
 ```ts
@@ -328,11 +324,7 @@ function onTestCaseAnnotate(
 
 `onTestCaseAnnotate` 是与 [`context.annotate`](/guide/test-context#annotate) 方法配套使用的钩子。当你在测试中调用 annotate 后， Vitest 会将注解内容序列化，并将其发送到主线程，从而让报告器可以处理这些附加信息。
 
-<<<<<<< HEAD
-如果在注解中指定了文件路径， Vitest 会将附件保存到一个独立的目录（该目录通过 [`attachmentsDir`](/config/#attachmentsdir) 配置），并自动更新 path 属性，使其指向存储后的文件位置。
-=======
-If the path is specified, Vitest stores it in a separate directory (configured by [`attachmentsDir`](/config/attachmentsdir)) and modifies the `path` property to reference it.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+如果在注解中指定了文件路径， Vitest 会将附件保存到一个独立的目录（该目录通过 [`attachmentsDir`](/config/attachmentsdir) 配置），并自动更新 path 属性，使其指向存储后的文件位置。
 
 ## onTestCaseArtifactRecord <Version type="experimental">4.0.11</Version> {#ontestcaseartifactrecord}
 
@@ -345,10 +337,6 @@ function onTestCaseArtifactRecord(
 
 `onTestCaseArtifactRecord` 钩子与 [`recordArtifact`](/api/advanced/artifacts#recordartifact) 工具相关联。当调用 `recordArtifact` 时，Vitest 会将其序列化并将相同的附件发送到主线程，报告器可以在那里与其交互。
 
-<<<<<<< HEAD
-如果指定了路径，Vitest 会将其存储在单独的目录中（由 [`attachmentsDir`](/config/#attachmentsdir) 配置），并修改 `path` 属性以引用它。
-=======
-If the path is specified, Vitest stores it in a separate directory (configured by [`attachmentsDir`](/config/attachmentsdir)) and modifies the `path` property to reference it.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+如果指定了路径，Vitest 会将其存储在单独的目录中（由 [`attachmentsDir`](/config/attachmentsdir) 配置），并修改 `path` 属性以引用它。
 
 注意：注解，[即使它们是基于此功能构建的](/api/advanced/artifacts#relationship-with-annotations)，出于向后兼容性原因，在下一个主要版本之前不会触发此钩子，也不会出现在 `task.artifacts` 数组中。

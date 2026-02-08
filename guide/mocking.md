@@ -5,11 +5,7 @@ outline: false
 
 # 模拟对象 {#mocking}
 
-<<<<<<< HEAD
-在编写测试时，迟早会需要创建一个内部或外部服务的 "fake" 版本。这通常被称为**mocking**。Vitest 通过其 `vi` 辅助工具提供了实用函数来帮助您。我们可以从 `vitest` 中导入它，或者如果启用了 [`global` 配置](/config/#globals)，也可以全局访问它。
-=======
-When writing tests it's only a matter of time before you need to create a "fake" version of an internal — or external — service. This is commonly referred to as **mocking**. Vitest provides utility functions to help you out through its `vi` helper. You can import it from `vitest` or access it globally if [`global` configuration](/config/globals) is enabled.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+在编写测试时，迟早会需要创建一个内部或外部服务的 "fake" 版本。这通常被称为**mocking**。Vitest 通过其 `vi` 辅助工具提供了实用函数来帮助您。我们可以从 `vitest` 中导入它，或者如果启用了 [`global` 配置](/config/globals)，也可以全局访问它。
 
 ::: warning
 不要忘记在每次测试运行前后清除或恢复模拟对象，以撤消运行测试时模拟对象状态的更改！有关更多信息，请参阅 [`mockReset`](/api/mock.html#mockreset) 文档。
@@ -186,11 +182,7 @@ vi.useRealTimers()
 
 ### 模拟全局变量 {#mock-a-global-variable}
 
-<<<<<<< HEAD
-你可以通过为 `globalThis` 赋值或使用 [`vi.stubGlobal`](/api/vi#vi-stubglobal) 助手来设置全局变量。 使用 `vi.stubGlobal` 时，**不会**在不同的测试之间自动重置，除非你启用 [`unstubGlobals`](/config/#unstubglobals) 配置选项或调用 [`vi.unstubAllGlobals`](/api/vi#vi-unstuballglobals)。
-=======
-You can set global variable by assigning a value to `globalThis` or using [`vi.stubGlobal`](/api/vi#vi-stubglobal) helper. When using `vi.stubGlobal`, it will **not** automatically reset between different tests, unless you enable [`unstubGlobals`](/config/unstubglobals) config option or call [`vi.unstubAllGlobals`](/api/vi#vi-unstuballglobals).
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+你可以通过为 `globalThis` 赋值或使用 [`vi.stubGlobal`](/api/vi#vi-stubglobal) 助手来设置全局变量。 使用 `vi.stubGlobal` 时，**不会**在不同的测试之间自动重置，除非你启用 [`unstubGlobals`](/config/unstubglobals) 配置选项或调用 [`vi.unstubAllGlobals`](/api/vi#vi-unstuballglobals)。
 
 ```ts
 vi.stubGlobal('__VERSION__', '1.0.0')
@@ -221,11 +213,7 @@ it('changes value', () => {
 })
 ```
 
-<<<<<<< HEAD
-2. 如果你想自动重置值，可以使用启用了 [`unstubEnvs`](/config/#unstubEnvs) 配置选项的 `vi.stubEnv` 助手（或调用 [`vi.unstubAllEnvs`](/api/vi#vi-unstuballenvs) 在 `beforeEach` 钩子中手动执行）：
-=======
-2. If you want to automatically reset the value(s), you can use the `vi.stubEnv` helper with the [`unstubEnvs`](/config/unstubenvs) config option enabled (or call [`vi.unstubAllEnvs`](/api/vi#vi-unstuballenvs) manually in a `beforeEach` hook):
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+2. 如果你想自动重置值，可以使用启用了 [`unstubEnvs`](/config/unstubenvs) 配置选项的 `vi.stubEnv` 助手（或调用 [`vi.unstubAllEnvs`](/api/vi#vi-unstuballenvs) 在 `beforeEach` 钩子中手动执行）：
 
 ```ts
 import { expect, it, vi } from 'vitest'

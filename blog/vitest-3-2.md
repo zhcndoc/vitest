@@ -68,19 +68,11 @@ const test = baseTest.extend({
 
 `file` 固定装置类似于在文件顶层使用 `beforeAll` 和 `afterAll`，但如果没有任何测试使用该固定装置，它就不会被调用。
 
-<<<<<<< HEAD
-`worker` 固定装置在每个工作线程中仅初始化一次。但请注意，默认情况下 Vitest 为每个测试创建独立工作线程，因此需要禁用 [隔离模式](/config/#isolate) 才能生效。
-=======
-The `worker` fixture is initiated once per worker, but note that by default Vitest creates one worker for every test, so you need to disable [isolation](/config/isolate) to benefit from it.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+`worker` 固定装置在每个工作线程中仅初始化一次。但请注意，默认情况下 Vitest 为每个测试创建独立工作线程，因此需要禁用 [隔离模式](/config/isolate) 才能生效。
 
 ## 自定义项目名称颜色 {#custom-project-name-colors}
 
-<<<<<<< HEAD
-使用 `projects` 时，你现在可以设置自定义 [颜色](/config/#name)：
-=======
-You can now set a custom [color](/config/name) when using `projects`:
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+使用 `projects` 时，你现在可以设置自定义 [颜色](/config/name)：
 
 ::: details 配置示例
 ```ts{6-9,14-17}
@@ -200,11 +192,7 @@ it('calls console.log', () => {
 
 Vitest 现在向测试主体提供一个 [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) 对象。你可以使用它来停止任何支持此 Web API 的资源。
 
-<<<<<<< HEAD
-当测试超时、其他测试失败且 [`--bail` 标志](/config/#bail) 设置为非零值，或者用户在终端中按下 Ctrl+C 时，信号会被中止。
-=======
-The signal is aborted when test times out, another test fails and [`--bail` flag](/config/bail) is set to a non-zero value, or the user presses Ctrl+C in the terminal.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+当测试超时、其他测试失败且 [`--bail` 标志](/config/bail) 设置为非零值，或者用户在终端中按下 Ctrl+C 时，信号会被中止。
 
 例如，你可以在测试中断时停止 `fetch` 请求：
 
@@ -216,11 +204,7 @@ it('stop request when test times out', async ({ signal }) => {
 
 ## Coverage V8 AST 感知重映射 {#coverage-v8-ast-aware-remapping}
 
-<<<<<<< HEAD
-Vitest 现在使用由 Vitest 维护者之一 [AriPerkkio](https://github.com/AriPerkkio) 开发的 `ast-v8-to-istanbul` 包。这使 v8 覆盖率报告与 istanbul 保持一致，但性能更好！通过将 [`coverage.experimentalAstAwareRemapping`](/config/#coverage-experimentalastawareremapping) 设置为 `true` 来启用此功能。
-=======
-Vitest now uses `ast-v8-to-istanbul` package developed by one of the Vitest maintainers, [AriPerkkio](https://github.com/AriPerkkio). This brings v8 coverage report in line with istanbul, but has a better performance! Enable this feature by setting [`coverage.experimentalAstAwareRemapping`](/config/coverage#coverage-experimentalastawareremapping) to `true`.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+Vitest 现在使用由 Vitest 维护者之一 [AriPerkkio](https://github.com/AriPerkkio) 开发的 `ast-v8-to-istanbul` 包。这使 v8 覆盖率报告与 istanbul 保持一致，但性能更好！通过将 [`coverage.experimentalAstAwareRemapping`](/config/coverage#coverage-experimentalastawareremapping) 设置为 `true` 来启用此功能。
 
 我们计划在下一个主版本中将此作为默认重映射模式。旧的 `v8-to-istanbul` 将被完全移除。欢迎在 https://github.com/vitest-dev/vitest/issues/7928 参与讨论。
 
@@ -283,11 +267,7 @@ expect.toBeFoo('foo')
 
 ## `sequence.groupOrder`
 
-<<<<<<< HEAD
-新的 [`sequence.groupOrder`](/config/#grouporder) 选项控制在使用多个 [projects](/guide/projects) 时项目测试执行的顺序。
-=======
-The new [`sequence.groupOrder`](/config/sequence#sequence-grouporder) option controls the order in which the project runs its tests when using multiple [projects](/guide/projects).
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+新的 [`sequence.groupOrder`](/config/sequence#sequence-grouporder) 选项控制在使用多个 [projects](/guide/projects) 时项目测试执行的顺序。
 
 - 具有相同分组序号的测试项目将并行运行，各组按序号从低到高依次执行。
 - 若未设置此选项，所有项目将默认并行执行。

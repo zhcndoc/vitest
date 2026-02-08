@@ -138,19 +138,11 @@ const mock = new Spy()
 除了新增对构造函数的支持等功能外，Vitest 4 还对模拟的创建方式进行了调整，以解决多年来我们收到的多个模块模拟问题。此版本试图减少模块监视的混淆，尤其是在处理类时。
 
 - `vi.fn().getMockName()` 现在默认返回 `vi.fn()` 而非 `spy`。这可能会影响包含模拟的快照 —— 名称将从 `[MockFunction spy]` 改为 `[MockFunction]`。通过 `vi.spyOn` 创建的监视器默认仍会使用原始名称，以提供更好的调试体验。
-- `vi.restoreAllMocks` 不再重置监视器的状态，仅恢复通过 `vi.spyOn` 手动创建的监视器，自动模拟不再受此函数影响（这也影响了配置选项 [`restoreMocks`](/config/#restoremocks)）。需注意的是，`.mockRestore` 仍会重置模拟实现并清除状态。
+- `vi.restoreAllMocks` 不再重置监视器的状态，仅恢复通过 `vi.spyOn` 手动创建的监视器，自动模拟不再受此函数影响（这也影响了配置选项 [`restoreMocks`](/config/restoremocks)）。需注意的是，`.mockRestore` 仍会重置模拟实现并清除状态。
 - 对模拟调用 `vi.spyOn` 现在会返回相同的模拟。
 - `mock.settledResults` 现在会在函数调用时立即填充一个 `'incomplete'` 结果。当 Promise 完成时，类型会根据结果更新。
 - 自动模拟的实例方法现在已正确隔离，但仍与原型共享状态。除非实例方法有自己的自定义模拟实现，否则覆盖原型实现将始终影响实例方法。对模拟调用 `.mockReset` 也不再破坏这种继承关系。
 
-<<<<<<< HEAD
-=======
-- `vi.fn().getMockName()` now returns `vi.fn()` by default instead of `spy`. This can affect snapshots with mocks - the name will be changed from `[MockFunction spy]` to `[MockFunction]`. Spies created with `vi.spyOn` will keep using the original name by default for better debugging experience
-- `vi.restoreAllMocks` no longer resets the state of spies and only restores spies created manually with `vi.spyOn`, automocks are no longer affected by this function (this also affects the config option [`restoreMocks`](/config/restoremocks)). Note that `.mockRestore` will still reset the mock implementation and clear the state
-- Calling `vi.spyOn` on a mock now returns the same mock
-- `mock.settledResults` are now populated immediately on function invocation with an `'incomplete'` result. When the promise is finished, the type is changed according to the result.
-- Automocked instance methods are now properly isolated, but share a state with the prototype. Overriding the prototype implementation will always affect instance methods unless the methods have a custom mock implementation of their own. Calling `.mockReset` on the mock also no longer breaks that inheritance.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
 ```ts
 import { AutoMockedClass } from './example.js'
 const instance1 = new AutoMockedClass()
@@ -209,18 +201,16 @@ $ pnpm run test:dev math.test.ts
 
 Module Runner 已取代 `vite-node`，直接内嵌于 Vite, Vitest 亦移除 SSR 封装，直接调用。主要变更如下：
 
+<!-- TODO: translation -->
+
 - `VITE_NODE_DEPS_MODULE_DIRECTORIES` environment variable was replaced with `VITEST_MODULE_DIRECTORIES`
 - Vitest no longer injects `__vitest_executor` into every [test runner](/api/advanced/runner). Instead, it injects `moduleRunner` which is an instance of [`ModuleRunner`](https://vite.dev/guide/api-environment-runtimes.html#modulerunner)
 - `vitest/execute` entry point was removed. It was always meant to be internal
-- [Custom environments](/guide/environment) no longer need to provide a `transformMode` property. Instead, provide `viteEnvironment`. If it is not provided, Vitest will use the environment name to transform files on the server (see [`server.environments`](https://vite.dev/guide/api-environment-instances.html))
+- [Custom environments](/guide/environment) no longer need to provide a `transformMode` property. Instead, provide `viteEnvironment`. If it is not provided, Vitest will use the environment name to transform files on the server (see [`server.environments`](https://cn.vite.dev/guide/api-environment-instances.html))
 - `vite-node` is no longer a dependency of Vitest
 - `deps.optimizer.web` was renamed to [`deps.optimizer.client`](/config/deps#deps-client). You can also use any custom names to apply optimizer configs when using other server environments
 
-<<<<<<< HEAD
-Vite 已提供外部化机制，但为降低破坏性，仍保留旧方案；[`server.deps`](/config/#server-deps) 可继续用于包的内联/外部化。
-=======
-Vite has its own externalization mechanism, but we decided to keep using the old one to reduce the amount of breaking changes. You can keep using [`server.deps`](/config/server#deps) to inline or externalize packages.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+Vite 已提供外部化机制，但为降低破坏性，仍保留旧方案；[`server.deps`](/config/server#deps) 可继续用于包的内联/外部化。
 
 未使用上述高级功能者，升级无感知。
 
@@ -447,11 +437,7 @@ export default defineConfig({
 
 ### 使用自定义元素打印 Shadow Root 快照 {#snapshots-using-custom-elements-print-the-shadow-root}
 
-<<<<<<< HEAD
-在 Vitest 4.0 中，包含自定义元素的快照将打印阴影根内容。要恢复以前的行为，请将 [`printShadowRoot` option](/config/#snapshotformat) 设为`false`。
-=======
-In Vitest 4.0 snapshots that include custom elements will print the shadow root contents. To restore the previous behavior, set the [`printShadowRoot` option](/config/snapshotformat) to `false`.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+在 Vitest 4.0 中，包含自定义元素的快照将打印阴影根内容。要恢复以前的行为，请将 [`printShadowRoot` option](/config/snapshotformat) 设为`false`。
 
 ```js{15-22}
 // 自 Vitest 4.0 前
@@ -512,11 +498,7 @@ Vitest 的 API 设计兼容 Jest，旨在使从 Jest 迁移尽可能简单。尽
 
 ### 默认是否启用全局变量 {#globals-as-a-default}
 
-<<<<<<< HEAD
-Jest 默认启用其 [globals API](https://jestjs.io/docs/api)。Vitest 默认不启用。你可以通过配置项 [globals](/config/#globals) 启用全局变量，或者修改代码直接从 `vitest` 模块导入所需 API。
-=======
-Jest has their [globals API](https://jestjs.io/docs/api) enabled by default. Vitest does not. You can either enable globals via [the `globals` configuration setting](/config/globals) or update your code to use imports from the `vitest` module instead.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+Jest 默认启用其 [globals API](https://jestjs.io/docs/api)。Vitest 默认不启用。你可以通过配置项 [globals](/config/globals) 启用全局变量，或者修改代码直接从 `vitest` 模块导入所需 API。
 
 如果选择不启用全局变量，注意常用库如 [`testing-library`](https://testing-library.com/) 将不会自动执行 DOM 的 [清理](https://testing-library.com/docs/svelte-testing-library/api/#cleanup)。
 
@@ -566,11 +548,7 @@ const { cloneDeep } = await vi.importActual('lodash/cloneDeep') // [!code ++]
 
 ### 扩展 Mock 到外部库 {#extends-mocking-to-external-libraries}
 
-<<<<<<< HEAD
-Jest 默认会扩展 mock 到使用相同模块的外部库。Vitest 需要显式告知要 mock 的第三方库，使其成为源码的一部分，方法是使用 [server.deps.inline](/config/#server-deps-inline)：
-=======
-Where Jest does it by default, when mocking a module and wanting this mocking to be extended to other external libraries that use the same module, you should explicitly tell which 3rd-party library you want to be mocked, so the external library would be part of your source code, by using [server.deps.inline](/config/server#inline).
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+Jest 默认会扩展 mock 到使用相同模块的外部库。Vitest 需要显式告知要 mock 的第三方库，使其成为源码的一部分，方法是使用 [server.deps.inline](/config/server#inline)：
 
 ```
 server.deps.inline: ["lib-name"]
@@ -609,11 +587,7 @@ beforeEach(() => setActivePinia(createTestingPinia())) // [!code --]
 beforeEach(() => { setActivePinia(createTestingPinia()) }) // [!code ++]
 ```
 
-<<<<<<< HEAD
-在 Jest 中钩子是顺序执行的（一个接一个）。默认情况下，Vitest 在栈中运行钩子。要使用 Jest 的行为，请更新 [`sequence.hooks`](/config/#sequence-hooks) 选项：
-=======
-In Jest hooks are called sequentially (one after another). By default, Vitest runs hooks in a stack. To use Jest's behavior, update [`sequence.hooks`](/config/sequence#sequence-hooks) option:
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+在 Jest 中钩子是顺序执行的（一个接一个）。默认情况下，Vitest 在栈中运行钩子。要使用 Jest 的行为，请更新 [`sequence.hooks`](/config/sequence#sequence-hooks) 选项：
 
 ```ts
 export default defineConfig({
@@ -650,11 +624,7 @@ vi.setConfig({ testTimeout: 5_000 }) // [!code ++]
 
 ### Vue 快照 {#vue-snapshots}
 
-<<<<<<< HEAD
-这不是 Jest 特有的功能，但如果你之前在 vue-cli 预设中使用 Jest，你需要安装 [`jest-serializer-vue`](https://github.com/eddyerburgh/jest-serializer-vue) 包，并在 [`snapshotSerializers`](/config/#snapshotserializers) 中指定它：
-=======
-This is not a Jest-specific feature, but if you previously were using Jest with vue-cli preset, you will need to install [`jest-serializer-vue`](https://github.com/eddyerburgh/jest-serializer-vue) package, and specify it in [`snapshotSerializers`](/config/snapshotserializers):
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+这不是 Jest 特有的功能，但如果你之前在 vue-cli 预设中使用 Jest，你需要安装 [`jest-serializer-vue`](https://github.com/eddyerburgh/jest-serializer-vue) 包，并在 [`snapshotSerializers`](/config/snapshotserializers) 中指定它：
 
 ```js [vitest.config.js]
 import { defineConfig } from 'vitest/config'

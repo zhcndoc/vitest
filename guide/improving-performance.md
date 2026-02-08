@@ -4,19 +4,15 @@ title: 性能优化 | 指南
 
 ## 测试隔离 {#test-isolation}
 
-<<<<<<< HEAD
-默认情况下，Vitest 在基于[pool](/config/#pool) 的隔离环境中运行每个测试文件：
+默认情况下，Vitest 在基于[pool](/config/pool) 的隔离环境中运行每个测试文件：
 
-对于那些不依赖副作用并且能够正确清理其状态的项目来说，这可能不是所期望的（对于拥有 `node` 环境的项目来说，这通常是正确的），这会大大增加测试时间。在这种情况下，禁用隔离将提高测试速度。要做到这一点，我们可以在 CLI 中提供 `--no-isolate` 标志，或者在配置文件中将 [`test.isolate`](/config/#isolate) 属性设置为 `false`。
-=======
-By default Vitest runs every test file in an isolated environment based on the [pool](/config/pool):
+<!-- TODO: translation -->
 
 - `threads` pool runs every test file in a separate [`Worker`](https://nodejs.org/api/worker_threads.html#class-worker)
 - `forks` pool runs every test file in a separate [forked child process](https://nodejs.org/api/child_process.html#child_processforkmodulepath-args-options)
 - `vmThreads` pool runs every test file in a separate [VM context](https://nodejs.org/api/vm.html#vmcreatecontextcontextobject-options), but it uses workers for parallelism
 
-This greatly increases test times, which might not be desirable for projects that don't rely on side effects and properly cleanup their state (which is usually true for projects with `node` environment). In this case disabling isolation will improve the speed of your tests. To do that, you can provide `--no-isolate` flag to the CLI or set [`test.isolate`](/config/isolate) property in the config to `false`.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+对于那些不依赖副作用并且能够正确清理其状态的项目来说，这可能不是所期望的（对于拥有 `node` 环境的项目来说，这通常是正确的），这会大大增加测试时间。在这种情况下，禁用隔离将提高测试速度。要做到这一点，我们可以在 CLI 中提供 `--no-isolate` 标志，或者在配置文件中将 [`test.isolate`](/config/isolate) 属性设置为 `false`。
 
 ::: code-group
 
@@ -67,11 +63,7 @@ export default defineConfig({
 如果使用的是 `vmThreads` 池，则不能禁用隔离。请改用 `threads` 池来提高测试性能。
 :::
 
-<<<<<<< HEAD
-对于某些项目，可能还需要禁用并行性以缩短启动时间。为此，请向 CLI 提供 `--no-file-parallelism` 标志，或将 config 中的[`test.fileParallelism`](/config/#fileParallelism) 属性设置为 `false`。
-=======
-For some projects, it might also be desirable to disable parallelism to improve startup time. To do that, provide `--no-file-parallelism` flag to the CLI or set [`test.fileParallelism`](/config/fileparallelism) property in the config to `false`.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+对于某些项目，可能还需要禁用并行性以缩短启动时间。为此，请向 CLI 提供 `--no-file-parallelism` 标志，或将 config 中的 [`test.fileParallelism`](/config/fileparallelism) 属性设置为 `false`。
 
 ::: code-group
 
@@ -93,11 +85,7 @@ export default defineConfig({
 
 ## 限制搜索目录 {#limiting-directory-search}
 
-<<<<<<< HEAD
-你可以通过 [`test.dir`](/config/#test-dir) 选项限制 Vitest 搜索文件的工作目录。如果根目录中存在不相关的文件夹和文件，这将加快搜索速度。
-=======
-You can limit the working directory when Vitest searches for files using [`test.dir`](/config/dir) option. This should make the search faster if you have unrelated folders and files in the root directory.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+你可以通过 [`test.dir`](/config/dir) 选项限制 Vitest 搜索文件的工作目录。如果根目录中存在不相关的文件夹和文件，这将加快搜索速度。
 
 ## 运行池 {#pool}
 

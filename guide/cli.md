@@ -201,13 +201,9 @@ vitest --api=false
 
   如果与 `forceRerunTriggers` 配置选项配合使用，并找到与更改的文件匹配的内容，将运行整个测试套件。
 
-<<<<<<< HEAD
   与代码覆盖一起使用时，报告将只包含与更改相关的文件。
 
-  如果与 [`forceRerunTriggers`](/config/#forcereruntriggers)配置选项搭配使用，则在 `forceRerunTriggers` 列表中列出的文件至少有一个发生变化时，将运行整个测试套件。默认情况下，Vitest 配置文件和 `package.json` 的更改将始终重新运行整个套件。
-=======
-If paired with the [`forceRerunTriggers`](/config/forcereruntriggers) config option it will run the whole test suite if at least one of the files listed in the `forceRerunTriggers` list changes. By default, changes to the Vitest config file and `package.json` will always rerun the whole suite.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+  如果与 [`forceRerunTriggers`](/config/forcereruntriggers)配置选项搭配使用，则在 `forceRerunTriggers` 列表中列出的文件至少有一个发生变化时，将运行整个测试套件。默认情况下，Vitest 配置文件和 `package.json` 的更改将始终重新运行整个套件。
 
 ### shard
 

@@ -359,11 +359,7 @@ function cancelCurrentRun(reason: CancelReason): Promise<void>
 function setGlobalTestNamePattern(pattern: string | RegExp): void
 ```
 
-<<<<<<< HEAD
-此方法覆盖全局的 [测试名称模式](/config/#testnamepattern)。
-=======
-This methods overrides the global [test name pattern](/config/testnamepattern).
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+此方法覆盖全局的 [测试名称模式](/config/testnamepattern)。
 
 ::: warning
 此方法不会开始运行任何测试。要使用更新后的模式运行测试，请调用 [`runTestSpecifications`](#runtestspecifications)。
@@ -383,11 +379,7 @@ function getGlobalTestNamePattern(): RegExp | undefined
 function resetGlobalTestNamePattern(): void
 ```
 
-<<<<<<< HEAD
-此方法重置 [测试名称模式](/config/#testnamepattern)。这意味着 Vitest 现在不会跳过任何测试。
-=======
-This methods resets the [test name pattern](/config/testnamepattern). It means Vitest won't skip any tests now.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+此方法重置 [测试名称模式](/config/testnamepattern)。这意味着 Vitest 现在不会跳过任何测试。
 
 ::: warning
 此方法不会开始运行任何测试。要运行没有模式的测试，请调用 [`runTestSpecifications`](#runtestspecifications)。
@@ -462,11 +454,7 @@ function exit(force = false): Promise<void>
 
 关闭所有项目并退出进程。如果 `force` 设置为 `true`，则进程将在关闭项目后立即退出。
 
-<<<<<<< HEAD
-如果进程在 [`config.teardownTimeout`](/config/#teardowntimeout) 毫秒后仍然处于活动状态，此方法还将强制调用 `process.exit()`。
-=======
-This method will also forcefully call `process.exit()` if the process is still active after [`config.teardownTimeout`](/config/teardowntimeout) milliseconds.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+如果进程在 [`config.teardownTimeout`](/config/teardowntimeout) 毫秒后仍然处于活动状态，此方法还将强制调用 `process.exit()`。
 
 ## shouldKeepServer
 
@@ -563,11 +551,7 @@ function createCoverageProvider(): Promise<CoverageProvider | null>
 当配置中启用了 `coverage` 时，创建覆盖率提供器。若使用 [`start`](#start) 或 [`init`](#init) 方法启动测试，这一步会自动完成。
 
 ::: warning
-<<<<<<< HEAD
-若未将 [`coverage.clean`](/config/#coverage-clean) 显式设为 false ，此方法还会清空之前的所有报告。
-=======
-This method will also clean all previous reports if [`coverage.clean`](/config/coverage#coverage-clean) is not set to `false`.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+若未将 [`coverage.clean`](/config/coverage#coverage-clean) 显式设为 false ，此方法还会清空之前的所有报告。
 :::
 
 ## enableCoverage <Version>4.0.0</Version> {#enablecoverage}

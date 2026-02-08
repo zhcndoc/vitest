@@ -136,11 +136,7 @@ expect(person.greet('Bob')).toBe('mocked')
 expect(spy.mock.calls).toEqual([['Bob']])
 ```
 
-<<<<<<< HEAD
-要在每个测试之前自动调用此方法，请在配置中启用 [`clearMocks`](/config/#clearmocks) 设置。
-=======
-To automatically call this method before each test, enable the [`clearMocks`](/config/clearmocks) setting in the configuration.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+要在每个测试之前自动调用此方法，请在配置中启用 [`clearMocks`](/config/clearmocks) 设置。
 
 ## mockName
 
@@ -314,11 +310,7 @@ expect(person.greet('Bob')).toBe('Hello Bob')
 expect(spy.mock.calls).toEqual([['Bob']])
 ```
 
-<<<<<<< HEAD
-要在每个测试之前自动调用此方法，可以在配置中启用 [`mockReset`](/config/#mockreset) 设置。
-=======
-To automatically call this method before each test, enable the [`mockReset`](/config/mockreset) setting in the configuration.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+要在每个测试之前自动调用此方法，可以在配置中启用 [`mockReset`](/config/mockreset) 设置。
 
 ## mockRestore
 
@@ -346,11 +338,7 @@ expect(person.greet('Bob')).toBe('Hello Bob')
 expect(spy.mock.calls).toEqual([])
 ```
 
-<<<<<<< HEAD
-要在每个测试之前自动调用此方法，请在配置中启用 [`restoreMocks`](/config/#restoremocks) 设置。
-=======
-To automatically call this method before each test, enable the [`restoreMocks`](/config/restoremocks) setting in the configuration.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+要在每个测试之前自动调用此方法，请在配置中启用 [`restoreMocks`](/config/restoremocks) 设置。
 
 ## mockResolvedValue
 

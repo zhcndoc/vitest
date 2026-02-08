@@ -117,11 +117,7 @@ function provide<T extends keyof ProvidedContext & string>(
 ): void
 ```
 
-<<<<<<< HEAD
-除了 [`config.provide`](/config/#provide) 字段外，还提供了一种向测试提供自定义值的方法。所有值在存储之前都通过 [`structuredClone`](https://developer.mozilla.org/en-US/docs/Web/API/Window/structuredClone) 进行验证，但 `providedContext` 上的值本身不会被克隆。
-=======
-A way to provide custom values to tests in addition to [`config.provide`](/config/provide) field. All values are validated with [`structuredClone`](https://developer.mozilla.org/en-US/docs/Web/API/Window/structuredClone) before they are stored, but the values on `providedContext` themselves are not cloned.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+除了 [`config.provide`](/config/provide) 字段外，还提供了一种向测试提供自定义值的方法。所有值在存储之前都通过 [`structuredClone`](https://developer.mozilla.org/en-US/docs/Web/API/Window/structuredClone) 进行验证，但 `providedContext` 上的值本身不会被克隆。
 
 ::: code-group
 ```ts [node.js]
@@ -141,11 +137,7 @@ const value = inject('key')
 这些值可以动态提供。测试中提供的值将在下次运行时更新。
 
 ::: tip
-<<<<<<< HEAD
-此方法也可用于 [全局设置文件](/config/#globalsetup)，以便在无法使用公共 API 的情况下使用：
-=======
-This method is also available to [global setup files](/config/globalsetup) for cases where you cannot use the public API:
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+此方法也可用于 [全局设置文件](/config/globalsetup)，以便在无法使用公共 API 的情况下使用：
 
 ```js
 export default function setup({ provide }) {
@@ -187,11 +179,7 @@ function createSpecification(
 ): TestSpecification
 ```
 
-<<<<<<< HEAD
-创建一个 [测试规范](/api/advanced/test-specification)，可用于 [`vitest.runTestSpecifications`](/api/advanced/vitest#runtestspecifications)。规范将测试文件限定到特定的 `project` 和测试 `locations`（可选）。测试 [位置](/api/advanced/test-case#location) 是源代码中定义测试的代码行。如果提供了位置，Vitest 将仅运行在这些行上定义的测试。请注意，如果定义了 [`testNamePattern`](/config/#testnamepattern)，则它也将被应用。
-=======
-Create a [test specification](/api/advanced/test-specification) that can be used in [`vitest.runTestSpecifications`](/api/advanced/vitest#runtestspecifications). Specification scopes the test file to a specific `project` and test `locations` (optional). Test [locations](/api/advanced/test-case#location) are code lines where the test is defined in the source code. If locations are provided, Vitest will only run tests defined on those lines. Note that if [`testNamePattern`](/config/testnamepattern) is defined, then it will also be applied.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+创建一个 [测试规范](/api/advanced/test-specification)，可用于 [`vitest.runTestSpecifications`](/api/advanced/vitest#runtestspecifications)。规范将测试文件限定到特定的 `project` 和测试 `locations`（可选）。测试 [位置](/api/advanced/test-case#location) 是源代码中定义测试的代码行。如果提供了位置，Vitest 将仅运行在这些行上定义的测试。请注意，如果定义了 [`testNamePattern`](/config/testnamepattern)，则它也将被应用。
 
 ```ts
 import { resolve } from 'node:path/posix'

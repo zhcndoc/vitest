@@ -75,14 +75,14 @@ export default antfu(
   },
   createSimplePlugin({
     name: 'no-vitepress-plugin-llms',
-    include: ['**/*.ts', '**/*.ts/**'],
+    include: ['*.ts', '**/*.ts'],
     create(context) {
       return {
         ImportDeclaration(node) {
           if (node.type === 'ImportDeclaration' && node.source.value === 'vitepress-plugin-llms') {
             context.report({
               node,
-              message: 'Don\'t use vitepress-plugin-llms, only need to be installed in the upstream repository.',
+              message: 'Don\'t import vitepress-plugin-llms, only need to be installed in the upstream repository.',
             })
           }
         },

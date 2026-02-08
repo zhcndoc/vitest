@@ -94,11 +94,7 @@ function annotate(
 ): Promise<TestAnnotation>
 ```
 
-<<<<<<< HEAD
-添加一个 [测试注释](/guide/test-annotations)，它将由你的 [报告器](/config/#reporters) 显示。
-=======
-Add a [test annotation](/guide/test-annotations) that will be displayed by your [reporter](/config/reporters).
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+添加一个 [测试注释](/guide/test-annotations)，它将由你的 [报告器](/config/reporters) 显示。
 
 ```ts
 test('annotations API', async ({ annotate }) => {
@@ -110,17 +106,10 @@ test('annotations API', async ({ annotate }) => {
 
 一个由 Vitest 控制的 [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) ，在以下场景下会被触发中止：
 
-<<<<<<< HEAD
 - 测试用例超时
 - 用户使用 Ctrl+C 手动终止了测试
 - 代码中调用了 [`vitest.cancelCurrentRun`](/api/advanced/vitest#cancelcurrentrun) 方法
-- 当并行测试中的其他用例失败，并且启用了 [`bail`](/config/#bail) 参数时
-=======
-- Test times out
-- User manually cancelled the test run with Ctrl+C
-- [`vitest.cancelCurrentRun`](/api/advanced/vitest#cancelcurrentrun) was called programmatically
-- Another test failed in parallel and the [`bail`](/config/bail) flag is set
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+- 当并行测试中的其他用例失败，并且启用了 [`bail`](/config/bail) 参数时
 
 ```ts
 it('stop request when test times out', async ({ signal }) => {

@@ -4,11 +4,7 @@ title: 测试环境 | 指南
 
 # 测试环境 {#test-environment}
 
-<<<<<<< HEAD
-Vitest 提供 [`environment`](/config/#environment) 选项以在特定环境中运行代码。你可以使用 [`environmentOptions`](/config/#environmentoptions) 选项修改环境的行为方式。
-=======
-Vitest provides [`environment`](/config/environment) option to run code inside a specific environment. You can modify how environment behaves with [`environmentOptions`](/config/environmentoptions) option.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+Vitest 提供 [`environment`](/config/environment) 选项以在特定环境中运行代码。你可以使用 [`environmentOptions`](/config/environmentoptions) 选项修改环境的行为方式。
 
 默认情况下，你可以使用这些环境：
 
@@ -18,11 +14,7 @@ Vitest provides [`environment`](/config/environment) option to run code inside a
 - `edge-runtime` 模拟 Vercel 的 [edge-runtime](https://edge-runtime.vercel.app/)，使用 [`@edge-runtime/vm`](https://www.npmjs.com/package/@edge-runtime/vm) 包
 
 ::: info
-<<<<<<< HEAD
-当使用 `jsdom` 或 `happy-dom` 环境时，Vitest 在导入 [CSS](https://vitejs.dev/guide/features.html#css) 和 [资源文件](https://vitejs.dev/guide/features.html#static-assets) 时遵循与 Vite 相同的规则。如果在导入外部依赖时出现 `unknown extension .css` 错误，则需要通过将所有相关包添加到 [`server.deps.inline`](/config/#server-deps-inline) 中，手动内联整个导入链。例如，在以下导入链中：`源代码 -> package-1 -> package-2 -> package-3`，如果错误发生在 `package-3`，你需要将这三个包都添加到 `server.deps.inline` 中。
-=======
-When using `jsdom` or `happy-dom` environments, Vitest follows the same rules that Vite does when importing [CSS](https://vitejs.dev/guide/features.html#css) and [assets](https://vitejs.dev/guide/features.html#static-assets). If importing external dependency fails with `unknown extension .css` error, you need to inline the whole import chain manually by adding all packages to [`server.deps.inline`](/config/server#inline). For example, if the error happens in `package-3` in this import chain: `source code -> package-1 -> package-2 -> package-3`, you need to add all three packages to `server.deps.inline`.
->>>>>>> 905d54ac4e9d8a1f9e27d704562f10c89dcd4a94
+当使用 `jsdom` 或 `happy-dom` 环境时，Vitest 在导入 [CSS](https://vitejs.dev/guide/features.html#css) 和 [资源文件](https://vitejs.dev/guide/features.html#static-assets) 时遵循与 Vite 相同的规则。如果在导入外部依赖时出现 `unknown extension .css` 错误，则需要通过将所有相关包添加到 [`server.deps.inline`](/config/server#inline) 中，手动内联整个导入链。例如，在以下导入链中：`源代码 -> package-1 -> package-2 -> package-3`，如果错误发生在 `package-3`，你需要将这三个包都添加到 `server.deps.inline` 中。
 
 外部依赖中的 CSS 和资源文件的 `require` 调用会自动解析。
 :::
