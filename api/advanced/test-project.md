@@ -117,7 +117,7 @@ function provide<T extends keyof ProvidedContext & string>(
 ): void
 ```
 
-除了 [`config.provide`](/config/#provide) 字段外，还提供了一种向测试提供自定义值的方法。所有值在存储之前都通过 [`structuredClone`](https://developer.mozilla.org/en-US/docs/Web/API/Window/structuredClone) 进行验证，但 `providedContext` 上的值本身不会被克隆。
+除了 [`config.provide`](/config/provide) 字段外，还提供了一种向测试提供自定义值的方法。所有值在存储之前都通过 [`structuredClone`](https://developer.mozilla.org/en-US/docs/Web/API/Window/structuredClone) 进行验证，但 `providedContext` 上的值本身不会被克隆。
 
 ::: code-group
 ```ts [node.js]
@@ -137,7 +137,7 @@ const value = inject('key')
 这些值可以动态提供。测试中提供的值将在下次运行时更新。
 
 ::: tip
-此方法也可用于 [全局设置文件](/config/#globalsetup)，以便在无法使用公共 API 的情况下使用：
+此方法也可用于 [全局设置文件](/config/globalsetup)，以便在无法使用公共 API 的情况下使用：
 
 ```js
 export default function setup({ provide }) {
@@ -179,7 +179,7 @@ function createSpecification(
 ): TestSpecification
 ```
 
-创建一个 [测试规范](/api/advanced/test-specification)，可用于 [`vitest.runTestSpecifications`](/api/advanced/vitest#runtestspecifications)。规范将测试文件限定到特定的 `project` 和测试 `locations`（可选）。测试 [位置](/api/advanced/test-case#location) 是源代码中定义测试的代码行。如果提供了位置，Vitest 将仅运行在这些行上定义的测试。请注意，如果定义了 [`testNamePattern`](/config/#testnamepattern)，则它也将被应用。
+创建一个 [测试规范](/api/advanced/test-specification)，可用于 [`vitest.runTestSpecifications`](/api/advanced/vitest#runtestspecifications)。规范将测试文件限定到特定的 `project` 和测试 `locations`（可选）。测试 [位置](/api/advanced/test-case#location) 是源代码中定义测试的代码行。如果提供了位置，Vitest 将仅运行在这些行上定义的测试。请注意，如果定义了 [`testNamePattern`](/config/testnamepattern)，则它也将被应用。
 
 ```ts
 import { resolve } from 'node:path/posix'

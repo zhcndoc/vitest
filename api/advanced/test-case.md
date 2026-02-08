@@ -80,7 +80,7 @@ const hash = generateFileHash(
 
 ## location
 
-测试在模块中定义的位置。只有在配置中启用了 [`includeTaskLocation`](/config/#includetasklocation) 时才会收集位置信息。请注意，如果使用了 `--reporter=html`、`--ui` 或 `--browser` 参数，此选项会自动启用。
+测试在模块中定义的位置。只有在配置中启用了 [`includeTaskLocation`](/config/includetasklocation) 时才会收集位置信息。请注意，如果使用了 `--reporter=html`、`--ui` 或 `--browser` 参数，此选项会自动启用。
 
 此测试的位置将等于 `{ line: 3, column: 1 }`：
 

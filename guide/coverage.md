@@ -142,7 +142,7 @@ globalThis.__VITEST_COVERAGE__[filename] = coverage // [!code ++]
 ## 覆盖率配置指南 {#coverage-setup}
 
 ::: tip
-你可以在 [覆盖率配置参考](/config/#coverage) 中查看所有可用的覆盖率选项。
+你可以在 [覆盖率配置参考](/config/coverage) 中查看所有可用的覆盖率选项。
 :::
 
 如果想要在测试中开启覆盖率统计，可以在命令行里加上 `--coverage` 参数，或者在 `vitest.config.ts` 文件里将 `coverage.enabled` 设置为 `true` ：
@@ -171,9 +171,9 @@ export default defineConfig({
 
 ## 在覆盖率报告中设置需要统计或忽略的文件 {#including-and-excluding-files-from-coverage-report}
 
-你可以通过设置 [`coverage.include`](/config/#coverage-include) 和 [`coverage.exclude`](/config/#coverage-exclude) 来决定覆盖率报告中展示哪些文件。
+你可以通过设置 [`coverage.include`](/config/coverage#coverage-include) 和 [`coverage.exclude`](/config/coverage#coverage-exclude) 来决定覆盖率报告中展示哪些文件。
 
-Vitest 默认只统计测试中实际导入的文件。如果希望报告里也包含那些未被测试覆盖到的文件，需要在 [`coverage.include`](/config/#coverage-include) 中配置一个能匹配你源代码文件的模式：
+Vitest 默认只统计测试中实际导入的文件。如果希望报告里也包含那些未被测试覆盖到的文件，需要在 [`coverage.include`](/config/coverage#coverage-include) 中配置一个能匹配你源代码文件的模式：
 
 ::: code-group
 ```ts [vitest.config.ts] {6}
@@ -207,7 +207,7 @@ export default defineConfig({
 ```
 :::
 
-如果你想从覆盖率中排除已经被 `coverage.include` 匹配到的部分文件，可以通过额外配置 [`coverage.exclude`](/config/#coverage-exclude) 来实现：
+如果你想从覆盖率中排除已经被 `coverage.include` 匹配到的部分文件，可以通过额外配置 [`coverage.exclude`](/config/coverage#coverage-exclude) 来实现：
 
 ::: code-group
 ```ts [vitest.config.ts] {7}

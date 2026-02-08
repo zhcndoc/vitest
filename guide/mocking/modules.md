@@ -260,7 +260,7 @@ Vitest 支持对“虚拟模块”进行模拟（mock）。
 - 始终将该导入重定向到某个真实文件；
 - 或仅告知 Vite 忽略它，再通过 `vi.mock` 工厂函数来定义模块的导出。
 
-若要进行导入重定向，可以使用 [`test.alias`](/config/#alias) 配置选项：
+若要进行导入重定向，可以使用 [`test.alias`](/config/alias) 配置选项：
 
 ```ts [vitest.config.ts]
 import { resolve } from 'node:path'
