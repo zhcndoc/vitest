@@ -464,6 +464,13 @@ Memory limit for VM pools. If you see memory leaks, try to tinker this value.
 
 在节点中运行时，显示每个测试的堆大小
 
+### detectAsyncLeaks
+
+- **CLI:** `--detectAsyncLeaks`
+- **Config:** [detectAsyncLeaks](/config/detectasyncleaks)
+
+Detect asynchronous resources leaking from the test file (default: `false`)
+
 ### allowOnly
 
 - **命令行终端:** `--allowOnly`
