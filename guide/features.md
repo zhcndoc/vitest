@@ -39,7 +39,7 @@ $ vitest
 
 ## 多线程 {#threads}
 
-默认情况下，Vitest 会通过 [`node:child_process`](https://nodejs.org/api/child_process.html) 在 [多个进程](/guide/parallelism) 中运行测试文件，实现测试的并行执行。如需进一步提升测试速度，可考虑启用 `--pool=threads` 参数改用 [`node:worker_threads`](https://nodejs.org/api/worker_threads.html) 运行测试（但需注意某些依赖包可能不兼容此模式）。若需在单线程/进程中运行测试，请参阅 [`fileParallelism`](/config/#fileParallelism) 配置项。
+默认情况下，Vitest 会通过 [`node:child_process`](https://nodejs.org/api/child_process.html) 在 [多个进程](/guide/parallelism) 中运行测试文件，实现测试的并行执行。如需进一步提升测试速度，可考虑启用 `--pool=threads` 参数改用 [`node:worker_threads`](https://nodejs.org/api/worker_threads.html) 运行测试（但需注意某些依赖包可能不兼容此模式）。若需在单线程/进程中运行测试，请参阅 [`fileParallelism`](/config/fileparallelism) 配置项。
 
 Vitest 还隔离了每个测试文件的运行环境，因此一个文件中的运行环境改变不会影响其他文件。可以通过将 `--no-isolate` 传递给 CLI 来禁用隔离（以正确性换取运行性能）。
 
@@ -116,7 +116,7 @@ it('renders correctly', () => {
 
 内置 [Chai](https://www.chaijs.com/) 进行断言和与 [Jest expect](https://jestjs.io/docs/expect) 兼容的 APIs
 
-注意，如果你正在使用添加匹配器的第三方库，将 [`test.globals`](/config/#globals) 设置为 `true` 将提供更好的兼容性。
+注意，如果你正在使用添加匹配器的第三方库，将 [`test.globals`](/config/globals) 设置为 `true` 将提供更好的兼容性。
 
 ## 对象模拟 (Mocking) {#mocking}
 
@@ -316,7 +316,7 @@ window.addEventListener('unhandledrejection', () => {
 ```
 :::
 
-或者，你也可以使用 [`dangerouslyIgnoreUnhandledErrors`](/config/#dangerouslyignoreunhandlederrors) 选项来忽略报告的错误。Vitest 仍会报告它们，但它们不会影响测试结果（退出码不会改变）。
+或者，你也可以使用 [`dangerouslyIgnoreUnhandledErrors`](/config/dangerouslyignoreunhandlederrors) 选项来忽略报告的错误。Vitest 仍会报告它们，但它们不会影响测试结果（退出码不会改变）。
 
 如果您需要测试某个错误未被捕获，可以创建如下所示的测试：
 

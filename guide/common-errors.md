@@ -27,7 +27,7 @@ export default defineConfig({
 + import helpers from '../src/helpers'
 ```
 
-3. 确保你没有使用相对路径的 [别名](/config/#alias)。Vite 将它们视为相对于导入所在的文件而不是根目录。
+3. 确保你没有使用相对路径的 [别名](/config/alias)。Vite 将它们视为相对于导入所在的文件而不是根目录。
 
 ```ts
 import { defineConfig } from 'vitest/config'

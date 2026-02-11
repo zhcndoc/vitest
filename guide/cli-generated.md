@@ -167,7 +167,7 @@ Allow API to edit files. (Be careful when enabling this option in untrusted envi
 - **命令行终端:** `--coverage.reporter <name>`
 - **配置:** [coverage.reporter](/config/coverage#coverage-reporter)
 
-Coverage reporters to use. Visit [`coverage.reporter`](/config/#coverage-reporter) for more information (default: `["text", "html", "clover", "json"]`)
+Coverage reporters to use. Visit [`coverage.reporter`](/config/coverage#coverage-reporter) for more information (default: `["text", "html", "clover", "json"]`)
 
 ### coverage.reportOnFailure
 
@@ -517,7 +517,7 @@ Memory limit for VM pools. If you see memory leaks, try to tinker this value.
 - **命令行终端:** `--sequence.hooks <order>`
 - **配置:** [sequence.hooks](/config/sequence#sequence-hooks)
 
-Changes the order in which hooks are executed. Accepted values are: "stack", "list" and "parallel". Visit [`sequence.hooks`](/config/#sequence-hooks) for more information (default: `"parallel"`)
+Changes the order in which hooks are executed. Accepted values are: "stack", "list" and "parallel". Visit [`sequence.hooks`](/config/sequence#sequence-hooks) for more information (default: `"parallel"`)
 
 ### sequence.setupFiles
 

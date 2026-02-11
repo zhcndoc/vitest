@@ -16,10 +16,10 @@
 > ```
 
 - Transform：转换文件所用的时间。详情请参阅 [文件转换](#file-transform)。
-- Setup：执行 [`setupFiles`](/config/#setupfiles) 文件所花费的时间。
+- Setup：执行 [`setupFiles`](/config/setupfiles) 文件所花费的时间。
 - Import：导入测试文件及其依赖项所花费的时间。这也包括收集所有测试所花费的时间。注意，这不包括测试内部的动态导入。
 - Tests：实际执行测试用例所用的时间。
-- Environment：[`配置测试`](/config/#environment) 环境（比如 JSDOM）所需的时间。
+- Environment：[`配置测试`](/config/environment) 环境（比如 JSDOM）所需的时间。
 
 ## 测试运行器 {#test-runner}
 
@@ -57,7 +57,7 @@ export default defineConfig({
 
 ## 主线程 {#main-thread}
 
-对主线程进行性能分析有助于调试 Vitest 的 Vite 使用情况和 [`globalSetup`](/config/#globalsetup) 文件。
+对主线程进行性能分析有助于调试 Vitest 的 Vite 使用情况和 [`globalSetup`](/config/globalsetup) 文件。
 这也是 Vite 插件运行的地方。
 
 :::tip
@@ -150,7 +150,7 @@ $ DEBUG=vitest:coverage vitest --run --coverage
 
 这种性能分析方法非常适合检测被覆盖率提供程序意外包含的大文件。
 例如，如果你的配置意外地将大型构建压缩后的 JavaScript 文件包含在代码覆盖率中，这些文件应该会出现在日志中。
-在这种情况下，你可能需要调整 [`coverage.include`](/config/#coverage-include) 和 [`coverage.exclude`](/config/#coverage-exclude) 选项。
+在这种情况下，你可能需要调整 [`coverage.include`](/config/coverage#coverage-include) 和 [`coverage.exclude`](/config/coverage#coverage-exclude) 选项。
 
 ## 性能记录分析 {#inspecting-profiling-records}
 

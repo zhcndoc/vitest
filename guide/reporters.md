@@ -5,7 +5,7 @@ outline: deep
 
 # 报告器 {#reporters}
 
-Vitest 提供了几种内置报告器，以不同格式显示测试输出，以及使用自定义报告器的能力。你可以使用 `--reporter` 命令行选项，或者在你的 `outputFile`[配置选项](https://vitest.dev/config/#reporters) 中加入 `reporters` 属性来选择不同的报告器。如果没有指定报告器，Vitest 将使用下文所述的默认报告器。
+Vitest 提供了几种内置报告器，以不同格式显示测试输出，以及使用自定义报告器的能力。你可以使用 `--reporter` 命令行选项，或者在你的 `outputFile` [配置选项](/config/reporters) 中加入 `reporters` 属性来选择不同的报告器。如果没有指定报告器，Vitest 将使用下文所述的默认报告器。
 
 通过命令行使用报告器:
 
@@ -37,7 +37,7 @@ export default defineConfig({
 
 ## 报告器输出 {#reporter-output}
 
-默认情况下，Vitest 的报告器会将输出打印到终端。当使用 `json` 、`html` 或 `junit` 报告器时，你可以在 Vite 配置文件中或通过 CLI 加入 `outputFile` [配置选项](https://vitest.dev/config/#outputfile)，将测试输出写入文件。
+默认情况下，Vitest 的报告器会将输出打印到终端。当使用 `json` 、`html` 或 `junit` 报告器时，你可以在 Vite 配置文件中或通过 CLI 加入 `outputFile` [配置选项](/config/outputfile)，将测试输出写入文件。
 
 :::code-group
 
@@ -299,7 +299,7 @@ export default defineConfig({
 
 ### JUnit 报告器 {#junit-reporter}
 
-以 JUnit XML 格式输出测试结果报告。既可打印到终端，也可使用 [`outputFile`](##报告器输出) 配置选项写入 XML 文件。
+以 JUnit XML 格式输出测试结果报告。既可打印到终端，也可使用 [`outputFile`](/config/outputfile) 配置选项写入 XML 文件。
 
 :::code-group
 
@@ -355,7 +355,7 @@ export default defineConfig({
 
 ### JSON 报告器 {#json-reporter}
 
-以与 Jest 的 `--json` 选项兼容的 JSON 格式生成测试结果报告。可以打印到终端，也可以使用 [`outputFile`](/config/#outputfile) 配置选项写入文件。
+以与 Jest 的 `--json` 选项兼容的 JSON 格式生成测试结果报告。可以打印到终端，也可以使用 [`outputFile`](/config/outputfile) 配置选项写入文件。
 
 :::code-group
 
@@ -424,7 +424,7 @@ JSON 报告示例:
 
 生成 HTML 文件，通过交互式 [GUI](/guide/ui) 查看测试结果。文件生成后，Vitest 将保持本地开发服务器运行，并提供一个链接，以便在浏览器中查看报告。
 
-可使用 [`outputFile`](##报告器输出) 配置选项指定输出文件。如果没有提供 `outputFile` 选项，则会创建一个新的 HTML 文件。
+可使用 [`outputFile`](/config/outputfile) 配置选项指定输出文件。如果没有提供 `outputFile` 选项，则会创建一个新的 HTML 文件。
 
 :::code-group
 

@@ -4,7 +4,7 @@ outline: deep
 
 # Vi
 
-Vitest 通过 `vi` 工具函数提供实用功能。可以全局访问它（当启用 [globals 配置](/config/#globals) 时），也可以直接从 `vitest` 中导入：
+Vitest 通过 `vi` 工具函数提供实用功能。可以全局访问它（当启用 [globals 配置](/config/globals) 时），也可以直接从 `vitest` 中导入：
 
 ```js
 import { vi } from 'vitest'
@@ -39,7 +39,7 @@ function mock<T>(
 ::: warning
 `vi.mock` 仅对使用 `import` 关键字导入的模块有效。它对 `require` 无效。
 
-为了提升 `vi.mock` ，Vitest 会静态分析文件。它会指出不能使用未直接从 `vitest` 软件包导入的 `vi` （例如，从某个实用程序文件导入）。使用 `vi.mock` 与从 `vitest` 导入的 `vi` 一起使用，或者启用 [`globals`](/config/#globals) 配置选项。
+为了提升 `vi.mock` ，Vitest 会静态分析文件。它会指出不能使用未直接从 `vitest` 软件包导入的 `vi` （例如，从某个实用程序文件导入）。使用 `vi.mock` 与从 `vitest` 导入的 `vi` 一起使用，或者启用 [`globals`](/config/globals) 配置选项。
 
 Vitest 不会模拟 [setup file](/config/setupfiles) 中导入的模块，因为这些模块在运行测试文件时已被缓存。我们可以在 [`vi.hoisted`](#vi-hoisted) 中调用 [`vi.resetModules()`](#vi-resetmodules) ，在运行测试文件前清除所有模块缓存。
 :::
@@ -127,7 +127,7 @@ vi.mock('./path/to/module.js', () => {
 ```
 
 :::
-如果要模拟的文件旁边有一个 `__mocks__` 文件夹，且没有提供工厂，Vitest 将尝试在 `__mocks__` 子文件夹中找到一个同名文件，并将其作为实际模块使用。如果模拟的是依赖关系，Vitest 会尝试在项目的 [root](/config/#root)（默认为 `process.cwd()` ）中找到 `__mocks__` 文件夹。我们可以通过 [`deps.moduleDirectories`](/config/#deps-moduledirectories) 配置选项告诉 Vitest 依赖项的位置。
+如果要模拟的文件旁边有一个 `__mocks__` 文件夹，且没有提供工厂，Vitest 将尝试在 `__mocks__` 子文件夹中找到一个同名文件，并将其作为实际模块使用。如果模拟的是依赖关系，Vitest 会尝试在项目的 [root](/config/root)（默认为 `process.cwd()` ）中找到 `__mocks__` 文件夹。我们可以通过 [`deps.moduleDirectories`](/config/#deps-moduledirectories) 配置选项告诉 Vitest 依赖项的位置。
 
 例如，我们有这样的文件结构：
 
@@ -632,7 +632,7 @@ it('calls console.log', () => {
 :::
 
 ::: tip
-在每个测试后，于 [`afterEach`](/api/hooks#aftereach) 中调用 [`vi.restoreAllMocks`](#vi-restoreallmocks) 或开启配置项 [`test.restoreMocks`](/config/#restoreMocks)，即可将所有方法还原为原始实现。此操作会恢复其 [对象描述符](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty)，除非重新对其进行 spy ，否则无法再次修改方法实现。
+在每个测试后，于 [`afterEach`](/api/hooks#aftereach) 中调用 [`vi.restoreAllMocks`](#vi-restoreallmocks) 或开启配置项 [`test.restoreMocks`](/config/restoremocks)，即可将所有方法还原为原始实现。此操作会恢复其 [对象描述符](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty)，除非重新对其进行 spy ，否则无法再次修改方法实现。
 
 ```ts
 const cart = {
@@ -945,7 +945,7 @@ function runAllTicks(): Vitest
 function runAllTimers(): Vitest
 ```
 
-该方法将调用每个已经启动的定时器，直到定时器队列为空。这意味着在 `runAllTimers` 期间调用的每个定时器都会被触发。如果时间间隔为无限，则会在尝试 10000 次后触发（可使用 [`fakeTimers.loopLimit`](/config/#faketimers-looplimit) 进行配置）。
+该方法将调用每个已经启动的定时器，直到定时器队列为空。这意味着在 `runAllTimers` 期间调用的每个定时器都会被触发。如果时间间隔为无限，则会在尝试 10000 次后触发（可使用 [`fakeTimers.loopLimit`](/config/faketimers#faketimers-looplimit) 进行配置）。
 
 ```ts
 let i = 0
@@ -971,7 +971,7 @@ function runAllTimersAsync(): Promise<Vitest>
 ```
 
 该方法将异步调用每个已启动的定时器，直到定时器队列为空。这意味着在 `runAllTimersAsync` 期间调用的每个定时器都会被触发，即使是异步定时器。如果我们有一个无限的时间间隔、
-会在尝试 10000 次后抛出（可使用 [`fakeTimers.loopLimit`](/config/#faketimers-looplimit) ）。
+会在尝试 10000 次后抛出（可使用 [`fakeTimers.loopLimit`](/config/faketimers#faketimers-looplimit) ）。
 
 ```ts
 setTimeout(async () => {
@@ -1341,3 +1341,44 @@ function resetConfig(): void
 ```
 
 如果之前调用过 [`vi.setConfig`](#vi-setconfig) ，则会将配置重置为原始状态。
+
+<!-- TODO: translation -->
+
+### vi.defineHelper <Version>4.1.0</Version> {#vi-defineHelper}
+
+```ts
+function defineHelper<F extends (...args: any) => any>(fn: F): F
+```
+
+Wraps a function to create an assertion helper. When an assertion fails inside the helper, the error stack trace will point to where the helper was called, not inside the helper itself. This makes it easier to identify the source of test failures when using custom assertion functions.
+
+Works with both synchronous and asynchronous functions, and supports `expect.soft()`.
+
+```ts
+import { expect, vi } from 'vitest'
+
+const assertPair = vi.defineHelper((a, b) => {
+  expect(a).toEqual(b)
+})
+
+test('example', () => {
+  assertPair('left', 'right') // Error points to this line
+})
+```
+
+Example output:
+
+<!-- eslint-skip -->
+```js
+FAIL  example.test.ts > example
+AssertionError: expected 'left' to deeply equal 'right'
+
+Expected: "right"
+Received: "left"
+
+ ❯ example.test.ts:8:3
+      7| test('example', () => {
+      8|   assertPair('left', 'right')
+       |   ^
+      9| })
+```

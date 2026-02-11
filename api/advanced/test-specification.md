@@ -40,14 +40,14 @@ Vite 模块图中的模块 ID。通常，它是一个使用 POSIX 分隔符的�
 
 与规范相关联的 [`TestModule`](/api/advanced/test-module) 实例。如果测试还未加入队列，则将是 `undefined`。
 
-## pool {#pool}
+## pool
 
-测试模块将运行的 [`pool`](/config/#pool)。
+测试模块将运行的 [`pool`](/config/pool)。
 
 <!-- TODO: translation -->
 
 ::: danger
-It's possible to have multiple pools in a single test project with [`typecheck.enabled`](/config/#typecheck-enabled). This means it's possible to have several specifications with the same `moduleId` but different `pool`. In later versions, the project will only support a single pool.
+It's possible to have multiple pools in a single test project with [`typecheck.enabled`](/config/typecheck#typecheck-enabled). This means it's possible to have several specifications with the same `moduleId` but different `pool`. In later versions, the project will only support a single pool.
 :::
 
 ## testLines
