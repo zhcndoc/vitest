@@ -122,14 +122,10 @@ vitest list --filesOnly
 tests/test1.test.ts
 tests/test2.test.ts
 ```
-
-<<<<<<< HEAD
-## Shell 自动补全 {#shell-autocompletions}
-=======
+<!-- TODO: translation -->
 Since Vitest 4.1, you may pass `--static-parse` to [parse test files](/api/advanced/vitest#parsespecifications) instead of running them to collect tests. Vitest parses test files with limited concurrency, defaulting to `os.availableParallelism()`. You can change it via the `--static-parse-concurrency` option.
 
-## Shell Autocompletions
->>>>>>> 7a5ad4defc51a329d42ab280f76e1a5be69f6056
+## Shell 自动补全 {#shell-autocompletions}
 
 Vitest 通过 [`@bomb.sh/tab`](https://github.com/bombshell-dev/tab) 提供命令、选项及选项值的 Shell 自动补全功能。
 

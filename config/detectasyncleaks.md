@@ -2,7 +2,7 @@
 title: detectAsyncLeaks | Config
 outline: deep
 ---
-
+<!-- TODO: translation -->
 # detectAsyncLeaks
 
 - **Type:** `boolean`
