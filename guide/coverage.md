@@ -63,24 +63,23 @@ Vitest 默认采用 `v8` 作为覆盖率提供器。
 - ⚠️ 存在 V8 引擎自身的一些小限制，详见 [`ast-v8-to-istanbul` 的限制说明](https://github.com/AriPerkkio/ast-v8-to-istanbul?tab=readme-ov-file#limitations)
 - ❌ 不支持非 V8 环境，比如 Firefox、Bun；也不适用于不通过 profiler 提供 V8 覆盖率的环境，例如 Cloudflare Workers
 
-<!-- TODO: translation -->
 <script setup>
 import ArrowDown from '../.vitepress/components/ArrowDown.vue'
 import Box from '../.vitepress/components/Box.vue'
 </script>
 
 <div style="display: flex; flex-direction: column; align-items: center; padding: 2rem 0; max-width: 20rem;">
-  <Box>Test file</Box>
+  <Box>测试文件</Box>
   <ArrowDown />
-  <Box>Enable V8 runtime coverage collection</Box>
+  <Box>启用 V8 运行时收集覆盖率</Box>
   <ArrowDown />
-  <Box>Run file</Box>
+  <Box>运行文件</Box>
   <ArrowDown />
-  <Box>Collect coverage results from V8</Box>
+  <Box>从 V8 收集覆盖率结果</Box>
   <ArrowDown />
-  <Box>Remap coverage results to source files</Box>
+  <Box>将覆盖率结果映射到源文件</Box>
   <ArrowDown />
-  <Box>Coverage report</Box>
+  <Box>生成覆盖率报告</Box>
 </div>
 
 ## Istanbul 覆盖率提供方案 {#istanbul-provider}
@@ -126,17 +125,17 @@ globalThis.__VITEST_COVERAGE__[filename] = coverage // [!code ++]
 - ❌ 内存消耗比 V8 更高
 
 <div style="display: flex; flex-direction: column; align-items: center; padding: 2rem 0; max-width: 20rem;">
-  <Box>Test file</Box>
+  <Box>测试文件</Box>
   <ArrowDown />
-  <Box>Pre‑instrumentation with Babel</Box>
+  <Box>使用 Babel 进行预插桩</Box>
   <ArrowDown />
-  <Box>Run file</Box>
+  <Box>运行文件</Box>
   <ArrowDown />
-  <Box>Collect coverage results from Javascript scope</Box>
+  <Box>从 Javascript 作用域收集覆盖率结果</Box>
   <ArrowDown />
-  <Box>Remap coverage results to source files</Box>
+  <Box>将覆盖率结果映射到源文件</Box>
   <ArrowDown />
-  <Box>Coverage report</Box>
+  <Box>生成覆盖率报告</Box>
 </div>
 
 ## 覆盖率配置指南 {#coverage-setup}

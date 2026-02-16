@@ -609,6 +609,9 @@ npx vitest --reporter=blob --outputFile=reports/blob-1.json
 npx vitest --merge-reports=reports --reporter=json --reporter=default
 ```
 
+Blob reporter output doesn't include file-based [attachments](/api/advanced/artifacts.html#testattachment).
+Make sure to merge [`attachmentsDir`](/config/attachmentsdir) separately alongside blob reports on CI when using this feature.
+
 ::: tip
 `--reporter=blob` 和 `--merge-reports` 这两个选项在监听模式下均不可用。
 :::
