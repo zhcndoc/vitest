@@ -563,11 +563,7 @@ expect(new Error('hi', { cause: 'x' })).toEqual(new Error('hi'))
 expect(new Error('hi')).toEqual(new Error('hi', { cause: 'x' }))
 ```
 
-<<<<<<< HEAD
-要测试是否抛出了某个异常，请使用 [`toThrowError`](#tothrowerror) 断言。
-=======
-To test if something was thrown, use [`toThrow`](#tothrow) assertion.
->>>>>>> efc2643c018e21fa21799036e19476ec52dbceda
+要测试是否抛出了某个异常，请使用 [`tothrow`](#tothrow) 断言。
 :::
 
 ## toStrictEqual
@@ -788,15 +784,9 @@ test('the number of elements must match exactly', () => {
 
 - **类型:** `(recexpectedeived: any) => Awaitable<void>`
 
-<<<<<<< HEAD
-- **别名:** `toThrow`
+- **别名:** `toThrow` <Deprecated />
 
-`toThrowError` 断言函数在被调用时是否会抛出错误。
-=======
-- **Alias:** `toThrowError` <Deprecated />
-
-`toThrow` asserts if a function throws an error when it is called.
->>>>>>> efc2643c018e21fa21799036e19476ec52dbceda
+`toThrow` 断言函数在被调用时是否会抛出错误。
 
 我们可以提供一个可选参数来测试是否抛出了特定的错误：
 
@@ -832,23 +822,13 @@ function getFruitStock(type: string) {
 }
 
 test('throws on pineapples', () => {
-<<<<<<< HEAD
   // 测试错误信息包含 “stock”，这两种写法是等效的
-  expect(() => getFruitStock('pineapples')).toThrowError(/stock/)
-  expect(() => getFruitStock('pineapples')).toThrowError('stock')
-
-  // 测试确切的错误信息
-  expect(() => getFruitStock('pineapples')).toThrowError(
-    /^Pineapples are not in stock$/
-=======
-  // Test that the error message says "stock" somewhere: these are equivalent
   expect(() => getFruitStock('pineapples')).toThrow(/stock/)
   expect(() => getFruitStock('pineapples')).toThrow('stock')
 
-  // Test the exact error message
+  // 测试确切的错误信息
   expect(() => getFruitStock('pineapples')).toThrow(
     /^Pineapples are not in stock$/,
->>>>>>> efc2643c018e21fa21799036e19476ec52dbceda
   )
 
   expect(() => getFruitStock('pineapples')).toThrow(
@@ -984,21 +964,13 @@ it('render basic', async () => {
 
 - **类型:** `(hint?: string) => void`
 
-<<<<<<< HEAD
-与 [`toMatchSnapshot`](#tomatchsnapshot) 相同，但期望的值与 [`toThrowError`](#tothrowerror) 相同。
-=======
-The same as [`toMatchSnapshot`](#tomatchsnapshot), but expects the same value as [`toThrow`](#tothrow).
->>>>>>> efc2643c018e21fa21799036e19476ec52dbceda
+与 [`toMatchSnapshot`](#tomatchsnapshot) 相同，但期望的值与 [`toThrow`](#tothrow) 相同。
 
 ## toThrowErrorMatchingInlineSnapshot
 
 - **类型:** `(snapshot?: string, hint?: string) => void`
 
-<<<<<<< HEAD
-与 [`toMatchInlineSnapshot`](#tomatchinlinesnapshot) 类似，但期望的值与 [`toThrowError`](#tothrowerror) 相同。
-=======
-The same as [`toMatchInlineSnapshot`](#tomatchinlinesnapshot), but expects the same value as [`toThrow`](#tothrow).
->>>>>>> efc2643c018e21fa21799036e19476ec52dbceda
+与 [`toMatchInlineSnapshot`](#tomatchinlinesnapshot) 类似，但期望的值与 [`toThrow`](#toThrow) 相同。
 
 ## toHaveBeenCalled
 

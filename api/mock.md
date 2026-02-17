@@ -425,7 +425,7 @@ const myMockFn = vi
 // 'first call', 'second call', 'default', 'default'
 console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn())
 ```
-
+<!-- TODO: translation -->
 ## mockThrow <Version>4.1.0</Version> {#mockthrow}
 
 ```ts
