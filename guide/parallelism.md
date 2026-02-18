@@ -22,7 +22,13 @@ outline: deep
 
 Vitest 支持通过 [`concurrent`](/api/test#test-concurrent) 选项并行运行测试。当启用该选项时，Vitest 会将同一 _文件_ 中的并发测试分组（同时运行的测试数量取决于 [`maxConcurrency`](/config/maxconcurrency) 配置），并通过 [`Promise.all`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all) 一起执行。
 
+<<<<<<< HEAD
 Vitest 不会自动分析你的测试是否可以并行，也不会为了并发而额外创建工作者。这意味着，只有在测试中有大量异步操作时，使用并发才能提升性能。例如，以下示例即便指定了 concurrent ，也会顺序执行，因为它们是同步的：
+=======
+The hook execution order within a single group is also controlled by [`sequence.hooks`](/config/sequence#sequence-hooks). With `sequence.hooks: 'parallel'`, the execution is bounded by the same limit of [`maxConcurrency`](/config/maxconcurrency).
+
+Vitest doesn't perform any smart analysis and doesn't create additional workers to run these tests. This means that the performance of your tests will improve only if you rely heavily on asynchronous operations. For example, these tests will still run one after another even though the `concurrent` option is specified. This is because they are synchronous:
+>>>>>>> 9d2a2c5741149fa631c2bfd4b2254c1d5262a7f9
 
 ```ts
 test.concurrent('the first test', () => {
