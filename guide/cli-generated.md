@@ -775,17 +775,13 @@ Detect asynchronous resources leaking from the test file (default: `false`)
 - **配置:** [teardownTimeout](/config/teardowntimeout)
 
 拆卸函数的默认超时（以毫秒为单位）（默认值：`10000`）
-
+<!-- TODO: translation -->
 ### maxConcurrency
 
 - **命令行终端:** `--maxConcurrency <number>`
 - **配置:** [maxConcurrency](/config/maxconcurrency)
 
-<<<<<<< HEAD
-套件中并发测试的最大次数（默认值：`5`）
-=======
 Maximum number of concurrent tests and suites during test file execution (default: `5`)
->>>>>>> 9d2a2c5741149fa631c2bfd4b2254c1d5262a7f9
 
 ### expect.requireAssertions
 
