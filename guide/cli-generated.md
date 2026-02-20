@@ -278,6 +278,13 @@ Specifies the module name or path for the custom coverage provider module. Visit
 
 函数覆盖率高/低阈值，格式： `<high>,<low>`
 
+### coverage.changed
+
+- **CLI:** `--coverage.changed <commit/branch>`
+- **Config:** [coverage.changed](/config/coverage#coverage-changed)
+
+Collect coverage only for files changed since a specified commit or branch (e.g., `origin/main` or `HEAD~1`). Inherits value from `--changed` by default.
+
 ### mode
 
 - **命令行终端:** `--mode <name>`
@@ -768,13 +775,13 @@ Detect asynchronous resources leaking from the test file (default: `false`)
 - **配置:** [teardownTimeout](/config/teardowntimeout)
 
 拆卸函数的默认超时（以毫秒为单位）（默认值：`10000`）
-
+<!-- TODO: translation -->
 ### maxConcurrency
 
 - **命令行终端:** `--maxConcurrency <number>`
 - **配置:** [maxConcurrency](/config/maxconcurrency)
 
-套件中并发测试的最大次数（默认值：`5`）
+Maximum number of concurrent tests and suites during test file execution (default: `5`)
 
 ### expect.requireAssertions
 

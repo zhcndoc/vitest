@@ -500,13 +500,10 @@ export function ignored() { // [!code error]
 如果你的项目中代码覆盖率生成较慢，请参阅 [性能测试分析 | 代码覆盖率](/guide/profiling-test-performance.html#code-coverage)。
 
 ## UI 模式 {#vitest-ui}
+<!-- TODO: translation -->
+You can check your coverage report in [Vitest UI](/guide/ui) and [HTML reporter](/guide/reporters.html#html-reporter).
 
-我们可以在 [UI 模式](/guide/ui) 中查看你的覆盖率报告。
-
-UI 模式 会在以下情况下启用覆盖率报告：
-
-- 显式启用覆盖率报告：在配置文件中设置 `coverage.enabled=true` ，或运行 Vitest 时添加 `--coverage.enabled=true` 标志。
-- 添加 HTML 报告器：将 `html` 添加到 `coverage.reporter` 列表中，我们还可以启用 `subdir` 选项，将覆盖率报告放在子目录中。
+This is integrated with builtin coverage reporters with HTML output (`html`, `html-spa`, and `lcov` reporters). `html` reporter is enabled by default and this works out of the box. To integrate with custom reporters, you can configure [`coverage.htmlDir`](/config/coverage#coverage-htmldir).
 
 <img alt="html coverage activation in Vitest UI" img-light src="/vitest-ui-show-coverage-light.png">
 <img alt="html coverage activation in Vitest UI" img-dark src="/vitest-ui-show-coverage-dark.png">
