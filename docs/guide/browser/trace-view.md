@@ -1,9 +1,9 @@
-# Trace View
+# 追踪视图
 
-Vitest Browser Mode supports generating Playwright's [trace files](https://playwright.dev/docs/trace-viewer#viewing-remote-traces). To enable tracing, you need to set the [`trace`](/config/browser/trace) option in the `test.browser` configuration.
+Vitest 浏览器模式支持生成 Playwright 的 [追踪文件](https://playwright.dev/docs/trace-viewer#viewing-remote-traces)。要启用追踪，你需要在 `test.browser` 配置中设置 [`trace`](/config/browser/trace) 选项。
 
 ::: warning
-Generating trace files is only available when using the [Playwright provider](/config/browser/playwright).
+生成追踪文件仅在使用 [Playwright 提供者](/config/browser/playwright) 时可用。
 :::
 
 ::: code-group
@@ -25,17 +25,17 @@ vitest --browser.trace=on
 ```
 :::
 
-By default, Vitest will generate a trace file for each test. You can also configure it to only generate traces on test failures by setting `trace` to `'on-first-retry'`, `'on-all-retries'` or `'retain-on-failure'`. The files will be saved in `__traces__` folder next to your test files. The name of the trace includes the project name, the test name, the [`repeats`](/api/test#repeats) count and [`retry`](/api/test#retry) count:
+默认情况下，Vitest 会为每个测试生成一个追踪文件。你也可以通过将其设置为 `'on-first-retry'`、`'on-all-retries'` 或 `'retain-on-failure'` 来配置为仅在测试失败时生成追踪。文件将保存在测试文件旁边的 `__traces__` 文件夹中。追踪文件的名称包含项目名称、测试名称、[`repeats`](/api/test#repeats) 计数和 [`retry`](/api/test#retry) 计数：
 
 ```
 chromium-my-test-0-0.trace.zip
-^^^^^^^^ project name
-         ^^^^^^ test name
-                ^ repeat count
-                  ^ retry count
+^^^^^^^^ 项目名称
+         ^^^^^^ 测试名称
+                ^ 重复计数
+                  ^ 重试计数
 ```
 
-To change the output directory, you can set the `tracesDir` option in the `test.browser.trace` configuration. This way all traces will be stored in the same directory, grouped by the test file.
+要更改输出目录，你可以在 `test.browser.trace` 配置中设置 `tracesDir` 选项。这样所有追踪文件将存储在同一个目录中，按测试文件分组。
 
 ```ts [vitest.config.js]
 import { defineConfig } from 'vitest/config'
@@ -47,7 +47,7 @@ export default defineConfig({
       provider: playwright(),
       trace: {
         mode: 'on',
-        // the path is relative to the root of the project
+        // 路径相对于项目根目录
         tracesDir: './playwright-traces',
       },
     },
@@ -55,11 +55,11 @@ export default defineConfig({
 })
 ```
 
-The traces are available in reporters as [annotations](/guide/test-annotations). For example, in the HTML reporter, you can find the link to the trace file in the test details.
+追踪文件在报告器中作为 [注解](/guide/test-annotations) 可用。例如，在 HTML 报告器中，你可以在测试详情中找到追踪文件的链接。
 
-## Trace markers
+## 追踪标记
 
-You can add explicit named markers to make the trace timeline easier to read:
+你可以添加显式的命名标记，使追踪时间线更易于阅读：
 
 ```ts
 import { page } from 'vitest/browser'
@@ -71,9 +71,9 @@ document.body.innerHTML = `
 await page.getByRole('button', { name: 'Sign in' }).mark('sign in button rendered')
 ```
 
-Both `page.mark(name)` and `locator.mark(name)` are available.
+`page.mark(name)` 和 `locator.mark(name)` 均可用。
 
-You can also group multiple operations under one marker with `page.mark(name, callback)`:
+你也可以使用 `page.mark(name, callback)` 将多个操作分组在一个标记下：
 
 ```ts
 await page.mark('sign in flow', async () => {
@@ -83,7 +83,7 @@ await page.mark('sign in flow', async () => {
 })
 ```
 
-You can also wrap reusable helpers with [`vi.defineHelper()`](/api/vi#vi-defineHelper) so trace entries point to where the helper is called, not its internals:
+你也可以使用 [`vi.defineHelper()`](/api/vi#vi-defineHelper) 包装可复用的辅助函数，这样追踪条目会指向调用辅助函数的位置，而不是其内部实现：
 
 ```ts
 import { vi } from 'vitest'
@@ -95,34 +95,34 @@ const myRender = vi.defineHelper(async (content: string) => {
 })
 
 test('renders content', async () => {
-  await myRender('<button>Hello</button>') // trace points to this line
+  await myRender('<button>Hello</button>') // 追踪指向这一行
 })
 ```
 
-## Preview
+## 预览
 
-To open the trace file, you can use the Playwright Trace Viewer. Run the following command in your terminal:
+要打开追踪文件，你可以使用 Playwright 追踪查看器。在终端中运行以下命令：
 
 ```bash
 npx playwright show-trace "path-to-trace-file"
 ```
 
-This will start the Trace Viewer and load the specified trace file.
+这将启动追踪查看器并加载指定的追踪文件。
 
-Alternatively, you can open the Trace Viewer in your browser at https://trace.playwright.dev and upload the trace file there.
+或者，你可以在浏览器中打开 https://trace.playwright.dev 处的追踪查看器，并将追踪文件上传到那里。
 
-<img alt="Trace Viewer showing the trace timeline and rendered component" img-light src="/trace-viewer-light.png">
-<img alt="Trace Viewer showing the trace timeline and rendered component" img-dark src="/trace-viewer-dark.png">
+<img alt="显示追踪时间线和渲染组件的追踪查看器" img-light src="/trace-viewer-light.png">
+<img alt="显示追踪时间线和渲染组件的追踪查看器" img-dark src="/trace-viewer-dark.png">
 
-## Source Location
+## 源代码位置
 
-When you open a trace, you'll notice that Vitest groups browser interactions and links them back to the exact line in your test that triggered them. This happens automatically for:
+当你打开追踪时，你会注意到 Vitest 将浏览器交互分组，并将它们链接回测试中触发它们的确切行。以下情况会自动发生：
 
-- `expect.element(...)` assertions
-- Interactive actions like `click`, `fill`, `type`, `hover`, `selectOptions`, `upload`, `dragAndDrop`, `tab`, `keyboard`, `wheel`, and screenshots
+- `expect.element(...)` 断言
+- 交互操作，如 `click`、`fill`、`type`、`hover`、`selectOptions`、`upload`、`dragAndDrop`、`tab`、`keyboard`、`wheel` 和截图
 
-Under the hood, Playwright still records its own low-level action events as usual. Vitest wraps them with source-location groups so you can jump straight from the trace timeline to the relevant line in your test.
+在底层，Playwright 仍然像往常一样记录其自己的低级动作事件。Vitest 用源代码位置组包装它们，以便你可以直接从追踪时间线跳转到测试中的相关行。
 
-Keep in mind that plain assertions like `expect(value).toBe(...)` run in Node, not the browser, so they won't show up in the trace.
+请记住，像 `expect(value).toBe(...)` 这样的普通断言在 Node 中运行，而不是在浏览器中，所以它们不会显示在追踪中。
 
-For anything not covered automatically, you can use `page.mark()` or `locator.mark()` to add your own trace groups — see [Trace markers](#trace-markers) above.
+对于任何未自动覆盖的内容，你可以使用 `page.mark()` 或 `locator.mark()` 添加自己的追踪组 — 参见上面的 [追踪标记](#trace-markers)。

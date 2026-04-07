@@ -1,32 +1,32 @@
 ---
-title: api | Config
+title: api | 配置
 outline: deep
 ---
 
 # api
 
-- **Type:** `boolean | number | object`
-- **Default:** `false`
-- **CLI:** `--api`, `--api.port`, `--api.host`, `--api.strictPort`
+- **类型：** `boolean | number | object`
+- **默认值：** `false`
+- **CLI：** `--api`, `--api.port`, `--api.host`, `--api.strictPort`
 
-Listen to port and serve API for [the UI](/guide/ui) or [browser server](/guide/browser/). When set to `true`, the default port is `51204`.
+监听端口并为 [UI](/guide/ui) 或 [浏览器服务器](/guide/browser/) 提供 API 服务。当设置为 `true` 时，默认端口为 `51204`。
 
 ## api.allowWrite <Version>4.1.0</Version> {#api-allowwrite}
 
-- **Type:** `boolean`
-- **Default:** `true` if not exposed to the network, `false` otherwise
+- **类型：** `boolean`
+- **默认值：** 如果不暴露给网络则为 `true`，否则为 `false`
 
-Vitest server can save test files or snapshot files via the API. This allows anyone who can connect to the API the ability to run any arbitrary code on your machine.
+Vitest 服务器可以通过 API 保存测试文件或快照文件。这允许任何能连接到 API 的人在你的机器上运行任意代码。
 
-::: danger SECURITY ADVICE
-Vitest does not expose the API to the internet by default and only listens on `localhost`. However if `host` is manually exposed to the network, anyone who connects to it can run arbitrary code on your machine, unless `api.allowWrite` and `api.allowExec` are set to `false`.
+::: danger 安全建议
+Vitest 默认不会将 API 暴露给互联网，仅监听 `localhost`。但是，如果手动将 `host` 暴露给网络，任何连接到它的人都可以在你的机器上运行任意代码，除非 `api.allowWrite` 和 `api.allowExec` 设置为 `false`。
 
-If the host is set to anything other than `localhost` or `127.0.0.1`, Vitest will set `api.allowWrite` and `api.allowExec` to `false` by default. This means that any write operations (like changing the code in the UI) will not work. However, if you understand the security implications, you can override them.
+如果 host 设置为 `localhost` 或 `127.0.0.1` 以外的任何值，Vitest 默认会将 `api.allowWrite` 和 `api.allowExec` 设置为 `false`。这意味着任何写入操作（如在 UI 中更改代码）都将无法工作。但是，如果你了解安全隐患，可以覆盖这些设置。
 :::
 
 ## api.allowExec <Version>4.1.0</Version> {#api-allowexec}
 
-- **Type:** `boolean`
-- **Default:** `true` if not exposed to the network, `false` otherwise
+- **类型：** `boolean`
+- **默认值：** 如果不暴露给网络则为 `true`，否则为 `false`
 
-Allows running any test file via the API. See the security advice in [`api.allowWrite`](#api-allowwrite).
+允许通过 API 运行任何测试文件。请参阅 [`api.allowWrite`](#api-allowwrite) 中的安全建议。

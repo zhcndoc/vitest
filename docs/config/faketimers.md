@@ -1,56 +1,56 @@
 ---
-title: fakeTimers | Config
+title: fakeTimers | 配置
 outline: deep
 ---
 
 # fakeTimers
 
-- **Type:** `FakeTimerInstallOpts`
+- **类型：** `FakeTimerInstallOpts`
 
-Options that Vitest will pass down to [`@sinon/fake-timers`](https://npmx.dev/package/@sinonjs/fake-timers) when using [`vi.useFakeTimers()`](/api/vi#vi-usefaketimers).
+当使用 [`vi.useFakeTimers()`](/api/vi#vi-usefaketimers) 时，Vitest 将传递给 [`@sinon/fake-timers`](https://npmx.dev/package/@sinonjs/fake-timers) 的选项。
 
 ## fakeTimers.now
 
-- **Type:** `number | Date`
-- **Default:** `Date.now()`
+- **类型：** `number | Date`
+- **默认值：** `Date.now()`
 
-Installs fake timers with the specified Unix epoch.
+使用指定的 Unix 纪元时间安装假计时器。
 
 ## fakeTimers.toFake
 
-- **Type:** `('setTimeout' | 'clearTimeout' | 'setImmediate' | 'clearImmediate' | 'setInterval' | 'clearInterval' | 'Date' | 'nextTick' | 'hrtime' | 'requestAnimationFrame' | 'cancelAnimationFrame' | 'requestIdleCallback' | 'cancelIdleCallback' | 'performance' | 'queueMicrotask')[]`
-- **Default:** everything available globally except `nextTick` and `queueMicrotask`
+- **类型：** `('setTimeout' | 'clearTimeout' | 'setImmediate' | 'clearImmediate' | 'setInterval' | 'clearInterval' | 'Date' | 'nextTick' | 'hrtime' | 'requestAnimationFrame' | 'cancelAnimationFrame' | 'requestIdleCallback' | 'cancelIdleCallback' | 'performance' | 'queueMicrotask')[]`
+- **默认值：** 全局可用的所有内容，除了 `nextTick` 和 `queueMicrotask`
 
-An array with names of global methods and APIs to fake.
+一个包含要伪造的全局方法和 API 名称的数组。
 
-To only mock `setTimeout()` and `nextTick()`, specify this property as `['setTimeout', 'nextTick']`.
+如果只模拟 `setTimeout()` 和 `nextTick()`，请将此属性指定为 `['setTimeout', 'nextTick']`。
 
-Mocking `nextTick` is not supported when running Vitest inside `node:child_process` by using `--pool=forks`. NodeJS uses `process.nextTick` internally in `node:child_process` and hangs when it is mocked. Mocking `nextTick` is supported when running Vitest with `--pool=threads`.
+当使用 `--pool=forks` 在 `node:child_process` 内部运行 Vitest 时，不支持模拟 `nextTick`。NodeJS 在 `node:child_process` 内部使用 `process.nextTick`，如果对其进行模拟会导致挂起。当使用 `--pool=threads` 运行 Vitest 时，支持模拟 `nextTick`。
 
 ## fakeTimers.loopLimit
 
-- **Type:** `number`
-- **Default:** `10_000`
+- **类型：** `number`
+- **默认值：** `10_000`
 
-The maximum number of timers that will be run when calling [`vi.runAllTimers()`](/api/vi#vi-runalltimers).
+调用 [`vi.runAllTimers()`](/api/vi#vi-runalltimers) 时将运行的计时器最大数量。
 
 ## fakeTimers.shouldAdvanceTime
 
-- **Type:** `boolean`
-- **Default:** `false`
+- **类型：** `boolean`
+- **默认值：** `false`
 
-Tells @sinonjs/fake-timers to increment mocked time automatically based on the real system time shift (e.g. the mocked time will be incremented by 20ms for every 20ms change in the real system time).
+告诉 @sinonjs/fake-timers 根据真实系统时间的变化自动增加模拟时间（例如，真实系统时间每变化 20ms，模拟时间将增加 20ms）。
 
 ## fakeTimers.advanceTimeDelta
 
-- **Type:** `number`
-- **Default:** `20`
+- **类型：** `number`
+- **默认值：** `20`
 
-Relevant only when using with `shouldAdvanceTime: true`. increment mocked time by advanceTimeDelta ms every advanceTimeDelta ms change in the real system time.
+仅在与 `shouldAdvanceTime: true` 一起使用时相关。真实系统时间每变化 advanceTimeDelta 毫秒，模拟时间就增加 advanceTimeDelta 毫秒。
 
 ## fakeTimers.shouldClearNativeTimers
 
-- **Type:** `boolean`
-- **Default:** `true`
+- **类型：** `boolean`
+- **默认值：** `true`
 
-Tells fake timers to clear "native" (i.e. not fake) timers by delegating to their respective handlers. When disabled, it can lead to potentially unexpected behavior if timers existed prior to starting fake timers session.
+告诉假计时器通过委托给各自的处理程序来清除“原生”（即非假）计时器。如果禁用，且在启动假计时器会话之前存在计时器，则可能导致潜在的意外行为。

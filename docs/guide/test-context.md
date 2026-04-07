@@ -1,34 +1,34 @@
 ---
-title: Test Context | Guide
+title: 测试上下文 | 指南
 outline: deep
 ---
 
-# Test Context
+# 测试上下文
 
-Inspired by [Playwright Fixtures](https://playwright.dev/docs/test-fixtures), Vitest's test context allows you to define utils, states, and fixtures that can be used in your tests.
+灵感来源于 [Playwright 夹具](https://playwright.dev/docs/test-fixtures)，Vitest 的测试上下文允许你定义可在测试中使用的工具、状态和夹具。
 
-## Usage
+## 用法
 
-The first argument for each test callback is a test context.
+每个测试回调的第一个参数是一个测试上下文。
 
 ```ts
 import { it } from 'vitest'
 
 it('should work', ({ task }) => {
-  // prints name of the test
+  // 打印测试名称
   console.log(task.name)
 })
 ```
 
-## Built-in Test Context
+## 内置测试上下文
 
 ### `task`
 
-A readonly object containing metadata about the test.
+一个包含测试元数据的只读对象。
 
 ### `expect`
 
-The `expect` API bound to the current test:
+绑定到当前测试的 `expect` API：
 
 ```ts
 import { it } from 'vitest'
@@ -38,7 +38,7 @@ it('math is easy', ({ expect }) => {
 })
 ```
 
-This API is useful for running snapshot tests concurrently because global expect cannot track them:
+此 API 对于并发运行快照测试很有用，因为全局 expect 无法跟踪它们：
 
 ```ts
 import { it } from 'vitest'
@@ -59,7 +59,7 @@ function skip(note?: string): never
 function skip(condition: boolean, note?: string): void
 ```
 
-Skips subsequent test execution and marks test as skipped:
+跳过后续测试执行并将测试标记为已跳过：
 
 ```ts
 import { expect, it } from 'vitest'
@@ -70,7 +70,7 @@ it('math is hard', ({ skip }) => {
 })
 ```
 
-Since Vitest 3.1, it accepts a boolean parameter to skip the test conditionally:
+自 Vitest 3.1 起，它接受一个布尔参数来有条件地跳过测试：
 
 ```ts
 it('math is hard', ({ skip, mind }) => {
@@ -94,7 +94,7 @@ function annotate(
 ): Promise<TestAnnotation>
 ```
 
-Add a [test annotation](/guide/test-annotations) that will be displayed by your [reporter](/config/reporters).
+添加一个将由你的 [报告器](/config/reporters) 显示的 [测试注解](/guide/test-annotations)。
 
 ```ts
 test('annotations API', async ({ annotate }) => {
@@ -104,12 +104,12 @@ test('annotations API', async ({ annotate }) => {
 
 ### `signal` <Version>3.2.0</Version> {#signal}
 
-An [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) that can be aborted by Vitest. The signal is aborted in these situations:
+一个 [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal)，可由 Vitest 中止。在以下情况下信号会被中止：
 
-- Test times out
-- User manually cancelled the test run with Ctrl+C
-- [`vitest.cancelCurrentRun`](/api/advanced/vitest#cancelcurrentrun) was called programmatically
-- Another test failed in parallel and the [`bail`](/config/bail) flag is set
+- 测试超时
+- 用户手动使用 Ctrl+C 取消了测试运行
+- 以编程方式调用了 [`vitest.cancelCurrentRun`](/api/advanced/vitest#cancelcurrentrun)
+- 另一个测试在并行中失败，并且设置了 [`bail`](/config/bail) 标志
 
 ```ts
 it('stop request when test times out', async ({ signal }) => {
@@ -119,53 +119,53 @@ it('stop request when test times out', async ({ signal }) => {
 
 ### `onTestFailed`
 
-The [`onTestFailed`](/api/hooks#ontestfailed) hook bound to the current test. This API is useful if you are running tests concurrently and need to have a special handling only for this specific test.
+绑定到当前测试的 [`onTestFailed`](/api/hooks#ontestfailed) 钩子。如果你并发运行测试并且需要仅针对此特定测试进行特殊处理，此 API 很有用。
 
 ### `onTestFinished`
 
-The [`onTestFinished`](/api/hooks#ontestfailed) hook bound to the current test. This API is useful if you are running tests concurrently and need to have a special handling only for this specific test.
+绑定到当前测试的 [`onTestFinished`](/api/hooks#ontestfailed) 钩子。如果你并发运行测试并且需要仅针对此特定测试进行特殊处理，此 API 很有用。
 
-## Extend Test Context
+## 扩展测试上下文
 
-Vitest allows you to extend the test context with custom fixtures using `test.extend`.
+Vitest 允许你使用 `test.extend` 使用自定义夹具扩展测试上下文。
 
-The `test.extend` method lets you create a custom test API with fixtures - reusable values that are automatically set up and torn down for your tests. Vitest supports two syntaxes: the builder pattern (recommended) and the object syntax (Playwright-compatible).
+`test.extend` 方法让你创建一个带有夹具的自定义测试 API - 这些是可复用的值，会自动为你的测试设置和清理。Vitest 支持两种语法：构建器模式（推荐）和对象语法（兼容 Playwright）。
 
-### Builder Pattern <Version>4.1.0</Version> {#builder-pattern}
+### 构建器模式 <Version>4.1.0</Version> {#builder-pattern}
 
-The builder pattern is the recommended way to define fixtures because it provides automatic type inference. TypeScript infers the type of each fixture from its return value, so you don't need to declare types manually.
+构建器模式是定义夹具的推荐方式，因为它提供自动类型推断。TypeScript 会根据每个夹具的返回值推断其类型，因此你不需要手动声明类型。
 
 ```ts [my-test.ts]
 import { test as baseTest } from 'vitest'
 
 export const test = baseTest
-  // Simple value - type is inferred as { port: number; host: string }
+  // 简单值 - 类型被推断为 { port: number; host: string }
   .extend('config', { port: 3000, host: 'localhost' })
-  // Function fixture - type is inferred from return value
+  // 函数夹具 - 类型从返回值推断
   .extend('server', async ({ config }) => {
-    // TypeScript knows config is { port: number; host: string }
+    // TypeScript 知道 config 是 { port: number; host: string }
     return `http://${config.host}:${config.port}`
   })
 ```
 
-Then use it in your tests:
+然后在你的测试中使用它：
 
 ```ts [my-test.test.ts]
 import { expect } from 'vitest'
 import { test } from './my-test.js'
 
 test('server uses correct port', ({ config, server }) => {
-  // TypeScript knows the types:
-  // - config is { port: number; host: string }
-  // - server is string
+  // TypeScript 知道类型：
+  // - config 是 { port: number; host: string }
+  // - server 是 string
   expect(server).toBe('http://localhost:3000')
   expect(config.port).toBe(3000)
 })
 ```
 
-#### Setup and Cleanup with `onCleanup`
+#### 使用 `onCleanup` 进行设置和清理
 
-For fixtures that need setup or cleanup logic, use a function. The `onCleanup` callback registers teardown logic that runs after the fixture's scope ends:
+对于需要设置或清理逻辑的夹具，请使用函数。`onCleanup` 回调注册了在夹具作用域结束后运行的清理逻辑：
 
 ```ts
 import { test as baseTest } from 'vitest'
@@ -175,7 +175,7 @@ export const test = baseTest
     const filePath = `/tmp/test-${Date.now()}.txt`
     await fs.writeFile(filePath, 'test data')
 
-    // Register cleanup - runs after test completes
+    // 注册清理逻辑 - 在测试完成后运行
     onCleanup(async () => {
       await fs.unlink(filePath)
     })
@@ -184,7 +184,7 @@ export const test = baseTest
   })
 ```
 
-For more complex examples:
+对于更复杂的示例：
 
 ```ts
 const test = baseTest
@@ -210,10 +210,10 @@ const test = baseTest
 ```
 
 ::: warning
-The `onCleanup` function can only be called **once per fixture**. If you need multiple cleanup operations, either combine them into a single cleanup function, or split your fixture into multiple smaller fixtures:
+`onCleanup` 函数每个夹具只能调用 **一次**。如果你需要多个清理操作，要么将它们合并到一个清理函数中，要么将你的夹具拆分为多个较小的夹具：
 
 ```ts
-// ❌ This will throw an error
+// ❌ 这将抛出错误
 const test = baseTest
   .extend('resources', async ({}, { onCleanup }) => {
     const a = await acquireA()
@@ -225,7 +225,7 @@ const test = baseTest
     return { a, b }
   })
 
-// ✅ Split into separate fixtures (recommended)
+// ✅ 拆分为单独的夹具（推荐）
 const test = baseTest
   .extend('resourceA', async ({}, { onCleanup }) => {
     const a = await acquireA()
@@ -239,101 +239,101 @@ const test = baseTest
   })
 ```
 
-Splitting into separate fixtures is the recommended approach as it provides better isolation and makes dependencies explicit.
+拆分为单独的夹具是推荐的方法，因为它提供了更好的隔离性并使依赖关系显式化。
 :::
 
-#### Fixture Options
+#### 夹具选项
 
-The second argument to `.extend()` accepts options:
+`.extend()` 的第二个参数接受选项：
 
 ```ts
 const test = baseTest
-  // Automatic fixture - runs for every test even if not used
+  // 自动夹具 - 即使未使用也会为每个测试运行
   .extend('metrics', { auto: true }, ({}, { onCleanup }) => {
     const metrics = new MetricsCollector()
     metrics.start()
     onCleanup(() => metrics.stop())
     return metrics
   })
-  // Worker-scoped fixture - initialized once per worker
+  // Worker 作用域夹具 - 每个 worker 初始化一次
   .extend('config', { scope: 'worker' }, () => {
     return loadConfig()
   })
-  // File-scoped fixture - initialized once per file
+  // 文件作用域夹具 - 每个文件初始化一次
   .extend('database', { scope: 'file' }, async ({ config }, { onCleanup }) => {
     const db = await createDatabase(config)
     onCleanup(() => db.close())
     return db
   })
-  // Injected fixture - can be overridden via config
+  // 注入夹具 - 可以通过配置覆盖
   .extend('baseUrl', { injected: true }, () => {
     return 'http://localhost:3000'
   })
 ```
 
-For test-scoped fixtures (the default), you can omit the options:
+对于测试作用域夹具（默认），你可以省略选项：
 
 ```ts
 const test = baseTest
   .extend('simple', () => 'value')
 ```
 
-#### Accessing Other Fixtures
+#### 访问其他夹具
 
-Each fixture can access previously defined fixtures via its first parameter. This works for both function and non-function fixtures:
+每个夹具可以通过其第一个参数访问之前定义的夹具。这适用于函数和非函数夹具：
 
 ```ts
 const test = baseTest
   .extend('config', { apiUrl: 'https://api.example.com', port: 3000 })
   .extend('client', ({ config }) => {
-    // TypeScript knows config is { apiUrl: string; port: number }
+    // TypeScript 知道 config 是 { apiUrl: string; port: number }
     return new ApiClient(config.apiUrl)
   })
   .extend('user', async ({ client }) => {
-    // TypeScript knows client is ApiClient
+    // TypeScript 知道 client 是 ApiClient
     return await client.getCurrentUser()
   })
 ```
 
-#### Object Syntax (Playwright-Compatible)
+#### 对象语法（兼容 Playwright）
 
-Vitest also supports a Playwright-compatible object syntax. This is useful if you're migrating from Playwright or prefer defining all fixtures at once:
+Vitest 还支持兼容 Playwright 的对象语法。如果你正在从 Playwright 迁移或偏好一次性定义所有夹具，这很有用：
 
 ```ts [my-test.ts]
 import { test as baseTest } from 'vitest'
 
 export const test = baseTest.extend({
   page: async ({}, use) => {
-    // setup the fixture before each test function
+    // 在每个测试函数之前设置夹具
     const page = await browser.newPage()
 
-    // use the fixture value
+    // 使用夹具值
     await use(page)
 
-    // cleanup the fixture after each test function
+    // 在每个测试函数之后清理夹具
     await page.close()
   },
   baseUrl: 'http://localhost:3000'
 })
 ```
 
-The key difference from the builder pattern is the `use()` callback pattern for cleanup:
+与构建器模式的关键区别在于用于清理的 `use()` 回调模式：
 
 ```ts
-// Object syntax: cleanup code goes AFTER use()
+// 对象语法：清理代码放在 use() 之后
 const test = baseTest.extend({
   database: async ({}, use) => {
     const db = await createDatabase()
     await db.connect()
 
-    await use(db) // Test runs here
+    await use(db) // 测试在此处运行
 
-    // Cleanup after the test
+    // 测试后清理
     await db.disconnect()
   }
 })
 
-// Builder pattern: cleanup is registered with onCleanup()
+// 构建器模式：清理逻辑通过 onCleanup() 注册
 const test = baseTest
   .extend('database', async ({}, { onCleanup }) => {
     const db = await createDatabase()
@@ -341,12 +341,12 @@ const test = baseTest
 
     onCleanup(() => db.disconnect())
 
-    return db // Test runs after this returns
+    return db // 测试在此返回后运行
   })
 ```
 
 ::: info
-With the object syntax, you need to provide types manually as a generic parameter since TypeScript cannot infer them from the `use()` callback:
+使用对象语法时，你需要手动提供类型作为泛型参数，因为 TypeScript 无法从 `use()` 回调中推断它们：
 
 ```ts
 const test = baseTest.extend<{
@@ -363,13 +363,13 @@ const test = baseTest.extend<{
 ```
 :::
 
-#### Tuple Syntax for Options
+#### 选项的元组语法
 
-With the object syntax, use a tuple to specify fixture options:
+使用对象语法时，使用元组来指定夹具选项：
 
 ```ts
 const test = baseTest.extend({
-  // Auto fixture
+  // 自动夹具
   fixture: [
     async ({}, use) => {
       setup()
@@ -378,7 +378,7 @@ const test = baseTest.extend({
     },
     { auto: true }
   ],
-  // Scoped fixture
+  // 作用域夹具
   database: [
     async ({}, use) => {
       const db = await createDatabase()
@@ -387,7 +387,7 @@ const test = baseTest.extend({
     },
     { scope: 'file' }
   ],
-  // Injected fixture
+  // 注入夹具
   url: [
     '/default',
     { injected: true }
@@ -395,9 +395,9 @@ const test = baseTest.extend({
 })
 ```
 
-### Fixture Initialization
+### 夹具初始化
 
-Vitest runner will smartly initialize your fixtures and inject them into the test context based on usage.
+Vitest 运行器会智能地初始化你的夹具并将它们注入到基于使用情况的测试上下文中。
 
 ```ts
 import { test as baseTest } from 'vitest'
@@ -411,16 +411,16 @@ const test = baseTest
     return createCache()
   })
 
-// database will not run
+// database 不会运行
 test('no fixtures needed', () => {})
 test('only cache', ({ cache }) => {})
 
-// database will run
+// database 会运行
 test('needs database', ({ database }) => {})
 ```
 
 ::: warning
-When using `test.extend()` with fixtures, you should always use the object destructuring pattern `{ database }` to access context both in fixture function and test function.
+当使用 `test.extend()` 搭配夹具时，你应该始终使用对象解构模式 `{ database }` 来在夹具函数和测试函数中访问上下文。
 
 ```ts
 test('context must be destructured', (context) => { // [!code --]
@@ -433,9 +433,9 @@ test('context must be destructured', ({ database }) => { // [!code ++]
 ```
 :::
 
-### Extending Extended Tests
+### 扩展已扩展的测试
 
-You can extend an already extended test to add more fixtures:
+你可以扩展一个已经扩展过的测试以添加更多夹具：
 
 ```ts
 import { test as dbTest } from './my-test.js'
@@ -446,7 +446,7 @@ export const test = dbTest
   })
 ```
 
-With the object syntax:
+使用对象语法：
 
 ```ts
 import { test as dbTest } from './my-test.js'
@@ -460,29 +460,29 @@ export const test = dbTest.extend({
 })
 ```
 
-### Mixing Both Syntaxes
+### 混合两种语法
 
-You can combine both approaches. The builder pattern can be chained after object-based extensions:
+你可以结合两种方法。构建器模式可以在基于对象的扩展之后链式调用：
 
 ```ts
 const test = baseTest
-  // Object syntax for simple fixtures
+  // 简单夹具的对象语法
   .extend<{ apiKey: string }>({
     apiKey: 'test-key-123',
   })
-  // Builder pattern for complex fixtures with inference
+  // 带有推断的复杂夹具的构建器模式
   .extend('client', ({ apiKey }) => {
-    // TypeScript knows apiKey is string
+    // TypeScript 知道 apiKey 是 string
     return new ApiClient(apiKey)
   })
 ```
 
-### Fixture Scopes <Version>3.2.0</Version> {#fixture-scopes}
+### 夹具作用域 <Version>3.2.0</Version> {#fixture-scopes}
 
-By default, fixtures are initialized for each test. You can change this with the `scope` option to share fixtures across tests.
+默认情况下，夹具会为每个测试初始化。你可以使用 `scope` 选项更改此设置以在测试之间共享夹具。
 
 ::: warning
-By default any fixture without a scope is treated as a `test` fixture. This means that you cannot use it inside `worker` and `file` scopes. If you wish to access it there, consider specifying a scope manually:
+默认情况下，任何没有作用域的夹具都被视为 `test` 夹具。这意味着你不能在 `worker` 和 `file` 作用域内使用它。如果你希望在那里访问它，请考虑手动指定作用域：
 
 ```ts
 test
@@ -492,22 +492,22 @@ test
   })
 ```
 
-Note that you cannot override non-test fixtures inside `describe` blocks:
+请注意，你不能在 `describe` 块内覆盖非测试夹具：
 
 ```ts
 test.describe('a nested suite', () => {
-  test.override('port', { scope: 'worker' }, 3000) // throws an error
+  test.override('port', { scope: 'worker' }, 3000) // 抛出错误
 })
 ```
 
-Consider overriding it on the top level of the module, or by using [`injected`](#default-fixture-injected) option and providing the value in the project config.
+考虑在模块的顶层覆盖它，或使用 [`injected`](#default-fixture-injected) 选项并在项目配置中提供值。
 
-Also note that in [non-isolate](/config/isolate) mode overriding a `worker` fixture will affect the fixture value in all test files running after it was overridden.
+还要注意，在 [非隔离](/config/isolate) 模式下，覆盖 `worker` 夹具会影响在其被覆盖后运行的所有测试文件中的夹具值。
 :::
 
-#### Test Scope (Default)
+#### 测试作用域（默认）
 
-Test-scoped fixtures are created fresh for each test:
+测试作用域夹具为每个测试新鲜创建：
 
 ```ts
 const test = baseTest
@@ -521,12 +521,12 @@ test('first test', ({ counter }) => {
 })
 
 test('second test', ({ counter }) => {
-  // Fresh instance, value is 0 again
+  // 新鲜实例，值再次为 0
   expect(counter.value).toBe(0)
 })
 ```
 
-Test-scoped fixtures have access to the [built-in test context](#built-in-test-context) (`task`, `expect`, `skip`, etc.):
+测试作用域夹具可以访问 [内置测试上下文](#built-in-test-context)（`task`、`expect`、`skip` 等）：
 
 ```ts
 const test = baseTest
@@ -535,9 +535,9 @@ const test = baseTest
   })
 ```
 
-#### File Scope
+#### 文件作用域
 
-File-scoped fixtures are initialized once per test file:
+文件作用域夹具每个测试文件初始化一次：
 
 ```ts
 const test = baseTest
@@ -548,17 +548,17 @@ const test = baseTest
   })
 
 test('first test', ({ database }) => {
-  // Uses the same database instance
+  // 使用相同的 database 实例
 })
 
 test('second test', ({ database }) => {
-  // Same database instance as first test
+  // 与第一个测试相同的 database 实例
 })
 ```
 
-#### Worker Scope
+#### Worker 作用域
 
-Worker-scoped fixtures are initialized once per worker process:
+Worker 作用域夹具每个 worker 进程初始化一次：
 
 ```ts
 const test = baseTest
@@ -568,20 +568,20 @@ const test = baseTest
 ```
 
 ::: info
-By default, every file runs in a separate worker, so `file` and `worker` scopes work the same way. However, if you disable [isolation](/config/isolate), then the number of workers is limited by [`maxWorkers`](/config/maxworkers), and worker-scoped fixtures will be shared across files running in the same worker.
+默认情况下，每个文件在单独的 worker 中运行，因此 `file` 和 `worker` 作用域工作方式相同。但是，如果你禁用 [隔离](/config/isolate)，那么 worker 的数量受 [`maxWorkers`](/config/maxworkers) 限制，并且 worker 作用域夹具将在同一 worker 中运行的文件之间共享。
 
-When running tests in `vmThreads` or `vmForks`, `scope: 'worker'` works the same way as `scope: 'file'` because each file has its own VM context.
+在 `vmThreads` 或 `vmForks` 中运行测试时，`scope: 'worker'` 的工作方式与 `scope: 'file'` 相同，因为每个文件都有自己的 VM 上下文。
 :::
 
-#### Scope Hierarchy
+#### 作用域层次结构
 
-Fixtures can only access other fixtures from the same or higher (longer-lived) scopes:
+夹具只能访问来自相同或更高（寿命更长）作用域的其他夹具：
 
-| Fixture Scope | Can Access |
+| 夹具作用域 | 可以访问 |
 |---------------|------------|
-| `worker` | Only other worker fixtures |
-| `file` | Worker + file fixtures |
-| `test` | Worker + file + test fixtures + [test context](#built-in-test-context) |
+| `worker` | 仅其他 worker 夹具 |
+| `file` | Worker + 文件夹具 |
+| `test` | Worker + 文件 + 测试夹具 + [测试上下文](#built-in-test-context) |
 
 ```ts
 const test = baseTest
@@ -589,28 +589,28 @@ const test = baseTest
     return { apiUrl: 'https://api.example.com' }
   })
   .extend('database', { scope: 'file' }, async ({ config }, { onCleanup }) => {
-    // ✅ File fixture can access worker fixture
+    // ✅ 文件夹具可以访问 worker 夹具
     const db = await createDatabase(config.apiUrl)
     onCleanup(() => db.close())
     return db
   })
   .extend('user', async ({ database, task }) => {
-    // ✅ Test fixture can access file fixture AND test context
+    // ✅ 测试夹具可以访问文件夹具和测试上下文
     return await database.createUser(task.name)
   })
 ```
 
 ::: tip
-Only test-scoped fixtures have access to the [built-in test context](#built-in-test-context) (`task`, `expect`, `skip`, etc.). Worker and file fixtures run outside of any specific test, so test-specific properties are not available to them.
+只有测试作用域夹具可以访问 [内置测试上下文](#built-in-test-context)（`task`、`expect`、`skip` 等）。Worker 和文件夹具在任何特定测试之外运行，因此测试特定的属性对它们不可用。
 
-If you need the file path in a file-scoped fixture, use `expect.getState().testPath` instead.
+如果你需要在文件作用域夹具中获取文件路径，请使用 `expect.getState().testPath`。
 :::
 
-#### Type-Safe Scope Access <Version>3.2.0</Version> {#type-safe-scope-access}
+#### 类型安全的作用域访问 <Version>3.2.0</Version> {#type-safe-scope-access}
 
-With the builder pattern, TypeScript automatically enforces scope-based access rules. If you try to access a test-scoped fixture from a file-scoped fixture, you'll get a compile-time error.
+使用构建器模式，TypeScript 会自动强制实施基于作用域的访问规则。如果你尝试从文件作用域夹具访问测试作用域夹具，你将得到编译时错误。
 
-If you're using the object syntax and want the same type safety, you can use the `$worker`, `$file`, and `$test` keys to explicitly declare which fixtures belong to which scope:
+如果你使用对象语法并想要相同的类型安全性，你可以使用 `$worker`、`$file` 和 `$test` 键来显式声明哪些夹具属于哪个作用域：
 
 ```ts
 const test = baseTest.extend<{
@@ -636,11 +636,11 @@ const test = baseTest.extend<{
 })
 ```
 
-This provides the same compile-time safety as the builder pattern, catching scope violations at build time rather than runtime.
+这提供了与构建器模式相同的编译时安全性，在构建时而不是运行时捕获作用域违规。
 
-### Default Fixture (Injected)
+### 默认夹具（注入）
 
-Since Vitest 3, you can provide different values in different [projects](/guide/projects). To enable this, pass `{ injected: true }` in the options. If the key is not specified in the [project configuration](/config/provide), the default value will be used.
+自 Vitest 3 起，你可以在不同的 [项目](/guide/projects) 中提供不同的值。要启用此功能，请在选项中传递 `{ injected: true }`。如果 [项目配置](/config/provide) 中未指定键，则将使用默认值。
 
 :::code-group
 ```ts [fixtures.test.ts]
@@ -650,9 +650,9 @@ const test = baseTest
   .extend('url', { injected: true }, '/default')
 
 test('works correctly', ({ url }) => {
-  // url is "/default" in "project-new"
-  // url is "/full" in "project-full"
-  // url is "/empty" in "project-empty"
+  // 在 "project-new" 中 url 是 "/default"
+  // 在 "project-full" 中 url 是 "/full"
+  // 在 "project-empty" 中 url 是 "/empty"
 })
 ```
 ```ts [vitest.config.ts]
@@ -688,15 +688,15 @@ export default defineConfig({
 ```
 :::
 
-### Overriding Fixture Values <Version>4.1.0</Version> {#overriding-fixture-values}
+### 覆盖夹具值 <Version>4.1.0</Version> {#overriding-fixture-values}
 
-You can override fixture values for a specific suite and its children using `test.override`. This is useful when you need different fixture values for different test scenarios.
+你可以使用 `test.override` 覆盖特定套件及其子项的夹具值。当你需要为不同的测试场景使用不同的夹具值时，这很有用。
 
 ::: tip
-Vitest will automatically inherit the options, if they are not provided when overriding. Note that you cannot override fixture's `scope` or `auto` options.
+如果覆盖时未提供选项，Vitest 将自动继承选项。请注意，你不能覆盖夹具的 `scope` 或 `auto` 选项。
 :::
 
-#### Builder Pattern (Recommended)
+#### 构建器模式（推荐）
 
 ```ts
 import { test as baseTest, describe, expect } from 'vitest'
@@ -706,7 +706,7 @@ const test = baseTest
   .extend('server', ({ config }) => `http://${config.host}:${config.port}`)
 
 describe('production environment', () => {
-  // Override with a new static value (chainable)
+  // 覆盖为新的静态值（可链式调用）
   test
     .override('config', { port: 8080, host: 'api.example.com' })
 
@@ -716,7 +716,7 @@ describe('production environment', () => {
 })
 
 describe('with custom server', () => {
-  // Override with a function that can access other fixtures
+  // 覆盖为可以访问其他夹具的函数
   test.override('server', ({ config }) => {
     return `https://${config.host}:${config.port}/v2`
   })
@@ -731,9 +731,9 @@ test('uses default values', ({ server }) => {
 })
 ```
 
-#### Chaining Multiple Overrides
+#### 链式调用多个覆盖
 
-`test.override` returns the test API, so you can chain multiple calls:
+`test.override` 返回测试 API，因此你可以链式调用多个调用：
 
 ```ts
 describe('production environment', () => {
@@ -750,9 +750,9 @@ describe('production environment', () => {
 })
 ```
 
-#### Object Syntax
+#### 对象语法
 
-You can also use object syntax to override multiple fixtures at once:
+你也可以使用对象语法一次性覆盖多个夹具：
 
 ```ts
 describe('different configuration', () => {
@@ -766,9 +766,9 @@ describe('different configuration', () => {
 })
 ```
 
-#### With Cleanup
+#### 带清理
 
-When overwriting with a function, you can use `onCleanup` just like in `test.extend`:
+当使用函数覆盖时，你可以像在 `test.extend` 中一样使用 `onCleanup`：
 
 ```ts
 describe('with custom database', () => {
@@ -779,14 +779,14 @@ describe('with custom database', () => {
   })
 
   test('uses custom database', ({ database }) => {
-    // Uses the overwritten database
+    // 使用被覆盖的 database
   })
 })
 ```
 
-#### Nested Scopes
+#### 嵌套作用域
 
-Overrides are inherited by nested suites and can be overwritten again:
+覆盖由嵌套套件继承，并且可以再次被覆盖：
 
 ```ts
 describe('level 1', () => {
@@ -811,22 +811,22 @@ describe('level 1', () => {
 ```
 
 ::: warning
-Note that you cannot introduce new fixtures inside `test.override`. Extend the test context with `test.extend` instead.
+请注意，你不能在 `test.override` 内引入新夹具。请改用 `test.extend` 扩展测试上下文。
 :::
 
 ::: info
-`test.scoped` is deprecated in favor of `test.override`. The `test.scoped` API still works but will be removed in a future version.
+`test.scoped` 已弃用，推荐使用 `test.override`。`test.scoped` API 仍然有效，但将在未来版本中移除。
 :::
 
-### Type-Safe Hooks
+### 类型安全钩子
 
-When using `test.extend`, the extended `test` object provides type-safe hooks that are aware of the extended context:
+使用 `test.extend` 时，扩展后的 `test` 对象提供感知扩展上下文的类型安全钩子：
 
 ```ts
 const test = baseTest
   .extend('counter', { value: 0, increment() { this.value++ } })
 
-// Unlike global hooks, these hooks are aware of the extended context
+// 与全局钩子不同，这些钩子感知扩展后的上下文
 test.beforeEach(({ counter }) => {
   counter.increment()
 })
@@ -836,9 +836,9 @@ test.afterEach(({ counter }) => {
 })
 ```
 
-#### Suite-Level Hooks with Fixtures <Version>4.1.0</Version> {#suite-level-hooks}
+#### 套件级钩子与夹具 <Version>4.1.0</Version> {#suite-level-hooks}
 
-The extended `test` object also provides [`beforeAll`](/api/hooks#beforeall), [`afterAll`](/api/hooks#afterall), and [`aroundAll`](/api/hooks#aroundall) hooks that can access file-scoped and worker-scoped fixtures:
+扩展后的 `test` 对象还提供 [`beforeAll`](/api/hooks#beforeall)、[`afterAll`](/api/hooks#afterall) 和 [`aroundAll`](/api/hooks#aroundall) 钩子，这些钩子可以访问文件作用域和 worker 作用域夹具：
 
 ```ts
 const test = baseTest
@@ -849,7 +849,7 @@ const test = baseTest
     return db
   })
 
-// Access file-scoped fixtures in suite-level hooks
+// 在套件级钩子中访问文件作用域夹具
 test.aroundAll(async (runSuite, { database }) => {
   await database.transaction(runSuite)
 })
@@ -863,8 +863,8 @@ test.afterAll(async ({ database }) => {
 })
 ```
 
-::: warning IMPORTANT
-Suite-level hooks (`beforeAll`, `afterAll`, `aroundAll`) **must be called on the `test` object returned from `test.extend()`** to have access to the extended fixtures. Using the global `beforeAll`/`afterAll`/`aroundAll` functions will not have access to your custom fixtures:
+::: warning 重要
+套件级钩子（`beforeAll`、`afterAll`、`aroundAll`）**必须在从 `test.extend()` 返回的 `test` 对象上调用** 才能访问扩展的夹具。使用全局 `beforeAll`/`afterAll`/`aroundAll` 函数将无法访问你的自定义夹具：
 
 ```ts
 import { test as baseTest, beforeAll } from 'vitest'
@@ -876,32 +876,32 @@ const test = baseTest
     return db
   })
 
-// ❌ WRONG: Global beforeAll doesn't have access to 'database'
+// ❌ 错误：全局 beforeAll 无法访问 'database'
 beforeAll(({ database }) => {
-  // Error: 'database' is undefined
+  // 错误：'database' 是 undefined
 })
 
-// ✅ CORRECT: Use test.beforeAll to access fixtures
+// ✅ 正确：使用 test.beforeAll 访问夹具
 test.beforeAll(({ database }) => {
-  // 'database' is available
+  // 'database' 可用
 })
 ```
 
-This applies to all suite-level hooks: `beforeAll`, `afterAll`, and `aroundAll`.
+这适用于所有套件级钩子：`beforeAll`、`afterAll` 和 `aroundAll`。
 :::
 
 ::: tip
-Suite-level hooks can only access [**file-scoped** and **worker-scoped** fixtures](#fixture-scopes), including `auto` fixtures. Test-scoped fixtures are not available in these hooks because they run outside the context of individual tests. If you try to access a test-scoped fixture in a suite-level hook, Vitest will throw an error.
+套件级钩子只能访问 [**文件作用域** 和 **worker 作用域** 夹具](#fixture-scopes)，包括 `auto` 夹具。测试作用域夹具在这些钩子中不可用，因为它们在单个测试的上下文之外运行。如果你尝试在套件级钩子中访问测试作用域夹具，Vitest 将抛出错误。
 
 ```ts
 const test = baseTest
   .extend('testFixture', () => 'test-scoped')
   .extend('fileFixture', { scope: 'file' }, () => 'file-scoped')
 
-// ❌ Error: test-scoped fixtures not available in beforeAll
+// ❌ 错误：beforeAll 中不可用测试作用域夹具
 test.beforeAll(({ testFixture }) => {})
 
-// ✅ Works: file-scoped fixtures are available
+// ✅ 有效：文件作用域夹具可用
 test.beforeAll(({ fileFixture }) => {})
 ```
 :::

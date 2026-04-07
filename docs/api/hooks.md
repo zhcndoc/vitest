@@ -2,11 +2,11 @@
 outline: deep
 ---
 
-# Hooks
+# 钩子
 
-These functions allow you to hook into the life cycle of tests to avoid repeating setup and teardown code. They apply to the current context: the file if they are used at the top-level or the current suite if they are inside a `describe` block. These hooks are not called, when you are running Vitest as a [type checker](/guide/testing-types).
+这些函数允许你钩入测试的生命周期，以避免重复设置和清理代码。它们应用于当前上下文：如果在顶层使用，则应用于文件；如果在 `describe` 块内使用，则应用于当前套件。当你将 Vitest 作为 [类型检查器](/guide/testing-types) 运行时，不会调用这些钩子。
 
-Test hooks are called in a stack order ("after" hooks are reversed) by default, but you can configure it via [`sequence.hooks`](/config/sequence#sequence-hooks) option.
+默认情况下，测试钩子按栈顺序调用（"after" 钩子是反向的），但你可以通过 [`sequence.hooks`](/config/sequence#sequence-hooks) 选项进行配置。
 
 ## beforeEach
 
@@ -17,33 +17,33 @@ function beforeEach(
 ): void
 ```
 
-Register a callback to be called before each of the tests in the current suite runs.
-If the function returns a promise, Vitest waits until the promise resolve before running the test.
+注册一个回调函数，在当前套件中的每个测试运行之前调用。
+如果函数返回一个 Promise，Vitest 会等待 Promise resolve 后再运行测试。
 
-Optionally, you can pass a timeout (in milliseconds) defining how long to wait before terminating. The default is 10 seconds, and can be configured globally with [`hookTimeout`](/config/hooktimeout).
+你可以选择传递一个超时时间（毫秒），定义在终止前等待多长时间。默认值为 10 秒，可以通过 [`hookTimeout`](/config/hooktimeout) 全局配置。
 
 ```ts
 import { beforeEach } from 'vitest'
 
 beforeEach(async () => {
-  // Clear mocks and add some testing data before each test run
+  // 在每次测试运行前清除模拟并添加一些测试数据
   await stopMocking()
   await addUser({ name: 'John' })
 })
 ```
 
-Here, the `beforeEach` ensures that user is added for each test.
+这里，`beforeEach` 确保为每个测试添加用户。
 
-`beforeEach` can also return an optional cleanup function (equivalent to [`afterEach`](#aftereach)):
+`beforeEach` 还可以返回一个可选的清理函数（等同于 [`afterEach`](#aftereach)）：
 
 ```ts
 import { beforeEach } from 'vitest'
 
 beforeEach(async () => {
-  // called once before each test run
+  // 在每次测试运行前调用一次
   await prepareSomething()
 
-  // clean up function, called once after each test run
+  // 清理函数，在每次测试运行后调用一次
   return async () => {
     await resetSomething()
   }
@@ -59,23 +59,23 @@ function afterEach(
 ): void
 ```
 
-Register a callback to be called after each one of the tests in the current suite completes.
-If the function returns a promise, Vitest waits until the promise resolve before continuing.
+注册一个回调函数，在当前套件中的每个测试完成后调用。
+如果函数返回一个 Promise，Vitest 会等待 Promise resolve 后再继续。
 
-Optionally, you can provide a timeout (in milliseconds) for specifying how long to wait before terminating. The default is 10 seconds, and can be configured globally with [`hookTimeout`](/config/hooktimeout).
+你可以选择传递一个超时时间（毫秒），指定在终止前等待多长时间。默认值为 10 秒，可以通过 [`hookTimeout`](/config/hooktimeout) 全局配置。
 
 ```ts
 import { afterEach } from 'vitest'
 
 afterEach(async () => {
-  await clearTestingData() // clear testing data after each test run
+  await clearTestingData() // 在每次测试运行后清除测试数据
 })
 ```
 
-Here, the `afterEach` ensures that testing data is cleared after each test runs.
+这里，`afterEach` 确保在每次测试运行后清除测试数据。
 
 ::: tip
-You can also use [`onTestFinished`](#ontestfinished) during the test execution to cleanup any state after the test has finished running.
+你还可以在测试执行期间使用 [`onTestFinished`](#ontestfinished) 来清理测试运行结束后的任何状态。
 :::
 
 ## beforeAll
@@ -87,31 +87,31 @@ function beforeAll(
 ): void
 ```
 
-Register a callback to be called once before starting to run all tests in the current suite.
-If the function returns a promise, Vitest waits until the promise resolve before running tests.
+注册一个回调函数，在当前套件中开始运行所有测试之前调用一次。
+如果函数返回一个 Promise，Vitest 会等待 Promise resolve 后再运行测试。
 
-Optionally, you can provide a timeout (in milliseconds) for specifying how long to wait before terminating. The default is 10 seconds, and can be configured globally with [`hookTimeout`](/config/hooktimeout).
+你可以选择传递一个超时时间（毫秒），指定在终止前等待多长时间。默认值为 10 秒，可以通过 [`hookTimeout`](/config/hooktimeout) 全局配置。
 
 ```ts
 import { beforeAll } from 'vitest'
 
 beforeAll(async () => {
-  await startMocking() // called once before all tests run
+  await startMocking() // 在所有测试运行前调用一次
 })
 ```
 
-Here the `beforeAll` ensures that the mock data is set up before tests run.
+这里，`beforeAll` 确保在测试运行前设置好模拟数据。
 
-`beforeAll` can also return an optional cleanup function (equivalent to [`afterAll`](#afterall)):
+`beforeAll` 还可以返回一个可选的清理函数（等同于 [`afterAll`](#afterall)）：
 
 ```ts
 import { beforeAll } from 'vitest'
 
 beforeAll(async () => {
-  // called once before all tests run
+  // 在所有测试运行前调用一次
   await startMocking()
 
-  // clean up function, called once after all tests run
+  // 清理函数，在所有测试运行后调用一次
   return async () => {
     await stopMocking()
   }
@@ -127,20 +127,20 @@ function afterAll(
 ): void
 ```
 
-Register a callback to be called once after all tests have run in the current suite.
-If the function returns a promise, Vitest waits until the promise resolve before continuing.
+注册一个回调函数，在当前套件中所有测试运行完成后调用一次。
+如果函数返回一个 Promise，Vitest 会等待 Promise resolve 后再继续。
 
-Optionally, you can provide a timeout (in milliseconds) for specifying how long to wait before terminating. The default is 10 seconds, and can be configured globally with [`hookTimeout`](/config/hooktimeout).
+你可以选择传递一个超时时间（毫秒），指定在终止前等待多长时间。默认值为 10 秒，可以通过 [`hookTimeout`](/config/hooktimeout) 全局配置。
 
 ```ts
 import { afterAll } from 'vitest'
 
 afterAll(async () => {
-  await stopMocking() // this method is called after all tests run
+  await stopMocking() // 此方法在所有测试运行后调用
 })
 ```
 
-Here the `afterAll` ensures that `stopMocking` method is called after all tests run.
+这里，`afterAll` 确保在所有测试运行后调用 `stopMocking` 方法。
 
 ## aroundEach
 
@@ -154,15 +154,15 @@ function aroundEach(
 ): void
 ```
 
-Register a callback function that wraps around each test within the current suite. The callback receives a `runTest` function that **must** be called to run the test.
+注册一个回调函数，包裹当前套件中的每个测试。回调接收一个 `runTest` 函数，**必须** 调用该函数来运行测试。
 
-The `runTest()` function runs `beforeEach` hooks, the test itself, fixtures accessed in the test, and `afterEach` hooks. Fixtures that are accessed in the `aroundEach` callback are initialized before `runTest()` is called and are torn down after the aroundEach teardown code completes, allowing you to safely use them in both setup and teardown phases.
+`runTest()` 函数运行 `beforeEach` 钩子、测试本身、测试中访问的测试夹具以及 `afterEach` 钩子。在 `aroundEach` 回调中访问的测试夹具会在调用 `runTest()` 之前初始化，并在 aroundEach 清理代码完成后销毁，允许你在设置和清理阶段安全地使用它们。
 
 ::: warning
-You **must** call `runTest()` within your callback. If `runTest()` is not called, the test will fail with an error.
+你 **必须** 在回调中调用 `runTest()`。如果未调用 `runTest()`，测试将失败并报错。
 :::
 
-Optionally, you can provide a timeout (in milliseconds) for specifying how long to wait before terminating. The timeout applies independently to the setup phase (before `runTest()`) and teardown phase (after `runTest()`). The default is 10 seconds, and can be configured globally with [`hookTimeout`](/config/hooktimeout).
+你可以选择传递一个超时时间（毫秒），指定在终止前等待多长时间。超时时间独立应用于设置阶段（`runTest()` 之前）和清理阶段（`runTest()` 之后）。默认值为 10 秒，可以通过 [`hookTimeout`](/config/hooktimeout) 全局配置。
 
 ```ts
 import { aroundEach, test } from 'vitest'
@@ -173,17 +173,17 @@ aroundEach(async (runTest) => {
 
 test('insert user', async () => {
   await db.insert({ name: 'Alice' })
-  // transaction is automatically rolled back after the test
+  // 测试后事务自动回滚
 })
 ```
 
-::: tip When to use `aroundEach`
-Use `aroundEach` when your test needs to run **inside a context** that wraps around it, such as:
-- Wrapping tests in [AsyncLocalStorage](https://nodejs.org/api/async_context.html#class-asynclocalstorage) context
-- Wrapping tests with tracing spans
-- Database transactions
+::: tip 何时使用 `aroundEach`
+当你的测试需要运行在 **包裹它的上下文中** 时，使用 `aroundEach`，例如：
+- 将测试包裹在 [AsyncLocalStorage](https://nodejs.org/api/async_context.html#class-asynclocalstorage) 上下文中
+- 使用追踪跨度包裹测试
+- 数据库事务
 
-If you just need to run code before and after tests, prefer using [`beforeEach`](#beforeeach) with a cleanup return function:
+如果你只需要在测试前后运行代码，建议使用带有清理返回函数的 [`beforeEach`](#beforeeach)：
 ```ts
 beforeEach(async () => {
   await database.connect()
@@ -194,9 +194,9 @@ beforeEach(async () => {
 ```
 :::
 
-### Multiple Hooks
+### 多个钩子
 
-When multiple `aroundEach` hooks are registered, they are nested inside each other. The first registered hook is the outermost wrapper:
+当注册多个 `aroundEach` 钩子时，它们会相互嵌套。第一个注册的钩子是最外层的包裹器：
 
 ```ts
 aroundEach(async (runTest) => {
@@ -211,7 +211,7 @@ aroundEach(async (runTest) => {
   console.log('inner after')
 })
 
-// Output order:
+// 输出顺序：
 //  outer before
 //    inner before
 //      test
@@ -219,30 +219,30 @@ aroundEach(async (runTest) => {
 //  outer after
 ```
 
-### Context and Fixtures
+### 上下文和测试夹具
 
-The callback receives the test context as the second argument which means that you can use fixtures with `aroundEach`:
+回调接收测试上下文作为第二个参数，这意味着你可以在 `aroundEach` 中使用测试夹具：
 
 ```ts
 import { aroundEach, test as base } from 'vitest'
 
 const test = base.extend<{ db: Database; user: User }>({
   db: async ({}, use) => {
-    // db is created before `aroundEach` hook
+    // db 在 `aroundEach` 钩子之前创建
     const db = await createTestDatabase()
     await use(db)
     await db.close()
   },
   user: async ({ db }, use) => {
-    // `user` runs as part of the transaction
-    // because it's accessed inside the `test`
+    // `user` 作为事务的一部分运行
+    // 因为它在 `test` 内部被访问
     const user = await db.createUser()
     await use(user)
   },
 })
 
-// note that `aroundEach` is available on test
-// for a better TypeScript support of fixtures
+// 注意 `aroundEach` 在 test 上可用
+// 以获得更好的测试夹具 TypeScript 支持
 test.aroundEach(async (runTest, { db }) => {
   await db.transaction(runTest)
 })
@@ -264,15 +264,15 @@ function aroundAll(
 ): void
 ```
 
-Register a callback function that wraps around all tests within the current suite. The callback receives a `runSuite` function that **must** be called to run the suite's tests.
+注册一个回调函数，包裹当前套件中的所有测试。回调接收一个 `runSuite` 函数，**必须** 调用该函数来运行套件的测试。
 
-The `runSuite()` function runs all tests in the suite, including `beforeAll`/`afterAll`/`beforeEach`/`afterEach` hooks, `aroundEach` hooks, and fixtures.
+`runSuite()` 函数运行套件中的所有测试，包括 `beforeAll`/`afterAll`/`beforeEach`/`afterEach` 钩子、`aroundEach` 钩子和测试夹具。
 
 ::: warning
-You **must** call `runSuite()` within your callback. If `runSuite()` is not called, the hook will fail with an error and all tests in the suite will be skipped.
+你 **必须** 在回调中调用 `runSuite()`。如果未调用 `runSuite()`，钩子将失败并报错，套件中的所有测试将被跳过。
 :::
 
-Optionally, you can provide a timeout (in milliseconds) for specifying how long to wait before terminating. The timeout applies independently to the setup phase (before `runSuite()`) and teardown phase (after `runSuite()`). The default is 10 seconds, and can be configured globally with [`hookTimeout`](/config/hooktimeout).
+你可以选择传递一个超时时间（毫秒），指定在终止前等待多长时间。超时时间独立应用于设置阶段（`runSuite()` 之前）和清理阶段（`runSuite()` 之后）。默认值为 10 秒，可以通过 [`hookTimeout`](/config/hooktimeout) 全局配置。
 
 ```ts
 import { aroundAll, test } from 'vitest'
@@ -282,21 +282,21 @@ aroundAll(async (runSuite) => {
 })
 
 test('test 1', () => {
-  // Runs within the tracing span
+  // 在追踪跨度内运行
 })
 
 test('test 2', () => {
-  // Also runs within the same tracing span
+  // 也在同一个追踪跨度内运行
 })
 ```
 
-::: tip When to use `aroundAll`
-Use `aroundAll` when your suite needs to run **inside a context** that wraps around all tests, such as:
-- Wrapping an entire suite in [AsyncLocalStorage](https://nodejs.org/api/async_context.html#class-asynclocalstorage) context
-- Wrapping a suite with tracing spans
-- Database transactions
+::: tip 何时使用 `aroundAll`
+当你的套件需要运行在 **包裹所有测试的上下文中** 时，使用 `aroundAll`，例如：
+- 将整个套件包裹在 [AsyncLocalStorage](https://nodejs.org/api/async_context.html#class-asynclocalstorage) 上下文中
+- 使用追踪跨度包裹套件
+- 数据库事务
 
-If you just need to run code once before and after all tests, prefer using [`beforeAll`](#beforeall) with a cleanup return function:
+如果你只需要在所有测试前后运行一次代码，建议使用带有清理返回函数的 [`beforeAll`](#beforeall)：
 ```ts
 beforeAll(async () => {
   await server.start()
@@ -307,9 +307,9 @@ beforeAll(async () => {
 ```
 :::
 
-### Multiple Hooks
+### 多个钩子
 
-When multiple `aroundAll` hooks are registered, they are nested inside each other. The first registered hook is the outermost wrapper:
+当注册多个 `aroundAll` 钩子时，它们会相互嵌套。第一个注册的钩子是最外层的包裹器：
 
 ```ts
 aroundAll(async (runSuite) => {
@@ -324,10 +324,10 @@ aroundAll(async (runSuite) => {
   console.log('inner after')
 })
 
-// Output order: outer before → inner before → tests → inner after → outer after
+// 输出顺序：outer before → inner before → tests → inner after → outer after
 ```
 
-Each suite has its own independent `aroundAll` hooks. Parent suite's `aroundAll` wraps around child suite's execution:
+每个套件都有自己独立的 `aroundAll` 钩子。父套件的 `aroundAll` 会包裹子套件的执行：
 
 ```ts
 import { AsyncLocalStorage } from 'node:async_hooks'
@@ -340,32 +340,32 @@ aroundAll(async (runSuite) => {
 })
 
 test('root test', () => {
-  // context.getStore() returns { suiteId: 'root' }
+  // context.getStore() 返回 { suiteId: 'root' }
 })
 
 describe('nested', () => {
   aroundAll(async (runSuite) => {
-    // Parent's context is available here
+    // 父级上下文在这里可用
     await context.run({ suiteId: 'nested' }, runSuite)
   })
 
   test('nested test', () => {
-    // context.getStore() returns { suiteId: 'nested' }
+    // context.getStore() 返回 { suiteId: 'nested' }
   })
 })
 ```
 
-## Test Hooks
+## 测试钩子
 
-Vitest provides a few hooks that you can call _during_ the test execution to cleanup the state when the test has finished running.
+Vitest 提供了一些钩子，你可以在测试执行_期间_调用它们，以便在测试运行结束时清理状态。
 
 ::: warning
-These hooks will throw an error if they are called outside of the test body.
+如果在测试体之外调用这些钩子，它们将抛出错误。
 :::
 
 ### onTestFinished {#ontestfinished}
 
-This hook is always called after the test has finished running. It is called after `afterEach` hooks since they can influence the test result. It receives an `TestContext` object like `beforeEach` and `afterEach`.
+这个钩子总是在测试运行结束后被调用。它在 `afterEach` 钩子之后被调用，因为它们可能会影响测试结果。它接收一个 `TestContext` 对象，就像 `beforeEach` 和 `afterEach` 一样。
 
 ```ts {1,5}
 import { onTestFinished, test } from 'vitest'
@@ -378,7 +378,7 @@ test('performs a query', () => {
 ```
 
 ::: warning
-If you are running tests concurrently, you should always use `onTestFinished` hook from the test context since Vitest doesn't track concurrent tests in global hooks:
+如果你并发运行测试，你应该始终使用测试上下文中的 `onTestFinished` 钩子，因为 Vitest 不会在全局钩子中跟踪并发测试：
 
 ```ts {3,5}
 import { test } from 'vitest'
@@ -391,10 +391,10 @@ test.concurrent('performs a query', ({ onTestFinished }) => {
 ```
 :::
 
-This hook is particularly useful when creating reusable logic:
+这个钩子在创建可复用逻辑时特别有用：
 
 ```ts
-// this can be in a separate file
+// 这可以在一个单独的文件中
 function getTestDb() {
   const db = connectMockedDb()
   onTestFinished(() => db.close())
@@ -416,7 +416,7 @@ test('performs an organization query', async () => {
 })
 ```
 
-It is also a good practice to cleanup your spies after each test, so they don't leak into other tests. You can do so by enabling [`restoreMocks`](/config/restoremocks) config globally, or restoring the spy inside `onTestFinished` (if you try to restore the mock at the end of the test, it won't be restored if one of the assertions fails - using `onTestFinished` ensures the code always runs):
+在每个测试后清理你的 spies 也是一个好习惯，这样它们就不会泄漏到其他测试中。你可以通过全局启用 [`restoreMocks`](/config/restoremocks) 配置，或者在 `onTestFinished` 内部恢复 spy 来实现（如果你试图在测试结束时恢复 mock，如果其中一个断言失败，它将不会被恢复 - 使用 `onTestFinished` 确保代码始终运行）：
 
 ```ts
 import { onTestFinished, test } from 'vitest'
@@ -431,12 +431,12 @@ test('performs a query', () => {
 ```
 
 ::: tip
-This hook is always called in reverse order and is not affected by [`sequence.hooks`](/config/sequence#sequence-hooks) option.
+这个钩子总是以相反的顺序调用，并且不受 [`sequence.hooks`](/config/sequence#sequence-hooks) 选项的影响。
 :::
 
 ### onTestFailed
 
-This hook is called only after the test has failed. It is called after `afterEach` hooks since they can influence the test result. It receives a `TestContext` object like `beforeEach` and `afterEach`. This hook is useful for debugging.
+这个钩子仅在测试失败后被调用。它在 `afterEach` 钩子之后被调用，因为它们可能会影响测试结果。它接收一个 `TestContext` 对象，就像 `beforeEach` 和 `afterEach` 一样。这个钩子对于调试很有用。
 
 ```ts {1,5-7}
 import { onTestFailed, test } from 'vitest'
@@ -451,7 +451,7 @@ test('performs a query', () => {
 ```
 
 ::: warning
-If you are running tests concurrently, you should always use `onTestFailed` hook from the test context since Vitest doesn't track concurrent tests in global hooks:
+如果你并发运行测试，你应该始终使用测试上下文中的 `onTestFailed` 钩子，因为 Vitest 不会在全局钩子中跟踪并发测试：
 
 ```ts {3,5-7}
 import { test } from 'vitest'

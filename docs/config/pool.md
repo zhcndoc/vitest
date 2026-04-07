@@ -1,34 +1,34 @@
 ---
-title: pool | Config
+title: pool | 配置
 outline: deep
 ---
 
 # pool
 
-- **Type:** `'threads' | 'forks' | 'vmThreads' | 'vmForks'`
-- **Default:** `'forks'`
+- **类型:** `'threads' | 'forks' | 'vmThreads' | 'vmForks'`
+- **默认值:** `'forks'`
 - **CLI:** `--pool=threads`
 
-Pool used to run tests in.
+用于运行测试的池。
 
 ## threads
 
-Enable multi-threading. When using threads you are unable to use process related APIs such as `process.chdir()`. Some libraries written in native languages, such as Prisma, `bcrypt` and `canvas`, have problems when running in multiple threads and run into segfaults. In these cases it is advised to use `forks` pool instead.
+启用多线程。使用 threads 时，无法使用与进程相关的 API，例如 `process.chdir()`。某些用原生语言编写的库，例如 Prisma、`bcrypt` 和 `canvas`，在多线程运行时会出现问题并导致段错误。在这些情况下，建议改用 `forks` 池。
 
 ## forks
 
-Similar as `threads` pool but uses `child_process` instead of `worker_threads`. Communication between tests and main process is not as fast as with `threads` pool. Process related APIs such as `process.chdir()` are available in `forks` pool.
+类似于 `threads` 池，但使用 `child_process` 而不是 `worker_threads`。测试与主进程之间的通信不如 `threads` 池快。与进程相关的 API（如 `process.chdir()`）在 `forks` 池中可用。
 
 ## vmThreads
 
-Run tests using [VM context](https://nodejs.org/api/vm.html) (inside a sandboxed environment) in a `threads` pool.
+在 `threads` 池中使用 [VM 上下文](https://nodejs.org/api/vm.html)（在沙盒环境中）运行测试。
 
-This makes tests run faster, but the VM module is unstable when running [ESM code](https://github.com/nodejs/node/issues/37648). Your tests will [leak memory](https://github.com/nodejs/node/issues/33439) - to battle that, consider manually editing [`vmMemoryLimit`](/config/vmmemorylimit) value.
+这使得测试运行更快，但 VM 模块在运行 [ESM 代码](https://github.com/nodejs/node/issues/37648) 时不稳定。你的测试将会 [内存泄漏](https://github.com/nodejs/node/issues/33439) —— 为解决这个问题，考虑手动编辑 [`vmMemoryLimit`](/config/vmmemorylimit) 值。
 
 ::: warning
-Running code in a sandbox has some advantages (faster tests), but also comes with a number of disadvantages.
+在沙盒中运行代码有一些优势（更快的测试），但也带来了一些缺点。
 
-- The globals within native modules, such as (`fs`, `path`, etc), differ from the globals present in your test environment. As a result, any error thrown by these native modules will reference a different Error constructor compared to the one used in your code:
+- 原生模块内的全局变量，例如（`fs`、`path` 等），与测试环境中存在的全局变量不同。因此，这些原生模块抛出的任何错误所引用的 Error 构造函数将与代码中使用的不同：
 
 ```ts
 try {
@@ -39,12 +39,12 @@ catch (err) {
 }
 ```
 
-- Importing ES modules caches them indefinitely which introduces memory leaks if you have a lot of contexts (test files). There is no API in Node.js that clears that cache.
-- Accessing globals [takes longer](https://github.com/nodejs/node/issues/31658) in a sandbox environment.
+- 导入 ES 模块会无限期缓存它们，如果你有很多上下文（测试文件），这会引入内存泄漏。Node.js 中没有 API 可以清除该缓存。
+- 在沙盒环境中访问全局变量 [耗时更长](https://github.com/nodejs/node/issues/31658)。
 
-Please, be aware of these issues when using this option. Vitest team cannot fix any of the issues on our side.
+使用此选项时，请注意这些问题。Vitest 团队无法在我们这边修复任何问题。
 :::
 
 ## vmForks
 
-Similar as `vmThreads` pool but uses `child_process` instead of `worker_threads`. Communication between tests and the main process is not as fast as with `vmThreads` pool. Process related APIs such as `process.chdir()` are available in `vmForks` pool. Please be aware that this pool has the same pitfalls listed in `vmThreads`.
+类似于 `vmThreads` 池，但使用 `child_process` 而不是 `worker_threads`。测试与主进程之间的通信不如 `vmThreads` 池快。与进程相关的 API（如 `process.chdir()`）在 `vmForks` 池中可用。请注意，此池具有 `vmThreads` 中列出的相同陷阱。

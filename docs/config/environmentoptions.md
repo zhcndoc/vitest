@@ -1,15 +1,15 @@
 ---
-title: environmentOptions | Config
+title: environmentOptions | 配置
 ---
 
 # environmentOptions
 
-- **Type:** `Record<'jsdom' | 'happyDOM' | string, unknown>`
-- **Default:** `{}`
+- **类型：** `Record<'jsdom' | 'happyDOM' | string, unknown>`
+- **默认值：** `{}`
 
-These options are passed to the setup method of the current [environment](/config/environment). By default, you can configure options only for `jsdom` and `happyDOM` when you use them as your test environment.
+这些选项会传递给当前 [环境](/config/environment) 的 setup 方法。默认情况下，当你使用 `jsdom` 和 `happyDOM` 作为测试环境时，你只能为它们配置选项。
 
-## Example
+## 示例
 
 ```js [vitest.config.js]
 import { defineConfig } from 'vitest/config'
@@ -30,5 +30,5 @@ export default defineConfig({
 ```
 
 ::: warning
-Options are scoped to their environment. For example, put jsdom options under the `jsdom` key and happy-dom options under the `happyDOM` key. This lets you mix multiple environments within the same project.
+选项的作用域限于其各自的环境。例如，将 jsdom 选项放在 `jsdom` 键下，将 happy-dom 选项放在 `happyDOM` 键下。这允许你在同一个项目中混合使用多个环境。
 :::

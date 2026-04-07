@@ -1,18 +1,18 @@
 ---
-title: isolate | Config
+title: isolate | 配置
 outline: deep
 ---
 
 # isolate
 
-- **Type:** `boolean`
-- **Default:** `true`
-- **CLI:** `--no-isolate`, `--isolate=false`
+- **类型：** `boolean`
+- **默认值：** `true`
+- **CLI：** `--no-isolate`, `--isolate=false`
 
-Run tests in an isolated environment. This option has no effect on `vmThreads` and `vmForks` pools.
+在隔离环境中运行测试。此选项对 `vmThreads` 和 `vmForks` 池没有影响。
 
-Disabling this option might [improve performance](/guide/improving-performance) if your code doesn't rely on side effects (which is usually true for projects with `node` environment).
+如果你的代码不依赖副作用（对于 `node` 环境的项目通常是这样），禁用此选项可能会 [提高性能](/guide/improving-performance)。
 
 ::: tip
-You can disable isolation for specific test files by using Vitest workspaces and disabling isolation per project.
+你可以通过使用 Vitest 工作空间并按项目禁用隔离，来为特定测试文件禁用隔离。
 :::

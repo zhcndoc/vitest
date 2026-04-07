@@ -1,7 +1,7 @@
 ---
 layout: page
-title: Meet the Team
-description: The development of Vitest is guided by an international team.
+title: 认识团队
+description: Vitest 的开发由一个国际团队指导。
 ---
 
 <script setup>
@@ -16,18 +16,16 @@ import { teamMembers, teamEmeritiMembers } from './.vitepress/contributors'
 
 <VPTeamPage>
   <VPTeamPageTitle>
-    <template #title>Meet the Team</template>
+    <template #title>认识团队</template>
     <template #lead>
-      The development of Vitest is guided by an international team, some of whom
-      have chosen to be featured below.
+      Vitest 的开发由一个国际团队指导，其中部分成员选择在此展示。
     </template>
   </VPTeamPageTitle>
   <VPTeamMembers :members="teamMembers" />
   <VPTeamPageSection>
-    <template #title>Team Emeriti</template>
+    <template #title>荣誉团队</template>
     <template #lead>
-      Here we honor some no-longer-active team members who have made valuable
-      contributions in the past.
+      在此我们致敬一些不再活跃但过去曾做出宝贵贡献的团队成员。
     </template>
     <template #members>
       <VPTeamMembers size="small" :members="teamEmeritiMembers" />

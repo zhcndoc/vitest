@@ -1,10 +1,10 @@
 ---
-title: Interactivity API | Browser Mode
+title: 交互 API | 浏览器模式
 ---
 
-# Interactivity API
+# 交互 API
 
-Vitest implements a subset of [`@testing-library/user-event`](https://testing-library.com/docs/user-event/intro) APIs using [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/) or [webdriver](https://www.w3.org/TR/webdriver/) instead of faking events which makes the browser behaviour more reliable and consistent with how users interact with a page.
+Vitest 使用 [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/) 或 [webdriver](https://www.w3.org/TR/webdriver/) 实现了 [`@testing-library/user-event`](https://testing-library.com/docs/user-event/intro) API 的子集，而不是模拟事件，这使得浏览器行为更可靠，并与用户与页面交互的方式保持一致。
 
 ```ts
 import { userEvent } from 'vitest/browser'
@@ -12,7 +12,7 @@ import { userEvent } from 'vitest/browser'
 await userEvent.click(document.querySelector('.button'))
 ```
 
-Almost every `userEvent` method inherits its provider options.
+几乎每个 `userEvent` 方法都继承其提供者的选项。
 
 ## userEvent.setup
 
@@ -20,23 +20,23 @@ Almost every `userEvent` method inherits its provider options.
 function setup(): UserEvent
 ```
 
-Creates a new user event instance. This is useful if you need to keep the state of keyboard to press and release buttons correctly.
+创建一个新的用户事件实例。如果你需要保持键盘状态以便正确地按下和释放按钮，这很有用。
 
 ::: warning
-Unlike `@testing-library/user-event`, the default `userEvent` instance from `vitest/browser` is created once, not every time its methods are called! You can see the difference in how it works in this snippet:
+与 `@testing-library/user-event` 不同，`vitest/browser` 的默认 `userEvent` 实例只创建一次，而不是每次调用其方法时都创建！你可以在此代码片段中看到它的工作方式差异：
 
 ```ts
 import { userEvent as vitestUserEvent } from 'vitest/browser'
 import { userEvent as originalUserEvent } from '@testing-library/user-event'
 
-await vitestUserEvent.keyboard('{Shift}') // press shift without releasing
-await vitestUserEvent.keyboard('{/Shift}') // releases shift
+await vitestUserEvent.keyboard('{Shift}') // 按下 shift 而不释放
+await vitestUserEvent.keyboard('{/Shift}') // 释放 shift
 
-await originalUserEvent.keyboard('{Shift}') // press shift without releasing
-await originalUserEvent.keyboard('{/Shift}') // DID NOT release shift because the state is different
+await originalUserEvent.keyboard('{Shift}') // 按下 shift 而不释放
+await originalUserEvent.keyboard('{/Shift}') // 没有释放 shift，因为状态不同
 ```
 
-This behaviour is more useful because we do not emulate the keyboard, we actually press the Shift, so keeping the original behaviour would cause unexpected issues when typing in the field.
+这种行为更有用，因为我们不是模拟键盘，而是实际按下 Shift，所以保留原始行为会在字段中输入时导致意外问题。
 :::
 
 ## userEvent.click
@@ -48,7 +48,7 @@ function click(
 ): Promise<void>
 ```
 
-Click on an element. Inherits provider's options. Please refer to your provider's documentation for detailed explanation about how this method works.
+点击一个元素。继承提供者的选项。请参阅你的提供者文档以了解此方法如何工作的详细说明。
 
 ```ts
 import { page, userEvent } from 'vitest/browser'
@@ -57,36 +57,36 @@ test('clicks on an element', async () => {
   const logo = page.getByRole('img', { name: /logo/ })
 
   await userEvent.click(logo)
-  // or you can access it directly on the locator
+  // 或者你可以直接在 locator 上访问它
   await logo.click()
 
-  // With WebdriverIO, this uses either ElementClick (with no arguments) or
-  // actions (with arguments). Use an empty object to force the use of actions.
+  // 使用 WebdriverIO 时，这将使用 ElementClick（无参数）或
+  // actions（有参数）。使用空对象强制使用 actions。
   await logo.click({})
 })
 ```
 
-### Clicking with a modifier
+### 使用修饰键点击
 
-With either WebdriverIO or Playwright:
+使用 WebdriverIO 或 Playwright：
 
 ```ts
 await userEvent.keyboard('{Shift>}')
-// By using an empty object as the option, this opts in to using a chain of actions
-// instead of an ElementClick in webdriver.
-// Firefox has a bug that makes this necessary.
-// Follow https://bugzilla.mozilla.org/show_bug.cgi?id=1456642 to know when this
-// will be fixed.
+// 通过使用空对象作为选项，这选择使用动作链
+// 而不是 webdriver 中的 ElementClick。
+// Firefox 有一个 bug 使得这成为必要。
+// 关注 https://bugzilla.mozilla.org/show_bug.cgi?id=1456642 以了解何时
+// 将被修复。
 await userEvent.click(element, {})
 await userEvent.keyboard('{/Shift}')
 ```
 
-With Playwright:
+使用 Playwright：
 ```ts
 await userEvent.click(element, { modifiers: ['Shift'] })
 ```
 
-References:
+参考：
 
 - [Playwright `locator.click` API](https://playwright.dev/docs/api/class-locator#locator-click)
 - [WebdriverIO `element.click` API](https://webdriver.io/docs/api/element/click/)
@@ -101,9 +101,9 @@ function dblClick(
 ): Promise<void>
 ```
 
-Triggers a double click event on an element.
+在元素上触发双击事件。
 
-Please refer to your provider's documentation for detailed explanation about how this method works.
+请参阅你的提供者文档以了解此方法如何工作的详细说明。
 
 ```ts
 import { page, userEvent } from 'vitest/browser'
@@ -112,12 +112,12 @@ test('triggers a double click on an element', async () => {
   const logo = page.getByRole('img', { name: /logo/ })
 
   await userEvent.dblClick(logo)
-  // or you can access it directly on the locator
+  // 或者你可以直接在 locator 上访问它
   await logo.dblClick()
 })
 ```
 
-References:
+参考：
 
 - [Playwright `locator.dblclick` API](https://playwright.dev/docs/api/class-locator#locator-dblclick)
 - [WebdriverIO `element.doubleClick` API](https://webdriver.io/docs/api/element/doubleClick/)
@@ -132,9 +132,9 @@ function tripleClick(
 ): Promise<void>
 ```
 
-Triggers a triple click event on an element. Since there is no `tripleclick` in browser api, this method will fire three click events in a row, and so you must check [click event detail](https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event#usage_notes) to filter the event: `evt.detail === 3`.
+在元素上触发三击事件。由于浏览器 API 中没有 `tripleclick`，此方法将连续触发三次点击事件，因此你必须检查 [点击事件 detail](https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event#usage_notes) 来过滤事件：`evt.detail === 3`。
 
-Please refer to your provider's documentation for detailed explanation about how this method works.
+请参阅你的提供者文档以了解此方法如何工作的详细说明。
 
 ```ts
 import { page, userEvent } from 'vitest/browser'
@@ -149,17 +149,17 @@ test('triggers a triple click on an element', async () => {
   })
 
   await userEvent.tripleClick(logo)
-  // or you can access it directly on the locator
+  // 或者你可以直接在 locator 上访问它
   await logo.tripleClick()
 
   expect(tripleClickFired).toBe(true)
 })
 ```
 
-References:
+参考：
 
-- [Playwright `locator.click` API](https://playwright.dev/docs/api/class-locator#locator-click): implemented via `click` with `clickCount: 3` .
-- [WebdriverIO `browser.action` API](https://webdriver.io/docs/api/browser/action/): implemented via actions api with `move` plus three `down + up + pause` events in a row
+- [Playwright `locator.click` API](https://playwright.dev/docs/api/class-locator#locator-click)：通过 `click` 实现，带有 `clickCount: 3`。
+- [WebdriverIO `browser.action` API](https://webdriver.io/docs/api/browser/action/)：通过 actions api 实现，带有 `move` 加上三个 `down + up + pause` 事件连续
 - [testing-library `tripleClick` API](https://testing-library.com/docs/user-event/convenience/#tripleClick)
 
 ## userEvent.wheel <Version>4.1.0</Version> {#userevent-wheel}
@@ -171,9 +171,9 @@ function wheel(
 ): Promise<void>
 ```
 
-Triggers a [`wheel` event](https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event) on an element.
+在元素上触发 [`wheel` 事件](https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event)。
 
-You can specify the scroll amount using either `delta` for precise pixel-based control, or `direction` for simpler directional scrolling (`up`, `down`, `left`, `right`). When you need to trigger multiple wheel events, use the `times` option rather than calling the method multiple times for better performance.
+你可以使用 `delta` 进行基于像素的精确控制，或使用 `direction` 进行更简单的方向滚动（`up`、`down`、`left`、`right`）来指定滚动量。当你需要触发多个 wheel 事件时，使用 `times` 选项而不是多次调用该方法以获得更好的性能。
 
 ```ts
 import { page, userEvent } from 'vitest/browser'
@@ -181,28 +181,28 @@ import { page, userEvent } from 'vitest/browser'
 test('scroll using delta values', async () => {
   const tablist = page.getByRole('tablist')
 
-  // Scroll right by 100 pixels
+  // 向右滚动 100 像素
   await userEvent.wheel(tablist, { delta: { x: 100 } })
 
-  // Scroll down by 50 pixels
+  // 向下滚动 50 像素
   await userEvent.wheel(tablist, { delta: { y: 50 } })
 
-  // Scroll diagonally 2 times
+  // 对角线滚动 2 次
   await userEvent.wheel(tablist, { delta: { x: 50, y: 100 }, times: 2 })
 })
 
 test('scroll using direction', async () => {
   const tablist = page.getByRole('tablist')
 
-  // Scroll right 5 times
+  // 向右滚动 5 次
   await userEvent.wheel(tablist, { direction: 'right', times: 5 })
 
-  // Scroll left once
+  // 向左滚动一次
   await userEvent.wheel(tablist, { direction: 'left' })
 })
 ```
 
-Wheel events can also be triggered directly from [locators](/api/browser/locators#wheel):
+Wheel 事件也可以直接从 [locators](/api/browser/locators#wheel) 触发：
 
 ```ts
 import { page } from 'vitest/browser'
@@ -211,7 +211,7 @@ await page.getByRole('tablist').wheel({ direction: 'right' })
 ```
 
 ::: warning
-This method is intended for testing UI that explicitly listens to `wheel` events (e.g., custom zoom controls, horizontal tab scrolling, canvas interactions). If you need to scroll the page to bring an element into view, rely on the built-in automatic scrolling functionality provided by other `userEvent` methods or [locator actions](/api/browser/locators#methods) instead.
+此方法旨在用于测试明确监听 `wheel` 事件的 UI（例如，自定义缩放控件、水平标签页滚动、画布交互）。如果你需要滚动页面以将元素带入视图，请依赖其他 `userEvent` 方法或 [locator 动作](/api/browser/locators#methods) 提供的内置自动滚动功能。
 :::
 
 ## userEvent.fill
@@ -223,7 +223,7 @@ function fill(
 ): Promise<void>
 ```
 
-Set a value to the `input`/`textarea`/`contenteditable` field. This will remove any existing text in the input before setting the new value.
+为 `input`/`textarea`/`contenteditable` 字段设置值。这将在设置新值之前移除输入中的任何现有文本。
 
 ```ts
 import { page, userEvent } from 'vitest/browser'
@@ -235,20 +235,20 @@ test('update input', async () => {
   await userEvent.fill(input, '{{a[[') // input.value == {{a[[
   await userEvent.fill(input, '{Shift}') // input.value == {Shift}
 
-  // or you can access it directly on the locator
+  // 或者你可以直接在 locator 上访问它
   await input.fill('foo') // input.value == foo
 })
 ```
 
-This methods focuses the element, fills it and triggers an `input` event after filling. You can use an empty string to clear the field.
+此方法聚焦元素，填充它并在填充后触发 `input` 事件。你可以使用空字符串来清除字段。
 
 ::: tip
-This API is faster than using [`userEvent.type`](#userevent-type) or [`userEvent.keyboard`](#userevent-keyboard), but it **doesn't support** [user-event `keyboard` syntax](https://testing-library.com/docs/user-event/keyboard) (e.g., `{Shift}{selectall}`).
+此 API 比使用 [`userEvent.type`](#userevent-type) 或 [`userEvent.keyboard`](#userevent-keyboard) 更快，但它**不支持** [user-event `keyboard` 语法](https://testing-library.com/docs/user-event/keyboard)（例如，`{Shift}{selectall}`）。
 
-We recommend using this API over [`userEvent.type`](#userevent-type) in situations when you don't need to enter special characters or have granular control over keypress events.
+我们建议在不需要输入特殊字符或对按键事件进行精细控制的情况下，使用此 API 而不是 [`userEvent.type`](#userevent-type)。
 :::
 
-References:
+参考：
 
 - [Playwright `locator.fill` API](https://playwright.dev/docs/api/class-locator#locator-fill)
 - [WebdriverIO `element.setValue` API](https://webdriver.io/docs/api/element/setValue)
@@ -260,23 +260,23 @@ References:
 function keyboard(text: string): Promise<void>
 ```
 
-The `userEvent.keyboard` allows you to trigger keyboard strokes. If any input has a focus, it will type characters into that input. Otherwise, it will trigger keyboard events on the currently focused element (`document.body` if there are no focused elements).
+`userEvent.keyboard` 允许你触发键盘击键。如果任何输入获得焦点，它将字符输入到该输入中。否则，它将在当前聚焦的元素上触发键盘事件（如果没有聚焦的元素，则为 `document.body`）。
 
-This API supports [user-event `keyboard` syntax](https://testing-library.com/docs/user-event/keyboard).
+此 API 支持 [user-event `keyboard` 语法](https://testing-library.com/docs/user-event/keyboard)。
 
 ```ts
 import { userEvent } from 'vitest/browser'
 
 test('trigger keystrokes', async () => {
-  await userEvent.keyboard('foo') // translates to: f, o, o
-  await userEvent.keyboard('{{a[[') // translates to: {, a, [
-  await userEvent.keyboard('{Shift}{f}{o}{o}') // translates to: Shift, f, o, o
-  await userEvent.keyboard('{a>5}') // press a without releasing it and trigger 5 keydown
-  await userEvent.keyboard('{a>5/}') // press a for 5 keydown and then release it
+  await userEvent.keyboard('foo') // 转换为：f, o, o
+  await userEvent.keyboard('{{a[[') // 转换为：{, a, [
+  await userEvent.keyboard('{Shift}{f}{o}{o}') // 转换为：Shift, f, o, o
+  await userEvent.keyboard('{a>5}') // 按下 a 而不释放它并触发 5 次 keydown
+  await userEvent.keyboard('{a>5/}') // 按下 a 持续 5 次 keydown 然后释放它
 })
 ```
 
-References:
+参考：
 
 - [Playwright `Keyboard` API](https://playwright.dev/docs/api/class-keyboard)
 - [WebdriverIO `action('key')` API](https://webdriver.io/docs/api/browser/action#key-input-source)
@@ -288,7 +288,7 @@ References:
 function tab(options?: UserEventTabOptions): Promise<void>
 ```
 
-Sends a `Tab` key event. This is a shorthand for `userEvent.keyboard('{tab}')`.
+发送一个 `Tab` 键事件。这是 `userEvent.keyboard('{tab}')` 的简写。
 
 ```ts
 import { page, userEvent } from 'vitest/browser'
@@ -308,7 +308,7 @@ test('tab works', async () => {
 })
 ```
 
-References:
+参考：
 
 - [Playwright `Keyboard` API](https://playwright.dev/docs/api/class-keyboard)
 - [WebdriverIO `action('key')` API](https://webdriver.io/docs/api/browser/action#key-input-source)
@@ -325,14 +325,14 @@ function type(
 ```
 
 ::: warning
-If you don't rely on [special characters](https://testing-library.com/docs/user-event/keyboard) (e.g., `{shift}` or `{selectall}`), it is recommended to use [`userEvent.fill`](#userevent-fill) instead for better performance.
+如果你不依赖 [特殊字符](https://testing-library.com/docs/user-event/keyboard)（例如 `{shift}` 或 `{selectall}`），建议使用 [`userEvent.fill`](#userevent-fill) 以获得更好的性能。
 :::
 
-The `type` method implements `@testing-library/user-event`'s [`type`](https://testing-library.com/docs/user-event/utility/#type) utility built on top of [`keyboard`](https://testing-library.com/docs/user-event/keyboard) API.
+`type` 方法实现了 `@testing-library/user-event` 的 [`type`](https://testing-library.com/docs/user-event/utility/#type) 工具，构建于 [`keyboard`](https://testing-library.com/docs/user-event/keyboard) API 之上。
 
-This function allows you to type characters into an `input`/`textarea`/`contenteditable` element. It supports [user-event `keyboard` syntax](https://testing-library.com/docs/user-event/keyboard).
+此函数允许你在 `input`/`textarea`/`contenteditable` 元素中输入字符。它支持 [user-event `keyboard` 语法](https://testing-library.com/docs/user-event/keyboard)。
 
-If you just need to press characters without an input, use [`userEvent.keyboard`](#userevent-keyboard) API.
+如果你只需要按下字符而不需要输入框，请使用 [`userEvent.keyboard`](#userevent-keyboard) API。
 
 ```ts
 import { page, userEvent } from 'vitest/browser'
@@ -340,17 +340,17 @@ import { page, userEvent } from 'vitest/browser'
 test('update input', async () => {
   const input = page.getByRole('input')
 
-  await userEvent.type(input, 'foo') // input.value == foo
-  await userEvent.type(input, '{{a[[') // input.value == foo{a[
-  await userEvent.type(input, '{Shift}') // input.value == foo{a[
+  await userEvent.type(input, 'foo') // input.value 等于 foo
+  await userEvent.type(input, '{{a[[') // input.value 等于 foo{a[
+  await userEvent.type(input, '{Shift}') // input.value 等于 foo{a[
 })
 ```
 
 ::: info
-Vitest doesn't expose `.type` method on the locator like `input.type` because it exists only for compatibility with the `userEvent` library. Consider using `.fill` instead as it is faster.
+Vitest 没有在 locator 上暴露 `.type` 方法（如 `input.type`），因为它仅为了与 `userEvent` 库兼容而存在。考虑使用 `.fill` 代替，因为它更快。
 :::
 
-References:
+参考：
 
 - [Playwright `locator.press` API](https://playwright.dev/docs/api/class-locator#locator-press)
 - [WebdriverIO `action('key')` API](https://webdriver.io/docs/api/browser/action#key-input-source)
@@ -362,7 +362,7 @@ References:
 function clear(element: Element | Locator, options?: UserEventClearOptions): Promise<void>
 ```
 
-This method clears the input element content.
+此方法清除输入元素的内容。
 
 ```ts
 import { page, userEvent } from 'vitest/browser'
@@ -374,14 +374,14 @@ test('clears input', async () => {
   expect(input).toHaveValue('foo')
 
   await userEvent.clear(input)
-  // or you can access it directly on the locator
+  // 或者你可以直接在 locator 上访问它
   await input.clear()
 
   expect(input).toHaveValue('')
 })
 ```
 
-References:
+参考：
 
 - [Playwright `locator.clear` API](https://playwright.dev/docs/api/class-locator#locator-clear)
 - [WebdriverIO `element.clearValue` API](https://webdriver.io/docs/api/element/clearValue)
@@ -403,12 +403,12 @@ function selectOptions(
 ): Promise<void>
 ```
 
-The `userEvent.selectOptions` allows selecting a value in a `<select>` element.
+`userEvent.selectOptions` 允许在 `<select>` 元素中选择值。
 
 ::: warning
-If select element doesn't have [`multiple`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#attr-multiple) attribute, Vitest will select only the first element in the array.
+如果 select 元素没有 [`multiple`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#attr-multiple) 属性，Vitest 将只选择数组中的第一个元素。
 
-Unlike `@testing-library`, Vitest doesn't support [listbox](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/listbox_role) at the moment, but we plan to add support for it in the future.
+与 `@testing-library` 不同，Vitest 目前不支持 [listbox](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/listbox_role)，但我们计划在未来添加支持。
 :::
 
 ```ts
@@ -418,7 +418,7 @@ test('clears input', async () => {
   const select = page.getByRole('select')
 
   await userEvent.selectOptions(select, 'Option 1')
-  // or you can access it directly on the locator
+  // 或者你可以直接在 locator 上访问它
   await select.selectOptions('Option 1')
 
   expect(select).toHaveValue('option-1')
@@ -435,10 +435,10 @@ test('clears input', async () => {
 ```
 
 ::: warning
-`webdriverio` provider doesn't support selecting multiple elements because it doesn't provide API to do so.
+`webdriverio` 提供者不支持选择多个元素，因为它没有提供这样做的 API。
 :::
 
-References:
+参考：
 
 - [Playwright `locator.selectOption` API](https://playwright.dev/docs/api/class-locator#locator-select-option)
 - [WebdriverIO `element.selectByIndex` API](https://webdriver.io/docs/api/element/selectByIndex)
@@ -453,12 +453,12 @@ function hover(
 ): Promise<void>
 ```
 
-This method moves the cursor position to the selected element. Please refer to your provider's documentation for detailed explanation about how this method works.
+此方法将光标位置移动到选定的元素。请参阅你的提供者文档以了解此方法如何工作的详细说明。
 
 ::: warning
-If you are using `webdriverio` provider, the cursor will move to the center of the element by default.
+如果你使用 `webdriverio` 提供者，光标默认将移动到元素的中心。
 
-If you are using `playwright` provider, the cursor moves to "some" visible point of the element.
+如果你使用 `playwright` 提供者，光标将移动到元素的“某个”可见点。
 :::
 
 ```ts
@@ -468,12 +468,12 @@ test('hovers logo element', async () => {
   const logo = page.getByRole('img', { name: /logo/ })
 
   await userEvent.hover(logo)
-  // or you can access it directly on the locator
+  // 或者你可以直接在 locator 上访问它
   await logo.hover()
 })
 ```
 
-References:
+参考：
 
 - [Playwright `locator.hover` API](https://playwright.dev/docs/api/class-locator#locator-hover)
 - [WebdriverIO `element.moveTo` API](https://webdriver.io/docs/api/element/moveTo/)
@@ -488,10 +488,10 @@ function unhover(
 ): Promise<void>
 ```
 
-This works the same as [`userEvent.hover`](#userevent-hover), but moves the cursor to the `document.body` element instead.
+这与 [`userEvent.hover`](#userevent-hover) 的工作原理相同，但将光标移动到 `document.body` 元素。
 
 ::: warning
-By default, the cursor position is in "some" visible place (in `playwright` provider) or in the center (in `webdriverio` provider) of the body element, so if the currently hovered element is already in the same position, this method will have no effect.
+默认情况下，光标位置在“某个”可见位置（在 `playwright` 提供者中）或 body 元素的中心（在 `webdriverio` 提供者中），所以如果当前悬停的元素已经在同一位置，此方法将无效。
 :::
 
 ```ts
@@ -501,12 +501,12 @@ test('unhover logo element', async () => {
   const logo = page.getByRole('img', { name: /logo/ })
 
   await userEvent.unhover(logo)
-  // or you can access it directly on the locator
+  // 或者你可以直接在 locator 上访问它
   await logo.unhover()
 })
 ```
 
-References:
+参考：
 
 - [Playwright `locator.hover` API](https://playwright.dev/docs/api/class-locator#locator-hover)
 - [WebdriverIO `element.moveTo` API](https://webdriver.io/docs/api/element/moveTo/)
@@ -522,7 +522,7 @@ function upload(
 ): Promise<void>
 ```
 
-Change a file input element to have the specified files.
+更改文件输入元素以拥有指定的文件。
 
 ```ts
 import { page, userEvent } from 'vitest/browser'
@@ -533,19 +533,19 @@ test('can upload a file', async () => {
   const file = new File(['file'], 'file.png', { type: 'image/png' })
 
   await userEvent.upload(input, file)
-  // or you can access it directly on the locator
+  // 或者你可以直接在 locator 上访问它
   await input.upload(file)
 
-  // you can also use file paths relative to the root of the project
+  // 你也可以使用相对于项目根目录的文件路径
   await userEvent.upload(input, './fixtures/file.png')
 })
 ```
 
 ::: warning
-`webdriverio` provider supports this command only in `chrome` and `edge` browsers. It also only supports string types at the moment.
+`webdriverio` 提供者仅在 `chrome` 和 `edge` 浏览器中支持此命令。目前也只支持字符串类型。
 :::
 
-References:
+参考：
 
 - [Playwright `locator.setInputFiles` API](https://playwright.dev/docs/api/class-locator#locator-set-input-files)
 - [WebdriverIO `browser.uploadFile` API](https://webdriver.io/docs/api/browser/uploadFile)
@@ -561,7 +561,7 @@ function dragAndDrop(
 ): Promise<void>
 ```
 
-Drags the source element on top of the target element. Don't forget that the `source` element has to have the `draggable` attribute set to `true`.
+将源元素拖放到目标元素上方。别忘了 `source` 元素必须将 `draggable` 属性设置为 `true`。
 
 ```ts
 import { page, userEvent } from 'vitest/browser'
@@ -571,7 +571,7 @@ test('drag and drop works', async () => {
   const target = page.getByTestId('logo-target')
 
   await userEvent.dragAndDrop(source, target)
-  // or you can access it directly on the locator
+  // 或者你可以直接在 locator 上访问它
   await source.dropTo(target)
 
   await expect.element(target).toHaveTextContent('Logo is processed')
@@ -579,10 +579,10 @@ test('drag and drop works', async () => {
 ```
 
 ::: warning
-This API is not supported by the default `preview` provider.
+默认的 `preview` 提供者不支持此 API。
 :::
 
-References:
+参考：
 
 - [Playwright `frame.dragAndDrop` API](https://playwright.dev/docs/api/class-frame#frame-drag-and-drop)
 - [WebdriverIO `element.dragAndDrop` API](https://webdriver.io/docs/api/element/dragAndDrop/)
@@ -593,21 +593,21 @@ References:
 function copy(): Promise<void>
 ```
 
-Copy the selected text to the clipboard.
+将选中的文本复制到剪贴板。
 
 ```js
 import { page, userEvent } from 'vitest/browser'
 
 test('copy and paste', async () => {
-  // write to 'source'
+  // 写入 'source'
   await userEvent.click(page.getByPlaceholder('source'))
   await userEvent.keyboard('hello')
 
-  // select and copy 'source'
+  // 选择并复制 'source'
   await userEvent.dblClick(page.getByPlaceholder('source'))
   await userEvent.copy()
 
-  // paste to 'target'
+  // 粘贴到 'target'
   await userEvent.click(page.getByPlaceholder('target'))
   await userEvent.paste()
 
@@ -616,7 +616,7 @@ test('copy and paste', async () => {
 })
 ```
 
-References:
+参考：
 
 - [testing-library `copy` API](https://testing-library.com/docs/user-event/convenience/#copy)
 
@@ -626,21 +626,21 @@ References:
 function cut(): Promise<void>
 ```
 
-Cut the selected text to the clipboard.
+将选中的文本剪切到剪贴板。
 
 ```js
 import { page, userEvent } from 'vitest/browser'
 
 test('copy and paste', async () => {
-  // write to 'source'
+  // 写入到 'source'
   await userEvent.click(page.getByPlaceholder('source'))
   await userEvent.keyboard('hello')
 
-  // select and cut 'source'
+  // 选中并剪切 'source'
   await userEvent.dblClick(page.getByPlaceholder('source'))
   await userEvent.cut()
 
-  // paste to 'target'
+  // 粘贴到 'target'
   await userEvent.click(page.getByPlaceholder('target'))
   await userEvent.paste()
 
@@ -649,9 +649,9 @@ test('copy and paste', async () => {
 })
 ```
 
-References:
+参考：
 
-- [testing-library `cut` API](https://testing-library.com/docs/user-event/clipboard#cut)
+- [testing-library `cut` 接口](https://testing-library.com/docs/user-event/clipboard#cut)
 
 ## userEvent.paste
 
@@ -659,8 +659,8 @@ References:
 function paste(): Promise<void>
 ```
 
-Paste the text from the clipboard. See [`userEvent.copy`](#userevent-copy) and [`userEvent.cut`](#userevent-cut) for usage examples.
+从剪贴板粘贴文本。有关使用示例，请参阅 [`userEvent.copy`](#userevent-copy) 和 [`userEvent.cut`](#userevent-cut)。
 
-References:
+参考：
 
-- [testing-library `paste` API](https://testing-library.com/docs/user-event/clipboard#paste)
+- [testing-library `paste` 接口](https://testing-library.com/docs/user-event/clipboard#paste)

@@ -1,12 +1,12 @@
 ---
-title: passWithNoTests | Config
+title: passWithNoTests | 配置
 outline: deep
 ---
 
 # passWithNoTests <CRoot />
 
-- **Type**: `boolean`
-- **Default**: `false`
-- **CLI:** `--passWithNoTests`, `--passWithNoTests=false`
+- **类型**: `boolean`
+- **默认值**: `false`
+- **命令行:** `--passWithNoTests`, `--passWithNoTests=false`
 
-Vitest will not fail, if no tests will be found.
+如果未找到任何测试，Vitest 不会失败。

@@ -1,10 +1,10 @@
-# Configuring Preview
+# 配置 Preview
 
 ::: warning
-The `preview` provider's main functionality is to show tests in a real browser environment. However, it does not support advanced browser automation features like multiple browser instances or headless mode. For more complex scenarios, consider using [Playwright](/config/browser/playwright) or [WebdriverIO](/config/browser/webdriverio).
+`preview` 提供者的主要功能是在真实的浏览器环境中显示测试。但是，它不支持高级浏览器自动化功能，如多浏览器实例或无头模式。对于更复杂的场景，请考虑使用 [Playwright](/config/browser/playwright) 或 [WebdriverIO](/config/browser/webdriverio)。
 :::
 
-To see your tests running in a real browser, you need to install the [`@vitest/browser-preview`](https://npmx.dev/package/@vitest/browser-preview) npm package and specify its `preview` export in the `test.browser.provider` property of your config:
+要在真实浏览器中查看测试运行，你需要安装 [`@vitest/browser-preview`](https://npmx.dev/package/@vitest/browser-preview) npm 包，并在配置的 `test.browser.provider` 属性中指定其 `preview` 导出：
 
 ```ts [vitest.config.js]
 import { preview } from '@vitest/browser-preview'
@@ -20,13 +20,13 @@ export default defineConfig({
 })
 ```
 
-This will open a new browser window using your default browser to run the tests. You can configure which browser to use by setting the `browser` property in the `instances` array. Vitest will try to open that browser automatically, but it might not work in some environments. In that case, you can manually open the provided URL in your desired browser.
+这将使用你的默认浏览器打开一个新的浏览器窗口来运行测试。你可以通过设置 `instances` 数组中的 `browser` 属性来配置使用哪个浏览器。Vitest 会尝试自动打开该浏览器，但在某些环境中可能无法工作。在这种情况下，你可以在想要的浏览器中手动打开提供的 URL。
 
-## Differences with Other Providers
+## 与其他提供者的区别
 
-The preview provider has some limitations compared to other providers like [Playwright](/config/browser/playwright) or [WebdriverIO](/config/browser/webdriverio):
+与其他提供者（如 [Playwright](/config/browser/playwright) 或 [WebdriverIO](/config/browser/webdriverio)）相比，preview 提供者有一些限制：
 
-- It does not support headless mode; the browser window will always be visible.
-- It does not support multiple instances of the same browser; each instance must use a different browser.
-- It does not support advanced browser capabilities or options; you can only specify the browser name.
-- It does not support CDP (Chrome DevTools Protocol) commands or other low-level browser interactions. Unlike Playwright or WebdriverIO, the [`userEvent`](/api/browser/interactivity) API is just re-exported from [`@testing-library/user-event`](https://npmx.dev/package/@testing-library/user-event) and does not have any special integration with the browser.
+- 它不支持无头模式；浏览器窗口将始终可见。
+- 它不支持同一浏览器的多个实例；每个实例必须使用不同的浏览器。
+- 它不支持高级浏览器功能或选项；你只能指定浏览器名称。
+- 它不支持 CDP (Chrome DevTools Protocol) 命令或其他低级浏览器交互。与 Playwright 或 WebdriverIO 不同，[`userEvent`](/api/browser/interactivity) API 只是从 [`@testing-library/user-event`](https://npmx.dev/package/@testing-library/user-event) 重新导出的，并没有与浏览器进行任何特殊集成。

@@ -4,7 +4,7 @@ outline: deep
 
 # vitest-browser-react
 
-The community [`vitest-browser-react`](https://npmx.dev/package/vitest-browser-react) package renders [React](https://react.dev/) components in [Browser Mode](/guide/browser/).
+社区 [`vitest-browser-react`](https://npmx.dev/package/vitest-browser-react) 包在 [浏览器模式](/guide/browser/) 中渲染 [React](https://react.dev/) 组件。
 
 ```jsx
 import { render } from 'vitest-browser-react'
@@ -21,14 +21,14 @@ test('counter button increments the count', async () => {
 ```
 
 ::: warning
-This library takes inspiration from [`@testing-library/react`](https://github.com/testing-library/react-testing-library).
+该库的灵感来自 [`@testing-library/react`](https://github.com/testing-library/react-testing-library)。
 
-If you have used `@testing-library/react` in your tests before, you can keep using it, however the `vitest-browser-react` package provides certain benefits unique to the Browser Mode that `@testing-library/react` lacks:
+如果你之前曾在测试中使用过 `@testing-library/react`，你可以继续使用它，但是 `vitest-browser-react` 包提供了一些 [浏览器模式](/guide/browser/) 独有的优势，而 `@testing-library/react` 缺乏这些优势：
 
-`vitest-browser-react` returns APIs that interact well with built-in [locators](/api/browser/locators), [user events](/api/browser/interactivity) and [assertions](/api/browser/assertions): for example, Vitest will automatically retry the element until the assertion is successful, even if it was rerendered between the assertions.
+`vitest-browser-react` 返回的 API 能与内置的 [定位器](/api/browser/locators)、[用户事件](/api/browser/interactivity) 和 [断言](/api/browser/assertions) 很好地交互：例如，Vitest 会自动重试元素直到断言成功，即使它在断言之间被重新渲染。
 :::
 
-The package exposes two entry points: `vitest-browser-react` and `vitest-browser-react/pure`. They expose almost identical API (`pure` also exposes `configure`), but the `pure` entry point doesn't add a handler to remove the component before the next test has started.
+该包暴露了两个入口点：`vitest-browser-react` 和 `vitest-browser-react/pure`。它们暴露了几乎相同的 API（`pure` 还暴露了 `configure`），但 `pure` 入口点不会添加一个处理器来在下一个测试开始前移除组件。
 
 ## render
 
@@ -39,10 +39,10 @@ export function render(
 ): Promise<RenderResult>
 ```
 
-The `render` function records a `react.render` trace mark, visible in the [Trace View](/guide/browser/trace-view).
+`render` 函数会记录一个 `react.render` 追踪标记，可在 [追踪视图](/guide/browser/trace-view) 中看到。
 
 :::warning
-Note that `render` is asynchronous, unlike in other packages. This is to support [`Suspense`](https://react.dev/reference/react/Suspense) correctly.
+请注意，`render` 是异步的，与其他包不同。这是为了正确支持 [`Suspense`](https://react.dev/reference/react/Suspense)。
 
 ```tsx
 import { render } from 'vitest-browser-react'
@@ -51,30 +51,30 @@ const screen = await render(<Component />) // [!code ++]
 ```
 :::
 
-### Options
+### 选项
 
 #### container
 
-By default, Vitest will create a `div`, append it to `document.body`, and render your component there. If you provide your own `HTMLElement` container, it will not be appended automatically — you'll need to call `document.body.appendChild(container)` before `render`.
+默认情况下，Vitest 会创建一个 `div`，将其追加到 `document.body`，并将你的组件渲染在那里。如果你提供自己的 `HTMLElement` 容器，它不会被自动追加——你需要在 `render` 之前调用 `document.body.appendChild(container)`。
 
-For example, if you are unit testing a `tbody` element, it cannot be a child of a `div`. In this case, you can specify a `table` as the render container.
+例如，如果你正在对 `tbody` 元素进行单元测试，它不能是 `div` 的子元素。在这种情况下，你可以指定一个 `table` 作为渲染容器。
 
 ```jsx
 const table = document.createElement('table')
 
 const { container } = await render(<TableBody {...props} />, {
-  // ⚠️ appending the element to `body` manually before rendering
+  // ⚠️ 在渲染前手动将元素追加到 `body`
   container: document.body.appendChild(table),
 })
 ```
 
 #### baseElement
 
-If the `container` is specified, then this defaults to that, otherwise this defaults to `document.body`. This is used as the base element for the queries as well as what is printed when you use `debug()`.
+如果指定了 `container`，则默认为该值，否则默认为 `document.body`。它用作查询的基元素，也是当你使用 `debug()` 时打印的内容。
 
 #### wrapper
 
-Pass a React Component as the `wrapper` option to have it rendered around the inner element. This is most useful for creating reusable custom render functions for common data providers. For example:
+传递一个 React 组件作为 `wrapper` 选项，使其渲染在内层元素周围。这对于为常见数据提供者创建可重用的自定义渲染函数最有用。例如：
 
 ```jsx
 import React from 'react'
@@ -97,9 +97,9 @@ export function customRender(ui, options) {
 }
 ```
 
-### Render Result
+### 渲染结果
 
-In addition to documented return value, the `render` function also returns all available [locators](/api/browser/locators) relative to the [`baseElement`](#baseelement), including [custom ones](/api/browser/locators#custom-locators).
+除了文档化的返回值外，`render` 函数还返回所有可用的 [定位器](/api/browser/locators)，它们相对于 [`baseElement`](#baseelement)，包括 [自定义定位器](/api/browser/locators#custom-locators)。
 
 ```tsx
 const screen = await render(<TableBody {...props} />)
@@ -109,25 +109,25 @@ await screen.getByRole('link', { name: 'Expand' }).click()
 
 #### container
 
-The containing `div` DOM node of your rendered React Element (rendered using `ReactDOM.render`). This is a regular DOM node, so you technically could call `container.querySelector` etc. to inspect the children.
+你渲染的 React 元素所在的包含 `div` DOM 节点（使用 `ReactDOM.render` 渲染）。这是一个普通的 DOM 节点，所以从技术上讲，你可以调用 `container.querySelector` 等来检查子元素。
 
 :::danger
-If you find yourself using `container` to query for rendered elements then you should reconsider! The [locators](/api/browser/locators) are designed to be more resilient to changes that will be made to the component you're testing. Avoid using `container` to query for elements!
+如果你发现自己使用 `container` 来查询渲染的元素，那么你应该重新考虑！[定位器](/api/browser/locators) 旨在对你测试的组件将要进行的更改更具弹性。避免使用 `container` 来查询元素！
 :::
 
 #### baseElement
 
-The containing DOM node where your React Element is rendered in the `container`. If you don't specify the `baseElement` in the options of render, it will default to `document.body`.
+你的 React 元素在 `container` 中渲染的包含 DOM 节点。如果你在渲染选项中没有指定 `baseElement`，它将默认为 `document.body`。
 
-This is useful when the component you want to test renders something outside the container `div`, e.g. when you want to snapshot test your portal component which renders its HTML directly in the body.
+当你想要测试的组件在容器 `div` 之外渲染某些内容时，这很有用，例如，当你想要快照测试你的 Portal 组件（它直接将 HTML 渲染在 body 中）时。
 
 :::tip
-The queries returned by the `render` looks into `baseElement`, so you can use queries to test your portal component without the `baseElement`.
+`render` 返回的查询会查找 `baseElement`，所以你可以使用查询来测试你的 Portal 组件，而无需（手动指定） `baseElement`。
 :::
 
 #### locator
 
-The [locator](/api/browser/locators) of your `container`. It is useful to use queries scoped only to your component, or pass it down to other assertions:
+你 `container` 的 [定位器](/api/browser/locators)。仅将查询限定在你的组件范围内，或将其传递给其他断言很有用：
 
 ```jsx
 import { render } from 'vitest-browser-react'
@@ -148,7 +148,7 @@ function debug(
 ): void
 ```
 
-This method is a shortcut for `console.log(prettyDOM(baseElement))`. It will print the DOM content of the container or specified elements to the console.
+此方法是 `console.log(prettyDOM(baseElement))` 的快捷方式。它会将容器或指定元素的 DOM 内容打印到控制台。
 
 #### rerender
 
@@ -156,9 +156,9 @@ This method is a shortcut for `console.log(prettyDOM(baseElement))`. It will pri
 function rerender(ui: React.ReactNode): Promise<void>
 ```
 
-Also records a `react.rerender` trace mark in the [Trace View](/guide/browser/trace-view).
+同样会在 [追踪视图](/guide/browser/trace-view) 中记录一个 `react.rerender` 追踪标记。
 
-It is better if you test the component that's doing the prop updating to ensure that the props are being updated correctly to avoid relying on implementation details in your tests. That said, if you'd prefer to update the props of a rendered component in your test, this function can be used to update props of the rendered component.
+最好测试正在执行 prop 更新的组件，以确保 props 被正确更新，从而避免在测试中依赖实现细节。也就是说，如果你更喜欢在测试中更新已渲染组件的 props，此函数可用于更新已渲染组件的 props。
 
 ```jsx
 import { render } from 'vitest-browser-react'
@@ -175,9 +175,9 @@ await rerender(<NumberDisplay number={2} />)
 function unmount(): Promise<void>
 ```
 
-Also records a `react.unmount` trace mark in the [Trace View](/guide/browser/trace-view).
+同样会在 [追踪视图](/guide/browser/trace-view) 中记录一个 `react.unmount` 追踪标记。
 
-This will cause the rendered component to be unmounted. This is useful for testing what happens when your component is removed from the page (like testing that you don't leave event handlers hanging around causing memory leaks).
+这将导致渲染的组件被卸载。这对于测试当你的组件从页面移除时会发生什么很有用（例如测试你是否留下了悬空的事件处理器导致内存泄漏）。
 
 ```jsx
 import { render } from 'vitest-browser-react'
@@ -193,7 +193,7 @@ await unmount()
 function asFragment(): DocumentFragment
 ```
 
-Returns a `DocumentFragment` of your rendered component. This can be useful if you need to avoid live bindings and see how your component reacts to events.
+返回你渲染组件的 `DocumentFragment`。如果你需要避免实时绑定并查看组件如何响应事件，这可能很有用。
 
 ## cleanup
 
@@ -201,7 +201,7 @@ Returns a `DocumentFragment` of your rendered component. This can be useful if y
 export function cleanup(): Promise<void>
 ```
 
-Remove all components rendered with [`render`](#render).
+移除所有通过 [`render`](#render) 渲染的组件。
 
 ## renderHook
 
@@ -212,7 +212,7 @@ export function renderHook<Props, Result>(
 ): Promise<RenderHookResult<Result, Props>>
 ```
 
-This is a convenience wrapper around `render` with a custom test component. The API emerged from a popular testing pattern and is mostly interesting for libraries publishing hooks. You should prefer `render` since a custom test component results in more readable and robust tests since the thing you want to test is not hidden behind an abstraction.
+这是 `render` 的一个便利包装器，带有自定义测试组件。该 API 源于一种流行的测试模式，主要对发布 hooks 的库感兴趣。你应该优先使用 `render`，因为自定义测试组件会产生更具可读性和鲁棒性的测试，因为你想要测试的内容没有隐藏在抽象之后。
 
 ```jsx
 import { renderHook } from 'vitest-browser-react'
@@ -223,11 +223,11 @@ test('returns logged in user', async () => {
 })
 ```
 
-### Options
+### 选项
 
-`renderHook` accepts the same options as [`render`](#render) with an addition to `initialProps`:
+`renderHook` 接受与 [`render`](#render) 相同的选项，并增加了 `initialProps`：
 
-It declares the props that are passed to the render-callback when first invoked. These will not be passed if you call `rerender` without props.
+它声明了首次调用时传递给渲染回调的 props。如果你调用 `rerender` 时不带 props，这些将不会被传递。
 
 ```jsx
 import { renderHook } from 'vitest-browser-react'
@@ -243,7 +243,7 @@ test('returns logged in user', async () => {
 ```
 
 :::warning
-When using `renderHook` in conjunction with the `wrapper` and `initialProps` options, the `initialProps` are not passed to the `wrapper` component. To provide props to the `wrapper` component, consider a solution like this:
+当结合使用 `renderHook` 与 `wrapper` 和 `initialProps` 选项时，`initialProps` 不会传递给 `wrapper` 组件。要为 `wrapper` 组件提供 props，请考虑如下解决方案：
 
 ```jsx
 function createWrapper(Wrapper, props) {
@@ -260,13 +260,13 @@ await renderHook(() => {}, {
 ```
 :::
 
-`renderHook` returns a few useful methods and properties:
+`renderHook` 返回一些有用的方法和属性：
 
-### Render Hook Result
+### 渲染 Hook 结果
 
 #### result
 
-Holds the value of the most recently committed return value of the render-callback:
+持有渲染回调最近一次提交的返回值：
 
 ```jsx
 import { useState } from 'react'
@@ -285,11 +285,11 @@ const { result } = await renderHook(() => {
 expect(result.current).toBe('Alice')
 ```
 
-Note that the value is held in `result.current`. Think of result as a [ref](https://react.dev/learn/referencing-values-with-refs) for the most recently committed value.
+请注意，值保存在 `result.current` 中。将 result 视为最近一次提交值的 [ref](https://react.dev/learn/referencing-values-with-refs)。
 
 #### rerender {#renderhooks-rerender}
 
-Renders the previously rendered render-callback with the new props:
+使用新的 props 渲染之前渲染过的渲染回调：
 
 ```jsx
 import { renderHook } from 'vitest-browser-react'
@@ -302,7 +302,7 @@ await rerender({ name: 'Bob' })
 
 #### unmount {#renderhooks-unmount}
 
-Unmounts the test hook.
+卸载测试 hook。
 
 ```jsx
 import { renderHook } from 'vitest-browser-react'
@@ -312,9 +312,9 @@ const { unmount } = await renderHook(({ name = 'Alice' } = {}) => name)
 await unmount()
 ```
 
-## Extend Queries
+## 扩展查询
 
-To extend locator queries, see [`"Custom Locators"`](/api/browser/locators#custom-locators). For example, to make `render` return a new custom locator, define it using the `locators.extend` API:
+要扩展定位器查询，请参阅 [`"自定义定位器"`](/api/browser/locators#custom-locators)。例如，要使 `render` 返回一个新的自定义定位器，请使用 `locators.extend` API 定义它：
 
 ```jsx {5-7,12}
 import { locators } from 'vitest/browser'
@@ -332,19 +332,19 @@ await expect.element(
 ).toBeVisible()
 ```
 
-## Configuration
+## 配置
 
-You can configure if the component should be rendered in Strict Mode with configure method from `vitest-browser-react/pure`:
+你可以使用 `vitest-browser-react/pure` 中的 configure 方法来配置组件是否应该在严格模式下渲染：
 
 ```js
 import { configure } from 'vitest-browser-react/pure'
 
 configure({
-  // disabled by default
+  // 默认禁用
   reactStrictMode: true,
 })
 ```
 
-## See also
+## 另请参阅
 
-- [React Testing Library documentation](https://testing-library.com/docs/react-testing-library/intro)
+- [React Testing Library 文档](https://testing-library.com/docs/react-testing-library/intro)

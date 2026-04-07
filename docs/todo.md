@@ -1,31 +1,31 @@
-# Remove UnoCSS - Migration Complete
+# 移除 UnoCSS - 迁移完成
 
-UnoCSS was causing OOM in CI. Removed entirely and replaced with `@iconify/vue` + plain CSS.
+UnoCSS 在 CI 中导致 OOM（内存溢出）。已完全移除并替换为 `@iconify/vue` + 普通 CSS。
 
-## Summary
+## 摘要
 
-- Removed UnoCSS plugin from `vite.config.ts`
-- Removed `uno.css` import from `theme/index.ts`
-- Added `@iconify/vue` for icons
-- Converted all UnoCSS utilities to scoped CSS
+- 从 `vite.config.ts` 中移除了 UnoCSS 插件
+- 从 `theme/index.ts` 中移除了 `uno.css` 导入
+- 添加了 `@iconify/vue` 用于图标
+- 将所有 UnoCSS 工具类转换为作用域 CSS
 
-## Completed
+## 已完成
 
-- [x] `vite.config.ts` - removed UnoCSS plugin
-- [x] `theme/index.ts` - removed `import 'uno.css'`
+- [x] `vite.config.ts` - 移除了 UnoCSS 插件
+- [x] `theme/index.ts` - 移除了 `import 'uno.css'`
 - [x] `CRoot.vue` - @iconify/vue + CSS
-- [x] `ListItem.vue` - @iconify/vue + CSS (spinner, checkmark, close icons)
+- [x] `ListItem.vue` - @iconify/vue + CSS（spinner、checkmark、close 图标）
 - [x] `CourseLink.vue` - @iconify/vue + CSS
-- [x] `FeaturesList.vue` - plain CSS
-- [x] `Advanced.vue` - plain CSS
-- [x] `Experimental.vue` - plain CSS
+- [x] `FeaturesList.vue` - 普通 CSS
+- [x] `Advanced.vue` - 普通 CSS
+- [x] `Experimental.vue` - 普通 CSS
 
-## Test pages
+## 测试页面
 
 - `/guide/features` - FeaturesList, ListItem, CourseLink
 - `/config/projects` - CRoot
 - `/api/advanced/vitest` - Experimental
 
-## Not used (skipped)
+## 未使用（跳过）
 
-- `HomePage.vue` - not used in new theme
+- `HomePage.vue` - 在新主题中未使用

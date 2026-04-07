@@ -1,22 +1,22 @@
 # TestModule
 
-The `TestModule` class represents a single module in a single project. This class is only available in the main thread. Refer to the ["Runner API"](/api/advanced/runner#tasks) if you are working with runtime tasks.
+`TestModule` 类代表单个项目中的单个模块。此类仅在主线程中可用。如果您正在处理运行时任务，请参阅 ["Runner API"](/api/advanced/runner#tasks)。
 
-The `TestModule` instance always has a `type` property with the value of `module`. You can use it to distinguish between different task types:
+`TestModule` 实例始终具有值为 `module` 的 `type` 属性。您可以使用它来区分不同的任务类型：
 
 ```ts
 if (task.type === 'module') {
-  task // TestModule
+  task // TestModule 实例
 }
 ```
 
-::: warning Extending Suite Methods
-The `TestModule` class inherits all methods and properties from the [`TestSuite`](/api/advanced/test-suite). This guide will only list methods and properties unique to the `TestModule`.
+::: warning 扩展套件方法
+`TestModule` 类继承自 [`TestSuite`](/api/advanced/test-suite) 的所有方法和属性。本指南仅列出 `TestModule` 独有的方法和属性。
 :::
 
 ## moduleId
 
-This is usually an absolute unix file path (even on Windows). It can be a virtual id if the file is not on the disk. This value corresponds to Vite's `ModuleGraph` id.
+这通常是一个绝对的 Unix 文件路径（即使在 Windows 上）。如果文件不在磁盘上，它可能是一个虚拟 id。此值对应于 Vite 的 `ModuleGraph` id。
 
 ```ts
 'C:/Users/Documents/project/example.test.ts' // ✅
@@ -26,7 +26,7 @@ This is usually an absolute unix file path (even on Windows). It can be a virtua
 
 ## relativeModuleId
 
-Module id relative to the project. This is the same as `task.name` in the deprecated API.
+相对于项目的模块 id。这与已弃用 API 中的 `task.name` 相同。
 
 ```ts
 'project/example.test.ts' // ✅
@@ -40,7 +40,7 @@ Module id relative to the project. This is the same as `task.name` in the deprec
 function state(): TestModuleState
 ```
 
-Works the same way as [`testSuite.state()`](/api/advanced/test-suite#state), but can also return `queued` if module wasn't executed yet.
+工作方式与 [`testSuite.state()`](/api/advanced/test-suite#state) 相同，但如果模块尚未执行，也可以返回 `queued`。
 
 ## meta <Version>3.1.0</Version> {#meta}
 
@@ -48,25 +48,25 @@ Works the same way as [`testSuite.state()`](/api/advanced/test-suite#state), but
 function meta(): TaskMeta
 ```
 
-Custom [metadata](/api/advanced/metadata) that was attached to the module during its execution or collection. The meta can be attached by assigning a property to the `task.meta` object during a test run:
+在模块执行或收集期间附加到模块的自定义 [元数据](/api/advanced/metadata)。可以通过在测试运行期间将属性分配给 `task.meta` 对象来附加元数据：
 
 ```ts {5,10}
 import { test } from 'vitest'
 
 describe('the validation works correctly', (task) => {
-  // assign "decorated" during collection
+  // 在收集期间分配 "decorated"
   task.file.meta.decorated = false
 
   test('some test', ({ task }) => {
-    // assign "decorated" during test run, it will be available
-    // only in onTestCaseReady hook
+    // 在测试运行期间分配 "decorated"，它将可用
+    // 仅在 onTestCaseReady 钩子中
     task.file.meta.decorated = false
   })
 })
 ```
 
 :::tip
-If metadata was attached during collection (outside of the `test` function), then it will be available in [`onTestModuleCollected`](./reporters#ontestmodulecollected) hook in the custom reporter.
+如果元数据是在收集期间附加的（在 `test` 函数之外），那么它在自定义报告器中的 [`onTestModuleCollected`](./reporters#ontestmodulecollected) 钩子中将可用。
 :::
 
 ## diagnostic
@@ -75,58 +75,58 @@ If metadata was attached during collection (outside of the `test` function), the
 function diagnostic(): ModuleDiagnostic
 ```
 
-Useful information about the module like duration, memory usage, etc. If the module was not executed yet, all diagnostic values will return `0`.
+关于模块的有用信息，如持续时间、内存使用情况等。如果模块尚未执行，所有诊断值将返回 `0`。
 
 ```ts
 interface ModuleDiagnostic {
   /**
-   * The time it takes to import and initiate an environment.
+   * 导入和启动环境所需的时间。
    */
   readonly environmentSetupDuration: number
   /**
-   * The time it takes Vitest to setup test harness (runner, mocks, etc.).
+   * Vitest 设置测试 harness（运行器、模拟等）所需的时间。
    */
   readonly prepareDuration: number
   /**
-   * The time it takes to import the test module.
-   * This includes importing everything in the module and executing suite callbacks.
+   * 导入测试模块所需的时间。
+   * 这包括导入模块中的所有内容并执行套件回调。
    */
   readonly collectDuration: number
   /**
-   * The time it takes to import the setup module.
+   * 导入设置模块所需的时间。
    */
   readonly setupDuration: number
   /**
-   * Accumulated duration of all tests and hooks in the module.
+   * 模块中所有测试和钩子的累计持续时间。
    */
   readonly duration: number
   /**
-   * The amount of memory used by the module in bytes.
-   * This value is only available if the test was executed with `logHeapUsage` flag.
+   * 模块使用的内存量（以字节为单位）。
+   * 仅当测试使用 `logHeapUsage` 标志执行时，此值才可用。
    */
   readonly heap: number | undefined
   /**
-   * The time spent importing every non-externalized dependency that Vitest has processed.
+   * Vitest 处理的每个非外部化依赖项的导入耗时。
    */
   readonly importDurations: Record<string, ImportDuration>
 }
 
-/** The time spent importing & executing a non-externalized file. */
+/** 导入和执行非外部化文件所花费的时间。 */
 interface ImportDuration {
-  /** The time spent importing & executing the file itself, not counting all non-externalized imports that the file does. */
+  /** 导入和执行文件本身所花费的时间，不计该文件执行的所有非外部化导入。 */
   selfTime: number
 
-  /** The time spent importing & executing the file and all its imports. */
+  /** 导入和执行文件及其所有导入所花费的时间。 */
   totalTime: number
 }
 ```
 
 ## viteEnvironment <Version>4.1.0</Version> {#viteenvironment}
 
-This is a Vite's [`DevEnvironment`](https://vite.dev/guide/api-environment) that transforms all files inside of the test module.
+这是一个 Vite 的 [`DevEnvironment`](https://vite.dev/guide/api-environment)，用于转换测试模块内的所有文件。
 
-::: details History
-- `v4.0.15`: added as experimental
+::: details 历史记录
+- `v4.0.15`: 作为实验性功能添加
 :::
 
 ## toTestSpecification <Version>4.1.0</Version> {#totestspecification}
@@ -135,6 +135,6 @@ This is a Vite's [`DevEnvironment`](https://vite.dev/guide/api-environment) that
 function toTestSpecification(testCases?: TestCase[]): TestSpecification
 ```
 
-Returns a new [test specification](/api/advanced/test-specification) that can be used to filter or run this specific test module.
+返回一个新的 [测试规范](/api/advanced/test-specification)，可用于过滤或运行此特定测试模块。
 
-It accepts an optional array of test cases that should be filtered.
+它接受一个可选的测试用例数组进行过滤。

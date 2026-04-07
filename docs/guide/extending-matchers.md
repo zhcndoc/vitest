@@ -1,21 +1,21 @@
 ---
-title: Extending Matchers | Guide
+title: 扩展匹配器 | 指南
 ---
 
-# Extending Matchers
+# 扩展匹配器
 
-Since Vitest is compatible with both Chai and Jest, you can use either the [`chai.use`](https://www.chaijs.com/guide/plugins/) API or `expect.extend`, whichever you prefer.
+由于 Vitest 兼容 Chai 和 Jest，你可以使用 [`chai.use`](https://www.chaijs.com/guide/plugins/) API 或 `expect.extend`，任选其一。
 
-This guide will explore extending matchers with `expect.extend`. If you are interested in Chai's API, check [their guide](https://www.chaijs.com/guide/plugins/).
+本指南将探讨如何使用 `expect.extend` 扩展匹配器。如果你对 Chai 的 API 感兴趣，请查看 [他们的指南](https://www.chaijs.com/guide/plugins/)。
 
-To extend default matchers, call `expect.extend` with an object containing your matchers.
+要扩展默认匹配器，请使用包含你的匹配器的对象调用 `expect.extend`。
 
 ```ts
 expect.extend({
   toBeFoo(received, expected) {
     const { isNot } = this
     return {
-      // do not alter your "pass" based on isNot. Vitest does it for you
+      // 不要根据 isNot 修改你的 "pass"。Vitest 会为你处理
       pass: received === 'foo',
       message: () => `${received} is${isNot ? ' not' : ''} foo`
     }
@@ -23,7 +23,7 @@ expect.extend({
 })
 ```
 
-If you are using TypeScript, you can extend default `Matchers` interface in an ambient declaration file (e.g: `vitest.d.ts`) with the code below:
+如果你使用的是 TypeScript，你可以在环境声明文件（例如：`vitest.d.ts`）中使用以下代码扩展默认的 `Matchers` 接口：
 
 ```ts
 import 'vitest'
@@ -36,30 +36,30 @@ declare module 'vitest' {
 ```
 
 ::: tip
-Importing `vitest` makes TypeScript think this is an ES module file, type declaration won't work without it.
+导入 `vitest` 会让 TypeScript 认为这是一个 ES 模块文件，没有它类型声明将无法工作。
 :::
 
-Extending the `Matchers` interface will add a type to `expect.extend`, `expect().*`, and `expect.*` methods at the same time.
+扩展 `Matchers` 接口将同时为 `expect.extend`、`expect().*` 和 `expect.*` 方法添加类型。
 
 ::: warning
-Don't forget to include the ambient declaration file in your `tsconfig.json`.
+别忘了在你的 `tsconfig.json` 中包含环境声明文件。
 :::
 
-The return value of a matcher should be compatible with the following interface:
+匹配器的返回值应与以下接口兼容：
 
 ```ts
 interface MatcherResult {
   pass: boolean
   message: () => string
-  // If you pass these, they will automatically appear inside a diff when
-  // the matcher does not pass, so you don't need to print the diff yourself
+  // 如果你传递这些，当匹配器未通过时，它们将自动出现在 diff 中
+  // 所以你不需要自己打印 diff
   actual?: unknown
   expected?: unknown
 }
 ```
 
 ::: warning
-If you create an asynchronous matcher, don't forget to `await` the result (`await expect('foo').toBeFoo()`) in the test itself:
+如果你创建了一个异步匹配器，别忘了在测试本身中 `await` 结果 (`await expect('foo').toBeFoo()`)：
 
 ```ts
 expect.extend({
@@ -72,30 +72,30 @@ await expect().toBeAsyncAssertion()
 ```
 :::
 
-The first argument inside a matcher's function is the received value (the one inside `expect(received)`). The rest are arguments passed directly to the matcher. Since version 4.1, Vitest exposes several types that can be used by your custom matcher:
+匹配器函数内的第一个参数是接收到的值（`expect(received)` 中的那个）。其余的是直接传递给匹配器的参数。自 4.1 版本以来，Vitest 暴露了几种可供自定义匹配器使用的类型：
 
 ```ts
 import type {
-  // the function type
+  // 函数类型
   Matcher,
-  // the return value
+  // 返回值
   MatcherResult,
-  // state available as `this`
+  // 作为 `this` 可用的状态
   MatcherState,
 } from 'vitest'
 import { expect } from 'vitest'
 
-// a simple matcher, using "function" to have access to "this"
+// 一个简单的匹配器，使用 "function" 以访问 "this"
 const customMatcher: Matcher = function (received) {
   // ...
 }
 
-// a matcher with arguments
+// 带参数的匹配器
 const customMatcher: Matcher<MatcherState, [arg1: unknown, arg2: unknown]> = function (received, arg1, arg2) {
   // ...
 }
 
-// a matcher with custom annotations
+// 带自定义注解的匹配器
 function customMatcher(this: MatcherState, received: unknown, arg1: unknown, arg2: unknown): MatcherResult {
   // ...
   return {
@@ -108,53 +108,53 @@ expect.extend({ customMatcher })
 ```
 
 ::: tip
-To build custom **snapshot matchers** (wrappers around `toMatchSnapshot()` / `toMatchInlineSnapshot()` / `toMatchFileSnapshot()`), use `Snapshots` exported from `vitest`. See [Custom Snapshot Matchers](/guide/snapshot#custom-snapshot-matchers).
+要构建自定义 **快照匹配器**（`toMatchSnapshot()` / `toMatchInlineSnapshot()` / `toMatchFileSnapshot()` 的包装器），请使用从 `vitest` 导出的 `Snapshots`。参见 [自定义快照匹配器](/guide/snapshot#custom-snapshot-matchers)。
 :::
 
-Matcher function has access to `this` context with the following properties:
+匹配器函数可以访问具有以下属性的 `this` 上下文：
 
 ## `isNot`
 
-Returns true, if matcher was called on `not` (`expect(received).not.toBeFoo()`). You do not need to respect it, Vitest will reverse the value of `pass` automatically.
+如果匹配器是在 `not` 上调用的 (`expect(received).not.toBeFoo()`)，则返回 true。你不需要处理它，Vitest 会自动反转 `pass` 的值。
 
 ## `promise`
 
-If matcher was called on `resolved/rejected`, this value will contain the name of modifier. Otherwise, it will be an empty string.
+如果匹配器是在 `resolved/rejected` 上调用的，此值将包含修饰符的名称。否则，它将是一个空字符串。
 
 ## `equals`
 
-This is a utility function that allows you to compare two values. It will return `true` if values are equal, `false` otherwise. This function is used internally for almost every matcher. It supports objects with asymmetric matchers by default.
+这是一个允许你比较两个值的实用函数。如果值相等则返回 `true`，否则返回 `false`。此函数在内部几乎用于每个匹配器。默认情况下，它支持带有非对称匹配器的对象。
 
 ## `utils`
 
-This contains a set of utility functions that you can use to display messages.
+这包含一组可用于显示消息的实用函数。
 
-`this` context also contains information about the current test. You can also get it by calling `expect.getState()`. The most useful properties are:
+`this` 上下文还包含有关当前测试的信息。你也可以通过调用 `expect.getState()` 获取它。最有用的属性是：
 
 ## `currentTestName`
 
-Full name of the current test (including describe block).
+当前测试的全名（包括 describe 块）。
 
 ## `task` <Advanced /> <Version>4.1.0</Version> {#task}
 
-Contains a reference to [the `Test` runner task](/api/advanced/runner#tasks) when available.
+可用时包含对 [`Test` 运行器任务](/api/advanced/runner#tasks) 的引用。
 
 ::: warning
-When using the global `expect` with concurrent tests, `this.task` is `undefined`. Use `context.expect` instead to ensure `task` is available in custom matchers.
+当在并发测试中使用全局 `expect` 时，`this.task` 为 `undefined`。请使用 `context.expect` 以确保 `task` 在自定义匹配器中可用。
 :::
 
 ## `testPath`
 
-File path to the current test.
+当前测试的文件路径。
 
 ## `environment`
 
-The name of the current [`environment`](/config/environment) (for example, `jsdom`).
+当前 [`environment`](/config/environment) 的名称（例如，`jsdom`）。
 
 ## `soft`
 
-Was assertion called as a [`soft`](/api/expect#soft) one. You don't need to respect it, Vitest will always catch the error.
+断言是否作为 [`soft`](/api/expect#soft) 调用。你不需要处理它，Vitest 总是会捕获错误。
 
 ::: tip
-These are not all of the available properties, only the most useful ones. The other state values are used by Vitest internally.
+这些并不是所有可用的属性，只是最有用的那些。其他状态值由 Vitest 内部使用。
 :::

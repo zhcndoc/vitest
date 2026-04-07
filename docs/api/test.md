@@ -2,9 +2,9 @@
 outline: deep
 ---
 
-# Test
+# 测试
 
-- **Alias:** `it`
+- **别名:** `it`
 
 ```ts
 function test(
@@ -19,9 +19,9 @@ function test(
 ): void
 ```
 
-`test` or `it` defines a set of related expectations. It receives the test name and a function that holds the expectations to test.
+`test` 或 `it` 定义了一组相关的期望。它接收测试名称和一个包含要测试的期望的函数。
 
-Optionally, you can provide a timeout (in milliseconds) for specifying how long to wait before terminating, or a set of [additional options](#test-options). The default timeout is 5 seconds, and can be configured globally with [`testTimeout`](/config/testtimeout).
+可选地，你可以提供一个超时时间（毫秒）来指定等待多久后终止，或者提供一组 [其他选项](#test-options)。默认超时时间为 5 秒，可以通过 [`testTimeout`](/config/testtimeout) 全局配置。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -32,79 +32,79 @@ test('should work as expected', () => {
 ```
 
 ::: warning
-If the first argument is a function, its `name` property will be used as the name of the test. The function itself will not be called.
+如果第一个参数是一个函数，其 `name` 属性将被用作测试名称。该函数本身不会被调用。
 
-If test body is not provided, the test is marked as `todo`.
+如果未提供测试主体，则测试被标记为 `todo`。
 :::
 
-When a test function returns a promise, the runner will wait until it is resolved to collect async expectations. If the promise is rejected, the test will fail.
+当测试函数返回一个 promise 时，运行器将等待其 resolved 以收集异步期望。如果 promise 被 rejected，测试将失败。
 
 ::: tip
-In Jest, `TestFunction` can also be of type `(done: DoneCallback) => void`. If this form is used, the test will not be concluded until `done` is called. You can achieve the same using an `async` function, see the [Migration guide Done Callback section](/guide/migration#done-callback).
+在 Jest 中，`TestFunction` 也可以是 `(done: DoneCallback) => void` 类型。如果使用这种形式，测试直到调用 `done` 才会结束。你可以使用 `async` 函数实现相同的效果，请参阅 [迁移指南 Done Callback 部分](/guide/migration#done-callback)。
 :::
 
-## Test Options
+## 测试选项
 
-You can define boolean options by chaining properties on a function:
+你可以通过在函数上链式调用属性来定义布尔选项：
 
 ```ts
 import { test } from 'vitest'
 
 test.skip('skipped test', () => {
-  // some logic that fails right now
+  // 一些目前会失败的逻辑
 })
 
 test.concurrent.skip('skipped concurrent test', () => {
-  // some logic that fails right now
+  // 一些目前会失败的逻辑
 })
 ```
 
-But you can also provide an object as a second argument instead:
+但你也可以提供一个对象作为第二个参数：
 
 ```ts
 import { test } from 'vitest'
 
 test('skipped test', { skip: true }, () => {
-  // some logic that fails right now
+  // 一些目前会失败的逻辑
 })
 
 test('skipped concurrent test', { skip: true, concurrent: true }, () => {
-  // some logic that fails right now
+  // 一些目前会失败的逻辑
 })
 ```
 
-They both work in exactly the same way. To use either one is purely a stylistic choice.
+它们的工作方式完全相同。使用哪一种纯粹是风格选择。
 
 ### timeout
 
-- **Type:** `number`
-- **Default:** `5_000` (configured by [`testTimeout`](/config/testtimeout))
+- **类型:** `number`
+- **默认值:** `5_000`（由 [`testTimeout`](/config/testtimeout) 配置）
 
-Test timeout in milliseconds.
+测试超时时间（毫秒）。
 
 ::: warning
-Note that if you are providing timeout as the last argument, you cannot use options anymore:
+注意，如果你将超时时间作为最后一个参数提供，则不能再使用选项对象：
 
 ```ts
 import { test } from 'vitest'
 
-// ✅ this works
+// ✅ 这样可以
 test.skip('heavy test', () => {
   // ...
 }, 10_000)
 
-// ❌ this doesn't work
+// ❌ 这样不行
 test('heavy test', { skip: true }, () => {
   // ...
 }, 10_000)
 ```
 
-However, you can provide a timeout inside the object:
+但是，你可以在对象内部提供超时时间：
 
 ```ts
 import { test } from 'vitest'
 
-// ✅ this works
+// ✅ 这样可以
 test('heavy test', { skip: true, timeout: 10_000 }, () => {
   // ...
 })
@@ -113,54 +113,54 @@ test('heavy test', { skip: true, timeout: 10_000 }, () => {
 
 ### retry
 
-- **Default:** `0` (configured by [`retry`](/config/retry))
-- **Type:**
+- **默认值:** `0`（由 [`retry`](/config/retry) 配置）
+- **类型:**
 
 ```ts
 type Retry = number | {
   /**
-   * The number of times to retry the test if it fails.
+   * 如果测试失败，重试的次数。
    * @default 0
    */
   count?: number
   /**
-   * Delay in milliseconds between retry attempts.
+   * 重试尝试之间的延迟（毫秒）。
    * @default 0
    */
   delay?: number
   /**
-   * Condition to determine if a test should be retried based on the error.
-   * - If a RegExp, it is tested against the error message
-   * - If a function, called with the TestError object; return true to retry
+   * 根据错误确定是否应重试测试的条件。
+   * - 如果是 RegExp，则针对错误消息进行测试
+   * - 如果是函数，使用 TestError 对象调用；返回 true 以重试
    *
-   * NOTE: Functions can only be used in test files, not in vitest.config.ts,
-   * because the configuration is serialized when passed to worker threads.
+   * 注意：函数只能在测试文件中使用，不能在 vitest.config.ts 中使用，
+   * 因为配置在传递给工作线程时会被序列化。
    *
-   * @default undefined (retry on all errors)
+   * @default undefined（对所有错误重试）
    */
   condition?: RegExp | ((error: TestError) => boolean)
 }
 ```
 
-Retry configuration for the test. If a number, specifies how many times to retry. If an object, allows fine-grained retry control.
+测试的重试配置。如果是数字，指定重试次数。如果是对象，允许细粒度的重试控制。
 
-Note that the object configuration is available only since Vitest 4.1.
+注意，对象配置仅在 Vitest 4.1 及以上版本可用。
 
 ### repeats
 
-- **Type:** `number`
-- **Default:** `0`
+- **类型:** `number`
+- **默认值:** `0`
 
-How many times the test will run again. If set to `0` (the default), the test will run only one time.
+测试将再次运行的次数。如果设置为 `0`（默认值），测试将只运行一次。
 
-This can be useful for debugging flaky tests.
+这对于调试不稳定的测试很有用。
 
 ### tags <Version>4.1.0</Version> {#tags}
 
-- **Type:** `string[]`
-- **Default:** `[]`
+- **类型:** `string[]`
+- **默认值:** `[]`
 
-Custom user [tags](/guide/test-tags). If the tag is not specified in the [configuration](/config/tags), the test will fail before it starts, unless [`strictTags`](/config/stricttags) is disabled manually.
+自定义用户 [标签](/guide/test-tags)。如果标签未在 [配置](/config/tags) 中指定，测试将在开始前失败，除非手动禁用 [`strictTags`](/config/stricttags)。
 
 ```ts
 import { it } from 'vitest'
@@ -172,12 +172,12 @@ it('user returns data from db', { tags: ['db', 'flaky'] }, () => {
 
 ### meta <Version>4.1.0</Version> {#meta}
 
-- **Type:** `TaskMeta`
+- **类型:** `TaskMeta`
 
-Attaches custom [metadata](/api/advanced/metadata) available in reporters.
+附加可在报告器中使用的自定义 [元数据](/api/advanced/metadata)。
 
 ::: warning
-Vitest merges top-level properties inherited from suites or tags. However, it does not perform a deep merge of nested objects.
+Vitest 会合并从套件或标签继承的顶层属性。但是，它不会对嵌套对象执行深度合并。
 
 ```ts
 import { describe, test } from 'vitest'
@@ -199,86 +199,86 @@ describe(
       },
       ({ task }) => {
         // task.meta === { nested: { object: false } }
-        // notice array got lost because "nested" object was overridden
+        // 注意数组丢失了，因为 "nested" 对象被覆盖了
       }
     )
   }
 )
 ```
 
-Prefer using non-nested meta, if possible.
+如果可能，建议使用非嵌套的 meta。
 :::
 
 ### concurrent
 
-- **Type:** `boolean`
-- **Default:** `false` (configured by [`sequence.concurrent`](/config/sequence#sequence-concurrent))
-- **Alias:** [`test.concurrent`](#test-concurrent)
+- **类型:** `boolean`
+- **默认值:** `false`（由 [`sequence.concurrent`](/config/sequence#sequence-concurrent) 配置）
+- **别名:** [`test.concurrent`](#test-concurrent)
 
-Whether this test run concurrently with other concurrent tests in the suite.
+此测试是否与套件中的其他并发测试并发运行。
 
 ### sequential
 
-- **Type:** `boolean`
-- **Default:** `true`
-- **Alias:** [`test.sequential`](#test-sequential)
+- **类型:** `boolean`
+- **默认值:** `true`
+- **别名:** [`test.sequential`](#test-sequential)
 
-Whether tests run sequentially. When both `concurrent` and `sequential` are specified, `concurrent` takes precedence.
+测试是否顺序运行。当同时指定 `concurrent` 和 `sequential` 时，`concurrent` 优先。
 
 ### skip
 
-- **Type:** `boolean`
-- **Default:** `false`
-- **Alias:** [`test.skip`](#test-skip)
+- **类型:** `boolean`
+- **默认值:** `false`
+- **别名:** [`test.skip`](#test-skip)
 
-Whether the test should be skipped.
+是否应跳过测试。
 
 ### only
 
-- **Type:** `boolean`
-- **Default:** `false`
-- **Alias:** [`test.only`](#test-only)
+- **类型:** `boolean`
+- **默认值:** `false`
+- **别名:** [`test.only`](#test-only)
 
-Should this test be the only one running in a suite.
+此测试是否应该是套件中唯一运行的测试。
 
 ### todo
 
-- **Type:** `boolean`
-- **Default:** `false`
-- **Alias:** [`test.todo`](#test-todo)
+- **类型:** `boolean`
+- **默认值:** `false`
+- **别名:** [`test.todo`](#test-todo)
 
-Whether the test should be skipped and marked as a todo.
+是否应跳过测试并标记为待办事项。
 
 ### fails
 
-- **Type:** `boolean`
-- **Default:** `false`
-- **Alias:** [`test.fails`](#test-fails)
+- **类型:** `boolean`
+- **默认值:** `false`
+- **别名:** [`test.fails`](#test-fails)
 
-Whether the test is expected to fail. If it does, the test will pass, otherwise it will fail.
+测试是否预期会失败。如果失败了，测试将通过，否则将失败。
 
 ## test.extend
 
-- **Alias:** `it.extend`
+- **别名:** `it.extend`
 
-Use `test.extend` to extend the test context with custom fixtures. This will return a new `test` and it's also extendable, so you can compose more fixtures or override existing ones by extending it as you need. See [Extend Test Context](/guide/test-context#extend-test-context) for more information.
+使用 `test.extend` 通过自定义夹具扩展测试上下文。这将返回一个新的 `test`，并且它也是可扩展的，因此你可以根据需要扩展它以组合更多夹具或覆盖现有夹具。请参阅 [扩展测试上下文](/guide/test-context#extend-test-context) 以获取更多信息。
 
 ```ts
 import { test as baseTest, expect } from 'vitest'
 
 export const test = baseTest
-  // Simple value - type is inferred as { port: number; host: string }
+  // 简单值 - 类型推断为 { port: number; host: string }
   .extend('config', { port: 3000, host: 'localhost' })
-  // Function fixture - type is inferred from return value
+  // 函数夹具 - 类型从返回值推断
   .extend('server', async ({ config }) => {
-    // TypeScript knows config is { port: number; host: string }
+    // TypeScript 知道 config 是 { port: number; host: string }
     return `http://${config.host}:${config.port}`
   })
 
 test('server uses correct port', ({ config, server }) => {
-  // TypeScript knows the types:
-  // - config is { port: number; host: string }
-  // - server is string
+  // TypeScript 知道类型：
+  // - config 是 { port: number; host: string }
+  // - server 是 string
   expect(server).toBe('http://localhost:3000')
   expect(config.port).toBe(3000)
 })
@@ -286,7 +286,7 @@ test('server uses correct port', ({ config, server }) => {
 
 ## test.override <Version>4.1.0</Version> {#test-override}
 
-Use `test.override` to override fixture values for all tests within the current suite and its nested suites. This must be called at the top level of a `describe` block. See [Overriding Fixture Values](/guide/test-context.html#overriding-fixture-values) for more information.
+使用 `test.override` 覆盖当前套件及其嵌套套件中所有测试的夹具值。这必须在 `describe` 块的顶层调用。请参阅 [覆盖夹具值](/guide/test-context.html#overriding-fixture-values) 以获取更多信息。
 
 ```ts
 import { test as baseTest, describe, expect } from 'vitest'
@@ -299,8 +299,8 @@ describe('use scoped values', () => {
   test.override({ dependency: 'new' })
 
   test('uses scoped value', ({ dependant }) => {
-    // `dependant` uses the new overridden value that is scoped
-    // to all tests in this suite
+    // `dependant` 使用新的覆盖值，该值作用于
+    // 此套件中的所有测试
     expect(dependant).toEqual({ dependency: 'new' })
   })
 })
@@ -308,58 +308,58 @@ describe('use scoped values', () => {
 
 ## test.scoped <Version>3.1.0</Version> <Deprecated /> {#test-scoped}
 
-- **Alias:** `it.scoped`
+- **别名:** `it.scoped`
 
-::: danger DEPRECATED
-`test.scoped` is deprecated in favor of [`test.override`](#test-override) and will be removed in a future major version.
+::: danger 已弃用
+`test.scoped` 已弃用，推荐使用 [`test.override`](#test-override)，并将在未来的主版本中移除。
 :::
 
-Alias of [`test.override`](#test-override)
+[`test.override`](#test-override) 的别名
 
 ## test.skip
 
-- **Alias:** `it.skip`
+- **别名:** `it.skip`
 
-If you want to skip running certain tests, but you don't want to delete the code due to any reason, you can use `test.skip` to avoid running them.
+如果你想跳过运行某些测试，但由于任何原因不想删除代码，你可以使用 `test.skip` 来避免运行它们。
 
 ```ts
 import { assert, test } from 'vitest'
 
 test.skip('skipped test', () => {
-  // Test skipped, no error
+  // 测试已跳过，无错误
   assert.equal(Math.sqrt(4), 3)
 })
 ```
 
-You can also skip test by calling `skip` on its [context](/guide/test-context) dynamically:
+你还可以通过在其 [上下文](/guide/test-context) 上动态调用 `skip` 来跳过测试：
 
 ```ts
 import { assert, test } from 'vitest'
 
 test('skipped test', (context) => {
   context.skip()
-  // Test skipped, no error
+  // 测试已跳过，无错误
   assert.equal(Math.sqrt(4), 3)
 })
 ```
 
-If the condition is unknown, you can provide it to the `skip` method as the first arguments:
+如果条件未知，你可以将其作为第一个参数提供给 `skip` 方法：
 
 ```ts
 import { assert, test } from 'vitest'
 
 test('skipped test', (context) => {
   context.skip(Math.random() < 0.5, 'optional message')
-  // Test skipped, no error
+  // 测试已跳过，无错误
   assert.equal(Math.sqrt(4), 3)
 })
 ```
 
 ## test.skipIf
 
-- **Alias:** `it.skipIf`
+- **别名:** `it.skipIf`
 
-In some cases you might run tests multiple times with different environments, and some of the tests might be environment-specific. Instead of wrapping the test code with `if`, you can use `test.skipIf` to skip the test whenever the condition is truthy.
+在某些情况下，你可能会在不同的环境中多次运行测试，其中一些测试可能是特定于环境的。你可以使用 `test.skipIf` 来在条件为真时跳过测试，而不是用 `if` 包裹测试代码。
 
 ```ts
 import { assert, test } from 'vitest'
@@ -367,15 +367,15 @@ import { assert, test } from 'vitest'
 const isDev = process.env.NODE_ENV === 'development'
 
 test.skipIf(isDev)('prod only test', () => {
-  // this test only runs in production
+  // 此测试仅在生产环境中运行
 })
 ```
 
 ## test.runIf
 
-- **Alias:** `it.runIf`
+- **别名:** `it.runIf`
 
-Opposite of [test.skipIf](#test-skipif).
+[test.skipIf](#test-skipif) 的反面。
 
 ```ts
 import { assert, test } from 'vitest'
@@ -383,47 +383,47 @@ import { assert, test } from 'vitest'
 const isDev = process.env.NODE_ENV === 'development'
 
 test.runIf(isDev)('dev only test', () => {
-  // this test only runs in development
+  // 此测试仅在开发环境中运行
 })
 ```
 
 ## test.only
 
-- **Alias:** `it.only`
+- **别名：** `it.only`
 
-Use `test.only` to only run certain tests in a given suite. This is useful when debugging.
+使用 `test.only` 仅运行给定套件中的某些测试。这在调试时很有用。
 
 ```ts
 import { assert, test } from 'vitest'
 
 test.only('test', () => {
-  // Only this test (and others marked with only) are run
+  // 只有这个测试（以及其他标记为 only 的测试）会被运行
   assert.equal(Math.sqrt(4), 2)
 })
 ```
 
-Sometimes it is very useful to run `only` tests in a certain file, ignoring all other tests from the whole test suite, which pollute the output.
+有时在特定文件中运行 `only` 测试非常有用，忽略整个测试套件中的所有其他测试，以免污染输出。
 
-In order to do that, run `vitest` with specific file containing the tests in question:
+为此，使用包含相关测试的特定文件运行 `vitest`：
 
 ```shell
 vitest interesting.test.ts
 ```
 
 ::: warning
-Vitest detects when tests are running in CI and will throw an error if any test has `only` flag. You can configure this behaviour via [`allowOnly`](/config/allowonly) option.
+Vitest 会检测测试是否在 CI 中运行，如果任何测试带有 `only` 标志，它将抛出错误。你可以通过 [`allowOnly`](/config/allowonly) 选项配置此行为。
 :::
 
 ## test.concurrent
 
-- **Alias:** `it.concurrent`
+- **别名：** `it.concurrent`
 
-`test.concurrent` marks consecutive tests to be run in parallel. It receives the test name, an async function with the tests to collect, and an optional timeout (in milliseconds).
+`test.concurrent` 标记连续测试并行运行。它接收测试名称、一个包含要收集的测试的异步函数，以及一个可选的超时时间（毫秒）。
 
 ```ts
 import { describe, test } from 'vitest'
 
-// The two tests marked with concurrent will be run in parallel
+// 标记为 concurrent 的两个测试将并行运行
 describe('suite', () => {
   test('serial test', async () => { /* ... */ })
   test.concurrent('concurrent test 1', async () => { /* ... */ })
@@ -431,16 +431,16 @@ describe('suite', () => {
 })
 ```
 
-`test.skip`, `test.only`, and `test.todo` works with concurrent tests. All the following combinations are valid:
+`test.skip`、`test.only` 和 `test.todo` 可与并发测试一起工作。以下所有组合均有效：
 
 ```ts
 test.concurrent(/* ... */)
-test.skip.concurrent(/* ... */) // or test.concurrent.skip(/* ... */)
-test.only.concurrent(/* ... */) // or test.concurrent.only(/* ... */)
-test.todo.concurrent(/* ... */) // or test.concurrent.todo(/* ... */)
+test.skip.concurrent(/* ... */) // 或 test.concurrent.skip(/* ... */)
+test.only.concurrent(/* ... */) // 或 test.concurrent.only(/* ... */)
+test.todo.concurrent(/* ... */) // 或 test.concurrent.todo(/* ... */)
 ```
 
-When running concurrent tests, Snapshots and Assertions must use `expect` from the local [Test Context](/guide/test-context.md) to ensure the right test is detected.
+运行并发测试时，快照和断言必须使用本地 [测试上下文](/guide/test-context.md) 中的 `expect`，以确保检测到正确的测试。
 
 ```ts
 test.concurrent('test 1', async ({ expect }) => {
@@ -451,25 +451,25 @@ test.concurrent('test 2', async ({ expect }) => {
 })
 ```
 
-Note that if tests are synchronous, Vitest will still run them sequentially.
+请注意，如果测试是同步的，Vitest 仍将按顺序运行它们。
 
 ## test.sequential
 
-- **Alias:** `it.sequential`
+- **别名：** `it.sequential`
 
-`test.sequential` marks a test as sequential. This is useful if you want to run tests in sequence within `describe.concurrent` or with the `--sequence.concurrent` command option.
+`test.sequential` 将测试标记为顺序。如果你想在 `describe.concurrent` 内或使用 `--sequence.concurrent` 命令选项按顺序运行测试，这很有用。
 
 ```ts
 import { describe, test } from 'vitest'
 
-// with config option { sequence: { concurrent: true } }
+// 使用配置选项 { sequence: { concurrent: true } }
 test('concurrent test 1', async () => { /* ... */ })
 test('concurrent test 2', async () => { /* ... */ })
 
 test.sequential('sequential test 1', async () => { /* ... */ })
 test.sequential('sequential test 2', async () => { /* ... */ })
 
-// within concurrent suite
+// 在并发套件内
 describe.concurrent('suite', () => {
   test('concurrent test 1', async () => { /* ... */ })
   test('concurrent test 2', async () => { /* ... */ })
@@ -481,26 +481,26 @@ describe.concurrent('suite', () => {
 
 ## test.todo
 
-- **Alias:** `it.todo`
+- **别名：** `it.todo`
 
-Use `test.todo` to stub tests to be implemented later. An entry will be shown in the report for the tests so you know how many tests you still need to implement.
+使用 `test.todo` 占位稍后实现的测试。报告中将显示该测试的条目，以便你知道还有多少测试需要实现。
 
 ```ts
-// An entry will be shown in the report for this test
+// 报告中将显示此测试的条目
 test.todo('unimplemented test', () => {
-  // failing implementation...
+  // 失败的实现...
 })
 ```
 
 ::: tip
-Vitest will automatically mark test as `todo` if test has no body.
+如果测试没有主体，Vitest 会自动将测试标记为 `todo`。
 :::
 
 ## test.fails
 
-- **Alias:** `it.fails`
+- **别名：** `it.fails`
 
-Use `test.fails` to indicate that an assertion will fail explicitly.
+使用 `test.fails` 指示断言将明确失败。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -510,29 +510,29 @@ test.fails('repro #1234', () => {
 })
 ```
 
-This flag is useful to track difference in behaviour of your library over time. For example, you can define a failing test without fixing the issue yet due to time constraints. Tests marked with `fails` are tracked in the test summary since Vitest 4.1.
+此标志有助于跟踪库行为随时间的差异。例如，由于时间限制，你可以定义一个失败的测试而暂不修复问题。自 Vitest 4.1 起，标记为 `fails` 的测试会在测试摘要中跟踪。
 
 ## test.each
 
-- **Alias:** `it.each`
+- **别名：** `it.each`
 
 ::: tip
-While `test.each` is provided for Jest compatibility,
-Vitest also has [`test.for`](#test-for) with an additional feature to integrate [`TestContext`](/guide/test-context).
+虽然提供了 `test.each` 以兼容 Jest，
+但 Vitest 还拥有 [`test.for`](#test-for)，它具有集成 [`测试上下文`](/guide/test-context) 的额外功能。
 :::
 
-Use `test.each` when you need to run the same test with different variables.
-You can inject parameters with [printf formatting](https://nodejs.org/api/util.html#util_util_format_format_args) in the test name in the order of the test function parameters.
+当你需要使用不同变量运行相同测试时，请使用 `test.each`。
+你可以按照测试函数参数的顺序，在测试名称中使用 [printf 格式化](https://nodejs.org/api/util.html#util_util_format_format_args) 注入参数。
 
-- `%s`: string
-- `%d`: number
-- `%i`: integer
-- `%f`: floating point value
+- `%s`: 字符串
+- `%d`: 数字
+- `%i`: 整数
+- `%f`: 浮点值
 - `%j`: json
-- `%o`: object
-- `%#`: 0-based index of the test case
-- `%$`: 1-based index of the test case
-- `%%`: single percent sign ('%')
+- `%o`: 对象
+- `%#`: 测试用例的基于 0 的索引
+- `%$`: 测试用例的基于 1 的索引
+- `%%`: 单个百分号 ('%')
 
 ```ts
 import { expect, test } from 'vitest'
@@ -545,13 +545,13 @@ test.each([
   expect(a + b).toBe(expected)
 })
 
-// this will return
+// 这将返回
 // ✓ add(1, 1) -> 2
 // ✓ add(1, 2) -> 3
 // ✓ add(2, 1) -> 3
 ```
 
-You can also access object properties and array elements with `$` prefix:
+你也可以使用 `$` 前缀访问对象属性和数组元素：
 
 ```ts
 test.each([
@@ -562,7 +562,7 @@ test.each([
   expect(a + b).toBe(expected)
 })
 
-// this will return
+// 这将返回
 // ✓ add(1, 1) -> 2
 // ✓ add(1, 2) -> 3
 // ✓ add(2, 1) -> 3
@@ -575,13 +575,13 @@ test.each([
   expect(a + b).toBe(expected)
 })
 
-// this will return
+// 这将返回
 // ✓ add(1, 1) -> 2
 // ✓ add(1, 2) -> 3
 // ✓ add(2, 1) -> 3
 ```
 
-You can also access Object attributes with `.`, if you are using objects as arguments:
+如果你使用对象作为参数，还可以使用 `.` 访问对象属性：
 
   ```ts
   test.each`
@@ -593,14 +593,14 @@ You can also access Object attributes with `.`, if you are using objects as argu
     expect(a.val + b).toBe(expected)
   })
 
-  // this will return
+  // 这将返回
   // ✓ add(1, b) -> 1b
   // ✓ add(2, b) -> 2b
   // ✓ add(3, b) -> 3b
   ```
 
-* First row should be column names, separated by `|`;
-* One or more subsequent rows of data supplied as template literal expressions using `${value}` syntax.
+* 第一行应为列名，用 `|` 分隔；
+* 随后的一行或多行数据使用 `${value}` 语法作为模板字符串表达式提供。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -618,20 +618,20 @@ test.each`
 ```
 
 ::: tip
-Vitest processes `$values` with Chai `format` method. If the value is too truncated, you can increase [chaiConfig.truncateThreshold](/config/chaiconfig#chaiconfig-truncatethreshold) in your config file.
+Vitest 使用 Chai `format` 方法处理 `$values`。如果值被截断过多，你可以在配置文件中增加 [chaiConfig.truncateThreshold](/config/chaiconfig#chaiconfig-truncatethreshold)。
 :::
 
 ## test.for
 
-- **Alias:** `it.for`
+- **别名：** `it.for`
 
-Alternative to `test.each` to provide [`TestContext`](/guide/test-context).
+替代 `test.each` 以提供 [`测试上下文`](/guide/test-context)。
 
-The difference from `test.each` lies in how arrays are provided in the arguments.
-Non-array arguments to `test.for` (including template string usage) work exactly the same as for `test.each`.
+与 `test.each` 的区别在于参数中数组的提供方式。
+`test.for` 的非数组参数（包括模板字符串用法）与 `test.each` 完全相同。
 
 ```ts
-// `each` spreads arrays
+// `each` 展开数组
 test.each([
   [1, 1, 2],
   [1, 2, 3],
@@ -640,7 +640,7 @@ test.each([
   expect(a + b).toBe(expected)
 })
 
-// `for` doesn't spread arrays (notice the square brackets around the arguments)
+// `for` 不展开数组（注意参数周围的方括号）
 test.for([
   [1, 1, 2],
   [1, 2, 3],
@@ -650,7 +650,7 @@ test.for([
 })
 ```
 
-The 2nd argument is [`TestContext`](/guide/test-context) and can be used for concurrent snapshots, for example:
+第二个参数是 [`测试上下文`](/guide/test-context)，可用于并发快照，例如：
 
 ```ts
 test.concurrent.for([
@@ -664,47 +664,47 @@ test.concurrent.for([
 
 ## test.describe <Version>4.1.0</Version> {#test-describe}
 
-Scoped `describe`. See [describe](/api/describe) for more information.
+作用域 `describe`。参见 [describe](/api/describe) 获取更多信息。
 
 ## test.suite <Version>4.1.0</Version> {#test-suite}
 
-Alias for `suite`. See [describe](/api/describe) for more information.
+`suite` 的别名。参见 [describe](/api/describe) 获取更多信息。
 
 ## test.beforeEach
 
-Scoped `beforeEach` hook that inherits types from [`test.extend`](#test-extend). See [beforeEach](/api/hooks#beforeeach) for more information.
+作用域 `beforeEach` 钩子，继承自 [`test.extend`](#test-extend) 的类型。参见 [beforeEach](/api/hooks#beforeeach) 获取更多信息。
 
 ## test.afterEach
 
-Scoped `afterEach` hook that inherits types from [`test.extend`](#test-extend). See [afterEach](/api/hooks#aftereach) for more information.
+作用域 `afterEach` 钩子，继承自 [`test.extend`](#test-extend) 的类型。参见 [afterEach](/api/hooks#aftereach) 获取更多信息。
 
 ## test.beforeAll
 
-Scoped `beforeAll` hook that inherits types from [`test.extend`](#test-extend). See [beforeAll](/api/hooks#beforeall) for more information.
+作用域 `beforeAll` 钩子，继承自 [`test.extend`](#test-extend) 的类型。参见 [beforeAll](/api/hooks#beforeall) 获取更多信息。
 
 ## test.afterAll
 
-Scoped `afterAll` hook that inherits types from [`test.extend`](#test-extend). See [afterAll](/api/hooks#afterall) for more information.
+作用域 `afterAll` 钩子，继承自 [`test.extend`](#test-extend) 的类型。参见 [afterAll](/api/hooks#afterall) 获取更多信息。
 
 ## test.aroundEach <Version>4.1.0</Version> {#test-aroundeach}
 
-Scoped `aroundEach` hook that inherits types from [`test.extend`](#test-extend). See [aroundEach](/api/hooks#aroundeach) for more information.
+作用域 `aroundEach` 钩子，继承自 [`test.extend`](#test-extend) 的类型。参见 [aroundEach](/api/hooks#aroundeach) 获取更多信息。
 
 ## test.aroundAll <Version>4.1.0</Version> {#test-aroundall}
 
-Scoped `aroundAll` hook that inherits types from [`test.extend`](#test-extend). See [aroundAll](/api/hooks#aroundall) for more information.
+作用域 `aroundAll` 钩子，继承自 [`test.extend`](#test-extend) 的类型。参见 [aroundAll](/api/hooks#aroundall) 获取更多信息。
 
 ## bench <Experimental /> {#bench}
 
-- **Type:** `(name: string | Function, fn: BenchFunction, options?: BenchOptions) => void`
+- **类型：** `(name: string | Function, fn: BenchFunction, options?: BenchOptions) => void`
 
 ::: danger
-Benchmarking is experimental and does not follow SemVer.
+基准测试是实验性的，不遵循 SemVer。
 :::
 
-`bench` defines a benchmark. In Vitest terms, benchmark is a function that defines a series of operations. Vitest runs this function multiple times to display different performance results.
+`bench` 定义一个基准测试。在 Vitest 术语中，基准测试是一个定义一系列操作的函数。Vitest 多次运行此函数以显示不同的性能结果。
 
-Vitest uses the [`tinybench`](https://github.com/tinylibs/tinybench) library under the hood, inheriting all its options that can be used as a third argument.
+Vitest 在底层使用 [`tinybench`](https://github.com/tinylibs/tinybench) 库，继承其所有可用作第三个参数的选项。
 
 ```ts
 import { bench } from 'vitest'
@@ -720,56 +720,56 @@ bench('normal sorting', () => {
 ```ts
 export interface Options {
   /**
-   * time needed for running a benchmark task (milliseconds)
+   * 运行基准测试任务所需的时间（毫秒）
    * @default 500
    */
   time?: number
 
   /**
-   * number of times that a task should run if even the time option is finished
+   * 即使时间选项结束，任务也应运行的次数
    * @default 10
    */
   iterations?: number
 
   /**
-   * function to get the current timestamp in milliseconds
+   * 获取当前时间戳（毫秒）的函数
    */
   now?: () => number
 
   /**
-   * An AbortSignal for aborting the benchmark
+   * 用于中止基准测试的 AbortSignal
    */
   signal?: AbortSignal
 
   /**
-   * Throw if a task fails (events will not work if true)
+   * 如果任务失败则抛出（如果为 true，事件将不起作用）
    */
   throws?: boolean
 
   /**
-   * warmup time (milliseconds)
+   * 预热时间（毫秒）
    * @default 100ms
    */
   warmupTime?: number
 
   /**
-   * warmup iterations
+   * 预热迭代次数
    * @default 5
    */
   warmupIterations?: number
 
   /**
-   * setup function to run before each benchmark task (cycle)
+   * 在每个基准测试任务（周期）之前运行的设置函数
    */
   setup?: Hook
 
   /**
-   * teardown function to run after each benchmark task (cycle)
+   * 在每个基准测试任务（周期）之后运行的清理函数
    */
   teardown?: Hook
 }
 ```
-After the test case is run, the output structure information is as follows:
+测试用例运行后，输出结构信息如下：
 
 ```
   name                      hz     min     max    mean     p75     p99    p995    p999     rme  samples
@@ -778,106 +778,106 @@ After the test case is run, the output structure information is as follows:
 ```ts
 export interface TaskResult {
   /*
-   * the last error that was thrown while running the task
+   * 运行任务时抛出的最后一个错误
    */
   error?: unknown
 
   /**
-   * The amount of time in milliseconds to run the benchmark task (cycle).
+   * 运行基准测试任务（周期）的时间量（毫秒）。
    */
   totalTime: number
 
   /**
-   * the minimum value in the samples
+   * 样本中的最小值
    */
   min: number
   /**
-   * the maximum value in the samples
+   * 样本中的最大值
    */
   max: number
 
   /**
-   * the number of operations per second
+   * 每秒操作数
    */
   hz: number
 
   /**
-   * how long each operation takes (ms)
+   * 每个操作花费多长时间（毫秒）
    */
   period: number
 
   /**
-   * task samples of each task iteration time (ms)
+   * 每个任务迭代时间的任务样本（毫秒）
    */
   samples: number[]
 
   /**
-   * samples mean/average (estimate of the population mean)
+   * 样本均值/平均数（总体均值的估计）
    */
   mean: number
 
   /**
-   * samples variance (estimate of the population variance)
+   * 样本方差（总体方差的估计）
    */
   variance: number
 
   /**
-   * samples standard deviation (estimate of the population standard deviation)
+   * 样本标准差（总体标准差的估计）
    */
   sd: number
 
   /**
-   * standard error of the mean (a.k.a. the standard deviation of the sampling distribution of the sample mean)
+   * 均值标准误（即样本均值抽样分布的标准差）
    */
   sem: number
 
   /**
-   * degrees of freedom
+   * 自由度
    */
   df: number
 
   /**
-   * critical value of the samples
+   * 样本的临界值
    */
   critical: number
 
   /**
-   * margin of error
+   * 误差范围
    */
   moe: number
 
   /**
-   * relative margin of error
+   * 相对误差范围
    */
   rme: number
 
   /**
-   * median absolute deviation
+   * 中位数绝对偏差
    */
   mad: number
 
   /**
-   * p50/median percentile
+   * p50/中位数百分位
    */
   p50: number
 
   /**
-   * p75 percentile
+   * p75 百分位
    */
   p75: number
 
   /**
-   * p99 percentile
+   * p99 百分位
    */
   p99: number
 
   /**
-   * p995 percentile
+   * p995 百分位
    */
   p995: number
 
   /**
-   * p999 percentile
+   * p999 百分位
    */
   p999: number
 }
@@ -885,9 +885,9 @@ export interface TaskResult {
 
 ### bench.skip
 
-- **Type:** `(name: string | Function, fn: BenchFunction, options?: BenchOptions) => void`
+- **类型：** `(name: string | Function, fn: BenchFunction, options?: BenchOptions) => void`
 
-You can use `bench.skip` syntax to skip running certain benchmarks.
+你可以使用 `bench.skip` 语法跳过运行某些基准测试。
 
 ```ts
 import { bench } from 'vitest'
@@ -902,9 +902,9 @@ bench.skip('normal sorting', () => {
 
 ### bench.only
 
-- **Type:** `(name: string | Function, fn: BenchFunction, options?: BenchOptions) => void`
+- **类型：** `(name: string | Function, fn: BenchFunction, options?: BenchOptions) => void`
 
-Use `bench.only` to only run certain benchmarks in a given suite. This is useful when debugging.
+使用 `bench.only` 仅运行给定套件中的某些基准测试。这在调试时很有用。
 
 ```ts
 import { bench } from 'vitest'
@@ -919,9 +919,9 @@ bench.only('normal sorting', () => {
 
 ### bench.todo
 
-- **Type:** `(name: string | Function) => void`
+- **类型：** `(name: string | Function) => void`
 
-Use `bench.todo` to stub benchmarks to be implemented later.
+使用 `bench.todo` 占位稍后实现的基准测试。
 
 ```ts
 import { bench } from 'vitest'

@@ -1,20 +1,20 @@
 ---
-title: Plugin API
+title: 插件 API
 outline: deep
 ---
 
-# Plugin API <Version>3.1.0</Version> {#plugin-api}
+# 插件 API <Version>3.1.0</Version> {#plugin-api}
 
 ::: warning
-This is an advanced API. If you just want to [run tests](/guide/), you probably don't need this. It is primarily used by library authors.
+这是一个高级 API。如果你只是想 [运行测试](/guide/)，可能不需要这个。它主要由库作者使用。
 
-This guide assumes you know how to work with [Vite plugins](https://vite.dev/guide/api-plugin.html).
+本指南假设你知道如何使用 [Vite 插件](https://vite.dev/guide/api-plugin.html)。
 :::
 
-Vitest supports a `configureVitest` [plugin](https://vite.dev/guide/api-plugin.html) hook since version 3.1.
+Vitest 自 3.1 版本起支持 `configureVitest` [插件](https://vite.dev/guide/api-plugin.html) 钩子。
 
 ::: code-group
-```ts [only vitest]
+```ts [仅 vitest]
 import type { Vite, VitestPluginContext } from 'vitest/node'
 
 export function plugin(): Vite.Plugin {
@@ -26,7 +26,7 @@ export function plugin(): Vite.Plugin {
   }
 }
 ```
-```ts [vite and vitest]
+```ts [vite 和 vitest]
 /// <reference types="vitest/config" />
 
 import type { Plugin } from 'vite'
@@ -46,38 +46,38 @@ export function plugin(): Plugin {
 :::
 
 ::: tip TypeScript
-Vitest re-exports all Vite type-only imports via a `Vite` namespace, which you can use to keep your versions in sync. However, if you are writing a plugin for both Vite and Vitest, you can continue using the `Plugin` type from the `vite` entrypoint. Just make sure you have `vitest/config` referenced somewhere so that `configureVitest` is augmented correctly:
+Vitest 通过 `Vite` 命名空间重新导出所有 Vite 的纯类型导入，你可以用它来保持版本同步。但是，如果你正在编写一个同时用于 Vite 和 Vitest 的插件，你可以继续使用来自 `vite` 入口的 `Plugin` 类型。只需确保你在某处引用了 `vitest/config`，以便 `configureVitest` 被正确增强：
 
 ```ts
 /// <reference types="vitest/config" />
 ```
 :::
 
-Unlike [`reporter.onInit`](/api/advanced/reporters#oninit), this hooks runs early in Vitest lifecycle allowing you to make changes to configuration like `coverage` and `reporters`. A more notable change is that you can manipulate the global config from a [test project](/guide/projects) if your plugin is defined in the project and not in the global config.
+与 [`reporter.onInit`](/api/advanced/reporters#oninit) 不同，这个钩子在 Vitest 生命周期中运行得更早，允许你对 `coverage` 和 `reporters` 等配置进行更改。一个更显著的变化是，如果你的插件定义在 [测试项目](/guide/projects) 中而不是全局配置中，你可以操纵全局配置。
 
-## Context
+## 上下文
 
 ### project
 
-The current [test project](./test-project) that the plugin belongs to.
+插件所属的当前 [测试项目](./test-project)。
 
-::: warning Browser Mode
-Note that if you are relying on a browser feature, the `project.browser` field is not set yet. Use [`reporter.onBrowserInit`](./reporters#onbrowserinit) event instead.
+::: warning 浏览器模式
+请注意，如果你依赖浏览器功能，`project.browser` 字段尚未设置。请改用 [`reporter.onBrowserInit`](./reporters#onbrowserinit) 事件。
 :::
 
 ### vitest
 
-The global [Vitest](./vitest) instance. You can change the global configuration by directly mutating the `vitest.config` property:
+全局 [Vitest](./vitest) 实例。你可以通过直接修改 `vitest.config` 属性来更改全局配置：
 
 ```ts
 vitest.config.coverage.enabled = false
 vitest.config.reporters.push([['my-reporter', {}]])
 ```
 
-::: warning Config is Resolved
-Note that Vitest already resolved the config, so some types might be different from the usual user configuration. This also means that some properties will not be resolved again, like `setupFile`. If you are adding new files, make sure to resolve it first.
+::: warning 配置已解析
+请注意，Vitest 已经解析了配置，所以某些类型可能与通常的用户配置不同。这也意味着某些属性将不会再次解析，例如 `setupFile`。如果你要添加新文件，请确保先解析它。
 
-At this point reporters are not created yet, so modifying `vitest.reporters` will have no effect because it will be overwritten. If you need to inject your own reporter, modify the config instead.
+此时报告器尚未创建，因此修改 `vitest.reporters` 将无效，因为它会被覆盖。如果你需要注入自己的报告器，请改为修改配置。
 :::
 
 ### injectTestProjects
@@ -88,14 +88,14 @@ function injectTestProjects(
 ): Promise<TestProject[]>
 ```
 
-This methods accepts a config glob pattern, a filepath to the config or an inline configuration. It returns an array of resolved [test projects](./test-project).
+此方法接受配置 glob 模式、配置的文件路径或内联配置。它返回已解析的 [测试项目](./test-project) 数组。
 
 ```ts
-// inject a single project with a custom alias
+// 注入一个带有自定义别名的单个项目
 const newProjects = await injectTestProjects({
-  // you can inherit the current project config by referencing `extends`
-  // note that you cannot have a project with the name that already exists,
-  // so it's a good practice to define a custom name
+  // 你可以通过引用 `extends` 来继承当前项目配置
+  // 注意你不能拥有一个名称已存在的项目，
+  // 所以定义一个自定义名称是个好习惯
   extends: project.vite.config.configFile,
   test: {
     name: 'my-custom-alias',
@@ -106,22 +106,22 @@ const newProjects = await injectTestProjects({
 })
 ```
 
-::: warning Projects are Filtered
-Vitest filters projects during the config resolution, so if the user defined a filter, injected project might not be resolved unless it [matches the filter](./vitest#matchesprojectfilter). You can update the filter via the `vitest.config.project` option to always include your test project:
+::: warning 项目会被过滤
+Vitest 在配置解析期间会过滤项目，所以如果用户定义了过滤器，注入的项目可能不会被解析，除非它 [匹配过滤器](./vitest#matchesprojectfilter)。你可以通过 `vitest.config.project` 选项更新过滤器以始终包含你的测试项目：
 
 ```ts
 vitest.config.project.push('my-project-name')
 ```
 
-Note that this will only affect projects injected with [`injectTestProjects`](#injecttestprojects) method.
+请注意，这只会影响通过 [`injectTestProjects`](#injecttestprojects) 方法注入的项目。
 :::
 
-::: tip Referencing the Current Config
-If you want to keep the user configuration, you can specify the `extends` property. All other properties will be merged with the user defined config.
+::: tip 引用当前配置
+如果你想保留用户配置，可以指定 `extends` 属性。所有其他属性将与用户定义的配置合并。
 
-The project's `configFile` can be accessed in Vite's config: `project.vite.config.configFile`.
+项目的 `configFile` 可以在 Vite 的配置中访问：`project.vite.config.configFile`。
 
-Note that this will also inherit the `name` - Vitest doesn't allow multiple projects with the same name, so this will throw an error. Make sure you specified a different name. You can access the current name via the `project.name` property and all used names are available in the `vitest.projects` array.
+请注意，这也会继承 `name` - Vitest 不允许多个项目具有相同的名称，所以这会抛出错误。确保你指定了一个不同的名称。你可以通过 `project.name` 属性访问当前名称，所有使用的名称都可在 `vitest.projects` 数组中找到。
 :::
 
 ### experimental_defineCacheKeyGenerator <Version type="experimental">4.0.11</Version> <Experimental /> {#definecachekeygenerator}
@@ -138,11 +138,11 @@ function experimental_defineCacheKeyGenerator(
 ): void
 ```
 
-Define a generator that will be applied before hashing the cache key.
+定义一个生成器，它将在哈希缓存键之前应用。
 
-Use this to make sure Vitest generates correct hash. It is a good idea to define this function if your plugin can be registered with different options.
+使用此功能确保 Vitest 生成正确的哈希。如果你的插件可以使用不同选项注册，定义此函数是个好主意。
 
-This is called only if [`experimental.fsModuleCache`](/config/experimental#experimental-fsmodulecache) is defined.
+仅当定义了 [`experimental.fsModuleCache`](/config/experimental#experimental-fsmodulecache) 时才会调用此函数。
 
 ```ts
 interface PluginOptions {
@@ -161,8 +161,8 @@ export function plugin(options: PluginOptions) {
     },
     configureVitest({ experimental_defineCacheKeyGenerator }) {
       experimental_defineCacheKeyGenerator(() => {
-        // since these options affect the transform result,
-        // return them together as a unique string
+        // 由于这些选项会影响转换结果，
+        // 将它们一起作为唯一字符串返回
         return options.replacePropertyKey + options.replacePropertyValue
       })
     }
@@ -170,4 +170,4 @@ export function plugin(options: PluginOptions) {
 }
 ```
 
-If `false` is returned, the module will not be cached on the file system.
+如果返回 `false`，模块将不会被缓存到文件系统中。

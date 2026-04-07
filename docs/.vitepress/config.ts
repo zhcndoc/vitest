@@ -38,13 +38,13 @@ export default ({ mode }: { mode: string }) => {
     ],
     locales: {
       root: {
-        label: 'English',
-        lang: 'en-US',
-      },
-      zh: {
         label: '简体中文',
         lang: 'zh',
-        link: 'https://cn.vitest.dev/',
+      },
+      zh: {
+        label: 'English',
+        lang: 'en-US',
+        link: 'https://vitest.dev/',
       },
     },
     head: [
@@ -63,15 +63,7 @@ export default ({ mode }: { mode: string }) => {
       ['link', { rel: 'me', href: 'https://m.webtoo.ls/@vitest' }],
       ['link', { rel: 'mask-icon', href: '/logo.svg', color: '#ffffff' }],
       ['link', { rel: 'apple-touch-icon', href: '/apple-touch-icon.png', sizes: '180x180' }],
-      [
-        'script',
-        {
-          'src': 'https://cdn.usefathom.com/script.js',
-          'data-site': 'BEAFAKYG',
-          'data-spa': 'auto',
-          'defer': '',
-        },
-      ],
+      ['script', { src: 'https://www.zhcndoc.com/js/common.js', defer: '' }],
     ],
     lastUpdated: true,
     vite: {
@@ -119,7 +111,7 @@ export default ({ mode }: { mode: string }) => {
 
       editLink: {
         pattern: 'https://github.com/vitest-dev/vitest/edit/main/docs/:path',
-        text: 'Suggest changes to this page',
+        text: '在 GitHub 上编辑此页',
       },
 
       search: {
@@ -136,15 +128,15 @@ export default ({ mode }: { mode: string }) => {
       },
 
       banner: {
-        id: 'viteplus-alpha',
-        text: 'Announcing Vite+ Alpha: Open source. Unified. Next-gen.',
-        url: 'https://voidzero.dev/posts/announcing-vite-plus-alpha?utm_source=vitest&utm_content=top_banner',
+        id: 'rainyun',
+        text: '雨云 RainYun - 企业级云计算服务提供商：新用户注册立享五折！',
+        url: 'https://www.rainyun.com/mm_?s=zhcndoc',
       },
 
-      carbonAds: {
-        code: 'CW7DVKJE',
-        placement: 'vitestdev',
-      },
+      // carbonAds: {
+      //   code: 'CW7DVKJE',
+      //   placement: 'vitestdev',
+      // },
 
       socialLinks: [
         { icon: 'bluesky', link: bluesky },
@@ -159,27 +151,27 @@ export default ({ mode }: { mode: string }) => {
           {
             title: 'Vitest',
             items: [
-              { text: 'Guides', link: '/guide/' },
+              { text: '指南', link: '/guide/' },
               { text: 'API', link: '/api/test' },
-              { text: 'Config', link: '/config/' },
+              { text: '配置', link: '/config/' },
             ],
           },
           {
-            title: 'Resources',
+            title: '资源',
             items: [
-              { text: 'Team', link: '/team' },
-              { text: 'Blog', link: '/blog' },
-              { text: 'Releases', link: releases },
+              { text: '团队', link: '/team' },
+              { text: '博客', link: '/blog' },
+              { text: '发布记录', link: releases },
             ],
           },
           {
-            title: 'Versions',
+            title: '版本',
             items: [
-              { text: 'Unreleased Docs', link: 'https://main.vitest.dev/' },
-              { text: 'Vitest v3 Docs', link: 'https://v3.vitest.dev/' },
-              { text: 'Vitest v2 Docs', link: 'https://v2.vitest.dev/' },
-              { text: 'Vitest v1 Docs', link: 'https://v1.vitest.dev/' },
-              { text: 'Vitest v0 Docs', link: 'https://v0.vitest.dev/' },
+              { text: '未发布文档', link: 'https://main.vitest.dev/' },
+              { text: 'Vitest v3 文档', link: 'https://v3.vitest.dev/' },
+              { text: 'Vitest v2 文档', link: 'https://v2.vitest.dev/' },
+              { text: 'Vitest v1 文档', link: 'https://v1.vitest.dev/' },
+              { text: 'Vitest v0 文档', link: 'https://v0.vitest.dev/' },
             ],
           },
           /* {
@@ -200,11 +192,11 @@ export default ({ mode }: { mode: string }) => {
       },
 
       nav: [
-        { text: 'Guides', link: '/guide/', activeMatch: '^/guide/' },
+        { text: '指南', link: '/guide/', activeMatch: '^/guide/' },
         { text: 'API', link: '/api/test', activeMatch: '^/api/' },
-        { text: 'Config', link: '/config/', activeMatch: '^/config/' },
+        { text: '配置', link: '/config/', activeMatch: '^/config/' },
         {
-          text: 'Blog',
+          text: '博客',
           link: '/blog',
         },
         {
@@ -217,15 +209,15 @@ export default ({ mode }: { mode: string }) => {
                   link: `https://github.com/vitest-dev/vitest/releases/tag/v${version}`,
                 },
                 {
-                  text: 'Releases Notes',
+                  text: '发布说明',
                   link: releases,
                 },
                 {
-                  text: 'Contributing',
+                  text: '贡献指南',
                   link: contributing,
                 },
                 {
-                  text: 'Team',
+                  text: '团队',
                   link: '/team',
                 },
               ],
@@ -233,7 +225,7 @@ export default ({ mode }: { mode: string }) => {
             {
               items: [
                 {
-                  text: 'unreleased',
+                  text: '未发布',
                   link: 'https://main.vitest.dev/',
                 },
                 {
@@ -261,329 +253,329 @@ export default ({ mode }: { mode: string }) => {
       sidebar: {
         '/config': [
           {
-            text: 'Config Reference',
+            text: '配置参考',
             collapsed: false,
             items: [
               {
-                text: 'Config File',
+                text: '配置文件',
                 link: '/config/',
               },
               {
-                text: 'include',
+                text: '包含',
                 link: '/config/include',
               },
               {
-                text: 'exclude',
+                text: '排除',
                 link: '/config/exclude',
               },
               {
-                text: 'includeSource',
+                text: '包含源码',
                 link: '/config/include-source',
               },
               {
-                text: 'name',
+                text: '名称',
                 link: '/config/name',
               },
               {
-                text: 'server',
+                text: '服务端',
                 link: '/config/server',
               },
               {
-                text: 'deps',
+                text: '依赖',
                 link: '/config/deps',
               },
               {
-                text: 'runner',
+                text: '运行器',
                 link: '/config/runner',
               },
               {
-                text: 'benchmark',
+                text: '基准测试',
                 link: '/config/benchmark',
               },
               {
-                text: 'alias',
+                text: '别名',
                 link: '/config/alias',
               },
               {
-                text: 'globals',
+                text: '全局变量',
                 link: '/config/globals',
               },
               {
-                text: 'environment',
+                text: '运行环境',
                 link: '/config/environment',
               },
               {
-                text: 'environmentOptions',
+                text: '环境选项',
                 link: '/config/environmentoptions',
               },
               {
-                text: 'watch',
+                text: '监听',
                 link: '/config/watch',
               },
               {
-                text: 'watchTriggerPatterns',
+                text: '监听触发模式',
                 link: '/config/watchtriggerpatterns',
               },
               {
-                text: 'root',
+                text: '根目录',
                 link: '/config/root',
               },
               {
-                text: 'dir',
+                text: '目录',
                 link: '/config/dir',
               },
               {
-                text: 'reporters',
+                text: '报告器',
                 link: '/config/reporters',
               },
               {
-                text: 'outputFile',
+                text: '输出文件',
                 link: '/config/outputfile',
               },
               {
-                text: 'pool',
+                text: '线程池',
                 link: '/config/pool',
               },
               {
-                text: 'execArgv',
+                text: '执行参数',
                 link: '/config/execargv',
               },
               {
-                text: 'vmMemoryLimit',
+                text: '虚拟机内存限制',
                 link: '/config/vmmemorylimit',
               },
               {
-                text: 'fileParallelism',
+                text: '文件并行度',
                 link: '/config/fileparallelism',
               },
               {
-                text: 'maxWorkers',
+                text: '最大工作线程数',
                 link: '/config/maxworkers',
               },
               {
-                text: 'testTimeout',
+                text: '测试超时',
                 link: '/config/testtimeout',
               },
               {
-                text: 'hookTimeout',
+                text: '钩子超时',
                 link: '/config/hooktimeout',
               },
               {
-                text: 'teardownTimeout',
+                text: '清理超时',
                 link: '/config/teardowntimeout',
               },
               {
-                text: 'silent',
+                text: '静默',
                 link: '/config/silent',
               },
               {
-                text: 'setupFiles',
+                text: '初始化文件',
                 link: '/config/setupfiles',
               },
               {
-                text: 'provide',
+                text: '提供',
                 link: '/config/provide',
               },
               {
-                text: 'globalSetup',
+                text: '全局初始化',
                 link: '/config/globalsetup',
               },
               {
-                text: 'forceRerunTriggers',
+                text: '强制重新运行触发器',
                 link: '/config/forcereruntriggers',
               },
               {
-                text: 'coverage',
+                text: '覆盖率',
                 link: '/config/coverage',
               },
               {
-                text: 'testNamePattern',
+                text: '测试名称模式',
                 link: '/config/testnamepattern',
               },
               {
-                text: 'ui',
+                text: '界面',
                 link: '/config/ui',
               },
               {
-                text: 'open',
+                text: '自动打开',
                 link: '/config/open',
               },
               {
-                text: 'api',
+                text: 'API',
                 link: '/config/api',
               },
               {
-                text: 'clearMocks',
+                text: '清理 Mock',
                 link: '/config/clearmocks',
               },
               {
-                text: 'mockReset',
+                text: '重置 Mock',
                 link: '/config/mockreset',
               },
               {
-                text: 'restoreMocks',
+                text: '恢复 Mock',
                 link: '/config/restoremocks',
               },
               {
-                text: 'unstubEnvs',
+                text: '恢复环境变量',
                 link: '/config/unstubenvs',
               },
               {
-                text: 'unstubGlobals',
+                text: '恢复全局变量',
                 link: '/config/unstubglobals',
               },
               {
-                text: 'snapshotFormat',
+                text: '快照格式',
                 link: '/config/snapshotformat',
               },
               {
-                text: 'snapshotSerializers',
+                text: '快照序列化器',
                 link: '/config/snapshotserializers',
               },
               {
-                text: 'resolveSnapshotPath',
+                text: '快照路径解析',
                 link: '/config/resolvesnapshotpath',
               },
               {
-                text: 'allowOnly',
+                text: '仅允许',
                 link: '/config/allowonly',
               },
               {
-                text: 'passWithNoTests',
+                text: '无测试通过',
                 link: '/config/passwithnotests',
               },
               {
-                text: 'logHeapUsage',
+                text: '记录堆内存使用',
                 link: '/config/logheapusage',
               },
               {
-                text: 'css',
+                text: 'CSS',
                 link: '/config/css',
               },
               {
-                text: 'maxConcurrency',
+                text: '最大并发数',
                 link: '/config/maxconcurrency',
               },
               {
-                text: 'cache',
+                text: '缓存',
                 link: '/config/cache',
               },
               {
-                text: 'sequence',
+                text: '执行顺序',
                 link: '/config/sequence',
               },
               {
-                text: 'tags',
+                text: '标签',
                 link: '/config/tags',
               },
               {
-                text: 'strictTags',
+                text: '严格标签',
                 link: '/config/stricttags',
               },
               {
-                text: 'typecheck',
+                text: '类型检查',
                 link: '/config/typecheck',
               },
               {
-                text: 'slowTestThreshold',
+                text: '慢测试阈值',
                 link: '/config/slowtestthreshold',
               },
               {
-                text: 'chaiConfig',
+                text: 'Chai 配置',
                 link: '/config/chaiconfig',
               },
               {
-                text: 'bail',
+                text: '中止',
                 link: '/config/bail',
               },
               {
-                text: 'retry',
+                text: '重试',
                 link: '/config/retry',
               },
               {
-                text: 'onConsoleLog',
+                text: '控制台日志回调',
                 link: '/config/onconsolelog',
               },
               {
-                text: 'onStackTrace',
+                text: '堆栈回调',
                 link: '/config/onstacktrace',
               },
               {
-                text: 'onUnhandledError',
+                text: '未处理错误回调',
                 link: '/config/onunhandlederror',
               },
               {
-                text: 'dangerouslyIgnoreUnhandled...',
+                text: '忽略未处理错误',
                 link: '/config/dangerouslyignoreunhandlederrors',
               },
               {
-                text: 'diff',
+                text: '差异',
                 link: '/config/diff',
               },
               {
-                text: 'fakeTimers',
+                text: '假定时器',
                 link: '/config/faketimers',
               },
               {
-                text: 'projects',
+                text: '项目',
                 link: '/config/projects',
               },
               {
-                text: 'isolate',
+                text: '隔离',
                 link: '/config/isolate',
               },
               {
-                text: 'includeTaskLocation',
+                text: '包含任务位置',
                 link: '/config/includetasklocation',
               },
               {
-                text: 'snapshotEnvironment',
+                text: '快照环境',
                 link: '/config/snapshotenvironment',
               },
               {
-                text: 'env',
+                text: '环境变量',
                 link: '/config/env',
               },
               {
-                text: 'expect',
+                text: '断言',
                 link: '/config/expect',
               },
               {
-                text: 'printConsoleTrace',
+                text: '打印控制台堆栈',
                 link: '/config/printconsoletrace',
               },
               {
-                text: 'attachmentsDir',
+                text: '附件目录',
                 link: '/config/attachmentsdir',
               },
               {
-                text: 'hideSkippedTests',
+                text: '隐藏跳过测试',
                 link: '/config/hideskippedtests',
               },
               {
-                text: 'mode',
+                text: '模式',
                 link: '/config/mode',
               },
               {
-                text: 'expandSnapshotDiff',
+                text: '展开快照差异',
                 link: '/config/expandsnapshotdiff',
               },
               {
-                text: 'disableConsoleIntercept',
+                text: '禁用控制台拦截',
                 link: '/config/disableconsoleintercept',
               },
               {
-                text: 'experimental',
+                text: '实验性',
                 link: '/config/experimental',
               },
             ],
           },
           {
-            text: 'Browser Mode',
+            text: '浏览器模式',
             collapsed: false,
             items: [
               {
-                text: 'Providers',
+                text: '提供程序',
                 collapsed: false,
                 items: [
                   {
@@ -704,61 +696,61 @@ export default ({ mode }: { mode: string }) => {
         ],
         '/guide': [
           {
-            text: 'Introduction',
+            text: '入门',
             collapsed: false,
             items: [
               {
-                text: 'Why Vitest',
+                text: '为什么选择 Vitest',
                 link: '/guide/why',
               },
               {
-                text: 'Getting Started',
+                text: '开始使用',
                 link: '/guide/',
               },
               {
-                text: 'Features',
+                text: '功能特性',
                 link: '/guide/features',
               },
             ],
           },
           {
-            text: 'Browser Mode',
+            text: '浏览器模式',
             collapsed: false,
             items: [
               {
-                text: 'Why Browser Mode',
+                text: '为什么使用浏览器模式',
                 link: '/guide/browser/why',
-                docFooterText: 'Why Browser Mode | Browser Mode',
+                docFooterText: '为什么使用浏览器模式 | 浏览器模式',
               },
               {
-                text: 'Getting Started',
+                text: '开始使用',
                 link: '/guide/browser/',
-                docFooterText: 'Getting Started | Browser Mode',
+                docFooterText: '开始使用 | 浏览器模式',
               },
               {
-                text: 'Multiple Setups',
+                text: '多种配置方案',
                 link: '/guide/browser/multiple-setups',
-                docFooterText: 'Multiple Setups | Browser Mode',
+                docFooterText: '多种配置方案 | 浏览器模式',
               },
               {
-                text: 'Component Testing',
+                text: '组件测试',
                 link: '/guide/browser/component-testing',
-                docFooterText: 'Component Testing | Browser Mode',
+                docFooterText: '组件测试 | 浏览器模式',
               },
               {
-                text: 'Visual Regression Testing',
+                text: '视觉回归测试',
                 link: '/guide/browser/visual-regression-testing',
-                docFooterText: 'Visual Regression Testing | Browser Mode',
+                docFooterText: '视觉回归测试 | 浏览器模式',
               },
               {
-                text: 'Trace View',
+                text: '轨迹视图',
                 link: '/guide/browser/trace-view',
-                docFooterText: 'Trace View | Browser Mode',
+                docFooterText: '轨迹视图 | 浏览器模式',
               },
             ],
           },
           {
-            text: 'Guides',
+            text: '使用指南',
             collapsed: false,
             items: [
               {
@@ -766,86 +758,86 @@ export default ({ mode }: { mode: string }) => {
                 link: '/guide/cli',
               },
               {
-                text: 'Test Filtering',
+                text: '测试筛选',
                 link: '/guide/filtering',
               },
               {
-                text: 'Test Tags',
+                text: '测试标签',
                 link: '/guide/test-tags',
               },
               {
-                text: 'Test Context',
+                text: '测试上下文',
                 link: '/guide/test-context',
               },
               {
-                text: 'Test Environment',
+                text: '测试环境',
                 link: '/guide/environment',
               },
               {
-                text: 'Test Run Lifecycle',
+                text: '测试运行生命周期',
                 link: '/guide/lifecycle',
               },
               {
-                text: 'Snapshot',
+                text: '快照',
                 link: '/guide/snapshot',
               },
               {
-                text: 'Mocking',
+                text: 'Mock',
                 link: '/guide/mocking',
                 collapsed: true,
                 items: [
                   {
-                    text: 'Mocking Dates',
+                    text: 'Mock 日期',
                     link: '/guide/mocking/dates',
                   },
                   {
-                    text: 'Mocking Functions',
+                    text: 'Mock 函数',
                     link: '/guide/mocking/functions',
                   },
                   {
-                    text: 'Mocking Globals',
+                    text: 'Mock 全局变量',
                     link: '/guide/mocking/globals',
                   },
                   {
-                    text: 'Mocking Modules',
+                    text: 'Mock 模块',
                     link: '/guide/mocking/modules',
                   },
                   {
-                    text: 'Mocking the File System',
+                    text: 'Mock 文件系统',
                     link: '/guide/mocking/file-system',
                   },
                   {
-                    text: 'Mocking Requests',
+                    text: 'Mock 请求',
                     link: '/guide/mocking/requests',
                   },
                   {
-                    text: 'Mocking Timers',
+                    text: 'Mock 定时器',
                     link: '/guide/mocking/timers',
                   },
                   {
-                    text: 'Mocking Classes',
+                    text: 'Mock 类',
                     link: '/guide/mocking/classes',
                   },
                 ],
               },
               {
-                text: 'Parallelism',
+                text: '并行',
                 link: '/guide/parallelism',
               },
               {
-                text: 'Test Projects',
+                text: '测试项目',
                 link: '/guide/projects',
               },
               {
-                text: 'Reporters',
+                text: '报告器',
                 link: '/guide/reporters',
               },
               {
-                text: 'Coverage',
+                text: '覆盖率',
                 link: '/guide/coverage',
               },
               {
-                text: 'Testing Types',
+                text: '测试类型',
                 link: '/guide/testing-types',
               },
               {
@@ -853,58 +845,58 @@ export default ({ mode }: { mode: string }) => {
                 link: '/guide/ui',
               },
               {
-                text: 'In-Source Testing',
+                text: '源码内测试',
                 link: '/guide/in-source',
               },
               {
-                text: 'Test Annotations',
+                text: '测试注解',
                 link: '/guide/test-annotations',
               },
               {
-                text: 'Extending Matchers',
+                text: '扩展匹配器',
                 link: '/guide/extending-matchers',
               },
               {
-                text: 'IDE Integration',
+                text: 'IDE 集成',
                 link: '/guide/ide',
               },
               {
-                text: 'Debugging',
+                text: '调试',
                 link: '/guide/debugging',
               },
               {
-                text: 'Common Errors',
+                text: '常见错误',
                 link: '/guide/common-errors',
               },
               {
-                text: 'Migration Guide',
+                text: '迁移指南',
                 link: '/guide/migration',
                 collapsed: false,
                 items: [
                   {
-                    text: 'Migrating to Vitest 4.0',
+                    text: '迁移到 Vitest 4.0',
                     link: '/guide/migration#vitest-4',
                   },
                   {
-                    text: 'Migrating from Jest',
+                    text: '从 Jest 迁移',
                     link: '/guide/migration#jest',
                   },
                   {
-                    text: 'Migrating from Mocha + Chai + Sinon',
+                    text: '从 Mocha + Chai + Sinon 迁移',
                     link: '/guide/migration#mocha-chai-sinon',
                   },
                 ],
               },
               {
-                text: 'Performance',
+                text: '性能',
                 collapsed: false,
                 items: [
                   {
-                    text: 'Profiling Test Performance',
+                    text: '剖析测试性能',
                     link: '/guide/profiling-test-performance',
                   },
                   {
-                    text: 'Improving Performance',
+                    text: '提升性能',
                     link: '/guide/improving-performance',
                   },
                 ],
@@ -916,23 +908,23 @@ export default ({ mode }: { mode: string }) => {
             ],
           },
           {
-            text: 'Advanced',
+            text: '高级',
             collapsed: false,
             items: [
               {
-                text: 'Getting Started',
+                text: '开始使用',
                 link: '/guide/advanced/',
               },
               {
-                text: 'Running Tests via API',
+                text: '通过 API 运行测试',
                 link: '/guide/advanced/tests',
               },
               {
-                text: 'Extending Reporters',
+                text: '扩展报告器',
                 link: '/guide/advanced/reporters',
               },
               {
-                text: 'Custom Pool',
+                text: '自定义线程池',
                 link: '/guide/advanced/pool',
               },
             ],
@@ -940,11 +932,11 @@ export default ({ mode }: { mode: string }) => {
           {
             items: [
               {
-                text: 'Recipes',
+                text: '实践方案',
                 link: '/guide/recipes',
               },
               {
-                text: 'Comparisons',
+                text: '对比',
                 link: '/guide/comparisons',
               },
             ],
@@ -952,7 +944,7 @@ export default ({ mode }: { mode: string }) => {
         ],
         '/api': [
           {
-            text: 'Test API Reference',
+            text: '测试 API 参考',
             items: [
               {
                 text: 'Test',
@@ -969,11 +961,11 @@ export default ({ mode }: { mode: string }) => {
             ],
           },
           {
-            text: 'Mocks',
+            text: 'Mock',
             link: '/api/mock',
           },
           {
-            text: 'Vi Utility',
+            text: 'Vi 工具',
             link: '/api/vi',
           },
           {
@@ -993,10 +985,10 @@ export default ({ mode }: { mode: string }) => {
             link: '/api/assert-type',
           },
           {
-            text: 'Browser Mode',
+            text: '浏览器模式',
             items: [
               {
-                text: 'Render Function',
+                text: '渲染函数',
                 collapsed: false,
                 items: [
                   {
@@ -1018,29 +1010,29 @@ export default ({ mode }: { mode: string }) => {
                 ],
               },
               {
-                text: 'Context',
+                text: '上下文',
                 link: '/api/browser/context',
               },
               {
-                text: 'Interactivity',
+                text: '交互',
                 link: '/api/browser/interactivity',
               },
               {
-                text: 'Locators',
+                text: '定位器',
                 link: '/api/browser/locators',
               },
               {
-                text: 'Assertions',
+                text: '断言',
                 link: '/api/browser/assertions',
               },
               {
-                text: 'Commands',
+                text: '命令',
                 link: '/api/browser/commands',
               },
             ],
           },
           {
-            text: 'Advanced',
+            text: '高级',
             collapsed: false,
             items: [
               {
@@ -1048,47 +1040,47 @@ export default ({ mode }: { mode: string }) => {
                 link: '/api/advanced/vitest',
               },
               {
-                text: 'TestProject',
+                text: '测试项目',
                 link: '/api/advanced/test-project',
               },
               {
-                text: 'TestSpecification',
+                text: '测试规范',
                 link: '/api/advanced/test-specification',
               },
               {
-                text: 'TestCase',
+                text: '测试用例',
                 link: '/api/advanced/test-case',
               },
               {
-                text: 'TestSuite',
+                text: '测试套件',
                 link: '/api/advanced/test-suite',
               },
               {
-                text: 'TestModule',
+                text: '测试模块',
                 link: '/api/advanced/test-module',
               },
               {
-                text: 'TestCollection',
+                text: '测试集合',
                 link: '/api/advanced/test-collection',
               },
               {
-                text: 'VitestPlugin',
+                text: 'Vitest 插件',
                 link: '/api/advanced/plugin',
               },
               {
-                text: 'VitestRunner',
+                text: 'Vitest 运行器',
                 link: '/api/advanced/runner',
               },
               {
-                text: 'Reporter',
+                text: '报告器',
                 link: '/api/advanced/reporters',
               },
               {
-                text: 'TaskMeta',
+                text: '任务元数据',
                 link: '/api/advanced/metadata',
               },
               {
-                text: 'TestArtifact',
+                text: '测试产物',
                 link: '/api/advanced/artifacts',
               },
             ],

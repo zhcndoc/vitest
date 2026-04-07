@@ -1,36 +1,24 @@
 ---
-title: Test Projects | Guide
+title: 测试项目 | 指南
 ---
 
-# Test Projects
+# 测试项目
 
-::: tip Sample Project
+::: tip 示例项目
 
-[GitHub](https://github.com/vitest-dev/vitest/tree/main/examples/projects) - [Play Online](https://stackblitz.com/fork/github/vitest-dev/vitest/tree/main/examples/projects?initialPath=__vitest__/)
+[GitHub](https://github.com/vitest-dev/vitest/tree/main/examples/projects) - [在线运行](https://stackblitz.com/fork/github/vitest-dev/vitest/tree/main/examples/projects?initialPath=__vitest__/)
 
 :::
 
 ::: warning
-This feature is also known as a `workspace`. The `workspace` is deprecated since 3.2 and replaced with the `projects` configuration. They are functionally the same.
+此功能也被称为 `workspace`。`workspace` 自 3.2 起已弃用，并被 `projects` 配置取代。它们在功能上是相同的。
 :::
 
-Vitest provides a way to define multiple project configurations within a single Vitest process. This feature is particularly useful for monorepo setups but can also be used to run tests with different configurations, such as `resolve.alias`, `plugins`, or `test.browser` and more.
+Vitest 提供了一种在单个 Vitest 进程中定义多个项目配置的方法。此功能对于 monorepo 设置特别有用，但也可用于使用不同配置运行测试，例如 `resolve.alias`、`plugins` 或 `test.browser` 等。
 
-## Defining Projects
+## 定义项目
 
-You can define projects in your root [config](/config/):
-
-```ts [vitest.config.ts]
-import { defineConfig } from 'vitest/config'
-
-export default defineConfig({
-  test: {
-    projects: ['packages/*'],
-  },
-})
-```
-
-Project configurations are inlined configs, files, or glob patterns referencing your projects. For example, if you have a folder named `packages` that contains your projects, you can define an array in your root Vitest config:
+你可以在根 [config](/config/) 中定义项目：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
@@ -42,12 +30,24 @@ export default defineConfig({
 })
 ```
 
-Vitest will treat every folder in `packages` as a separate project even if it doesn't have a config file inside. If a project entry resolves to a file (either from a glob pattern or a direct file path), Vitest will validate that the name either:
+项目配置可以是内联配置、文件或引用你项目的 glob 模式。例如，如果你有一个名为 `packages` 的文件夹包含你的项目，你可以在根 Vitest 配置中定义一个数组：
 
-- starts with `vitest.config` or `vite.config` (for example, `vitest.config.unit.ts`)
-- or matches `vitest.<name>.config.*` / `vite.<name>.config.*`, where `<name>` can contain letters, numbers, `_`, and `-`
+```ts [vitest.config.ts]
+import { defineConfig } from 'vitest/config'
 
-For example, these config files are valid:
+export default defineConfig({
+  test: {
+    projects: ['packages/*'],
+  },
+})
+```
+
+Vitest 会将 `packages` 中的每个文件夹视为一个单独的项目，即使里面没有配置文件。如果项目条目解析为文件（来自 glob 模式或直接文件路径），Vitest 将验证名称是否：
+
+- 以 `vitest.config` 或 `vite.config` 开头（例如，`vitest.config.unit.ts`）
+- 或匹配 `vitest.<name>.config.*` / `vite.<name>.config.*`，其中 `<name>` 可以包含字母、数字、`_` 和 `-`
+
+例如，这些配置文件是有效的：
 
 - `vitest.config.ts`
 - `vite.config.js`
@@ -57,14 +57,14 @@ For example, these config files are valid:
 - `vitest.config.unit.js`
 - `vite.config.e2e.js`
 
-To exclude folders and files, you can use the negation pattern:
+要排除文件夹和文件，你可以使用否定模式：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
-    // include all folders inside "packages" except "excluded"
+    // 包含 "packages" 内的所有文件夹，除了 "excluded"
     projects: [
       'packages/*',
       '!packages/excluded'
@@ -73,24 +73,24 @@ export default defineConfig({
 })
 ```
 
-If you have a nested structure where some folders need to be projects, but other folders have their own subfolders, you have to use brackets to avoid matching the parent folder:
+如果你有一个嵌套结构，其中某些文件夹需要成为项目，但其他文件夹有自己的子文件夹，你必须使用括号以避免匹配父文件夹：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
 
-// For example, this will create projects:
+// 例如，这将创建项目：
 // packages/a
 // packages/b
 // packages/business/c
 // packages/business/d
-// Notice that "packages/business" is not a project itself
+// 注意 "packages/business" 本身不是一个项目
 
 export default defineConfig({
   test: {
     projects: [
-      // matches every folder inside "packages" except "business"
+      // 匹配 "packages" 内的每个文件夹，除了 "business"
       'packages/!(business)',
-      // matches every folder inside "packages/business"
+      // 匹配 "packages/business" 内的每个文件夹
       'packages/business/*',
     ],
   },
@@ -98,10 +98,10 @@ export default defineConfig({
 ```
 
 ::: warning
-Vitest does not treat the root `vitest.config` file as a project unless it is explicitly specified in the configuration. Consequently, the root configuration will only influence global options such as `reporters` and `coverage`. Note that Vitest will always run certain plugin hooks, like `apply`, `config`, `configResolved` or `configureServer`, specified in the root config file. Vitest also uses the same plugins to execute global setups and custom coverage provider.
+Vitest 不会将根 `vitest.config` 文件视为项目，除非在配置中明确指定。因此，根配置只会影响全局选项，例如 `reporters` 和 `coverage`。请注意，Vitest 将始终运行根配置文件中指定的某些插件钩子，如 `apply`、`config`、`configResolved` 或 `configureServer`。Vitest 还使用相同的插件来执行全局设置和自定义覆盖率提供者。
 :::
 
-You can also reference projects with their config files:
+你也可以通过配置文件引用项目：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
@@ -113,9 +113,9 @@ export default defineConfig({
 })
 ```
 
-This pattern will only include projects with a `vitest.config` file that contains `e2e` or `unit` before the extension.
+此模式将仅包含扩展名之前包含 `e2e` 或 `unit` 的 `vitest.config` 文件的项目。
 
-You can also define projects using inline configuration. The configuration supports both syntaxes simultaneously.
+你也可以使用内联配置定义项目。配置同时支持这两种语法。
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
@@ -123,14 +123,14 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   test: {
     projects: [
-      // matches every folder and file inside the `packages` folder
+      // 匹配 `packages` 文件夹内的每个文件夹和文件
       'packages/*',
       {
-        // add "extends: true" to inherit the options from the root config
+        // 添加 "extends: true" 以继承根配置中的选项
         extends: true,
         test: {
           include: ['tests/**/*.{browser}.test.{ts,js}'],
-          // it is recommended to define a name when using inline configs
+          // 建议在使用内联配置时定义名称
           name: 'happy-dom',
           environment: 'happy-dom',
         }
@@ -138,7 +138,7 @@ export default defineConfig({
       {
         test: {
           include: ['tests/**/*.{node}.test.{ts,js}'],
-          // color of the name label can be changed
+          // 名称标签的颜色可以更改
           name: { label: 'node', color: 'green' },
           environment: 'node',
         }
@@ -149,10 +149,10 @@ export default defineConfig({
 ```
 
 ::: warning
-All projects must have unique names; otherwise, Vitest will throw an error. If a name is not provided in the inline configuration, Vitest will assign a number. For project configurations defined with glob syntax, Vitest will default to using the "name" property in the nearest `package.json` file or, if none exists, the folder name.
+所有项目必须具有唯一的名称；否则，Vitest 将抛出错误。如果内联配置中未提供名称，Vitest 将分配一个数字。对于使用 glob 语法定义的项目配置，Vitest 默认使用最近 `package.json` 文件中的 "name" 属性，如果不存在，则使用文件夹名称。
 :::
 
-Projects do not support all configuration properties. For better type safety, use the `defineProject` method instead of `defineConfig` within project configuration files:
+项目不支持所有配置属性。为了更好的类型安全，在项目配置文件中使用 `defineProject` 方法而不是 `defineConfig`：
 
 ```ts twoslash [packages/a/vitest.config.ts]
 // @errors: 2769
@@ -161,16 +161,16 @@ import { defineProject } from 'vitest/config'
 export default defineProject({
   test: {
     environment: 'jsdom',
-    // "reporters" is not supported in a project config,
-    // so it will show an error
+    // "reporters" 在项目配置中不受支持，
+    // 因此它会显示错误
     reporters: ['json']
   }
 })
 ```
 
-## Running Tests
+## 运行测试
 
-To run tests, define a script in your root `package.json`:
+要运行测试，请在根 `package.json` 中定义一个脚本：
 
 ```json [package.json]
 {
@@ -180,7 +180,7 @@ To run tests, define a script in your root `package.json`:
 }
 ```
 
-Now tests can be run using your package manager:
+现在可以使用你的包管理器运行测试：
 
 ::: code-group
 ```bash [npm]
@@ -197,7 +197,7 @@ bun run test
 ```
 :::
 
-If you need to run tests only inside a single project, use the `--project` CLI option:
+如果你只需要在单个项目中运行测试，请使用 `--project` CLI 选项：
 
 ::: code-group
 ```bash [npm]
@@ -215,7 +215,7 @@ bun run test --project e2e
 :::
 
 ::: tip
-CLI option `--project` can be used multiple times to filter out several projects:
+CLI 选项 `--project` 可以多次使用以过滤出多个项目：
 
 ::: code-group
 ```bash [npm]
@@ -232,9 +232,9 @@ bun run test --project e2e --project unit
 ```
 :::
 
-## Configuration
+## 配置
 
-None of the configuration options are inherited from the root-level config file. You can create a shared config file and merge it with the project config yourself:
+没有任何配置选项是从根级配置文件继承的。你可以创建一个共享配置文件并将其与项目配置自行合并：
 
 ```ts [packages/a/vitest.config.ts]
 import { defineProject, mergeConfig } from 'vitest/config'
@@ -250,7 +250,7 @@ export default mergeConfig(
 )
 ```
 
-Additionally, you can use the `extends` option to inherit from your root-level configuration. All options will be merged.
+此外，你可以使用 `extends` 选项从根级配置继承。所有选项都将合并。
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
@@ -262,7 +262,7 @@ export default defineConfig({
     pool: 'threads',
     projects: [
       {
-        // will inherit options from this config like plugins and pool
+        // 将从此配置继承选项，如 plugins 和 pool
         extends: true,
         test: {
           name: 'unit',
@@ -270,8 +270,8 @@ export default defineConfig({
         },
       },
       {
-        // won't inherit any options from this config
-        // this is the default behaviour
+        // 不会从此配置继承任何选项
+        // 这是默认行为
         extends: false,
         test: {
           name: 'integration',
@@ -283,13 +283,13 @@ export default defineConfig({
 })
 ```
 
-::: danger Unsupported Options
-Some of the configuration options are not allowed in a project config. Most notably:
+::: danger 不支持的选项
+某些配置选项不允许在项目配置中使用。最值得注意的是：
 
-- `coverage`: coverage is done for the whole process
-- `reporters`: only root-level reporters can be supported
-- `resolveSnapshotPath`: only root-level resolver is respected
-- all other options that don't affect test runners
+- `coverage`：覆盖率是针对整个进程进行的
+- `reporters`：仅支持根级报告器
+- `resolveSnapshotPath`：仅遵循根级解析器
+- 所有其他不影响测试运行器的选项
 
-All configuration options that are not supported inside a project configuration are marked with a <CRoot /> icon next to their name. They can only be defined once in the root config file.
+所有在项目配置中不受支持的配置选项都在其名称旁边标记有 <CRoot /> 图标。它们只能在根配置文件中定义一次。
 :::

@@ -1,96 +1,96 @@
 ---
-title: deps | Config
+title: deps | 配置
 outline: deep
 ---
 
 # deps
 
-- **Type:** `{ optimizer?, ... }`
+- **类型：** `{ optimizer?, ... }`
 
-Handling for dependencies resolution.
+依赖解析的处理。
 
 ## deps.optimizer {#deps-optimizer}
 
-- **Type:** `{ ssr?, client? }`
-- **See also:** [Dep Optimization Options](https://vitejs.dev/config/dep-optimization-options.html)
+- **类型：** `{ ssr?, client? }`
+- **另见：** [依赖优化选项](https://vitejs.dev/config/dep-optimization-options.html)
 
-Enable dependency optimization. If you have a lot of tests, this might improve their performance.
+启用依赖优化。如果你有很多测试，这可能会提高它们的性能。
 
-When Vitest encounters the external library listed in `include`, it will be bundled into a single file using esbuild and imported as a whole module. This is good for several reasons:
+当 Vitest 遇到 `include` 中列出的外部库时，它将使用 esbuild 捆绑成单个文件并作为整个模块导入。这有几个好处：
 
-- Importing packages with a lot of imports is expensive. By bundling them into one file we can save a lot of time
-- Importing UI libraries is expensive because they are not meant to run inside Node.js
-- Your `alias` configuration is now respected inside bundled packages
-- Code in your tests is running closer to how it's running in the browser
+- 导入具有大量导入的包开销很大。通过将它们捆绑到一个文件中，我们可以节省大量时间
+- 导入 UI 库开销很大，因为它们不是为了在 Node.js 内部运行而设计的
+- 你的 `alias` 配置现在在捆绑包内生效
+- 测试中的代码运行方式更接近其在浏览器中的运行方式
 
-Be aware that only packages in `deps.optimizer?.[mode].include` option are bundled (some plugins populate this automatically, like Svelte). You can read more about available options in [Vite](https://vitejs.dev/config/dep-optimization-options.html) docs (Vitest doesn't support `disable` and `noDiscovery` options). By default, Vitest uses `optimizer.client` for `jsdom` and `happy-dom` environments, and `optimizer.ssr` for `node` and `edge` environments.
+请注意，只有 `deps.optimizer?.[mode].include` 选项中的包会被捆绑（某些插件会自动填充此项，例如 Svelte）。你可以在 [Vite](https://vitejs.dev/config/dep-optimization-options.html) 文档中阅读更多关于可用选项的信息（Vitest 不支持 `disable` 和 `noDiscovery` 选项）。默认情况下，Vitest 对 `jsdom` 和 `happy-dom` 环境使用 `optimizer.client`，对 `node` 和 `edge` 环境使用 `optimizer.ssr`。
 
-This options also inherits your `optimizeDeps` configuration (for web Vitest will extend `optimizeDeps`, for ssr - `ssr.optimizeDeps`). If you redefine `include`/`exclude` option in `deps.optimizer` it will extend your `optimizeDeps` when running tests. Vitest automatically removes the same options from `include`, if they are listed in `exclude`.
+此选项还会继承你的 `optimizeDeps` 配置（对于 web，Vitest 将扩展 `optimizeDeps`，对于 ssr - `ssr.optimizeDeps`）。如果你在 `deps.optimizer` 中重新定义 `include`/`exclude` 选项，它在运行测试时将扩展你的 `optimizeDeps`。如果 `include` 中列出的选项也在 `exclude` 中，Vitest 会自动将其从 `include` 中移除。
 
 ::: tip
-You will not be able to edit your `node_modules` code for debugging, since the code is actually located in your `cacheDir` or `test.cache.dir` directory. If you want to debug with `console.log` statements, edit it directly or force rebundling with `deps.optimizer?.[mode].force` option.
+你将无法编辑 `node_modules` 代码进行调试，因为代码实际上位于你的 `cacheDir` 或 `test.cache.dir` 目录中。如果你想通过 `console.log` 语句进行调试，请直接编辑它或使用 `deps.optimizer?.[mode].force` 选项强制重新捆绑。
 :::
 
 ### deps.optimizer.{mode}.enabled
 
-- **Type:** `boolean`
-- **Default:** `false`
+- **类型：** `boolean`
+- **默认值：** `false`
 
-Enable dependency optimization.
+启用依赖优化。
 
 ## deps.client  {#deps-client}
 
-- **Type:** `{ transformAssets?, ... }`
+- **类型：** `{ transformAssets?, ... }`
 
-Options that are applied to external files when the environment is set to `client`. By default, `jsdom` and `happy-dom` use `client` environment, while `node` and `edge` environments use `ssr`, so these options will have no affect on files inside those environments.
+当环境设置为 `client` 时应用于外部文件的选项。默认情况下，`jsdom` 和 `happy-dom` 使用 `client` 环境，而 `node` 和 `edge` 环境使用 `ssr`，因此这些选项不会影响这些环境内的文件。
 
-Usually, files inside `node_modules` are externalized, but these options also affect files in [`server.deps.external`](/config/server#server-deps-external).
+通常，`node_modules` 内部的文件会被外部化，但这些选项也会影响 [`server.deps.external`](/config/server#server-deps-external) 中的文件。
 
 ### deps.client.transformAssets
 
-- **Type:** `boolean`
-- **Default:** `true`
+- **类型：** `boolean`
+- **默认值：** `true`
 
-Should Vitest process assets (.png, .svg, .jpg, etc) files and resolve them like Vite does in the browser.
+Vitest 是否应该处理资产（.png, .svg, .jpg 等）文件并像 Vite 在浏览器中那样解析它们。
 
-This module will have a default export equal to the path to the asset, if no query is specified.
+如果没有指定查询，此模块将拥有一个等于资产路径的默认导出。
 
 ::: warning
-At the moment, this option only works with [`vmThreads`](/config/pool#vmthreads) and [`vmForks`](/config/pool#vmforks) pools.
+目前，此选项仅适用于 [`vmThreads`](/config/pool#vmthreads) 和 [`vmForks`](/config/pool#vmforks) 池。
 :::
 
 ### deps.client.transformCss
 
-- **Type:** `boolean`
-- **Default:** `true`
+- **类型：** `boolean`
+- **默认值：** `true`
 
-Should Vitest process CSS (.css, .scss, .sass, etc) files and resolve them like Vite does in the browser.
+Vitest 是否应该处理 CSS（.css, .scss, .sass 等）文件并像 Vite 在浏览器中那样解析它们。
 
-If CSS files are disabled with [`css`](/config/css) options, this option will just silence `ERR_UNKNOWN_FILE_EXTENSION` errors.
+如果 CSS 文件被 [`css`](/config/css) 选项禁用，此选项将仅静默 `ERR_UNKNOWN_FILE_EXTENSION` 错误。
 
 ::: warning
-At the moment, this option only works with [`vmThreads`](/config/pool#vmthreads) and [`vmForks`](/config/pool#vmforks) pools.
+目前，此选项仅适用于 [`vmThreads`](/config/pool#vmthreads) 和 [`vmForks`](/config/pool#vmforks) 池。
 :::
 
 ### deps.client.transformGlobPattern
 
-- **Type:** `RegExp | RegExp[]`
-- **Default:** `[]`
+- **类型：** `RegExp | RegExp[]`
+- **默认值：** `[]`
 
-Regexp pattern to match external files that should be transformed.
+用于匹配应转换的外部文件的正则表达式模式。
 
-By default, files inside `node_modules` are externalized and not transformed, unless it's CSS or an asset, and corresponding option is not disabled.
+默认情况下，`node_modules` 内部的文件会被外部化且不转换，除非它是 CSS 或资产，且相应选项未被禁用。
 
 ::: warning
-At the moment, this option only works with [`vmThreads`](/config/pool#vmthreads) and [`vmForks`](/config/pool#vmforks) pools.
+目前，此选项仅适用于 [`vmThreads`](/config/pool#vmthreads) 和 [`vmForks`](/config/pool#vmforks) 池。
 :::
 
 ## deps.interopDefault
 
-- **Type:** `boolean`
-- **Default:** `true`
+- **类型：** `boolean`
+- **默认值：** `true`
 
-Interpret CJS module's default as named exports. Some dependencies only bundle CJS modules and don't use named exports that Node.js can statically analyze when a package is imported using `import` syntax instead of `require`. When importing such dependencies in Node environment using named exports, you will see this error:
+将 CJS 模块的 default 解释为命名导出。某些依赖项仅捆绑 CJS 模块，并且当使用 `import` 语法而不是 `require` 导入包时，不使用 Node.js 可以静态分析的命名导出。在 Node 环境中使用命名导出导入此类依赖项时，你将看到此错误：
 
 ```
 import { read } from 'fs-jetpack';
@@ -99,25 +99,25 @@ SyntaxError: Named export 'read' not found. The requested module 'fs-jetpack' is
 CommonJS modules can always be imported via the default export.
 ```
 
-Vitest doesn't do static analysis, and cannot fail before your running code, so you will most likely see this error when running tests, if this feature is disabled:
+Vitest 不进行静态分析，并且无法在你的代码运行之前失败，因此如果禁用此功能，你在运行测试时最可能会看到此错误：
 
 ```
 TypeError: createAsyncThunk is not a function
 TypeError: default is not a function
 ```
 
-By default, Vitest assumes you are using a bundler to bypass this and will not fail, but you can disable this behaviour manually, if your code is not processed.
+默认情况下，Vitest 假设你正在使用捆绑器来绕过此问题并且不会失败，但如果你的代码未经处理，你可以手动禁用此行为。
 
 ## deps.moduleDirectories
 
-- **Type:** `string[]`
-- **Default**: `['node_modules']`
+- **类型：** `string[]`
+- **默认值**: `['node_modules']`
 
-A list of directories that should be treated as module directories. This config option affects the behavior of [`vi.mock`](/api/vi#vi-mock): when no factory is provided and the path of what you are mocking matches one of the `moduleDirectories` values, Vitest will try to resolve the mock by looking for a `__mocks__` folder in the [root](/config/root) of the project.
+应被视为模块目录的目录列表。此配置选项会影响 [`vi.mock`](/api/vi#vi-mock) 的行为：当未提供工厂且你正在模拟的路径匹配 `moduleDirectories` 值之一时，Vitest 将尝试通过在项目的 [root](/config/root) 中查找 `__mocks__` 文件夹来解析模拟。
 
-This option will also affect if a file should be treated as a module when externalizing dependencies. By default, Vitest imports external modules with native Node.js bypassing Vite transformation step.
+此选项还将影响在外部化依赖项时是否应将文件视为模块。默认情况下，Vitest 使用原生 Node.js 导入外部模块，绕过 Vite 转换步骤。
 
-Setting this option will _override_ the default, if you wish to still search `node_modules` for packages include it along with any other options:
+设置此选项将 _覆盖_ 默认值，如果你希望仍然搜索 `node_modules` 中的包，请将其与其他选项一起包含：
 
 ```ts
 import { defineConfig } from 'vitest/config'

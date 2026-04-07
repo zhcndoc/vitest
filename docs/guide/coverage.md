@@ -1,16 +1,16 @@
 ---
-title: Coverage | Guide
+title: 覆盖率 | 指南
 ---
 
-# Coverage
+# 覆盖率
 
-Vitest supports Native code coverage via [`v8`](https://v8.dev/blog/javascript-code-coverage) and instrumented code coverage via [`istanbul`](https://istanbul.js.org/).
+Vitest 支持通过 [`v8`](https://v8.dev/blog/javascript-code-coverage) 的原生代码覆盖率，以及通过 [`istanbul`](https://istanbul.js.org/) 的插桩代码覆盖率。
 
-## Coverage Providers
+## 覆盖率提供者
 
-Both `v8` and `istanbul` support are optional. By default, `v8` will be used.
+`v8` 和 `istanbul` 支持都是可选的。默认情况下，将使用 `v8`。
 
-You can select the coverage tool by setting `test.coverage.provider` to `v8` or `istanbul`:
+你可以通过将 `test.coverage.provider` 设置为 `v8` 或 `istanbul` 来选择覆盖率工具：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
@@ -18,15 +18,15 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   test: {
     coverage: {
-      provider: 'v8' // or 'istanbul'
+      provider: 'v8' // 或 'istanbul'
     },
   },
 })
 ```
 
-When you start the Vitest process, it will prompt you to install the corresponding support package automatically.
+当你启动 Vitest 进程时，它会提示你自动安装相应的支持包。
 
-Or if you prefer to install them manually:
+或者如果你更喜欢手动安装它们：
 
 ::: code-group
 ```bash [v8]
@@ -37,28 +37,28 @@ npm i -D @vitest/coverage-istanbul
 ```
 :::
 
-## V8 Provider
+## V8 提供者
 
 ::: info
-The description of V8 coverage below is Vitest specific and does not apply to other test runners.
-Since `v3.2.0` Vitest has used [AST based coverage remapping](/blog/vitest-3-2#coverage-v8-ast-aware-remapping) for V8 coverage, which produces identical coverage reports to Istanbul.
+下面关于 V8 覆盖率的描述是 Vitest 特有的，不适用于其他测试运行器。
+自 `v3.2.0` 以来，Vitest 对 V8 覆盖率使用了 [基于 AST 的覆盖率重映射](/blog/vitest-3-2#coverage-v8-ast-aware-remapping)，生成的覆盖率报告与 Istanbul 相同。
 
-This allows users to have the speed of V8 coverage with accuracy of Istanbul coverage.
+这允许用户拥有 V8 覆盖率的速度和 Istanbul 覆盖率的准确性。
 :::
 
-By default Vitest uses `'v8'` coverage provider.
-This provider requires Javascript runtime that's implemented on top of [V8 engine](https://v8.dev/), such as NodeJS, Deno or any Chromium based browsers such as Google Chrome.
+默认情况下，Vitest 使用 `'v8'` 覆盖率提供者。
+此提供者需要基于 [V8 引擎](https://v8.dev/) 实现的 Javascript 运行时，例如 NodeJS、Deno 或任何基于 Chromium 的浏览器（如 Google Chrome）。
 
-Coverage collection is performed during runtime by instructing V8 using [`node:inspector`](https://nodejs.org/api/inspector.html) and [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/tot/Profiler/) in browsers. User's source files can be executed as-is without any pre-instrumentation steps.
+覆盖率收集是在运行时通过 [`node:inspector`](https://nodejs.org/api/inspector.html) 指示 V8 以及在浏览器中使用 [Chrome DevTools 协议](https://chromedevtools.github.io/devtools-protocol/tot/Profiler/) 进行的。用户的源文件可以直接执行，无需任何预插桩步骤。
 
-- ✅ Recommended option to use
-- ✅ No pre-transpile step. Test files can be executed as-is.
-- ✅ Faster execute times than Istanbul.
-- ✅ Lower memory usage than Istanbul.
-- ✅ Coverage report accuracy is as good as with Istanbul ([since Vitest `v3.2.0`](/blog/vitest-3-2#coverage-v8-ast-aware-remapping)).
-- ⚠️ In some cases can be slower than Istanbul, e.g. when loading lots of different modules. V8 does not support limiting coverage collection to specific modules.
-- ⚠️ There are some minor limitations set by V8 engine. See [`ast-v8-to-istanbul` | Limitations](https://github.com/AriPerkkio/ast-v8-to-istanbul?tab=readme-ov-file#limitations).
-- ❌ Does not work on environments that don't use V8, such as Firefox or Bun. Or on environments that don't expose V8 coverage via profiler, such as Cloudflare Workers.
+- ✅ 推荐使用的选项
+- ✅ 无需预转译步骤。测试文件可以直接执行。
+- ✅ 执行速度比 Istanbul 快。
+- ✅ 内存使用量比 Istanbul 低。
+- ✅ 覆盖率报告准确性与 Istanbul 一样好（[自 Vitest `v3.2.0` 起](/blog/vitest-3-2#coverage-v8-ast-aware-remapping)）。
+- ⚠️ 在某些情况下可能比 Istanbul 慢，例如加载许多不同模块时。V8 不支持将覆盖率收集限制在特定模块。
+- ⚠️ V8 引擎设置了一些轻微的限制。参见 [`ast-v8-to-istanbul` | 限制](https://github.com/AriPerkkio/ast-v8-to-istanbul?tab=readme-ov-file#limitations)。
+- ❌ 不适用于不使用 V8 的环境，例如 Firefox 或 Bun。或者不适用于不通过 profiler 暴露 V8 覆盖率的环境，例如 Cloudflare Workers。
 
 <script setup>
 import ArrowDown from '../.vitepress/components/ArrowDown.vue'
@@ -66,44 +66,44 @@ import Box from '../.vitepress/components/Box.vue'
 </script>
 
 <div style="display: flex; flex-direction: column; align-items: center; padding: 2rem 0; max-width: 20rem;">
-  <Box>Test file</Box>
+  <Box>测试文件</Box>
   <ArrowDown />
-  <Box>Enable V8 runtime coverage collection</Box>
+  <Box>启用 V8 运行时覆盖率收集</Box>
   <ArrowDown />
-  <Box>Run file</Box>
+  <Box>运行文件</Box>
   <ArrowDown />
-  <Box>Collect coverage results from V8</Box>
+  <Box>从 V8 收集覆盖率结果</Box>
   <ArrowDown />
-  <Box>Remap coverage results to source files</Box>
+  <Box>将覆盖率结果重映射到源文件</Box>
   <ArrowDown />
-  <Box>Coverage report</Box>
+  <Box>覆盖率报告</Box>
 </div>
 
-## Istanbul Provider
+## Istanbul 提供者
 
-[Istanbul code coverage tooling](https://istanbul.js.org/) has existed since 2012 and is very well battle-tested.
-This provider works on any Javascript runtime as coverage tracking is done by instrumenting user's source files.
+[Istanbul 代码覆盖率工具](https://istanbul.js.org/) 自 2012 年以来就一直存在，并且经过了充分的实战测试。
+此提供者适用于任何 Javascript 运行时，因为覆盖率跟踪是通过插桩用户的源文件完成的。
 
-In practice, instrumenting source files means adding additional Javascript in user's files:
+实际上，插桩源文件意味着在用户的文件中添加额外的 Javascript：
 
 ```js
-// Simplified example of branch and function coverage counters
+// 分支和函数覆盖率计数器的简化示例
 const coverage = { // [!code ++]
   branches: { 1: [0, 0] }, // [!code ++]
   functions: { 1: 0 }, // [!code ++]
 } // [!code ++]
 
 export function getUsername(id) {
-  // Function coverage increased when this is invoked  // [!code ++]
+  // 当此被调用时函数覆盖率增加  // [!code ++]
   coverage.functions['1']++ // [!code ++]
 
   if (id == null) {
-    // Branch coverage increased when this is invoked  // [!code ++]
+    // 当此被调用时分支覆盖率增加  // [!code ++]
     coverage.branches['1'][0]++ // [!code ++]
 
     throw new Error('User ID is required')
   }
-  // Implicit else coverage increased when if-statement condition not met  // [!code ++]
+  // 当 if 语句条件不满足时隐式 else 覆盖率增加  // [!code ++]
   coverage.branches['1'][1]++ // [!code ++]
 
   return database.getUser(id)
@@ -113,35 +113,35 @@ globalThis.__VITEST_COVERAGE__ ||= {} // [!code ++]
 globalThis.__VITEST_COVERAGE__[filename] = coverage // [!code ++]
 ```
 
-- ✅ Works on any Javascript runtime
-- ✅ Widely used and battle-tested for over 13 years.
-- ✅ In some cases faster than V8. Coverage instrumentation can be limited to specific files, as opposed to V8 where all modules are instrumented.
-- ❌ Requires pre-instrumentation step
-- ❌ Execution speed is slower than V8 due to instrumentation overhead
-- ❌ Instrumentation increases file sizes
-- ❌ Memory usage is higher than V8
+- ✅ 适用于任何 Javascript 运行时
+- ✅ 广泛使用并经过超过 13 年的实战测试。
+- ✅ 在某些情况下比 V8 快。覆盖率插桩可以限制在特定文件，而 V8 则是所有模块都被插桩。
+- ❌ 需要预插桩步骤
+- ❌ 由于插桩开销，执行速度比 V8 慢
+- ❌ 插桩会增加文件大小
+- ❌ 内存使用量比 V8 高
 
 <div style="display: flex; flex-direction: column; align-items: center; padding: 2rem 0; max-width: 20rem;">
-  <Box>Test file</Box>
+  <Box>测试文件</Box>
   <ArrowDown />
-  <Box>Pre‑instrumentation with Babel</Box>
+  <Box>使用 Babel 预插桩</Box>
   <ArrowDown />
-  <Box>Run file</Box>
+  <Box>运行文件</Box>
   <ArrowDown />
-  <Box>Collect coverage results from Javascript scope</Box>
+  <Box>从 Javascript 作用域收集覆盖率结果</Box>
   <ArrowDown />
-  <Box>Remap coverage results to source files</Box>
+  <Box>将覆盖率结果重映射到源文件</Box>
   <ArrowDown />
-  <Box>Coverage report</Box>
+  <Box>覆盖率报告</Box>
 </div>
 
-## Coverage Setup
+## 覆盖率设置
 
 ::: tip
-All coverage options are listed in [Coverage Config Reference](/config/coverage).
+所有覆盖率选项都列在 [覆盖率配置参考](/config/coverage) 中。
 :::
 
-To test with coverage enabled, you can pass the `--coverage` flag in CLI or set `coverage.enabled` in `vitest.config.ts`:
+要启用覆盖率进行测试，你可以在 CLI 中传递 `--coverage` 标志或在 `vitest.config.ts` 中设置 `coverage.enabled`：
 
 ::: code-group
 ```json [package.json]
@@ -165,12 +165,12 @@ export default defineConfig({
 ```
 :::
 
-## Including and Excluding Files from Coverage Report
+## 在覆盖率报告中包含和排除文件
 
-You can define what files are shown in coverage report by configuring [`coverage.include`](/config/coverage#coverage-include) and [`coverage.exclude`](/config/coverage#coverage-exclude).
+你可以通过配置 [`coverage.include`](/config/coverage#coverage-include) 和 [`coverage.exclude`](/config/coverage#coverage-exclude) 来定义哪些文件显示在覆盖率报告中。
 
-By default Vitest will show only files that were imported during test run.
-To include uncovered files in the report, you'll need to configure [`coverage.include`](/config/coverage#coverage-include) with a pattern that will pick your source files:
+默认情况下，Vitest 只会显示在测试运行期间导入的文件。
+要将未覆盖的文件包含在报告中，你需要使用能匹配源文件的模式配置 [`coverage.include`](/config/coverage#coverage-include)：
 
 ::: code-group
 ```ts [vitest.config.ts] {6}
@@ -184,7 +184,7 @@ export default defineConfig({
   },
 })
 ```
-```sh [Covered Files]
+```sh [覆盖的文件]
 ├── src
 │   ├── components
 │   │   └── counter.tsx   # [!code ++]
@@ -204,7 +204,7 @@ export default defineConfig({
 ```
 :::
 
-To exclude files that are matching `coverage.include`, you can define an additional [`coverage.exclude`](/config/coverage#coverage-exclude):
+要排除匹配 `coverage.include` 的文件，你可以定义额外的 [`coverage.exclude`](/config/coverage#coverage-exclude)：
 
 ::: code-group
 ```ts [vitest.config.ts] {7}
@@ -219,7 +219,7 @@ export default defineConfig({
   },
 })
 ```
-```sh [Covered Files]
+```sh [覆盖的文件]
 ├── src
 │   ├── components
 │   │   └── counter.tsx   # [!code ++]
@@ -239,9 +239,9 @@ export default defineConfig({
 ```
 :::
 
-## Custom Coverage Reporter
+## 自定义覆盖率报告器
 
-You can use custom coverage reporters by passing either the name of the package or absolute path in `test.coverage.reporter`:
+你可以通过在 `test.coverage.reporter` 中传递包名或绝对路径来使用自定义覆盖率报告器：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
@@ -250,10 +250,10 @@ export default defineConfig({
   test: {
     coverage: {
       reporter: [
-        // Specify reporter using name of the NPM package
+        // 使用 NPM 包名指定报告器
         ['@vitest/custom-coverage-reporter', { someOption: true }],
 
-        // Specify reporter using local path
+        // 使用本地路径指定报告器
         '/absolute/path/to/custom-reporter.cjs',
       ],
     },
@@ -261,7 +261,7 @@ export default defineConfig({
 })
 ```
 
-Custom reporters are loaded by Istanbul and must match its reporter interface. See [built-in reporters' implementation](https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-reports/lib) for reference.
+自定义报告器由 Istanbul 加载，必须匹配其报告器接口。参见 [内置报告器的实现](https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-reports/lib) 作为参考。
 
 ```js [custom-reporter.cjs]
 const { ReportBase } = require('istanbul-lib-report')
@@ -270,7 +270,7 @@ module.exports = class CustomReporter extends ReportBase {
   constructor(opts) {
     super()
 
-    // Options passed from configuration are available here
+    // 从配置传递的选项在这里可用
     this.file = opts.file
   }
 
@@ -286,9 +286,9 @@ module.exports = class CustomReporter extends ReportBase {
 }
 ```
 
-## Custom Coverage Provider
+## 自定义覆盖率提供者
 
-It's also possible to provide your custom coverage provider by passing `'custom'` in `test.coverage.provider`:
+也可以通过在 `test.coverage.provider` 中传递 `'custom'` 来提供自定义覆盖率提供者：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
@@ -303,7 +303,7 @@ export default defineConfig({
 })
 ```
 
-The custom providers require a `customProviderModule` option which is a module name or path where to load the `CoverageProviderModule` from. It must export an object that implements `CoverageProviderModule` as default export:
+自定义提供者需要一个 `customProviderModule` 选项，这是一个模块名或路径，用于加载 `CoverageProviderModule`。它必须导出一个实现 `CoverageProviderModule` 的对象作为默认导出：
 
 ```ts [my-custom-coverage-provider.ts]
 import type {
@@ -318,7 +318,7 @@ const CustomCoverageProviderModule: CoverageProviderModule = {
     return new CustomCoverageProvider()
   },
 
-  // Implements rest of the CoverageProviderModule ...
+  // 实现 CoverageProviderModule 的其余部分 ...
 }
 
 class CustomCoverageProvider implements CoverageProvider {
@@ -329,29 +329,29 @@ class CustomCoverageProvider implements CoverageProvider {
     this.options = ctx.config.coverage
   }
 
-  // Implements rest of the CoverageProvider ...
+  // 实现 CoverageProvider 的其余部分 ...
 }
 
 export default CustomCoverageProviderModule
 ```
 
-Please refer to the type definition for more details.
+请参阅类型定义以获取更多详细信息。
 
-## Ignoring Code
+## 忽略代码
 
-Both coverage providers have their own ways how to ignore code from coverage reports:
+两种覆盖率提供者都有各自的方法来忽略覆盖率报告中的代码：
 
 - [`v8`](https://github.com/AriPerkkio/ast-v8-to-istanbul?tab=readme-ov-file#ignoring-code)
 - [`istanbul`](https://github.com/istanbuljs/nyc#parsing-hints-ignoring-lines)
 
-When using TypeScript the source codes are transpiled using `esbuild`, which strips all comments from the source codes ([esbuild#516](https://github.com/evanw/esbuild/issues/516)).
-Comments which are considered as [legal comments](https://esbuild.github.io/api/#legal-comments) are preserved.
+当使用 TypeScript 时，源代码会使用 `esbuild` 进行转译，它会剥离源代码中的所有注释 ([esbuild#516](https://github.com/evanw/esbuild/issues/516))。
+被视为 [合法注释](https://esbuild.github.io/api/#legal-comments) 的注释会被保留。
 
-You can include a `@preserve` keyword in the ignore hint.
-Beware that these ignore hints may now be included in final production build as well.
+你可以在忽略提示中包含 `@preserve` 关键字。
+请注意，这些忽略提示现在也可能包含在最终的生产构建中。
 
 ::: tip
-Follow https://github.com/vitest-dev/vitest/issues/2021 for updates about `@preserve` usage.
+关注 https://github.com/vitest-dev/vitest/issues/2021 以获取有关 `@preserve` 用法的更新。
 :::
 
 ```diff
@@ -364,7 +364,7 @@ if (condition) {
 if (condition) {
 ```
 
-### Examples
+### 示例
 
 ::: code-group
 
@@ -457,8 +457,8 @@ catch (error) {
   console.log('Ignored') // [!code error]
 }
 
-// Requires rolldown-vite due to esbuild's lack of support.
-// See https://vite.dev/guide/rolldown.html#how-to-try-rolldown
+// 由于 esbuild 缺乏支持，需要 rolldown-vite。
+// 参见 https://vite.dev/guide/rolldown.html#how-to-try-rolldown
 try {
   console.log('Included')
 }
@@ -493,18 +493,18 @@ export function ignored() { // [!code error]
 ```
 :::
 
-## Coverage Performance
+## 覆盖率性能
 
-If code coverage generation is slow on your project, see [Profiling Test Performance | Code coverage](/guide/profiling-test-performance.html#code-coverage).
+如果你的项目中代码覆盖率生成缓慢，请参阅 [性能分析测试性能 | 代码覆盖率](/guide/profiling-test-performance.html#code-coverage)。
 
 ## Vitest UI
 
-You can check your coverage report in [Vitest UI](/guide/ui) and [HTML reporter](/guide/reporters.html#html-reporter).
+你可以在 [Vitest UI](/guide/ui) 和 [HTML 报告器](/guide/reporters.html#html-reporter) 中查看覆盖率报告。
 
-This is integrated with builtin coverage reporters with HTML output (`html`, `html-spa`, and `lcov` reporters). `html` reporter is enabled by default and this works out of the box. To integrate with custom reporters, you can configure [`coverage.htmlDir`](/config/coverage#coverage-htmldir).
+这与具有 HTML 输出的内置覆盖率报告器集成（`html`、`html-spa` 和 `lcov` 报告器）。`html` 报告器默认启用，开箱即用。要与自定义报告器集成，你可以配置 [`coverage.htmlDir`](/config/coverage#coverage-htmldir)。
 
-<img alt="html coverage activation in Vitest UI" img-light src="/vitest-ui-show-coverage-light.png">
-<img alt="html coverage activation in Vitest UI" img-dark src="/vitest-ui-show-coverage-dark.png">
+<img alt="Vitest UI 中的 html 覆盖率激活" img-light src="/vitest-ui-show-coverage-light.png">
+<img alt="Vitest UI 中的 html 覆盖率激活" img-dark src="/vitest-ui-show-coverage-dark.png">
 
-<img alt="html coverage in Vitest UI" img-light src="/ui-coverage-1-light.png">
-<img alt="html coverage in Vitest UI" img-dark src="/ui-coverage-1-dark.png">
+<img alt="Vitest UI 中的 html 覆盖率" img-light src="/ui-coverage-1-light.png">
+<img alt="Vitest UI 中的 html 覆盖率" img-dark src="/ui-coverage-1-dark.png">

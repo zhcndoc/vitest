@@ -1,18 +1,18 @@
 ---
-title: Snapshot | Guide
+title: 快照 | 指南
 ---
 
-# Snapshot
+# 快照
 
-<CourseLink href="https://vueschool.io/lessons/snapshots-in-vitest?friend=vueuse">Learn Snapshot by video from Vue School</CourseLink>
+<CourseLink href="https://vueschool.io/lessons/snapshots-in-vitest?friend=vueuse">通过 Vue School 的视频学习快照</CourseLink>
 
-Snapshot tests are a very useful tool whenever you want to make sure the output of your functions does not change unexpectedly.
+快照测试是一个非常有用的工具，当你想要确保函数的输出不会意外更改时。
 
-When using snapshot, Vitest will take a snapshot of the given value, then compare it to a reference snapshot file stored alongside the test. The test will fail if the two snapshots do not match: either the change is unexpected, or the reference snapshot needs to be updated to the new version of the result.
+使用快照时，Vitest 会对给定值进行快照，然后将其与存储在测试旁边的参考快照文件进行比较。如果两个快照不匹配，测试将失败：要么更改是意外的，要么参考快照需要更新为结果的新版本。
 
-## Use Snapshots
+## 使用快照
 
-To snapshot a value, you can use the [`toMatchSnapshot()`](/api/expect#tomatchsnapshot) from `expect()` API:
+要对值进行快照，你可以使用 `expect()` API 中的 [`toMatchSnapshot()`](/api/expect#tomatchsnapshot)：
 
 ```ts
 import { expect, it } from 'vitest'
@@ -23,25 +23,25 @@ it('toUpperCase', () => {
 })
 ```
 
-The first time this test is run, Vitest creates a snapshot file that looks like this:
+第一次运行此测试时，Vitest 会创建一个如下所示的快照文件：
 
 ```js
-// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+// Vitest 快照 v1, https://vitest.dev/guide/snapshot.html
 
 exports['toUpperCase 1'] = '"FOOBAR"'
 ```
 
-The snapshot artifact should be committed alongside code changes, and reviewed as part of your code review process. On subsequent test runs, Vitest will compare the rendered output with the previous snapshot. If they match, the test will pass. If they don't match, either the test runner found a bug in your code that should be fixed, or the implementation has changed and the snapshot needs to be updated.
+快照文件应该与代码更改一起提交，并作为代码审查过程的一部分进行审查。在后续的测试运行中，Vitest 会将渲染的输出与之前的快照进行比较。如果它们匹配，测试将通过。如果它们不匹配，要么测试运行器发现了代码中应该修复的错误，要么实现已更改并且需要更新快照。
 
-Vitest stores a serialized representation of the received value. Snapshot rendering is powered by [`@vitest/pretty-format`](https://npmx.dev/package/@vitest/pretty-format). [`snapshotFormat`](/config/snapshotformat) allows configuring general snapshot formatting behavior in Vitest. For further customization, you can implement your own [custom serializers](#custom-serializer) or [custom snapshot matchers](#custom-snapshot-matchers).
+Vitest 存储接收值的序列化表示。快照渲染由 [`@vitest/pretty-format`](https://npmx.dev/package/@vitest/pretty-format) 提供支持。[`snapshotFormat`](/config/snapshotformat) 允许配置 Vitest 中的常规快照格式化行为。为了进一步定制，你可以实现自己的 [自定义序列化器](#custom-serializer) 或 [自定义快照匹配器](#custom-snapshot-matchers)。
 
 ::: warning
-When using Snapshots with async concurrent tests, `expect` from the local [Test Context](/guide/test-context) must be used to ensure the right test is detected.
+当在异步并发测试中使用快照时，必须使用本地 [测试上下文](/guide/test-context) 中的 `expect` 以确保检测到正确的测试。
 :::
 
-## Inline Snapshots
+## 内联快照
 
-Similarly, you can use the [`toMatchInlineSnapshot()`](/api/expect#tomatchinlinesnapshot) to store the snapshot inline within the test file.
+类似地，你可以使用 [`toMatchInlineSnapshot()`](/api/expect#tomatchinlinesnapshot) 将快照存储在测试文件内。
 
 ```ts
 import { expect, it } from 'vitest'
@@ -52,7 +52,7 @@ it('toUpperCase', () => {
 })
 ```
 
-Instead of creating a snapshot file, Vitest will modify the test file directly to update the snapshot as a string:
+Vitest 不会创建快照文件，而是直接修改测试文件以将快照更新为字符串：
 
 ```ts
 import { expect, it } from 'vitest'
@@ -63,35 +63,35 @@ it('toUpperCase', () => {
 })
 ```
 
-This allows you to see the expected output directly without jumping across different files.
+这允许你直接看到预期输出，而无需在不同文件之间跳转。
 
 ::: warning
-When using Snapshots with async concurrent tests, `expect` from the local [Test Context](/guide/test-context) must be used to ensure the right test is detected.
+当在异步并发测试中使用快照时，必须使用本地 [测试上下文](/guide/test-context) 中的 `expect` 以确保检测到正确的测试。
 :::
 
-## Updating Snapshots
+## 更新快照
 
-When the received value doesn't match the snapshot, the test fails and shows you the difference between them. When the snapshot change is expected, you may want to update the snapshot from the current state.
+当接收到的值与快照不匹配时，测试将失败并显示它们之间的差异。当快照更改是预期时，你可能想要从当前状态更新快照。
 
-In watch mode, you can press the `u` key in the terminal to update the failed snapshot directly.
+在监视模式下，你可以在终端中按 `u` 键直接更新失败的快照。
 
-Or you can use the `--update` or `-u` flag in the CLI to make Vitest update snapshots.
+或者你可以在 CLI 中使用 `--update` 或 `-u` 标志使 Vitest 更新快照。
 
 ```bash
 vitest -u
 ```
 
-### CI behavior
+### CI 行为
 
-By default, Vitest does not write snapshots in CI (`process.env.CI` is truthy) and any snapshot mismatches, missing snapshots, and obsolete snapshots fail the run. See [`update`](/config/update) for the details.
+默认情况下，Vitest 不会在 CI 中写入快照（`process.env.CI` 为真值），任何快照不匹配、缺少快照和过时快照都会导致运行失败。详见 [`update`](/config/update)。
 
-An **obsolete snapshot** is a snapshot entry (or snapshot file) that no longer matches any collected test. This usually happens after removing or renaming tests.
+**过时快照** 是指不再匹配任何收集到的测试的快照条目（或快照文件）。这通常发生在移除或重命名测试之后。
 
-## File Snapshots
+## 文件快照
 
-When calling `toMatchSnapshot()`, we store all snapshots in a formatted snap file. That means we need to escape some characters (namely the double-quote `"` and backtick `` ` ``) in the snapshot string. Meanwhile, you might lose the syntax highlighting for the snapshot content (if they are in some language).
+当调用 `toMatchSnapshot()` 时，我们将所有快照存储在一个格式化的 snap 文件中。这意味着我们需要转义快照字符串中的某些字符（即双引号 `"` 和反引号 `` ` ``）。同时，你可能会丢失快照内容的语法高亮（如果它们是某种语言）。
 
-In light of this, we introduced [`toMatchFileSnapshot()`](/api/expect#tomatchfilesnapshot) to explicitly match against a file. This allows you to assign any file extension to the snapshot file, and makes them more readable.
+鉴于此，我们引入了 [`toMatchFileSnapshot()`](/api/expect#tomatchfilesnapshot) 来显式匹配文件。这允许你为快照文件分配任何文件扩展名，并使它们更具可读性。
 
 ```ts
 import { expect, it } from 'vitest'
@@ -102,11 +102,11 @@ it('render basic', async () => {
 })
 ```
 
-It will compare with the content of `./test/basic.output.html`. And can be written back with the `--update` flag.
+它将与 `./test/basic.output.html` 的内容进行比较。并且可以通过 `--update` 标志写回。
 
-## Visual Snapshots
+## 视觉快照
 
-For visual regression testing of UI components and pages, Vitest provides built-in support through [browser mode](/guide/browser/) with the [`toMatchScreenshot()`](/api/browser/assertions#tomatchscreenshot) assertion:
+对于 UI 组件和页面的视觉回归测试，Vitest 通过 [浏览器模式](/guide/browser/) 提供内置支持，并使用 [`toMatchScreenshot()`](/api/browser/assertions#tomatchscreenshot) 断言：
 
 ```ts
 import { expect, test } from 'vitest'
@@ -118,18 +118,18 @@ test('button looks correct', async () => {
 })
 ```
 
-This captures screenshots and compares them against reference images to detect unintended visual changes. Learn more in the [Visual Regression Testing guide](/guide/browser/visual-regression-testing).
+这会捕获截图并将其与参考图像进行比较以检测意外的视觉更改。在 [视觉回归测试指南](/guide/browser/visual-regression-testing) 中了解更多。
 
-## Custom Serializer
+## 自定义序列化器
 
-You can add your own logic to alter how your snapshots are serialized. Like Jest, Vitest has default serializers for built-in JavaScript types, HTML elements, ImmutableJS and for React elements.
+你可以添加自己的逻辑来更改快照的序列化方式。像 Jest 一样，Vitest 拥有内置 JavaScript 类型、HTML 元素、ImmutableJS 和 React 元素的默认序列化器。
 
-You can explicitly add custom serializer by using [`expect.addSnapshotSerializer`](/api/expect#expect-addsnapshotserializer) API.
+你可以使用 [`expect.addSnapshotSerializer`](/api/expect#expect-addsnapshotserializer) API 显式添加自定义序列化器。
 
 ```ts
 expect.addSnapshotSerializer({
   serialize(val, config, indentation, depth, refs, printer) {
-    // `printer` is a function that serializes a value using existing plugins.
+    // `printer` 是一个使用现有插件序列化值的函数。
     return `Pretty foo: ${printer(
       val.foo,
       config,
@@ -144,14 +144,14 @@ expect.addSnapshotSerializer({
 })
 ```
 
-We also support [snapshotSerializers](/config/snapshotserializers) option to implicitly add custom serializers.
+我们还支持 [snapshotSerializers](/config/snapshotserializers) 选项来隐式添加自定义序列化器。
 
 ```ts [path/to/custom-serializer.ts]
 import { SnapshotSerializer } from 'vitest'
 
 export default {
   serialize(val, config, indentation, depth, refs, printer) {
-    // `printer` is a function that serializes a value using existing plugins.
+    // `printer` 是一个使用现有插件序列化值的函数。
     return `Pretty foo: ${printer(
       val.foo,
       config,
@@ -176,7 +176,7 @@ export default defineConfig({
 })
 ```
 
-After adding a test like this:
+添加如下测试后：
 
 ```ts
 test('foo snapshot test', () => {
@@ -191,7 +191,7 @@ test('foo snapshot test', () => {
 })
 ```
 
-You will get the following snapshot:
+你将获得以下快照：
 
 ```
 Pretty foo: Object {
@@ -200,9 +200,9 @@ Pretty foo: Object {
 }
 ```
 
-## Custom Snapshot Matchers <Badge type="warning">experimental</Badge> <Version>4.1.3</Version> {#custom-snapshot-matchers}
+## 自定义快照匹配器 <Badge type="warning">实验性</Badge> <Version>4.1.3</Version> {#custom-snapshot-matchers}
 
-You can build custom snapshot matchers using the composable functions exposed on `Snapshots` from `vitest`. These let you transform values before snapshotting while preserving full snapshot lifecycle support (creation, update, inline rewriting).
+你可以使用 `vitest` 中 `Snapshots` 暴露的组合函数构建自定义快照匹配器。这允许你在快照之前转换值，同时保留完整的快照生命周期支持（创建、更新、内联重写）。
 
 ```ts
 import { expect, test, Snapshots } from 'vitest'
@@ -234,7 +234,7 @@ test('raw file snapshot', async () => {
 })
 ```
 
-The composables return `{ pass, message }` so you can further customize the error:
+组合函数返回 `{ pass, message }`，因此你可以进一步自定义错误：
 
 ```ts
 import { Snapshots } from 'vitest'
@@ -250,14 +250,14 @@ expect.extend({
 ```
 
 ::: warning
-For inline snapshot matchers, the snapshot argument must be the last parameter (or second-to-last when using property matchers). Vitest rewrites the last string argument in the source code, so custom arguments before the snapshot work, but custom arguments after it are not supported.
+对于内联快照匹配器，快照参数必须是最后一个参数（或者在使用属性匹配器时为倒数第二个）。Vitest 会重写源代码中的最后一个字符串参数，因此快照之前的自定义参数可以工作，但不支持之后的自定义参数。
 :::
 
 ::: tip
-File snapshot matchers must be `async` — `toMatchFileSnapshot` returns a `Promise`. Remember to `await` the result in the matcher and in your test.
+文件快照匹配器必须是 `async` 的 — `toMatchFileSnapshot` 返回一个 `Promise`。记得在匹配器和测试中 `await` 结果。
 :::
 
-For TypeScript, extend the `Assertion` interface:
+对于 TypeScript，扩展 `Assertion` 接口：
 
 ```ts
 import 'vitest'
@@ -272,25 +272,25 @@ declare module 'vitest' {
 ```
 
 ::: tip
-See [Extending Matchers](/guide/extending-matchers) for more on `expect.extend` and custom matcher conventions.
+有关 `expect.extend` 和自定义匹配器约定的更多信息，请参阅 [扩展匹配器](/guide/extending-matchers)。
 :::
 
-## Difference from Jest
+## 与 Jest 的区别
 
-Vitest provides an almost compatible Snapshot feature with [Jest's](https://jestjs.io/docs/snapshot-testing) with a few exceptions:
+Vitest 提供了与 [Jest](https://jestjs.io/docs/snapshot-testing) 几乎兼容的快照功能，但有一些例外：
 
-#### 1. Comment header in the snapshot file is different
+#### 1. 快照文件中的注释头不同
 
 ```diff
-- // Jest Snapshot v1, https://goo.gl/fbAQLP
-+ // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+- // Jest 快照 v1, https://goo.gl/fbAQLP
++ // Vitest 快照 v1, https://vitest.dev/guide/snapshot.html
 ```
 
-This does not really affect the functionality but might affect your commit diff when migrating from Jest.
+这实际上不影响功能，但在从 Jest 迁移时可能会影响你的提交差异。
 
-#### 2. `printBasicPrototype` is default to `false`
+#### 2. `printBasicPrototype` 默认为 `false`
 
-Both Jest and Vitest snapshots are powered by `pretty-format`, but Vitest applies its own snapshot defaults on top of [`@vitest/pretty-format`](https://npmx.dev/package/@vitest/pretty-format). In particular, Vitest sets `printBasicPrototype` to `false` to provide a cleaner snapshot output, while in Jest <29.0.0 it is `true` by default.
+Jest 和 Vitest 快照都由 `pretty-format` 驱动，但 Vitest 在 [`@vitest/pretty-format`](https://npmx.dev/package/@vitest/pretty-format) 之上应用了自己的快照默认值。特别是，Vitest 将 `printBasicPrototype` 设置为 `false` 以提供更清晰的快照输出，而在 Jest <29.0.0 中默认为 `true`。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -302,7 +302,7 @@ test('snapshot', () => {
     },
   ]
 
-  // in Jest
+  // 在 Jest 中
   expect(bar).toMatchInlineSnapshot(`
     Array [
       Object {
@@ -311,7 +311,7 @@ test('snapshot', () => {
     ]
   `)
 
-  // in Vitest
+  // 在 Vitest 中
   expect(bar).toMatchInlineSnapshot(`
     [
       {
@@ -322,7 +322,7 @@ test('snapshot', () => {
 })
 ```
 
-We believe this is a more reasonable default for readability and overall DX. If you still prefer Jest's behavior, you can change your config:
+我们认为这对于可读性和整体 DX 来说是更合理的默认值。如果你仍然更喜欢 Jest 的行为，你可以更改配置：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
@@ -336,11 +336,11 @@ export default defineConfig({
 })
 ```
 
-#### 3. Chevron `>` is used as a separator instead of colon `:` for custom messages
+#### 3. 使用尖括号 `>` 而不是冒号 `:` 作为自定义消息的分隔符
 
-Vitest uses chevron `>` as a separator instead of colon `:` for readability, when a custom message is passed during creation of a snapshot file.
+当在创建快照文件期间传递自定义消息时，Vitest 使用尖括号 `>` 而不是冒号 `:` 作为分隔符，以提高可读性。
 
-For the following example test code:
+对于以下示例测试代码：
 ```js
 test('toThrowErrorMatchingSnapshot', () => {
   expect(() => {
@@ -349,27 +349,27 @@ test('toThrowErrorMatchingSnapshot', () => {
 })
 ```
 
-In Jest, the snapshot will be:
+在 Jest 中，快照将是：
 ```console
 exports[`toThrowErrorMatchingSnapshot: hint 1`] = `"error"`;
 ```
 
-In Vitest, the equivalent snapshot will be:
+在 Vitest 中，等效的快照将是：
 ```console
 exports[`toThrowErrorMatchingSnapshot > hint 1`] = `[Error: error]`;
 ```
 
-#### 4. default `Error` snapshot is different for `toThrowErrorMatchingSnapshot` and `toThrowErrorMatchingInlineSnapshot`
+#### 4. `toThrowErrorMatchingSnapshot` 和 `toThrowErrorMatchingInlineSnapshot` 的默认 `Error` 快照不同
 
 ```js
 import { expect, test } from 'vitest'
 
 test('snapshot', () => {
-  // in Jest and Vitest
+  // 在 Jest 和 Vitest 中
   expect(new Error('error')).toMatchInlineSnapshot(`[Error: error]`)
 
-  // Jest snapshots `Error.message` for `Error` instance
-  // Vitest prints the same value as toMatchInlineSnapshot
+  // Jest 为 `Error` 实例快照 `Error.message`
+  // Vitest 打印与 toMatchInlineSnapshot 相同的值
   expect(() => {
     throw new Error('error')
   }).toThrowErrorMatchingInlineSnapshot(`"error"`) // [!code --]

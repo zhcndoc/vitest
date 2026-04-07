@@ -1,36 +1,36 @@
 ---
-title: Mocking | Guide
+title: 模拟 | 指南
 outline: false
 ---
 
-# Mocking
+# 模拟
 
-When writing tests it's only a matter of time before you need to create a "fake" version of an internal — or external — service. This is commonly referred to as **mocking**. Vitest provides utility functions to help you out through its `vi` helper. You can import it from `vitest` or access it globally if [`global` configuration](/config/globals) is enabled.
+在编写测试时，迟早需要创建一个内部或外部服务的“伪造”版本。这通常被称为 **mocking**（模拟）。Vitest 通过其 `vi` 辅助工具提供实用函数来帮助你。你可以从 `vitest` 导入它，如果启用了 [`global` 配置](/config/globals)，也可以全局访问它。
 
 ::: warning
-Always remember to clear or restore mocks before or after each test run to undo mock state changes between runs! See [`mockReset`](/api/mock#mockreset) docs for more info.
+务必记得在每次测试运行之前或之后清除或恢复 mock，以撤销运行之间的 mock 状态更改！请参阅 [`mockReset`](/api/mock#mockreset) 文档了解更多信息。
 :::
 
-If you are not familiar with `vi.fn`, `vi.mock` or `vi.spyOn` methods, check the [API section](/api/vi) first.
+如果你不熟悉 `vi.fn`、`vi.mock` 或 `vi.spyOn` 方法，请先查看 [API 部分](/api/vi)。
 
-Vitest has a comprehensive list of guides regarding mocking:
+Vitest 有一份关于模拟的综合指南列表：
 
-- [Mocking Classes](/guide/mocking/classes.md)
-- [Mocking Dates](/guide/mocking/dates.md)
-- [Mocking the File System](/guide/mocking/file-system.md)
-- [Mocking Functions](/guide/mocking/functions.md)
-- [Mocking Globals](/guide/mocking/globals.md)
-- [Mocking Modules](/guide/mocking/modules.md)
-- [Mocking Requests](/guide/mocking/requests.md)
-- [Mocking Timers](/guide/mocking/timers.md)
+- [模拟类](/guide/mocking/classes.md)
+- [模拟日期](/guide/mocking/dates.md)
+- [模拟文件系统](/guide/mocking/file-system.md)
+- [模拟函数](/guide/mocking/functions.md)
+- [模拟全局变量](/guide/mocking/globals.md)
+- [模拟模块](/guide/mocking/modules.md)
+- [模拟请求](/guide/mocking/requests.md)
+- [模拟定时器](/guide/mocking/timers.md)
 
-For a simpler and quicker way to get started with mocking, you can check the Cheat Sheet below.
+若想更简单快速地开始模拟，你可以查看下面的速查表。
 
-## Cheat Sheet
+## 速查表
 
-I want to…
+我想要…
 
-### Mock exported variables
+### 模拟导出的变量
 ```js [example.js]
 export const getter = 'variable'
 ```
@@ -41,15 +41,15 @@ vi.spyOn(exports, 'getter', 'get').mockReturnValue('mocked')
 ```
 
 ::: warning
-This will not work in the Browser Mode. For a workaround, see [Limitations](/guide/browser/#spying-on-module-exports).
+这在浏览器模式（Browser Mode）下不起作用。有关解决方法，请参阅 [限制](/guide/browser/#spying-on-module-exports)。
 :::
 
-### Mock an exported function
+### 模拟导出的函数
 
-1. Example with `vi.mock`:
+1. 使用 `vi.mock` 的示例：
 
 ::: warning
-Don't forget that a `vi.mock` call is hoisted to top of the file. It will always be executed before all imports.
+别忘了 `vi.mock` 调用会被提升到文件顶部。它总是在所有导入之前执行。
 :::
 
 ```ts [example.js]
@@ -63,7 +63,7 @@ vi.mock('./example.js', () => ({
 }))
 ```
 
-2. Example with `vi.spyOn`:
+2. 使用 `vi.spyOn` 的示例：
 ```ts
 import * as exports from './example.js'
 
@@ -71,12 +71,12 @@ vi.spyOn(exports, 'method').mockImplementation(() => {})
 ```
 
 ::: warning
-`vi.spyOn` example will not work in the Browser Mode. For a workaround, see [Limitations](/guide/browser/#spying-on-module-exports).
+`vi.spyOn` 示例在浏览器模式（Browser Mode）下不起作用。有关解决方法，请参阅 [限制](/guide/browser/#spying-on-module-exports)。
 :::
 
-### Mock an exported class implementation
+### 模拟导出的类实现
 
-1. Example with a fake `class`:
+1. 使用伪造 `class` 的示例：
 ```ts [example.js]
 export class SomeClass {}
 ```
@@ -91,7 +91,7 @@ vi.mock(import('./example.js'), () => {
 })
 ```
 
-2. Example with `vi.spyOn`:
+2. 使用 `vi.spyOn` 的示例：
 
 ```ts
 import * as mod from './example.js'
@@ -102,12 +102,12 @@ vi.spyOn(mod, 'SomeClass').mockImplementation(class FakeClass {
 ```
 
 ::: warning
-`vi.spyOn` example will not work in the Browser Mode. For a workaround, see [Limitations](/guide/browser/#spying-on-module-exports).
+`vi.spyOn` 示例在浏览器模式（Browser Mode）下不起作用。有关解决方法，请参阅 [限制](/guide/browser/#spying-on-module-exports)。
 :::
 
-### Spy on an object returned from a function
+### 监听函数返回的对象
 
-1. Example using cache:
+1. 使用缓存的示例：
 
 ```ts [example.js]
 export function useObject() {
@@ -133,19 +133,19 @@ vi.mock(import('./example.js'), () => {
         method: vi.fn(),
       }
     }
-    // now every time that useObject() is called it will
-    // return the same object reference
+    // 现在每次调用 useObject() 时
+    // 都会返回相同的对象引用
     return _cache
   }
   return { useObject }
 })
 
 const obj = useObject()
-// obj.method was called inside some-path
+// obj.method 在 some-path 中被调用
 expect(obj.method).toHaveBeenCalled()
 ```
 
-### Mock part of a module
+### 模拟模块的一部分
 
 ```ts
 import { mocked, original } from './some-path.js'
@@ -157,50 +157,50 @@ vi.mock(import('./some-path.js'), async (importOriginal) => {
     mocked: vi.fn()
   }
 })
-original() // has original behaviour
-mocked() // is a spy function
+original() // 具有原始行为
+mocked() // 是一个 spy 函数
 ```
 
 ::: warning
-Don't forget that this only [mocks _external_ access](/guide/mocking/modules#mocking-modules-pitfalls). In this example, if `original` calls `mocked` internally, it will always call the function defined in the module, not in the mock factory.
+别忘了这仅 [模拟 _外部_ 访问](/guide/mocking/modules#mocking-modules-pitfalls)。在此示例中，如果 `original` 在内部调用 `mocked`，它将始终调用模块中定义的函数，而不是 mock 工厂中的函数。
 :::
 
-### Mock the current date
+### 模拟当前日期
 
-To mock `Date`'s time, you can use `vi.setSystemTime` helper function. This value will **not** automatically reset between different tests.
+要模拟 `Date` 的时间，你可以使用 `vi.setSystemTime` 辅助函数。此值在不同测试之间 **不会** 自动重置。
 
-Beware that using `vi.useFakeTimers` also changes the `Date`'s time.
+请注意，使用 `vi.useFakeTimers` 也会更改 `Date` 的时间。
 
 ```ts
 const mockDate = new Date(2022, 0, 1)
 vi.setSystemTime(mockDate)
 const now = new Date()
 expect(now.valueOf()).toBe(mockDate.valueOf())
-// reset mocked time
+// 重置模拟时间
 vi.useRealTimers()
 ```
 
-### Mock a global variable
+### 模拟全局变量
 
-You can set global variable by assigning a value to `globalThis` or using [`vi.stubGlobal`](/api/vi#vi-stubglobal) helper. When using `vi.stubGlobal`, it will **not** automatically reset between different tests, unless you enable [`unstubGlobals`](/config/unstubglobals) config option or call [`vi.unstubAllGlobals`](/api/vi#vi-unstuballglobals).
+你可以通过给 `globalThis` 赋值或使用 [`vi.stubGlobal`](/api/vi#vi-stubglobal) 辅助工具来设置全局变量。使用 `vi.stubGlobal` 时，它在不同测试之间 **不会** 自动重置，除非你启用 [`unstubGlobals`](/config/unstubglobals) 配置选项或调用 [`vi.unstubAllGlobals`](/api/vi#vi-unstuballglobals)。
 
 ```ts
 vi.stubGlobal('__VERSION__', '1.0.0')
 expect(__VERSION__).toBe('1.0.0')
 ```
 
-### Mock `import.meta.env`
+### 模拟 `import.meta.env`
 
-1. To change environmental variable, you can just assign a new value to it.
+1. 要更改环境变量，你可以直接为其赋予新值。
 
 ::: warning
-The environmental variable value will **_not_** automatically reset between different tests.
+环境变量值在不同测试之间 **_不会_** 自动重置。
 :::
 
 ```ts
 import { beforeEach, expect, it } from 'vitest'
 
-// you can reset it in beforeEach hook manually
+// 你可以在 beforeEach 钩子中手动重置它
 const originalViteEnv = import.meta.env.VITE_ENV
 
 beforeEach(() => {
@@ -213,12 +213,12 @@ it('changes value', () => {
 })
 ```
 
-2. If you want to automatically reset the value(s), you can use the `vi.stubEnv` helper with the [`unstubEnvs`](/config/unstubenvs) config option enabled (or call [`vi.unstubAllEnvs`](/api/vi#vi-unstuballenvs) manually in a `beforeEach` hook):
+2. 如果你想自动重置值，可以使用 `vi.stubEnv` 辅助工具并启用 [`unstubEnvs`](/config/unstubenvs) 配置选项（或在 `beforeEach` 钩子中手动调用 [`vi.unstubAllEnvs`](/api/vi#vi-unstuballenvs)）：
 
 ```ts
 import { expect, it, vi } from 'vitest'
 
-// before running tests "VITE_ENV" is "test"
+// 运行测试前 "VITE_ENV" 为 "test"
 import.meta.env.VITE_ENV === 'test'
 
 it('changes value', () => {

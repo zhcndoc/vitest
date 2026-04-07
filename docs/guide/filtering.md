@@ -1,20 +1,20 @@
 ---
-title: Test Filtering | Guide
+title: 测试过滤 | 指南
 ---
 
-# Test Filtering
+# 测试过滤
 
-Filtering, timeouts, concurrent for suite and tests
+套件和测试的过滤、超时和并发
 
-## CLI
+## 命令行
 
-You can use CLI to filter test files by name:
+你可以使用命令行按名称过滤测试文件：
 
 ```bash
 $ vitest basic
 ```
 
-Will only execute test files that contain `basic`, e.g.
+将只执行包含 `basic` 的测试文件，例如：
 
 ```
 basic.test.ts
@@ -22,16 +22,16 @@ basic-foo.test.ts
 basic/foo.test.ts
 ```
 
-You can also use the `-t, --testNamePattern <pattern>` option to filter tests by full name. This can be helpful when you want to filter by the name defined within a file rather than the filename itself.
+你也可以使用 `-t, --testNamePattern <pattern>` 选项按全名过滤测试。当你想要按文件内定义的名称而不是文件名本身进行过滤时，这很有用。
 
-Since Vitest 3, you can also specify the test by filename and line number:
+自 Vitest 3 起，你还可以通过文件名和行号指定测试：
 
 ```bash
 $ vitest basic/foo.test.ts:10
 ```
 
 ::: warning
-Note that Vitest requires the full filename for this feature to work. It can be relative to the current working directory or an absolute file path.
+注意，Vitest 需要完整文件名才能使此功能正常工作。它可以相对于当前工作目录，也可以是绝对文件路径。
 
 ```bash
 $ vitest basic/foo.js:10 # ✅
@@ -41,7 +41,7 @@ $ vitest foo:10 # ❌
 $ vitest ./basic/foo:10 # ❌
 ```
 
-At the moment Vitest also doesn't support ranges:
+目前 Vitest 也不支持范围：
 
 ```bash
 $ vitest basic/foo.test.ts:10, basic/foo.test.ts:25 # ✅
@@ -49,9 +49,9 @@ $ vitest basic/foo.test.ts:10-25 # ❌
 ```
 :::
 
-## Specifying a Timeout
+## 指定超时时间
 
-You can optionally pass a timeout in milliseconds as a third argument to tests. The default is [5 seconds](/config/testtimeout).
+你可以选择将毫秒级的超时时间作为第三个参数传递给测试。默认值是 [5 秒](/config/testtimeout)。
 
 ```ts
 import { test } from 'vitest'
@@ -59,7 +59,7 @@ import { test } from 'vitest'
 test('name', async () => { /* ... */ }, 1000)
 ```
 
-Hooks also can receive a timeout, with the same 5 seconds default.
+钩子也可以接收超时时间，默认同样是 5 秒。
 
 ```ts
 import { beforeAll } from 'vitest'
@@ -67,31 +67,31 @@ import { beforeAll } from 'vitest'
 beforeAll(async () => { /* ... */ }, 1000)
 ```
 
-## Skipping Suites and Tests
+## 跳过套件和测试
 
-Use `.skip` to avoid running certain suites or tests
+使用 `.skip` 以避免运行某些套件或测试
 
 ```ts
 import { assert, describe, it } from 'vitest'
 
 describe.skip('skipped suite', () => {
   it('test', () => {
-    // Suite skipped, no error
+    // 套件已跳过，无错误
     assert.equal(Math.sqrt(4), 3)
   })
 })
 
 describe('suite', () => {
   it.skip('skipped test', () => {
-    // Test skipped, no error
+    // 测试已跳过，无错误
     assert.equal(Math.sqrt(4), 3)
   })
 })
 ```
 
-## Filtering Tags
+## 过滤标签
 
-If your test defines a [tag](/guide/test-tags), you can filter your tests with a `--tags-filter` option:
+如果你的测试定义了 [标签](/guide/test-tags)，你可以使用 `--tags-filter` 选项过滤测试：
 
 ```ts
 test('renders a form', { tags: ['frontend'] }, () => {
@@ -107,14 +107,14 @@ test('calls an external API', { tags: ['backend'] }, () => {
 vitest --tags-filter=frontend
 ```
 
-## Selecting Suites and Tests to Run
+## 选择要运行的套件和测试
 
-Use `.only` to only run certain suites or tests
+使用 `.only` 仅运行某些套件或测试
 
 ```ts
 import { assert, describe, it } from 'vitest'
 
-// Only this suite (and others marked with only) are run
+// 仅运行此套件（以及其他标记为 only 的套件）
 describe.only('suite', () => {
   it('test', () => {
     assert.equal(Math.sqrt(4), 3)
@@ -123,18 +123,18 @@ describe.only('suite', () => {
 
 describe('another suite', () => {
   it('skipped test', () => {
-    // Test skipped, as tests are running in Only mode
+    // 测试已跳过，因为测试正在仅运行模式下运行
     assert.equal(Math.sqrt(4), 3)
   })
 
   it.only('test', () => {
-    // Only this test (and others marked with only) are run
+    // 仅运行此测试（以及其他标记为 only 的测试）
     assert.equal(Math.sqrt(4), 2)
   })
 })
 ```
 
-Run Vitest with a file filter and a line number:
+使用文件过滤和行号运行 Vitest：
 
 ```shell
 vitest ./test/example.test.ts:5
@@ -144,24 +144,24 @@ vitest ./test/example.test.ts:5
 import { assert, describe, it } from 'vitest'
 
 describe('suite', () => {
-  // Run only this test
+  // 仅运行此测试
   it('test', () => {
     assert.equal(Math.sqrt(4), 3)
   })
 })
 ```
 
-## Unimplemented Suites and Tests
+## 未实现的套件和测试
 
-Use `.todo` to stub suites and tests that should be implemented
+使用 `.todo` 存根应该实现的套件和测试
 
 ```ts
 import { describe, it } from 'vitest'
 
-// An entry will be shown in the report for this suite
+// 报告中将显示此套件的条目
 describe.todo('unimplemented suite')
 
-// An entry will be shown in the report for this test
+// 报告中将显示此测试的条目
 describe('suite', () => {
   it.todo('unimplemented test')
 })

@@ -1,7 +1,7 @@
 ---
-title: Vitest 4.0 is out!
+title: Vitest 4.0 发布
 author:
-  name: The Vitest Team
+  name: Vitest 团队
 date: 2025-10-22
 sidebar: false
 head:
@@ -10,53 +10,53 @@ head:
       content: website
   - - meta
     - property: og:title
-      content: Announcing Vitest 4.0
+      content: Vitest 4.0 发布
   - - meta
     - property: og:image
-      content: https://vitest.dev/og-vitest-4.jpg
+      content: https://vitest.zhcndoc.com/og-vitest-4.jpg
   - - meta
     - property: og:url
-      content: https://vitest.dev/blog/vitest-4
+      content: https://vitest.zhcndoc.com/blog/vitest-4
   - - meta
     - property: og:description
-      content: Vitest 4.0 Release Announcement
+      content: Vitest 4.0 发布！这个版本带来了许多新功能和改进，包括稳定的浏览器模式、视觉回归测试、Playwright Traces 支持、改进的调试、类型感知 Hooks、新的 API 方法和更多。
   - - meta
     - name: twitter:card
       content: summary_large_image
 ---
 
-# Vitest 4.0 is out!
+# Vitest 4.0 发布
 
-_October 22, 2025_
+_2025 年 10 月 22 日_
 
-![Vitest 4 Announcement Cover Image](/og-vitest-4.jpg)
+![Vitest 4 公告封面图](/og-vitest-4.jpg)
 
-## The next Vitest major is here
+## 下一代 Vitest 主版本来了
 
-Today, we are thrilled to announce Vitest 4!
+今天，我们激动地宣布 Vitest 4！
 
-Quick links:
+快速链接：
 
-- [Docs](/)
-- Translations: [简体中文](https://cn.vitest.dev/)
-- [Migration Guide](/guide/migration#vitest-4)
-- [GitHub Changelog](https://github.com/vitest-dev/vitest/releases/tag/v4.0.0)
+- [文档](/)
+- 翻译：[简体中文](https://cn.vitest.dev/)
+- [迁移指南](/guide/migration#vitest-4)
+- [GitHub 变更日志](https://github.com/vitest-dev/vitest/releases/tag/v4.0.0)
 
-If you've not used Vitest before, we suggest reading the [Getting Started](/guide/) and [Features](/guide/features) guides first.
+如果你之前没用过 Vitest，我们建议先阅读 [入门](/guide/) 和 [特性](/guide/features) 指南。
 
-We extend our gratitude to the over [640 contributors to Vitest Core](https://github.com/vitest-dev/vitest/graphs/contributors) and to the maintainers and contributors of Vitest integrations, tools, and translations who have helped us develop this new major release. We encourage you to get involved and help us improve Vitest for the entire ecosystem. Learn more at our [Contributing Guide](https://github.com/vitest-dev/vitest/blob/main/CONTRIBUTING.md).
+我们向 [640 多位 Vitest Core 贡献者](https://github.com/vitest-dev/vitest/graphs/contributors) 以及帮助我们开发这个新主版本的 Vitest 集成、工具和翻译的维护者和贡献者表示感谢。我们鼓励你参与进来，帮助我们在整个生态系统中改进 Vitest。了解更多请访问我们的 [贡献指南](https://github.com/vitest-dev/vitest/blob/main/CONTRIBUTING.md)。
 
-To get started, we suggest helping [triage issues](https://github.com/vitest-dev/vitest/issues), [review PRs](https://github.com/vitest-dev/vitest/pulls), send failing tests PRs based on open issues, and support others in [Discussions](https://github.com/vitest-dev/vitest/discussions) and Vitest Land's [help forum](https://discord.com/channels/917386801235247114/1057959614160851024). If you'd like to talk to us, join our [Discord community](http://chat.vitest.dev/) and say hi on the [#contributing channel](https://discord.com/channels/917386801235247114/1057959614160851024).
+为了开始，我们建议帮助 [分类问题](https://github.com/vitest-dev/vitest/issues)，[审查 PR](https://github.com/vitest-dev/vitest/pulls)，基于未解决的问题发送失败测试的 PR，并在 [讨论区](https://github.com/vitest-dev/vitest/discussions) 和 Vitest Land 的 [帮助论坛](https://discord.com/channels/917386801235247114/1057959614160851024) 中支持他人。如果你想与我们交流，加入我们的 [Discord 社区](http://chat.vitest.dev/) 并在 [#contributing 频道](https://discord.com/channels/917386801235247114/1057959614160851024) 打招呼。
 
-For the latest news about the Vitest ecosystem and Vitest core, follow us on [Bluesky](https://bsky.app/profile/vitest.dev) or [Mastodon](https://webtoo.ls/@vitest).
+有关 Vitest 生态系统和 Vitest core 的最新消息，请在 [Bluesky](https://bsky.app/profile/vitest.dev) 或 [Mastodon](https://webtoo.ls/@vitest) 上关注我们。
 
-To stay updated, keep an eye on the [VoidZero blog](https://voidzero.dev/blog) and subscribe to the [newsletter](https://voidzero.dev/newsletter).
+为了保持更新，请关注 [VoidZero 博客](https://voidzero.dev/blog) 并订阅 [通讯](https://voidzero.dev/newsletter)。
 
-## Browser Mode is Stable
+## 浏览器模式已稳定
 
-With this release we are removing the `experimental` tag from [Browser Mode](/guide/browser/). To make it possible, we had to introduce some changes to the public API.
+随着此次发布，我们从 [浏览器模式](/guide/browser/) 中移除了 `experimental` 标签。为了实现这一点，我们必须对公共 API 引入一些变更。
 
-To define a provider, you now need to install a separate package: [`@vitest/browser-playwright`](https://npmx.dev/package/@vitest/browser-playwright), [`@vitest/browser-webdriverio`](https://npmx.dev/package/@vitest/browser-webdriverio), or [`@vitest/browser-preview`](https://npmx.dev/package/@vitest/browser-preview). This makes it simpler to work with custom options and doesn't require adding `/// <reference` comments anymore.
+要定义提供者，你现在需要安装一个独立的包：[`@vitest/browser-playwright`](https://npmx.dev/package/@vitest/browser-playwright)、[`@vitest/browser-webdriverio`](https://npmx.dev/package/@vitest/browser-webdriverio) 或 [`@vitest/browser-preview`](https://npmx.dev/package/@vitest/browser-preview)。这使得使用自定义选项更简单，并且不再需要添加 `/// <reference` 注释。
 
 ::: code-group
 ```ts [playwright]
@@ -129,7 +129,7 @@ export default defineConfig({
 ```
 :::
 
-The context is no longer imported from `@vitest/browser/context` (but it will keep working until the next major version for better compatibility with tools that did not update yet), now just import from `vitest/browser`:
+context 不再从 `@vitest/browser/context` 导入（但它将继续工作直到下一个主版本，以便与尚未更新的工具更好地兼容），现在只需从 `vitest/browser` 导入：
 
 ```ts
 import { page } from '@vitest/browser/context' // [!code --]
@@ -140,51 +140,50 @@ test('example', async () => {
 })
 ```
 
-With these changes, the `@vitest/browser` package can be removed from your dependencies. It is now included in every provider package automatically.
+通过这些变更，`@vitest/browser` 包可以从你的依赖中移除。它现在会自动包含在每个提供者包中。
 
-## Visual Regression Testing
+## 视觉回归测试
 
-Vitest 4 adds support for [Visual Regression testing](/guide/browser/visual-regression-testing.md) in Browser Mode. We will continue to iterate on this feature to improve the experience.
+Vitest 4 在浏览器模式中添加了 [视觉回归测试](/guide/browser/visual-regression-testing.md) 支持。我们将继续迭代此功能以改进体验。
 
-Visual regression testing in Vitest can be done through the
-[`toMatchScreenshot` assertion](/api/browser/assertions.html#tomatchscreenshot):
+Vitest 中的视觉回归测试可以通过 [`toMatchScreenshot` 断言](/api/browser/assertions.html#tomatchscreenshot) 完成：
 
 ```ts
 import { expect, test } from 'vitest'
 import { page } from 'vitest/browser'
 
 test('hero section looks correct', async () => {
-  // ...the rest of the test
+  // ... 测试的其余部分
 
-  // capture and compare screenshot
+  // 捕获并比较截图
   await expect(page.getByTestId('hero')).toMatchScreenshot('hero-section')
 })
 ```
 
-Vitest captures screenshots of your UI components and pages, then compares them against reference images to detect unintended visual changes.
+Vitest 捕获你的 UI 组件和页面的截图，然后将它们与参考图像进行比较以检测意外的视觉变化。
 
-Alongside this feature, Vitest also introduces a `toBeInViewport` matcher. It allows you to check if an element is currently in viewport with [IntersectionObserver API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API).
+除了此功能外，Vitest 还引入了 `toBeInViewport` 匹配器。它允许你使用 [IntersectionObserver API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) 检查元素当前是否在视口中。
 
 ```ts
-// A specific element is in viewport.
+// 特定元素在视口中。
 await expect.element(page.getByText('Welcome')).toBeInViewport()
 
-// 50% of a specific element should be in viewport
+// 特定元素的 50% 应该在视口中
 await expect.element(page.getByText('To')).toBeInViewport({ ratio: 0.5 })
 ```
 
-## Playwright Traces Support
+## Playwright Traces 支持
 
-Vitest 4 supports generating [Playwright Traces](/guide/browser/trace-view). To enable tracing, you need to set the [`trace`](/config/browser/trace) option in the `test.browser` configuration or pass down `--browser.trace=on` option (`off`, `on-first-retry`, `on-all-retries`, `retain-on-failure` are also available).
+Vitest 4 支持生成 [Playwright Traces](/guide/browser/trace-view)。要启用追踪，你需要在 `test.browser` 配置中设置 [`trace`](/config/browser/trace) 选项，或传递 `--browser.trace=on` 选项（`off`、`on-first-retry`、`on-all-retries`、`retain-on-failure` 也可用）。
 
-![Playwright Traces interface](/traces.png)
+![Playwright Traces 界面](/traces.png)
 
-The traces are available in reporters as [annotations](/guide/test-annotations). For example, in the HTML reporter, you can find the link to the trace file in the test details. To open the trace file, you can use the [Playwright Trace Viewer](https://playwright.dev/docs/trace-viewer).
+追踪在报告器中作为 [注解](/guide/test-annotations) 可用。例如，在 HTML 报告器中，你可以在测试详情中找到追踪文件的链接。要打开追踪文件，你可以使用 [Playwright Trace Viewer](https://playwright.dev/docs/trace-viewer)。
 
-## Locator Improvements
+## Locator 改进
 
-The `frameLocator` method returns a `FrameLocator` instance that can be used to find elements inside the iframe.
-Vitest now supports a new [`page.frameLocator`](/api/browser/context#framelocator) API (only with `playwright` provider).
+`frameLocator` 方法返回一个 `FrameLocator` 实例，可用于查找 iframe 内部的元素。
+Vitest 现在支持一个新的 [`page.frameLocator`](/api/browser/context#framelocator) API（仅与 `playwright` 提供者一起使用）。
 
 ```ts
 const frame = page.frameLocator(
@@ -192,24 +191,24 @@ const frame = page.frameLocator(
 )
 
 await frame.getByText('Hello World').click() // ✅
-await frame.click() // ❌ Not available
+await frame.click() // ❌ 不可用
 ```
 
-Every locator now exposes a `length` property, allowing them to be used with `toHaveLength` matcher automatically:
+每个 locator 现在都暴露一个 `length` 属性，允许它们与 `toHaveLength` 匹配器自动一起使用：
 
 ```ts
 await expect.element(page.getByText('Item')).toHaveLength(3)
 ```
 
-## Improved Debugging
+## 改进的调试
 
-The [vscode extension](https://vitest.dev/vscode) now supports "Debug Test" button when running browser tests.
+[vscode 扩展](https://vitest.dev/vscode) 现在在运行浏览器测试时支持 "调试测试" 按钮。
 
-If you prefer configuring the debug options yourself, you can start Vitest with the `--inspect` flag (available with `playwright` and `webdriverio`) and connect to [DevTools](chrome://inspect/) manually. In this case Vitest will also disable the new [`trackUnhandledErrors`](/config/browser/trackunhandlederrors) option automatically.
+如果你更喜欢自己配置调试选项，你可以使用 `--inspect` 标志启动 Vitest（`playwright` 和 `webdriverio` 可用），并手动连接到 [DevTools](chrome://inspect/)。在这种情况下，Vitest 还将自动禁用新的 [`trackUnhandledErrors`](/config/browser/trackunhandlederrors) 选项。
 
-## Type-Aware Hooks
+## 类型感知 Hooks
 
-When using `test.extend` with lifecycle hooks like `beforeEach` and `afterEach`, you can now reference them directly on the returned `test` object:
+当使用 `test.extend` 与生命周期 hooks（如 `beforeEach` 和 `afterEach`）时，你现在可以直接在返回的 `test` 对象上引用它们：
 
 ```ts
 import { test as baseTest } from 'vitest'
@@ -222,7 +221,7 @@ const test = baseTest.extend<{
   },
 })
 
-// Unlike global hooks, these hooks are aware of the extended context
+// 与全局 hooks 不同，这些 hooks 感知扩展的 context
 test.beforeEach(({ todos }) => {
   todos.push(1)
 })
@@ -234,9 +233,9 @@ test.afterEach(({ todos }) => {
 
 ## `expect.assert`
 
-Vitest has always exported [Chai's `assert`](https://www.chaijs.com/api/assert/), but sometimes using it was inconvenient because many modules have the same export.
+Vitest 一直导出 [Chai 的 `assert`](https://www.chaijs.com/api/assert/)，但有时使用它很不方便，因为许多模块都有相同的导出。
 
-Now Vitest exposes the same method on `expect` for an easy access. This is especially useful if you need to narrow down the type, since `expect.to*` methods do not support that:
+现在 Vitest 在 `expect` 上暴露了相同的方法以便于访问。如果你需要缩小类型范围，这尤其有用，因为 `expect.to*` 方法不支持这一点：
 
 ```ts
 interface Cat {
@@ -252,15 +251,15 @@ type Animal = Cat | Dog
 const animal: Animal = { __type: 'Dog', bark: () => {} }
 
 expect.assert(animal.__type === 'Dog')
-// does not show a type error!
+// 不会显示类型错误！
 expect(animal.bark()).toBeUndefined()
 ```
 
 ## `expect.schemaMatching`
 
-Vitest 4 introduces a new asymmetric matcher called `expect.schemaMatching`. It accepts a [Standard Schema v1](https://standardschema.dev/) object and validates values against it, passing the assertion when the value conforms to the schema.
+Vitest 4 引入了一种新的非对称匹配器，称为 `expect.schemaMatching`。它接受一个 [Standard Schema v1](https://standardschema.dev/) 对象并针对它验证值，当值符合 schema 时通过断言。
 
-As a reminder, asymmetric matchers can be used in all `expect` matchers that check equality, including `toEqual`, `toStrictEqual`, `toMatchObject`, `toContainEqual`, `toThrow`, `toHaveBeenCalledWith`, `toHaveReturnedWith` and `toHaveBeenResolvedWith`.
+提醒一下，非对称匹配器可用于所有检查相等性的 `expect` 匹配器中，包括 `toEqual`、`toStrictEqual`、`toMatchObject`、`toContainEqual`、`toThrow`、`toHaveBeenCalledWith`、`toHaveReturnedWith` 和 `toHaveBeenResolvedWith`。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -268,29 +267,29 @@ import { z } from 'zod'
 import * as v from 'valibot'
 import { type } from 'arktype'
 
-test('email validation', () => {
+test('邮箱验证', () => {
   const user = { email: 'john@example.com' }
 
-  // using Zod
+  // 使用 Zod
   expect(user).toEqual({
     email: expect.schemaMatching(z.string().email()),
   })
 
-  // using Valibot
+  // 使用 Valibot
   expect(user).toEqual({
     email: expect.schemaMatching(v.pipe(v.string(), v.email()))
   })
 
-  // using ArkType
+  // 使用 ArkType
   expect(user).toEqual({
     email: expect.schemaMatching(type('string.email')),
   })
 })
 ```
 
-## Reporter Updates
+## 报告器更新
 
-The `basic` reporter was removed. You can use the `default` reporter with `summary: false` instead:
+移除了 `basic` 报告器。你可以改用 `summary: false` 的 `default` 报告器：
 
 ```ts
 export default defineConfig({
@@ -302,9 +301,9 @@ export default defineConfig({
 })
 ```
 
-The [`default`](/guide/reporters#default-reporter) reporter now only prints tests in a tree if there is only one test file running. If you want to always see tests printed as a tree, you can use a new [`tree`](/guide/reporters#tree-reporter) reporter.
+[`default`](/guide/reporters#default-reporter) 报告器现在仅在只有一个测试文件运行时才以树形结构打印测试。如果你希望始终看到测试以树形结构打印，可以使用新的 [`tree`](/guide/reporters#tree-reporter) 报告器。
 
-The [`verbose`](/guide/reporters#verbose-reporter) reporter now always prints tests one by one when they are finished. Previously, this was done only in CI, and locally `verbose` would behave mostly like a `default` reporter. If you prefer to keep the old behaviour, you can conditionally use the `verbose` reporter only in CI by updating the config:
+[`verbose`](/guide/reporters#verbose-reporter) 报告器现在总是在测试完成时逐个打印。此前，这仅在 CI 中完成，而在本地 `verbose` 的行为大多类似于 `default` 报告器。如果你希望保留旧的行为，可以通过更新配置，仅在 CI 中条件性地使用 `verbose` 报告器：
 
 ```ts
 import { defineConfig } from 'vitest/config'
@@ -316,23 +315,23 @@ export default defineConfig({
 })
 ```
 
-## New API Methods
+## 新的 API 方法
 
-Vitest 4 comes with new advanced public [API methods](/api/advanced/vitest):
+Vitest 4 带来了新的高级公共 [API 方法](/api/advanced/vitest)：
 
-- [`experimental_parseSpecifications`](/api/advanced/vitest#parsespecification) allows you to parse a test file without running it.
-- [`watcher`](/api/advanced/vitest#watcher) exposes methods that can be used when you disable the default Vitest watcher.
-- [`enableCoverage`](/api/advanced/vitest#enablecoverage) and [`disableCoverage`](/api/advanced/vitest#disablecoverage) allow you to enable and disable coverage dynamically.
-- [`getSeed`](/api/advanced/vitest#enablecoverage) returns the seed value, if tests run at random.
-- [`getGlobalTestNamePattern`](/api/advanced/vitest#getglobaltestnamepattern) returns the current test name pattern.
-- [`waitForTestRunEnd`](/api/advanced/vitest#waitfortestrunend) returns a promise that resolves when all tests have finished running.
+- [`experimental_parseSpecifications`](/api/advanced/vitest#parsespecification) 允许你解析测试文件而不运行它。
+- [`watcher`](/api/advanced/vitest#watcher) 暴露了一些方法，可在你禁用默认 Vitest 监视器时使用。
+- [`enableCoverage`](/api/advanced/vitest#enablecoverage) 和 [`disableCoverage`](/api/advanced/vitest#disablecoverage) 允许你动态启用和禁用覆盖率。
+- [`getSeed`](/api/advanced/vitest#enablecoverage) 返回种子值（如果测试是随机运行的）。
+- [`getGlobalTestNamePattern`](/api/advanced/vitest#getglobaltestnamepattern) 返回当前的测试名称模式。
+- [`waitForTestRunEnd`](/api/advanced/vitest#waitfortestrunend) 返回一个 Promise，在所有测试运行完毕时解决。
 
-## Breaking changes
+## 破坏性变更
 
-Vitest 4 has a few breaking changes that could affect you, so we advise reviewing the detailed [Migration Guide](/guide/migration#vitest-4) before upgrading.
+Vitest 4 有一些可能会影响你的破坏性变更，因此我们建议在升级前查阅详细的 [迁移指南](/guide/migration#vitest-4)。
 
-The complete list of changes is at the [Vitest 4 Changelog](https://github.com/vitest-dev/vitest/releases/tag/v4.0.0).
+完整的变更列表位于 [Vitest 4 变更日志](https://github.com/vitest-dev/vitest/releases/tag/v4.0.0)。
 
-## Acknowledgments
+## 致谢
 
-Vitest 4 is the result of countless hours by the [Vitest team](/team) and our contributors. We appreciate the individuals and companies sponsoring Vitest development. [Vladimir](https://github.com/sheremet-va) and [Hiroshi](https://github.com/hi-ogawa) are part of the [VoidZero](https://voidzero.dev) Team and are able to work on Vite and Vitest full-time, and [Ari](https://github.com/ariperkkio) can invest more time in Vitest thanks to [StackBlitz](https://stackblitz.com/). A shout-out to [NuxtLabs](https://nuxtlabs.com), [Zammad](https://zammad.com), and sponsors on [Vitest's GitHub Sponsors](https://github.com/sponsors/vitest-dev) and [Vitest's Open Collective](https://opencollective.com/vitest).
+Vitest 4 是 [Vitest 团队](/team) 和我们的贡献者无数小时工作的成果。我们感谢赞助 Vitest 开发的个人和公司。[Vladimir](https://github.com/sheremet-va) 和 [Hiroshi](https://github.com/hi-ogawa) 是 [VoidZero](https://voidzero.dev) 团队的一部分，能够全职从事 Vite 和 Vitest 的工作，而 [Ari](https://github.com/ariperkkio) 得益于 [StackBlitz](https://stackblitz.com/) 可以在 Vitest 上投入更多时间。特别感谢 [NuxtLabs](https://nuxtlabs.com)、[Zammad](https://zammad.com) 以及 [Vitest 的 GitHub Sponsors](https://github.com/sponsors/vitest-dev) 和 [Vitest 的 Open Collective](https://opencollective.com/vitest) 上的赞助商。

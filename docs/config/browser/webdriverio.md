@@ -1,10 +1,10 @@
-# Configuring WebdriverIO
+# 配置 WebdriverIO
 
-::: info Playwright vs WebdriverIO
-If you do not already use WebdriverIO in your project, we recommend starting with [Playwright](/config/browser/playwright) as it is easier to configure and has more flexible API.
+::: info Playwright 与 WebdriverIO
+如果您的项目中尚未使用 WebdriverIO，我们建议从 [Playwright](/config/browser/playwright) 开始，因为它更容易配置且具有更灵活的 API。
 :::
 
-To run tests using WebdriverIO, you need to install the [`@vitest/browser-webdriverio`](https://npmx.dev/package/@vitest/browser-webdriverio) npm package and specify its `webdriverio` export in the `test.browser.provider` property of your config:
+要使用 WebdriverIO 运行测试，您需要安装 [`@vitest/browser-webdriverio`](https://npmx.dev/package/@vitest/browser-webdriverio) npm 包，并在配置的 `test.browser.provider` 属性中指定其 `webdriverio` 导出：
 
 ```ts [vitest.config.js]
 import { webdriverio } from '@vitest/browser-webdriverio'
@@ -20,7 +20,7 @@ export default defineConfig({
 })
 ```
 
-You can configure all the parameters that [`remote`](https://webdriver.io/docs/api/modules/#remoteoptions-modifier) function accepts:
+您可以配置 [`remote`](https://webdriver.io/docs/api/modules/#remoteoptions-modifier) 函数接受的所有参数：
 
 ```ts{8-12,19-25} [vitest.config.js]
 import { webdriverio } from '@vitest/browser-webdriverio'
@@ -29,7 +29,7 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   test: {
     browser: {
-      // shared provider options between all instances
+      // 所有实例之间共享的提供者选项
       provider: webdriverio({
         capabilities: {
           browserVersion: '82',
@@ -39,8 +39,8 @@ export default defineConfig({
         { browser: 'chrome' },
         {
           browser: 'firefox',
-          // overriding options only for a single instance
-          // this will NOT merge options with the parent one
+          // 仅覆盖单个实例的选项
+          // 这不会与父级选项合并
           provider: webdriverio({
             capabilities: {
               'moz:firefoxOptions': {
@@ -55,10 +55,10 @@ export default defineConfig({
 })
 ```
 
-You can find most available options in the [WebdriverIO documentation](https://webdriver.io/docs/configuration/). Note that Vitest will ignore all test runner options because we only use `webdriverio`'s browser capabilities.
+您可以在 [WebdriverIO 文档](https://webdriver.io/docs/configuration/) 中找到大多数可用选项。请注意，Vitest 将忽略所有测试运行器选项，因为我们只使用 `webdriverio` 的浏览器能力。
 
 ::: tip
-Most useful options are located on `capabilities` object. WebdriverIO allows nested capabilities, but Vitest will ignore those options because we rely on a different mechanism to spawn several browsers.
+最有用的选项位于 `capabilities` 对象上。WebdriverIO 允许嵌套能力，但 Vitest 将忽略这些选项，因为我们依赖不同的机制来启动多个浏览器。
 
-Note that Vitest will ignore `capabilities.browserName` — use [`test.browser.instances.browser`](/config/browser/instances#browser) instead.
+请注意，Vitest 将忽略 `capabilities.browserName` — 请改用 [`test.browser.instances.browser`](/config/browser/instances#browser)。
 :::

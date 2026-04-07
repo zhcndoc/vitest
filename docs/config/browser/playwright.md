@@ -1,6 +1,6 @@
-# Configuring Playwright
+# 配置 Playwright
 
-To run tests using playwright, you need to install the [`@vitest/browser-playwright`](https://npmx.dev/package/@vitest/browser-playwright) npm package and specify its `playwright` export in the `test.browser.provider` property of your config:
+要使用 playwright 运行测试，你需要安装 [`@vitest/browser-playwright`](https://npmx.dev/package/@vitest/browser-playwright) npm 包，并在配置的 `test.browser.provider` 属性中指定其 `playwright` 导出：
 
 ```ts [vitest.config.js]
 import { playwright } from '@vitest/browser-playwright'
@@ -16,7 +16,7 @@ export default defineConfig({
 })
 ```
 
-You can configure the [`launchOptions`](https://playwright.dev/docs/api/class-browsertype#browser-type-launch), [`connectOptions`](https://playwright.dev/docs/api/class-browsertype#browser-type-connect) and [`contextOptions`](https://playwright.dev/docs/api/class-browser#browser-new-context) when calling `playwright` at the top level or inside instances:
+你可以在顶层调用 `playwright` 时或在实例内部配置 [`launchOptions`](https://playwright.dev/docs/api/class-browsertype#browser-type-launch)、[`connectOptions`](https://playwright.dev/docs/api/class-browsertype#browser-type-connect) 和 [`contextOptions`](https://playwright.dev/docs/api/class-browser#browser-new-context)：
 
 ```ts{7-14,21-26} [vitest.config.js]
 import { playwright } from '@vitest/browser-playwright'
@@ -25,7 +25,7 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   test: {
     browser: {
-      // shared provider options between all instances
+      // 所有实例之间共享的提供者选项
       provider: playwright({
         launchOptions: {
           slowMo: 50,
@@ -37,8 +37,8 @@ export default defineConfig({
         { browser: 'chromium' },
         {
           browser: 'firefox',
-          // overriding options only for a single instance
-          // this will NOT merge options with the parent one
+          // 仅针对单个实例覆盖选项
+          // 这不会与父级选项合并
           provider: playwright({
             launchOptions: {
               firefoxUserPrefs: {
@@ -54,23 +54,23 @@ export default defineConfig({
 ```
 
 ::: warning
-Unlike Playwright test runner, Vitest opens a _single_ page to run all tests that are defined in the same file. This means that isolation is restricted to a single test file, not to every individual test.
+与 Playwright 测试运行器不同，Vitest 打开_单个_页面来运行定义在同一文件中的所有测试。这意味着隔离限制在单个测试文件，而不是每个单独的测试。
 :::
 
 ## launchOptions
 
-These options are directly passed down to `playwright[browser].launch` command. You can read more about the command and available arguments in the [Playwright documentation](https://playwright.dev/docs/api/class-browsertype#browser-type-launch).
+这些选项直接传递给 `playwright[browser].launch` 命令。你可以在 [Playwright 文档](https://playwright.dev/docs/api/class-browsertype#browser-type-launch) 中阅读有关该命令和可用参数的更多信息。
 
 ::: warning
-Vitest will ignore `launch.headless` option. Instead, use [`test.browser.headless`](/config/browser/headless).
+Vitest 将忽略 `launch.headless` 选项。相反，请使用 [`test.browser.headless`](/config/browser/headless)。
 
-Note that Vitest will push debugging flags to `launch.args` if [`--inspect`](/guide/cli#inspect) is enabled.
+请注意，如果启用了 [`--inspect`](/guide/cli#inspect)，Vitest 会将调试标志推送到 `launch.args`。
 :::
 
-::: tip Enabling new Chromium headless mode
-Playwright supports a [new headless mode](https://playwright.dev/docs/browsers#chromium-new-headless-mode) for Chromium that uses the real Chrome browser instead of the dedicated headless shell. This provides more authentic, reliable test execution and removes the need to install a separate headless Chromium build.
+::: tip 启用新的 Chromium 无头模式
+Playwright 支持 Chromium 的 [新无头模式](https://playwright.dev/docs/browsers#chromium-new-headless-mode)，它使用真实的 Chrome 浏览器而不是专用的无头 shell。这提供了更真实、可靠的测试执行，并无需安装单独的无头 Chromium 构建。
 
-To opt in, set `channel` to `'chromium'` in `launchOptions`:
+要启用，请在 `launchOptions` 中将 `channel` 设置为 `'chromium'`：
 
 ```ts [vitest.config.ts]
 import { playwright } from '@vitest/browser-playwright'
@@ -94,20 +94,20 @@ export default defineConfig({
 
 ## connectOptions
 
-These options are directly passed down to `playwright[browser].connect` command. You can read more about the command and available arguments in the [Playwright documentation](https://playwright.dev/docs/api/class-browsertype#browser-type-connect).
+这些选项直接传递给 `playwright[browser].connect` 命令。你可以在 [Playwright 文档](https://playwright.dev/docs/api/class-browsertype#browser-type-connect) 中阅读有关该命令和可用参数的更多信息。
 
-Use `connectOptions.wsEndpoint` to connect to an existing Playwright server instead of launching browsers locally. This is useful for running browsers in Docker, in CI, or on a remote machine.
+使用 `connectOptions.wsEndpoint` 连接到现有的 Playwright 服务器，而不是在本地启动浏览器。这对于在 Docker、CI 或远程机器上运行浏览器很有用。
 
 ::: warning
 
-Vitest forwards `launchOptions` to Playwright server via the `x-playwright-launch-options` header. This works only if the remote Playwright server supports this header, for example when using the `playwright run-server` CLI.
+Vitest 通过 `x-playwright-launch-options` 头将 `launchOptions` 转发给 Playwright 服务器。这仅在远程 Playwright 服务器支持此头时才有效，例如使用 `playwright run-server` CLI 时。
 
 :::
 
-::: details Example: Running a Playwright Server in Docker
-To run browsers in a Docker container (see [Playwright Docker guide](https://playwright.dev/docs/docker#remote-connection)):
+::: details 示例：在 Docker 中运行 Playwright 服务器
+要在 Docker 容器中运行浏览器（参见 [Playwright Docker 指南](https://playwright.dev/docs/docker#remote-connection)）：
 
-Start a Playwright server using Docker Compose:
+使用 Docker Compose 启动 Playwright 服务器：
 
 ```yaml [docker-compose.yml]
 services:
@@ -125,7 +125,7 @@ services:
 docker compose up -d
 ```
 
-Then configure Vitest to connect to it. The [`exposeNetwork`](https://playwright.dev/docs/api/class-browsertype#browser-type-connect-option-expose-network) option lets the containerized browser reach Vitest's dev server on the host:
+然后配置 Vitest 以连接到它。[`exposeNetwork`](https://playwright.dev/docs/api/class-browsertype#browser-type-connect-option-expose-network) 选项让容器化浏览器能够到达主机上的 Vitest 开发服务器：
 
 ```ts [vitest.config.ts]
 import { playwright } from '@vitest/browser-playwright'
@@ -153,25 +153,25 @@ export default defineConfig({
 
 ## contextOptions
 
-Vitest creates a new context for every test file by calling [`browser.newContext()`](https://playwright.dev/docs/api/class-browsercontext). You can configure this behaviour by specifying [custom arguments](https://playwright.dev/docs/api/class-browser#browser-new-context).
+Vitest 通过调用 [`browser.newContext()`](https://playwright.dev/docs/api/class-browsercontext) 为每个测试文件创建一个新上下文。你可以通过指定 [自定义参数](https://playwright.dev/docs/api/class-browser#browser-new-context) 来配置此行为。
 
 ::: tip
-Note that the context is created for every _test file_, not every _test_ like in playwright test runner.
+请注意，上下文是为每个_测试文件_创建的，而不是像 playwright 测试运行器那样为每个_测试_创建。
 :::
 
 ::: warning
-Vitest always sets `ignoreHTTPSErrors` to `true` in case your server is served via HTTPS and `serviceWorkers` to `'allow'` to support module mocking via [MSW](https://mswjs.io).
+Vitest 总是将 `ignoreHTTPSErrors` 设置为 `true`，以防你的服务器通过 HTTPS 提供服务，并将 `serviceWorkers` 设置为 `'allow'` 以支持通过 [MSW](https://mswjs.io) 进行模块 mocking。
 
-It is also recommended to use [`test.browser.viewport`](/config/browser/headless) instead of specifying it here as it will be lost when tests are running in headless mode.
+还建议使用 [`test.browser.viewport`](/config/browser/headless) 而不是在此处指定，因为当测试在无头模式下运行时它会丢失。
 :::
 
 ## `actionTimeout`
 
-- **Default:** no timeout
+- **默认值：** 无超时
 
-This value configures the default timeout it takes for Playwright to wait until all accessibility checks pass and [the action](/api/browser/interactivity) is actually done.
+此值配置 Playwright 等待所有无障碍检查通过且 [操作](/api/browser/interactivity) 实际完成的默认超时时间。
 
-You can also configure the action timeout per-action:
+你也可以为每个操作配置操作超时：
 
 ```ts
 import { page, userEvent } from 'vitest/browser'
@@ -183,17 +183,17 @@ await userEvent.click(page.getByRole('button'), {
 
 ## `persistentContext` <Version>4.1.0</Version> {#persistentcontext}
 
-- **Type:** `boolean | string`
-- **Default:** `false`
+- **类型：** `boolean | string`
+- **默认值：** `false`
 
-When enabled, Vitest uses Playwright's [persistent context](https://playwright.dev/docs/api/class-browsertype#browser-type-launch-persistent-context) instead of a regular browser context. This allows browser state (cookies, localStorage, DevTools settings, etc.) to persist between test runs.
+启用后，Vitest 使用 Playwright 的 [持久化上下文](https://playwright.dev/docs/api/class-browsertype#browser-type-launch-persistent-context) 而不是常规浏览器上下文。这允许浏览器状态（cookies、localStorage、DevTools 设置等）在测试运行之间持久化。
 
 ::: warning
-This option is ignored when running tests in parallel (e.g. when headless with [`fileParallelism`](/config/fileparallelism) enabled) since persistent context cannot be shared across parallel sessions.
+当并行运行测试时（例如，当启用了 [`fileParallelism`](/config/fileparallelism) 的无头模式时），此选项将被忽略，因为持久化上下文不能在并行会话之间共享。
 :::
 
-- When set to `true`, the user data is stored in `./node_modules/.cache/vitest-playwright-user-data`
-- When set to a string, the value is used as the path to the user data directory
+- 当设置为 `true` 时，用户数据存储在 `./node_modules/.cache/vitest-playwright-user-data`
+- 当设置为字符串时，该值用作用户数据目录的路径
 
 ```ts [vitest.config.js]
 import { playwright } from '@vitest/browser-playwright'
@@ -204,7 +204,7 @@ export default defineConfig({
     browser: {
       provider: playwright({
         persistentContext: true,
-        // or specify a custom directory:
+        // 或指定自定义目录：
         // persistentContext: './my-browser-data',
       }),
       instances: [{ browser: 'chromium' }],

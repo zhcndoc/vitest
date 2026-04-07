@@ -1,15 +1,15 @@
 ---
-title: execArgv | Config
+title: execArgv | 配置
 outline: deep
 ---
 
 # execArgv
 
-- **Type:** `string[]`
-- **Default:** `[]`
+- **类型:** `string[]`
+- **默认值:** `[]`
 
-Pass additional arguments to `node` in the runner worker. See [Command-line API | Node.js](https://nodejs.org/docs/latest/api/cli.html) for more information.
+向运行器工作进程中的 `node` 传递额外的参数。请参阅 [命令行 API | Node.js](https://nodejs.org/docs/latest/api/cli.html) 以获取更多信息。
 
 :::warning
-Be careful when using, it as some options may crash worker, e.g. `--prof`, `--title`. See https://github.com/nodejs/node/issues/41103.
+使用时请小心，因为某些选项可能会导致工作进程崩溃，例如 `--prof`、`--title`。参见 https://github.com/nodejs/node/issues/41103。
 :::

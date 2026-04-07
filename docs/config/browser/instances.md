@@ -1,19 +1,19 @@
 ---
-title: browser.instances | Config
+title: browser.instances | 配置
 outline: deep
 ---
 
 # browser.instances
 
-- **Type:** `BrowserConfig`
-- **Default:** `[]`
+- **类型:** `BrowserConfig`
+- **默认值:** `[]`
 
-Defines multiple browser setups. Every config has to have at least a `browser` field.
+定义多个浏览器设置。每个配置必须至少包含一个 `browser` 字段。
 
-You can specify most of the [project options](/config/) (not marked with a <CRoot /> icon) and some of the `browser` options like `browser.testerHtmlPath`.
+你可以指定大多数 [项目选项](/config/)（未标记 <CRoot /> 图标的选项）以及一些 `browser` 选项，例如 `browser.testerHtmlPath`。
 
 ::: warning
-Every browser config inherits options from the root config:
+每个浏览器配置都会继承根配置中的选项：
 
 ```ts{3,9} [vitest.config.ts]
 export default defineConfig({
@@ -24,9 +24,9 @@ export default defineConfig({
       testerHtmlPath: './custom-path.html',
       instances: [
         {
-          // will have both setup files: "root" and "browser"
+          // 将同时拥有两个设置文件："root" 和 "browser"
           setupFile: ['./browser-setup-file.js'],
-          // implicitly has "testerHtmlPath" from the root config // [!code warning]
+          // 隐式拥有来自根配置的 "testerHtmlPath" // [!code warning]
           // testerHtmlPath: './custom-path.html', // [!code warning]
         },
       ],
@@ -35,12 +35,12 @@ export default defineConfig({
 })
 ```
 
-For more examples, refer to the ["Multiple Setups" guide](/guide/browser/multiple-setups).
+更多示例，请参阅 ["多设置" 指南](/guide/browser/multiple-setups)。
 :::
 
-List of available `browser` options:
+可用的 `browser` 选项列表：
 
-- `browser` (the name of the browser)
+- `browser`（浏览器名称）
 - [`headless`](/config/browser/headless)
 - [`locators`](/config/browser/locators)
 - [`viewport`](/config/browser/viewport)
@@ -49,4 +49,4 @@ List of available `browser` options:
 - [`screenshotFailures`](/config/browser/screenshotfailures)
 - [`provider`](/config/browser/provider)
 
-Under the hood, Vitest transforms these instances into separate [test projects](/api/advanced/test-project) sharing a single Vite server for better caching performance.
+在底层，Vitest 将这些实例转换为独立的 [测试项目](/api/advanced/test-project)，它们共享单个 Vite 服务器以获得更好的缓存性能。

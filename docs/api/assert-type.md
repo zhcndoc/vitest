@@ -1,12 +1,12 @@
 # assertType
 
 ::: warning
-During runtime this function doesn't do anything. To [enable typechecking](/guide/testing-types#run-typechecking), don't forget to pass down `--typecheck` flag.
+此函数在运行时不会执行任何操作。要 [启用类型检查](/guide/testing-types#run-typechecking)，别忘了传递 `--typecheck` 标志。
 :::
 
-- **Type:** `<T>(value: T): void`
+- **类型：** `<T>(value: T): void`
 
-You can use this function as an alternative for [`expectTypeOf`](/api/expect-typeof) to easily assert that the argument type is equal to the generic provided.
+你可以将此函数作为 [`expectTypeOf`](/api/expect-typeof) 的替代方案，以便轻松断言参数类型与提供的泛型相等。
 
 ```ts
 import { assertType } from 'vitest'
@@ -17,6 +17,6 @@ function concat(a: string | number, b: string | number): string | number
 
 assertType<string>(concat('a', 'b'))
 assertType<number>(concat(1, 2))
-// @ts-expect-error wrong types
+// @ts-expect-error 类型错误
 assertType(concat('a', 2))
 ```

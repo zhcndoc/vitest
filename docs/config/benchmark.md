@@ -1,70 +1,70 @@
 ---
-title: benchmark | Config
+title: benchmark | 配置
 outline: deep
 ---
 
 # benchmark <Experimental /> {#benchmark}
 
-- **Type:** `{ include?, exclude?, ... }`
+- **类型:** `{ include?, exclude?, ... }`
 
-Options used when running `vitest bench`.
+运行 `vitest bench` 时使用的选项。
 
 ## benchmark.include
 
-- **Type:** `string[]`
-- **Default:** `['**/*.{bench,benchmark}.?(c|m)[jt]s?(x)']`
+- **类型:** `string[]`
+- **默认值:** `['**/*.{bench,benchmark}.?(c|m)[jt]s?(x)']`
 
-Include globs for benchmark test files
+包含基准测试文件的匹配模式
 
 ## benchmark.exclude
 
-- **Type:** `string[]`
-- **Default:** `['node_modules', 'dist', '.idea', '.git', '.cache']`
+- **类型:** `string[]`
+- **默认值:** `['node_modules', 'dist', '.idea', '.git', '.cache']`
 
-Exclude globs for benchmark test files
+排除基准测试文件的匹配模式
 
 ## benchmark.includeSource
 
-- **Type:** `string[]`
-- **Default:** `[]`
+- **类型:** `string[]`
+- **默认值:** `[]`
 
-Include globs for in-source benchmark test files. This option is similar to [`includeSource`](/config/include-source).
+包含源内基准测试文件的匹配模式。此选项类似于 [`includeSource`](/config/include-source)。
 
-When defined, Vitest will run all matched files with `import.meta.vitest` inside.
+定义后，Vitest 将运行所有内部包含 `import.meta.vitest` 的匹配文件。
 
 ## benchmark.reporters
 
-- **Type:** `Arrayable<BenchmarkBuiltinReporters | Reporter>`
-- **Default:** `'default'`
+- **类型:** `Arrayable<BenchmarkBuiltinReporters | Reporter>`
+- **默认值:** `'default'`
 
-Custom reporter for output. Can contain one or more built-in report names, reporter instances, and/or paths to custom reporters.
+用于输出的自定义报告器。可以包含一个或多个内置报告器名称、报告器实例和/或自定义报告器的路径。
 
 ## benchmark.outputFile
 
-Deprecated in favor of `benchmark.outputJson`.
+已弃用，推荐使用 `benchmark.outputJson`。
 
 ## benchmark.outputJson {#benchmark-outputJson}
 
-- **Type:** `string | undefined`
-- **Default:** `undefined`
+- **类型:** `string | undefined`
+- **默认值:** `undefined`
 
-A file path to store the benchmark result, which can be used for `--compare` option later.
+存储基准测试结果的文件路径，后续可用于 `--compare` 选项。
 
-For example:
+例如：
 
 ```sh
-# save main branch's result
+# 保存主分支的结果
 git checkout main
 vitest bench --outputJson main.json
 
-# change a branch and compare against main
+# 切换分支并与主分支比较
 git checkout feature
 vitest bench --compare main.json
 ```
 
 ## benchmark.compare {#benchmark-compare}
 
-- **Type:** `string | undefined`
-- **Default:** `undefined`
+- **类型:** `string | undefined`
+- **默认值:** `undefined`
 
-A file path to a previous benchmark result to compare against current runs.
+用于与当前运行结果进行比较的先前基准测试结果的文件路径。

@@ -1,8 +1,8 @@
 # TestCase
 
-The `TestCase` class represents a single test. This class is only available in the main thread. Refer to the ["Runner API"](/api/advanced/runner#tasks) if you are working with runtime tasks.
+`TestCase` 类代表单个测试。此类仅在主线程中可用。如果你正在处理运行时任务，请参阅 ["Runner API"](/api/advanced/runner#tasks)。
 
-The `TestCase` instance always has a `type` property with the value of `test`. You can use it to distinguish between different task types:
+`TestCase` 实例始终具有值为 `test` 的 `type` 属性。你可以用它来区分不同的任务类型：
 
 ```ts
 if (task.type === 'test') {
@@ -12,15 +12,15 @@ if (task.type === 'test') {
 
 ## project
 
-This references the [`TestProject`](/api/advanced/test-project) that the test belongs to.
+这引用了测试所属的 [`TestProject`](/api/advanced/test-project)。
 
 ## module
 
-This is a direct reference to the [`TestModule`](/api/advanced/test-module) where the test is defined.
+这是对定义测试的 [`TestModule`](/api/advanced/test-module) 的直接引用。
 
 ## name
 
-This is a test name that was passed to the `test` function.
+这是传递给 `test` 函数的测试名称。
 
 ```ts
 import { test } from 'vitest'
@@ -33,7 +33,7 @@ test('the validation works correctly', () => {
 
 ## fullName
 
-The name of the test including all parent suites separated with `>` symbol. This test has a full name "the validation logic > the validation works correctly":
+测试名称，包括所有父级套件，用 `>` 符号分隔。此测试的全名为 "the validation logic > the validation works correctly"：
 
 ```ts
 import { describe, test } from 'vitest'
@@ -49,39 +49,39 @@ describe('the validation logic', () => {
 
 ## id
 
-This is test's unique identifier. This ID is deterministic and will be the same for the same test across multiple runs. The ID is based on the [project](/api/advanced/test-project) name, module ID and test order.
+这是测试的唯一标识符。此 ID 是确定的，并且在多次运行中对于同一个测试将是相同的。该 ID 基于 [project](/api/advanced/test-project) 名称、模块 ID 和测试顺序。
 
-The ID looks like this:
+ID 看起来像这样：
 
 ```
 1223128da3_0_0
-^^^^^^^^^^ the file hash
-           ^ suite index
-             ^ test index
+^^^^^^^^^^ 文件哈希
+           ^ 套件索引
+             ^ 测试索引
 ```
 
 ::: tip
-You can generate file hash with `generateFileHash` function from `vitest/node` which is available since Vitest 3:
+你可以使用 `vitest/node` 中的 `generateFileHash` 函数生成文件哈希，该函数自 Vitest 3 起可用：
 
 ```ts
 import { generateFileHash } from 'vitest/node'
 
 const hash = generateFileHash(
-  '/file/path.js', // relative path
-  undefined, // the project name or `undefined` is not set
+  '/file/path.js', // 相对路径
+  undefined, // 项目名称，或如果未设置则为 undefined
 )
 ```
 :::
 
 ::: danger
-Don't try to parse the ID. It can have a minus at the start: `-1223128da3_0_0_0`.
+不要尝试解析 ID。它开头可能有一个减号：`-1223128da3_0_0_0`。
 :::
 
 ## location
 
-The location in the module where the test was defined. Locations are collected only if [`includeTaskLocation`](/config/includetasklocation) is enabled in the config. Note that this option is automatically enabled if `--reporter=html`, `--ui` or `--browser` flags are used.
+测试在模块中定义的位置。仅当配置中启用了 [`includeTaskLocation`](/config/includetasklocation) 时才会收集位置信息。注意，如果使用了 `--reporter=html`、`--ui` 或 `--browser` 标志，此选项会自动启用。
 
-The location of this test will be equal to `{ line: 3, column: 1 }`:
+此测试的位置将等于 `{ line: 3, column: 1 }`：
 
 ```ts:line-numbers {3}
 import { test } from 'vitest'
@@ -93,7 +93,7 @@ test('the validation works correctly', () => {
 
 ## parent
 
-Parent [suite](/api/advanced/test-suite). If the test was called directly inside the [module](/api/advanced/test-module), the parent will be the module itself.
+父级 [suite](/api/advanced/test-suite)。如果测试直接在 [module](/api/advanced/test-module) 内调用，父级将是模块本身。
 
 ## options
 
@@ -111,11 +111,11 @@ interface TaskOptions {
 }
 ```
 
-The options that test was collected with.
+测试收集时的选项。
 
 ## tags <Version>4.1.0</Version> {#tags}
 
-[Tags](/guide/test-tags) that were implicitly or explicitly assigned to the test.
+隐式或显式分配给测试的 [Tags](/guide/test-tags)。
 
 ## ok
 
@@ -123,7 +123,7 @@ The options that test was collected with.
 function ok(): boolean
 ```
 
-Checks if the test did not fail the suite. If the test is not finished yet or was skipped, it will return `true`.
+检查测试是否未导致套件失败。如果测试尚未完成或被跳过，它将返回 `true`。
 
 ## meta
 
@@ -131,7 +131,7 @@ Checks if the test did not fail the suite. If the test is not finished yet or wa
 function meta(): TaskMeta
 ```
 
-Custom [metadata](/api/advanced/metadata) that was attached to the test during its execution. The meta can be attached by assigning a property to the `ctx.task.meta` object during a test run:
+测试执行期间附加到测试的自定义 [metadata](/api/advanced/metadata)。可以通过在测试运行期间将属性赋值给 `ctx.task.meta` 对象来附加元数据：
 
 ```ts {3,6}
 import { test } from 'vitest'
@@ -143,13 +143,13 @@ test('the validation works correctly', ({ task }) => {
 })
 ```
 
-If the test did not finish running yet, the meta will be an empty object, unless it has static meta:
+如果测试尚未运行完毕，元数据将是一个空对象，除非它有静态元数据：
 
 ```ts
 test('the validation works correctly', { meta: { decorated: true } })
 ```
 
-Since Vitest 4.1, Vitest inherits [`meta`](/api/advanced/test-suite#meta) property defined on the [suite](/api/advanced/test-suite).
+自 Vitest 4.1 起，Vitest 继承定义在 [suite](/api/advanced/test-suite) 上的 [`meta`](/api/advanced/test-suite#meta) 属性。
 
 ## result
 
@@ -157,77 +157,77 @@ Since Vitest 4.1, Vitest inherits [`meta`](/api/advanced/test-suite#meta) proper
 function result(): TestResult
 ```
 
-Test results. If test is not finished yet or was just collected, it will be equal to `TestResultPending`:
+测试结果。如果测试尚未完成或刚被收集，它将等于 `TestResultPending`：
 
 ```ts
 export interface TestResultPending {
   /**
-   * The test was collected, but didn't finish running yet.
+   * 测试已收集，但尚未运行完毕。
    */
   readonly state: 'pending'
   /**
-   * Pending tests have no errors.
+   * 挂起的测试没有错误。
    */
   readonly errors: undefined
 }
 ```
 
-If the test was skipped, the return value will be `TestResultSkipped`:
+如果测试被跳过，返回值将是 `TestResultSkipped`：
 
 ```ts
 interface TestResultSkipped {
   /**
-   * The test was skipped with `skip` or `todo` flag.
-   * You can see which one was used in the `options.mode` option.
+   * 测试被 `skip` 或 `todo` 标志跳过。
+   * 你可以在 `options.mode` 选项中看到使用了哪一个。
    */
   readonly state: 'skipped'
   /**
-   * Skipped tests have no errors.
+   * 跳过的测试没有错误。
    */
   readonly errors: undefined
   /**
-   * A custom note passed down to `ctx.skip(note)`.
+   * 传递给 `ctx.skip(note)` 的自定义备注。
    */
   readonly note: string | undefined
 }
 ```
 
 ::: tip
-If the test was skipped because another test has `only` flag, the `options.mode` will be equal to `skip`.
+如果测试因为另一个测试有 `only` 标志而被跳过，`options.mode` 将等于 `skip`。
 :::
 
-If the test failed, the return value will be `TestResultFailed`:
+如果测试失败，返回值将是 `TestResultFailed`：
 
 ```ts
 interface TestResultFailed {
   /**
-   * The test failed to execute.
+   * 测试执行失败。
    */
   readonly state: 'failed'
   /**
-   * Errors that were thrown during the test execution.
+   * 测试执行期间抛出的错误。
    */
   readonly errors: ReadonlyArray<TestError>
 }
 ```
 
-If the test passed, the return value will be `TestResultPassed`:
+如果测试通过，返回值将是 `TestResultPassed`：
 
 ```ts
 interface TestResultPassed {
   /**
-   * The test passed successfully.
+   * 测试成功通过。
    */
   readonly state: 'passed'
   /**
-   * Errors that were thrown during the test execution.
+   * 测试执行期间抛出的错误。
    */
   readonly errors: ReadonlyArray<TestError> | undefined
 }
 ```
 
 ::: warning
-Note that the test with `passed` state can still have errors attached - this can happen if `retry` was triggered at least once.
+注意，处于 `passed` 状态的测试仍然可能附有错误——如果 `retry` 至少被触发过一次，就会发生这种情况。
 :::
 
 ## diagnostic
@@ -236,45 +236,45 @@ Note that the test with `passed` state can still have errors attached - this can
 function diagnostic(): TestDiagnostic | undefined
 ```
 
-Useful information about the test like duration, memory usage, etc:
+关于测试的有用信息，如持续时间、内存使用情况等：
 
 ```ts
 interface TestDiagnostic {
   /**
-   * If the duration of the test is above `slowTestThreshold`.
+   * 如果测试持续时间超过 `slowTestThreshold`。
    */
   readonly slow: boolean
   /**
-   * The amount of memory used by the test in bytes.
-   * This value is only available if the test was executed with `logHeapUsage` flag.
+   * 测试使用的内存量（字节）。
+   * 仅当测试使用 `logHeapUsage` 标志执行时，此值才可用。
    */
   readonly heap: number | undefined
   /**
-   * The time it takes to execute the test in ms.
+   * 执行测试所需的时间（毫秒）。
    */
   readonly duration: number
   /**
-   * The time in ms when the test started.
+   * 测试开始的时间（毫秒）。
    */
   readonly startTime: number
   /**
-   * The amount of times the test was retried.
+   * 测试重试的次数。
    */
   readonly retryCount: number
   /**
-   * The amount of times the test was repeated as configured by `repeats` option.
-   * This value can be lower if the test failed during the repeat and no `retry` is configured.
+   * 根据 `repeats` 选项配置，测试重复的次数。
+   * 如果测试在重复期间失败且未配置 `retry`，此值可能较低。
    */
   readonly repeatCount: number
   /**
-   * If test passed on a second retry.
+   * 如果测试在第二次重试时通过。
    */
   readonly flaky: boolean
 }
 ```
 
 ::: info
-`diagnostic()` will return `undefined` if the test was not scheduled to run yet.
+如果测试尚未计划运行，`diagnostic()` 将返回 `undefined`。
 :::
 
 ## annotations
@@ -283,7 +283,7 @@ interface TestDiagnostic {
 function annotations(): ReadonlyArray<TestAnnotation>
 ```
 
-[Test annotations](/guide/test-annotations) added via the [`task.annotate`](/guide/test-context#annotate) API during the test execution.
+测试执行期间通过 [`task.annotate`](/guide/test-context#annotate) API 添加的 [Test annotations](/guide/test-annotations)。
 
 ## artifacts <Version type="experimental">4.0.11</Version> <Experimental /> {#artifacts}
 
@@ -291,7 +291,7 @@ function annotations(): ReadonlyArray<TestAnnotation>
 function artifacts(): ReadonlyArray<TestArtifact>
 ```
 
-[Test artifacts](/api/advanced/artifacts) recorded via the `recordArtifact` API during the test execution.
+测试执行期间通过 `recordArtifact` API 记录的 [Test artifacts](/api/advanced/artifacts)。
 
 ## toTestSpecification <Version>4.1.0</Version> {#totestspecification}
 
@@ -299,4 +299,4 @@ function artifacts(): ReadonlyArray<TestArtifact>
 function toTestSpecification(): TestSpecification
 ```
 
-Returns a new [test specification](/api/advanced/test-specification) that can be used to filter or run this specific test case.
+返回一个新的 [test specification](/api/advanced/test-specification)，可用于过滤或运行此特定测试用例。

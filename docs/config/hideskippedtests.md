@@ -1,12 +1,12 @@
 ---
-title: hideSkippedTests | Config
+title: hideSkippedTests | 配置
 outline: deep
 ---
 
 # hideSkippedTests
 
-- **Type:** `boolean`
+- **类型:** `boolean`
 - **CLI:** `--hideSkippedTests`, `--hide-skipped-tests`
-- **Default:** `false`
+- **默认值:** `false`
 
-Hide logs for skipped tests
+隐藏被跳过测试的日志

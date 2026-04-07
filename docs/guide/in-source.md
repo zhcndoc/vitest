@@ -1,28 +1,28 @@
 ---
-title: In-Source Testing | Guide
+title: 源内测试 | 指南
 ---
 
-# In-Source Testing
+# 源内测试
 
-Vitest provides a way to run tests within your source code along side the implementation, similar to [Rust's module tests](https://doc.rust-lang.org/book/ch11-03-test-organization.html#the-tests-module-and-cfgtest).
+Vitest 提供了一种在源代码中伴随实现运行测试的方法，类似于 [Rust 的模块测试](https://doc.rust-lang.org/book/ch11-03-test-organization.html#the-tests-module-and-cfgtest)。
 
-This makes the tests share the same closure as the implementations and able to test against private states without exporting. Meanwhile, it also brings a closer feedback loop for development.
+这使得测试与实现共享相同的闭包，能够无需导出即可测试私有状态。同时，它也为开发带来了更紧密的反馈循环。
 
 ::: warning
-This guide explains how to write tests inside your source code. If you need to write tests in separate test files, follow the ["Writing Tests" guide](/guide/#writing-tests).
+本指南解释如何在源代码内部编写测试。如果你需要在单独的测试文件中编写测试，请遵循 ["编写测试" 指南](/guide/#writing-tests)。
 :::
 
-## Setup
+## 设置
 
-To get started, put a `if (import.meta.vitest)` block at the end of your source file and write some tests inside it. For example:
+要开始使用，请在源文件末尾放置一个 `if (import.meta.vitest)` 块，并在其中编写一些测试。例如：
 
 ```ts [src/index.ts]
-// the implementation
+// 实现
 export function add(...args: number[]) {
   return args.reduce((a, b) => a + b, 0)
 }
 
-// in-source test suites
+// 源内测试套件
 if (import.meta.vitest) {
   const { it, expect } = import.meta.vitest
   it('add', () => {
@@ -33,7 +33,7 @@ if (import.meta.vitest) {
 }
 ```
 
-Update the `includeSource` config for Vitest to grab the files under `src/`:
+更新 Vitest 的 `includeSource` 配置以获取 `src/` 下的文件：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
@@ -45,15 +45,15 @@ export default defineConfig({
 })
 ```
 
-Then you can start to test!
+然后你就可以开始测试了！
 
 ```bash
 $ npx vitest
 ```
 
-## Production Build
+## 生产构建
 
-For the production build, you will need to set the `define` options in your config file, letting the bundler do the dead code elimination. For example, in Vite
+对于生产构建，你需要在配置文件中设置 `define` 选项，让打包器进行死代码消除。例如，在 Vite 中
 
 ```ts [vite.config.ts]
 /// <reference types="vitest/config" />
@@ -70,7 +70,7 @@ export default defineConfig({
 })
 ```
 
-### Other Bundlers
+### 其他打包器
 
 ::: details Rolldown
 ```js [rolldown.config.js]
@@ -85,7 +85,7 @@ export default defineConfig({
 })
 ```
 
-Learn more: [Rolldown](https://rolldown.rs/)
+了解更多：[Rolldown](https://rolldown.rs/)
 :::
 
 ::: details Rollup
@@ -98,11 +98,11 @@ export default {
       'import.meta.vitest': 'undefined', // [!code ++]
     }) // [!code ++]
   ],
-  // other options
+  // 其他选项
 }
 ```
 
-Learn more: [Rollup](https://rollupjs.org/)
+了解更多：[Rollup](https://rollupjs.org/)
 :::
 
 ::: details unbuild
@@ -113,11 +113,11 @@ export default defineBuildConfig({
   replace: { // [!code ++]
     'import.meta.vitest': 'undefined', // [!code ++]
   }, // [!code ++]
-  // other options
+  // 其他选项
 })
 ```
 
-Learn more: [unbuild](https://github.com/unjs/unbuild)
+了解更多：[unbuild](https://github.com/unjs/unbuild)
 :::
 
 ::: details webpack
@@ -133,12 +133,12 @@ module.exports = {
 }
 ```
 
-Learn more: [webpack](https://webpack.js.org/plugins/define-plugin/)
+了解更多：[webpack](https://webpack.js.org/plugins/define-plugin/)
 :::
 
 ## TypeScript
 
-To get TypeScript support for `import.meta.vitest`, add `vitest/importMeta` to your `tsconfig.json`:
+要获得 `import.meta.vitest` 的 TypeScript 支持，请将 `vitest/importMeta` 添加到你的 `tsconfig.json` 中：
 
 ```json [tsconfig.json]
 {
@@ -150,14 +150,14 @@ To get TypeScript support for `import.meta.vitest`, add `vitest/importMeta` to y
 }
 ```
 
-Reference to [`examples/in-source-test`](https://github.com/vitest-dev/vitest/tree/main/examples/in-source-test) for the full example.
+参考 [`examples/in-source-test`](https://github.com/vitest-dev/vitest/tree/main/examples/in-source-test) 获取完整示例。
 
-## Notes
+## 注意事项
 
-This feature could be useful for:
+此功能可能适用于：
 
-- Unit testing for small-scoped functions or utilities
-- Prototyping
-- Inline Assertion
+- 小范围函数或工具函数的单元测试
+- 原型设计
+- 内联断言
 
-It's recommended to **use separate test files instead** for more complex tests like components or E2E testing.
+对于更复杂的测试（如组件或 E2E 测试），建议**改用单独的测试文件**。

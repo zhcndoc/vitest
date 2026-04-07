@@ -1,19 +1,19 @@
 ---
-title: retry | Config
+title: retry | 配置
 outline: deep
 ---
 
 # retry
 
-Retry the test specific number of times if it fails.
+如果测试失败，则重试特定次数。
 
-- **Type:** `number | { count?: number, delay?: number, condition?: RegExp }`
-- **Default:** `0`
-- **CLI:** `--retry <times>`, `--retry.count <times>`, `--retry.delay <ms>`, `--retry.condition <pattern>`
+- **类型：** `number | { count?: number, delay?: number, condition?: RegExp }`
+- **默认值：** `0`
+- **CLI：** `--retry <times>`, `--retry.count <times>`, `--retry.delay <ms>`, `--retry.condition <pattern>`
 
-## Basic Usage
+## 基本用法
 
-Specify a number to retry failed tests:
+指定一个数字来重试失败的测试：
 
 ```ts
 export default defineConfig({
@@ -23,29 +23,29 @@ export default defineConfig({
 })
 ```
 
-## CLI Usage
+## CLI 用法
 
-You can also configure retry options from the command line:
+你也可以通过命令行配置重试选项：
 
 ```bash
-# Simple retry count
+# 简单重试次数
 vitest --retry 3
 
-# Advanced options using dot notation
+# 使用点表示法的高级选项
 vitest --retry.count 3 --retry.delay 500 --retry.condition 'ECONNREFUSED|timeout'
 ```
 
-## Advanced Options <Version>4.1.0</Version> {#advanced-options}
+## 高级选项 <Version>4.1.0</Version> {#advanced-options}
 
-Use an object to configure retry behavior:
+使用对象来配置重试行为：
 
 ```ts
 export default defineConfig({
   test: {
     retry: {
-      count: 3, // Number of times to retry
-      delay: 1000, // Delay in milliseconds between retries
-      condition: /ECONNREFUSED|timeout/i, // RegExp to match errors that should trigger retry
+      count: 3, // 重试次数
+      delay: 1000, // 重试之间的延迟（毫秒）
+      condition: /ECONNREFUSED|timeout/i, // 匹配应触发重试的错误正则表达式
     },
   },
 })
@@ -53,7 +53,7 @@ export default defineConfig({
 
 ### count
 
-Number of times to retry a test if it fails. Default is `0`.
+测试失败时重试的次数。默认值为 `0`。
 
 ```ts
 export default defineConfig({
@@ -67,14 +67,14 @@ export default defineConfig({
 
 ### delay
 
-Delay in milliseconds between retry attempts. Useful for tests that interact with rate-limited APIs or need time to recover. Default is `0`.
+重试尝试之间的延迟（毫秒）。适用于与速率限制 API 交互或需要时间恢复的测试。默认值为 `0`。
 
 ```ts
 export default defineConfig({
   test: {
     retry: {
       count: 3,
-      delay: 500, // Wait 500ms between retries
+      delay: 500, // 重试之间等待 500ms
     },
   },
 })
@@ -82,43 +82,43 @@ export default defineConfig({
 
 ### condition
 
-A RegExp pattern or a function to determine if a test should be retried based on the error.
+一个正则表达式模式或一个函数，用于根据错误确定是否应重试测试。
 
-- When a **RegExp**, it's tested against the error message
-- When a **function**, it receives the error and returns a boolean
+- 当为 **RegExp** 时，它针对错误消息进行测试
+- 当为 **function** 时，它接收错误并返回布尔值
 
 ::: warning
-When defining `condition` as a function, it must be done in a test file directly, not in a configuration file (configurations are serialized for worker threads).
+当将 `condition` 定义为函数时，必须直接在测试文件中完成，而不是在配置文件中（配置会被序列化用于工作线程）。
 :::
 
-#### RegExp condition (in config file):
+#### RegExp 条件（在配置文件中）：
 
 ```ts
 export default defineConfig({
   test: {
     retry: {
       count: 2,
-      condition: /ECONNREFUSED|ETIMEDOUT/i, // Retry on connection/timeout errors
+      condition: /ECONNREFUSED|ETIMEDOUT/i, // 在连接/超时错误时重试
     },
   },
 })
 ```
 
-#### Function condition (in test file):
+#### 函数条件（在测试文件中）：
 
 ```ts
 import { describe, test } from 'vitest'
 
 describe('tests with advanced retry condition', () => {
   test('with function condition', { retry: { count: 2, condition: error => error.message.includes('Network') } }, () => {
-    // test code
+    // 测试代码
   })
 })
 ```
 
-## Test File Override
+## 测试文件覆盖
 
-You can also define retry options per test or suite in test files:
+你也可以在测试文件中为每个测试或套件定义重试选项：
 
 ```ts
 import { describe, test } from 'vitest'
@@ -130,7 +130,7 @@ describe('flaky tests', {
   },
 }, () => {
   test('network request', () => {
-    // test code
+    // 测试代码
   })
 })
 
@@ -140,6 +140,6 @@ test('another test', {
     condition: error => error.message.includes('timeout'),
   },
 }, () => {
-  // test code
+  // 测试代码
 })
 ```

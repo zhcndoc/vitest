@@ -1,11 +1,11 @@
 ---
-title: browser.commands | Config
+title: browser.commands | 配置
 outline: deep
 ---
 
 # browser.commands
 
-- **Type:** `Record<string, BrowserCommand>`
-- **Default:** `{ readFile, writeFile, ... }`
+- **类型:** `Record<string, BrowserCommand>`
+- **默认值:** `{ readFile, writeFile, ... }`
 
-Custom [commands](/api/browser/commands) that can be imported during browser tests from `vitest/browser`.
+自定义 [命令](/api/browser/commands)，可以在浏览器测试期间从 `vitest/browser` 导入。

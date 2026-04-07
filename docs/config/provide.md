@@ -1,13 +1,13 @@
 ---
-title: provide | Config
+title: provide | 配置
 outline: deep
 ---
 
 # provide
 
-- **Type:** `Partial<ProvidedContext>`
+- **类型：** `Partial<ProvidedContext>`
 
-Define values that can be accessed inside your tests using `inject` method.
+定义可以在测试内部使用 `inject` 方法访问的值。
 
 :::code-group
 ```ts [vitest.config.js]
@@ -31,11 +31,11 @@ test('api key is defined', () => {
 :::
 
 ::: warning
-Properties have to be strings and values need to be [serializable](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm#supported_types) because this object will be transferred between different processes.
+属性必须是字符串，且值需要是 [可序列化的](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm#supported_types)，因为此对象将在不同进程之间传输。
 :::
 
 ::: tip
-If you are using TypeScript, you will need to augment `ProvidedContext` type for type safe access:
+如果你使用的是 TypeScript，你需要扩充 `ProvidedContext` 类型以实现类型安全的访问：
 
 ```ts [vitest.shims.d.ts]
 declare module 'vitest' {
@@ -44,7 +44,7 @@ declare module 'vitest' {
   }
 }
 
-// mark this file as a module so augmentation works correctly
+// 将此文件标记为模块，以便扩充能正常工作
 export {}
 ```
 :::

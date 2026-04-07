@@ -1,11 +1,11 @@
 ---
-title: root | Config
+title: root | 配置
 outline: deep
 ---
 
 # root
 
-- **Type:** `string`
+- **类型:** `string`
 - **CLI:** `-r <path>`, `--root=<path>`
 
-Project root
+项目根目录

@@ -1,12 +1,12 @@
 # expect
 
-The following types are used in the type signatures below
+以下类型用于下面的类型签名中
 
 ```ts
 type Awaitable<T> = T | PromiseLike<T>
 ```
 
-`expect` is used to create assertions. In this context `assertions` are functions that can be called to assert a statement. Vitest provides `chai` assertions by default and also `Jest` compatible assertions built on top of `chai`. Since Vitest 4.1, for spy/mock testing, Vitest also provides Chai-style assertions (e.g., [`expect(spy).to.have.been.called()`](#called)) alongside Jest-style assertions (e.g., `expect(spy).toHaveBeenCalled()`). Unlike `Jest`, Vitest supports a message as the second argument - if the assertion fails, the error message will be equal to it.
+`expect` 用于创建断言。在此上下文中，`assertions` 是可以被调用来断言语句的函数。Vitest 默认提供 `chai` 断言，同时也提供基于 `chai` 构建的 `Jest` 兼容断言。自 Vitest 4.1 起，对于 spy/mock 测试，Vitest 还提供 Chai 风格的断言（例如，[`expect(spy).to.have.been.called()`](#called)）以及 Jest 风格的断言（例如，`expect(spy).toHaveBeenCalled()`）。与 `Jest` 不同，Vitest 支持将消息作为第二个参数 - 如果断言失败，错误消息将等于该参数。
 
 ```ts
 export interface ExpectStatic extends Chai.ExpectStatic, AsymmetricMatchersContaining {
@@ -20,32 +20,32 @@ export interface ExpectStatic extends Chai.ExpectStatic, AsymmetricMatchersConta
 }
 ```
 
-For example, this code asserts that an `input` value is equal to `2`. If it's not, the assertion will throw an error, and the test will fail.
+例如，这段代码断言 `input` 值等于 `2`。如果不等于，断言将抛出错误，测试将失败。
 
 ```ts twoslash
 import { expect } from 'vitest'
 
 const input = Math.sqrt(4)
 
-expect(input).to.equal(2) // chai API
-expect(input).toBe(2) // jest API
+expect(input).to.equal(2) // chai 接口
+expect(input).toBe(2) // jest 接口
 ```
 
-Technically this example doesn't use [`test`](/api/test) function, so in the console you will see Node.js error instead of Vitest output. To learn more about `test`, please read [Test API Reference](/api/test).
+严格来说，这个示例没有使用 [`test`](/api/test) 函数，所以在控制台中你会看到 Node.js 错误而不是 Vitest 输出。要了解有关 `test` 的更多信息，请阅读 [测试 API 参考](/api/test)。
 
-Also, `expect` can be used statically to access matcher functions, described later, and more.
+此外，`expect` 也可以静态使用以访问匹配器函数，稍后会描述，以及更多功能。
 
 ::: warning
-`expect` has no effect on testing types, if the expression doesn't have a type error. If you want to use Vitest as [type checker](/guide/testing-types), use [`expectTypeOf`](/api/expect-typeof) or [`assertType`](/api/assert-type).
+`expect` 对测试类型没有影响，如果表达式没有类型错误。如果你想使用 Vitest 作为 [类型检查器](/guide/testing-types)，请使用 [`expectTypeOf`](/api/expect-typeof) 或 [`assertType`](/api/assert-type)。
 :::
 
 ## assert
 
-- **Type:** `Chai.AssertStatic`
+- **类型：** `Chai.AssertStatic`
 
-Vitest reexports chai's [`assert` API](https://www.chaijs.com/api/assert/) as `expect.assert` for convenience. You can see the supported methods on the [Assert API page](/api/assert).
+Vitest 重新导出 chai 的 [`assert` API](https://www.chaijs.com/api/assert/) 作为 `expect.assert` 以方便使用。你可以在 [Assert API 页面](/api/assert) 上看到支持的方法。
 
-This is especially useful if you need to narrow down the type, since `expect.to*` methods do not support that:
+这特别有用，如果你需要缩小类型范围，因为 `expect.to*` 方法不支持这一点：
 
 ```ts
 interface Cat {
@@ -61,44 +61,44 @@ type Animal = Cat | Dog
 const animal: Animal = { __type: 'Dog', bark: () => {} }
 
 expect.assert(animal.__type === 'Dog')
-// does not show a type error!
+// 不会显示类型错误！
 expect(animal.bark()).toBeUndefined()
 ```
 
 ::: tip
-Note that `expect.assert` also supports other type-narrowing methods (like `assert.isDefined`, `assert.exists` and so on).
+注意 `expect.assert` 也支持其他类型缩小方法（如 `assert.isDefined`、`assert.exists` 等）。
 :::
 
 ## soft
 
-- **Type:** `ExpectStatic & (actual: any) => Assertions`
+- **类型：** `ExpectStatic & (actual: any) => Assertions`
 
-`expect.soft` functions similarly to `expect`, but instead of terminating the test execution upon a failed assertion, it continues running and marks the failure as a test failure. All errors encountered during the test will be displayed until the test is completed.
+`expect.soft` 的功能类似于 `expect`，但在断言失败时不会终止测试执行，而是继续运行并将失败标记为测试失败。测试期间遇到的所有错误都将显示，直到测试完成。
 
 ```ts
 import { expect, test } from 'vitest'
 
 test('expect.soft test', () => {
-  expect.soft(1 + 1).toBe(3) // mark the test as fail and continue
-  expect.soft(1 + 2).toBe(4) // mark the test as fail and continue
+  expect.soft(1 + 1).toBe(3) // 标记测试为失败并继续
+  expect.soft(1 + 2).toBe(4) // 标记测试为失败并继续
 })
-// reporter will report both errors at the end of the run
+// 报告器将在运行结束时报告这两个错误
 ```
 
-It can also be used with `expect`. if `expect` assertion fails, the test will be terminated and all errors will be displayed.
+它也可以与 `expect` 一起使用。如果 `expect` 断言失败，测试将终止并显示所有错误。
 
 ```ts
 import { expect, test } from 'vitest'
 
 test('expect.soft test', () => {
-  expect.soft(1 + 1).toBe(3) // mark the test as fail and continue
-  expect(1 + 2).toBe(4) // failed and terminate the test, all previous errors will be output
-  expect.soft(1 + 3).toBe(5) // do not run
+  expect.soft(1 + 1).toBe(3) // 标记测试为失败并继续
+  expect(1 + 2).toBe(4) // 失败并终止测试，所有之前的错误将被输出
+  expect.soft(1 + 3).toBe(5) // 不会运行
 })
 ```
 
 ::: warning
-`expect.soft` can only be used inside the [`test`](/api/test) function.
+`expect.soft` 只能在 [`test`](/api/test) 函数内部使用。
 :::
 
 ## poll
@@ -109,9 +109,9 @@ interface ExpectPoll extends ExpectStatic {
 }
 ```
 
-`expect.poll` reruns the _assertion_ until it is succeeded. You can configure how many times Vitest should rerun the `expect.poll` callback by setting `interval` and `timeout` options.
+`expect.poll` 会重新运行 _断言_ 直到成功。你可以通过设置 `interval` 和 `timeout` 选项来配置 Vitest 应该重新运行 `expect.poll` 回调多少次。
 
-If an error is thrown inside the `expect.poll` callback, Vitest will retry again until the timeout runs out.
+如果在 `expect.poll` 回调内部抛出错误，Vitest 将重试直到超时。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -124,11 +124,11 @@ test('element exists', async () => {
 ```
 
 ::: warning
-`expect.poll` makes every assertion asynchronous, so you need to await it. Since Vitest 3, if you forget to await it, the test will fail with a warning to do so.
+`expect.poll` 使每个断言都变为异步，所以你需要 await 它。自 Vitest 3 起，如果你忘记 await 它，测试将失败并发出警告。
 
-`expect.poll` doesn't work with several matchers:
+`expect.poll` 不适用于几个匹配器：
 
-- Snapshot matchers are not supported because they will always succeed. If your condition is flaky, consider using [`vi.waitFor`](/api/vi#vi-waitfor) instead to resolve it first:
+- 快照匹配器不受支持，因为它们总是会成功。如果你的条件不稳定，考虑使用 [`vi.waitFor`](/api/vi#vi-waitfor) 来先解决它：
 
 ```ts
 import { expect, vi } from 'vitest'
@@ -137,30 +137,30 @@ const flakyValue = await vi.waitFor(() => getFlakyValue())
 expect(flakyValue).toMatchSnapshot()
 ```
 
-- `.resolves` and `.rejects` are not supported. `expect.poll` already awaits the condition if it's asynchronous.
-- `toThrow` and its aliases are not supported because the `expect.poll` condition is always resolved before the matcher gets the value
+- `.resolves` 和 `.rejects` 不受支持。`expect.poll` 如果条件是异步的，已经会 await 它。
+- `toThrow` 及其别名不受支持，因为 `expect.poll` 条件总是在匹配器获取值之前解析
 :::
 
 ## not
 
-Using `not` will negate the assertion. For example, this code asserts that an `input` value is not equal to `2`. If it's equal, the assertion will throw an error, and the test will fail.
+使用 `not` 将否定断言。例如，这段代码断言 `input` 值不等于 `2`。如果相等，断言将抛出错误，测试将失败。
 
 ```ts
 import { expect, test } from 'vitest'
 
 const input = Math.sqrt(16)
 
-expect(input).not.to.equal(2) // chai API
-expect(input).not.toBe(2) // jest API
+expect(input).not.to.equal(2) // chai 接口
+expect(input).not.toBe(2) // jest 接口
 ```
 
 ## toBe
 
-- **Type:** `(value: any) => Awaitable<void>`
+- **类型：** `(value: any) => Awaitable<void>`
 
-`toBe` can be used to assert if primitives are equal or that objects share the same reference. It is equivalent of calling `expect(Object.is(3, 3)).toBe(true)`. If the objects are not the same, but you want to check if their structures are identical, you can use [`toEqual`](#toequal).
+`toBe` 可用于断言原始值是否相等或对象是否共享同一引用。它等同于调用 `expect(Object.is(3, 3)).toBe(true)`。如果对象不相同，但你想检查它们的结构是否相同，你可以使用 [`toEqual`](#toequal)。
 
-For example, the code below checks if the trader has 13 apples.
+例如，下面的代码检查交易者是否有 13 个苹果。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -176,40 +176,40 @@ test('stock has 13 apples', () => {
 })
 
 test('stocks are the same', () => {
-  const refStock = stock // same reference
+  const refStock = stock // 同一引用
 
   expect(stock).toBe(refStock)
 })
 ```
 
-Try not to use `toBe` with floating-point numbers. Since JavaScript rounds them, `0.1 + 0.2` is not strictly `0.3`. To reliably assert floating-point numbers, use [`toBeCloseTo`](#tobecloseto) assertion.
+尽量不要对浮点数使用 `toBe`。由于 JavaScript 会对它们进行舍入，`0.1 + 0.2` 并不严格等于 `0.3`。要可靠地断言浮点数，请使用 [`toBeCloseTo`](#tobecloseto) 断言。
 
 ## toBeCloseTo
 
-- **Type:** `(value: number, numDigits?: number) => Awaitable<void>`
+- **类型：** `(value: number, numDigits?: number) => Awaitable<void>`
 
-Use `toBeCloseTo` to compare floating-point numbers. The optional `numDigits` argument limits the number of digits to check _after_ the decimal point. The default for `numDigits` is 2. For example:
+使用 `toBeCloseTo` 来比较浮点数。可选的 `numDigits` 参数限制检查小数点 _后_ 的位数。`numDigits` 的默认值为 2。例如：
 
 ```ts
 import { expect, test } from 'vitest'
 
 test.fails('decimals are not equal in javascript', () => {
-  expect(0.2 + 0.1).toBe(0.3) // 0.2 + 0.1 is 0.30000000000000004
+  expect(0.2 + 0.1).toBe(0.3) // 0.2 + 0.1 是 0.30000000000000004
 })
 
 test('decimals are rounded to 5 after the point', () => {
-  // 0.2 + 0.1 is 0.30000 | "000000000004" removed
+  // 0.2 + 0.1 是 0.30000 | "000000000004" 被移除
   expect(0.2 + 0.1).toBeCloseTo(0.3, 5)
-  // nothing from 0.30000000000000004 is removed
+  // 0.30000000000000004 中没有任何内容被移除
   expect(0.2 + 0.1).not.toBeCloseTo(0.3, 50)
 })
 ```
 
 ## toBeDefined
 
-- **Type:** `() => Awaitable<void>`
+- **类型：** `() => Awaitable<void>`
 
-`toBeDefined` asserts that the value is not equal to `undefined`. Useful use case would be to check if function _returned_ anything.
+`toBeDefined` 断言值不等于 `undefined`。有用的用例是检查函数是否 _返回_ 了任何内容。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -225,9 +225,9 @@ test('function returned something', () => {
 
 ## toBeUndefined
 
-- **Type:** `() => Awaitable<void>`
+- **类型：** `() => Awaitable<void>`
 
-Opposite of `toBeDefined`, `toBeUndefined` asserts that the value _is_ equal to `undefined`. Useful use case would be to check if function hasn't _returned_ anything.
+与 `toBeDefined` 相反，`toBeUndefined` 断言值 _等于_ `undefined`。有用的用例是检查函数是否没有 _返回_ 任何内容。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -245,11 +245,11 @@ test('mary doesn\'t have a stock', () => {
 
 ## toBeTruthy
 
-- **Type:** `() => Awaitable<void>`
+- **类型：** `() => Awaitable<void>`
 
-`toBeTruthy` asserts that the value is true when converted to boolean. Useful if you don't care for the value, but just want to know it can be converted to `true`.
+`toBeTruthy` 断言值转换为布尔值时为 true。如果你不关心值，只想知道它可以转换为 `true`，这很有用。
 
-For example, having this code you don't care for the return value of `stocks.getInfo` - it maybe a complex object, a string, or anything else. The code will still work.
+例如，有了这段代码，你不关心 `stocks.getInfo` 的返回值——它可能是一个复杂的对象、一个字符串或其他任何东西。代码仍然可以工作。
 
 ```ts
 import { Stocks } from './stocks.js'
@@ -261,7 +261,7 @@ if (stocks.getInfo('Bill')) {
 }
 ```
 
-So if you want to test that `stocks.getInfo` will be truthy, you could write:
+所以如果你想测试 `stocks.getInfo` 将为 truthy，你可以写：
 
 ```ts
 import { expect, test } from 'vitest'
@@ -275,15 +275,15 @@ test('if we know Bill stock, sell apples to him', () => {
 })
 ```
 
-Everything in JavaScript is truthy, except `false`, `null`, `undefined`, `NaN`, `0`, `-0`, `0n`, `""` and `document.all`.
+JavaScript 中的所有内容都是 truthy，除了 `false`、`null`、`undefined`、`NaN`、`0`、`-0`、`0n`、`""` 和 `document.all`。
 
 ## toBeFalsy
 
-- **Type:** `() => Awaitable<void>`
+- **类型：** `() => Awaitable<void>`
 
-`toBeFalsy` asserts that the value is false when converted to boolean. Useful if you don't care for the value, but just want to know if it can be converted to `false`.
+`toBeFalsy` 断言值转换为布尔值时为 false。如果你不关心值，只想知道它是否可以转换为 `false`，这很有用。
 
-For example, having this code you don't care for the return value of `stocks.stockFailed` - it may return any falsy value, but the code will still work.
+例如，有了这段代码，你不关心 `stocks.stockFailed` 的返回值——它可能返回任何 falsy 值，但代码仍然可以工作。
 
 ```ts
 import { Stocks } from './stocks.js'
@@ -295,7 +295,7 @@ if (!stocks.stockFailed('Bill')) {
 }
 ```
 
-So if you want to test that `stocks.stockFailed` will be falsy, you could write:
+所以如果你想测试 `stocks.stockFailed` 将为 falsy，你可以写：
 
 ```ts
 import { expect, test } from 'vitest'
@@ -309,13 +309,13 @@ test('if Bill stock hasn\'t failed, sell apples to him', () => {
 })
 ```
 
-Everything in JavaScript is truthy, except `false`, `null`, `undefined`, `NaN`, `0`, `-0`, `0n`, `""` and `document.all`.
+JavaScript 中的所有内容都是 truthy，除了 `false`、`null`、`undefined`、`NaN`、`0`、`-0`、`0n`、`""` 和 `document.all`。
 
 ## toBeNull
 
-- **Type:** `() => Awaitable<void>`
+- **类型：** `() => Awaitable<void>`
 
-`toBeNull` simply asserts if something is `null`. Alias for `.toBe(null)`.
+`toBeNull` 简单地断言某物是否为 `null`。`.toBe(null)` 的别名。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -331,9 +331,9 @@ test('we don\'t have apples', () => {
 
 ## toBeNullable
 
-- **Type:** `() => Awaitable<void>`
+- **类型：** `() => Awaitable<void>`
 
-`toBeNullable` simply asserts if something is nullable (`null` or `undefined`).
+`toBeNullable` 简单地断言某物是否可空（`null` 或 `undefined`）。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -357,9 +357,9 @@ test('we don\'t have bananas', () => {
 
 ## toBeNaN
 
-- **Type:** `() => Awaitable<void>`
+- **类型：** `() => Awaitable<void>`
 
-`toBeNaN` simply asserts if something is `NaN`. Alias for `.toBe(NaN)`.
+`toBeNaN` 简单地断言某物是否为 `NaN`。`.toBe(NaN)` 的别名。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -379,12 +379,12 @@ test('getApplesCount has some unusual side effects...', () => {
 
 ## toBeOneOf
 
-- **Type:** `(sample: Array<any> | Set<any>) => any`
+- **类型：** `(sample: Array<any> | Set<any>) => any`
 
-`toBeOneOf` asserts if a value matches any of the values in the provided array or set.
+`toBeOneOf` 断言一个值是否匹配提供的数组或集合中的任何值。
 
-::: warning EXPERIMENTAL
-Providing a `Set` is an experimental feature and may change in a future release.
+::: warning 实验性
+提供 `Set` 是一个实验性功能，可能会在未来的版本中更改。
 :::
 
 ```ts
@@ -395,7 +395,7 @@ test('fruit is one of the allowed values', () => {
 })
 ```
 
-The asymmetric matcher is particularly useful when testing optional properties that could be either `null` or `undefined`:
+非对称匹配器在测试可选属性（可能是 `null` 或 `undefined`）时特别有用：
 
 ```ts
 test('optional properties can be null or undefined', () => {
@@ -414,14 +414,14 @@ test('optional properties can be null or undefined', () => {
 ```
 
 :::tip
-You can use `expect.not` with this matcher to ensure a value does NOT match any of the provided options.
+你可以在此匹配器中使用 `expect.not` 以确保值不匹配任何提供的选项。
 :::
 
 ## toBeTypeOf
 
-- **Type:** `(c: 'bigint' | 'boolean' | 'function' | 'number' | 'object' | 'string' | 'symbol' | 'undefined') => Awaitable<void>`
+- **类型：** `(c: 'bigint' | 'boolean' | 'function' | 'number' | 'object' | 'string' | 'symbol' | 'undefined') => Awaitable<void>`
 
-`toBeTypeOf` asserts if an actual value is of type of received type.
+`toBeTypeOf` 断言实际值是否为接收到的类型。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -434,7 +434,7 @@ test('stock is type of string', () => {
 ```
 
 :::warning
-`toBeTypeOf` uses the native `typeof` operator under the hood with all its quirks, most notably that the value `null` has type `object`.
+`toBeTypeOf` 在底层使用原生的 `typeof` 运算符及其所有怪癖，最值得注意的是值 `null` 的类型为 `object`。
 
 ```ts
 test('toBeTypeOf cannot check for null or array', () => {
@@ -446,9 +446,9 @@ test('toBeTypeOf cannot check for null or array', () => {
 
 ## toBeInstanceOf
 
-- **Type:** `(c: any) => Awaitable<void>`
+- **类型：** `(c: any) => Awaitable<void>`
 
-`toBeInstanceOf` asserts if an actual value is instance of received class.
+`toBeInstanceOf` 断言实际值是否为接收到的类的实例。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -463,9 +463,9 @@ test('stocks are instance of Stocks', () => {
 
 ## toBeGreaterThan
 
-- **Type:** `(n: number | bigint) => Awaitable<void>`
+- **类型：** `(n: number | bigint) => Awaitable<void>`
 
-`toBeGreaterThan` asserts if actual value is greater than received one. Equal values will fail the test.
+`toBeGreaterThan` 断言实际值是否大于接收到的值。相等的值将使测试失败。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -478,9 +478,9 @@ test('have more then 10 apples', () => {
 
 ## toBeGreaterThanOrEqual
 
-- **Type:** `(n: number | bigint) => Awaitable<void>`
+- **类型：** `(n: number | bigint) => Awaitable<void>`
 
-`toBeGreaterThanOrEqual` asserts if actual value is greater than received one or equal to it.
+`toBeGreaterThanOrEqual` 断言实际值是否大于或等于接收到的值。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -493,9 +493,9 @@ test('have 11 apples or more', () => {
 
 ## toBeLessThan
 
-- **Type:** `(n: number | bigint) => Awaitable<void>`
+- **类型：** `(n: number | bigint) => Awaitable<void>`
 
-`toBeLessThan` asserts if actual value is less than received one. Equal values will fail the test.
+`toBeLessThan` 断言实际值是否小于接收到的值。相等的值将使测试失败。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -508,9 +508,9 @@ test('have less then 20 apples', () => {
 
 ## toBeLessThanOrEqual
 
-- **Type:** `(n: number | bigint) => Awaitable<void>`
+- **类型：** `(n: number | bigint) => Awaitable<void>`
 
-`toBeLessThanOrEqual` asserts if actual value is less than received one or equal to it.
+`toBeLessThanOrEqual` 断言实际值是否小于或等于接收到的值。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -523,9 +523,9 @@ test('have 11 apples or less', () => {
 
 ## toEqual
 
-- **Type:** `(received: any) => Awaitable<void>`
+- **类型：** `(received: any) => Awaitable<void>`
 
-`toEqual` asserts if actual value is equal to received one or has the same structure, if it is an object (compares them recursively). You can see the difference between `toEqual` and [`toBe`](#tobe) in this example:
+`toEqual` 断言实际值是否等于接收到的值，或者如果是对象则具有相同的结构（递归比较它们）。你可以在本例中看到 `toEqual` 和 [`toBe`](#tobe) 之间的区别：
 
 ```ts
 import { expect, test } from 'vitest'
@@ -550,30 +550,30 @@ test('stocks are not the same', () => {
 ```
 
 :::warning
-For `Error` objects, non-enumerable properties such as `name`, `message`, `cause` and `AggregateError.errors` are also compared. For `Error.cause`, the comparison is done asymmetrically:
+对于 `Error` 对象，不可枚举的属性如 `name`、`message`、`cause` 和 `AggregateError.errors` 也会被比较。对于 `Error.cause`，比较是非对称进行的：
 
 ```ts
-// success
+// 成功
 expect(new Error('hi', { cause: 'x' })).toEqual(new Error('hi'))
 
-// fail
+// 失败
 expect(new Error('hi')).toEqual(new Error('hi', { cause: 'x' }))
 ```
 
-To test if something was thrown, use [`toThrow`](#tothrow) assertion.
+要测试是否抛出了某些内容，请使用 [`toThrow`](#tothrow) 断言。
 :::
 
 ## toStrictEqual
 
-- **Type:** `(received: any) => Awaitable<void>`
+- **类型：** `(received: any) => Awaitable<void>`
 
-`toStrictEqual` asserts if the actual value is equal to the received one or has the same structure if it is an object (compares them recursively), and of the same type.
+`toStrictEqual` 断言实际值是否等于接收到的值，或者如果是对象则具有相同的结构（递归比较它们），并且类型相同。
 
-Differences from [`.toEqual`](#toequal):
+与 [`.toEqual`](#toequal) 的区别：
 
--  Keys with `undefined` properties are checked. e.g. `{a: undefined, b: 2}` does not match `{b: 2}` when using `.toStrictEqual`.
--  Array sparseness is checked. e.g. `[, 1]` does not match `[undefined, 1]` when using `.toStrictEqual`.
--  Object types are checked to be equal. e.g. A class instance with fields `a` and `b` will not equal a literal object with fields `a` and `b`.
+-  检查具有 `undefined` 属性的键。例如，使用 `.toStrictEqual` 时，`{a: undefined, b: 2}` 不匹配 `{b: 2}`。
+-  检查数组稀疏性。例如，使用 `.toStrictEqual` 时，`[, 1]` 不匹配 `[undefined, 1]`。
+-  检查对象类型是否相等。例如，具有字段 `a` 和 `b` 的类实例不等于具有字段 `a` 和 `b` 的字面量对象。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -592,9 +592,9 @@ test('structurally the same, but semantically different', () => {
 
 ## toContain
 
-- **Type:** `(received: string) => Awaitable<void>`
+- **类型：** `(received: string) => Awaitable<void>`
 
-`toContain` asserts if the actual value is in an array. `toContain` can also check whether a string is a substring of another string. If you are running tests in a browser-like environment, this assertion can also check if class is contained in a `classList`, or an element is inside another one.
+`toContain` 断言实际值是否在数组中。`toContain` 还可以检查一个字符串是否是另一个字符串的子串。如果你在类浏览器环境中运行测试，此断言还可以检查类是否包含在 `classList` 中，或一个元素是否在另一个元素内部。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -619,10 +619,10 @@ test('the element contains a class and is contained', () => {
 
 ## toContainEqual
 
-- **Type:** `(received: any) => Awaitable<void>`
+- **类型：** `(received: any) => Awaitable<void>`
 
-`toContainEqual` asserts if an item with a specific structure and values is contained in an array.
-It works like [`toEqual`](#toequal) inside for each element.
+`toContainEqual` 断言具有特定结构和值的项是否包含在数组中。
+它对每个元素内部的工作方式类似于 [`toEqual`](#toequal)。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -635,9 +635,9 @@ test('apple available', () => {
 
 ## toHaveLength
 
-- **Type:** `(received: number) => Awaitable<void>`
+- **类型：** `(received: number) => Awaitable<void>`
 
-`toHaveLength` asserts if an object has a `.length` property and it is set to a certain numeric value.
+`toHaveLength` 断言对象是否具有 `.length` 属性且其设置为特定数值。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -646,18 +646,18 @@ test('toHaveLength', () => {
   expect('abc').toHaveLength(3)
   expect([1, 2, 3]).toHaveLength(3)
 
-  expect('').not.toHaveLength(3) // doesn't have .length of 3
+  expect('').not.toHaveLength(3) // 没有 .length 为 3
   expect({ length: 3 }).toHaveLength(3)
 })
 ```
 
 ## toHaveProperty
 
-- **Type:** `(key: any, received?: any) => Awaitable<void>`
+- **类型：** `(key: any, received?: any) => Awaitable<void>`
 
-`toHaveProperty` asserts if a property at provided reference `key` exists for an object.
+`toHaveProperty` 断言对象是否存在提供的引用键处的属性。
 
-You can provide an optional value argument also known as deep equality, like the `toEqual` matcher to compare the received property value.
+你可以提供一个可选的值参数（也称为深度相等），类似于 `toEqual` 匹配器，以比较接收到的属性值。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -684,54 +684,54 @@ const invoice = {
 }
 
 test('John Doe Invoice', () => {
-  expect(invoice).toHaveProperty('isActive') // assert that the key exists
-  expect(invoice).toHaveProperty('total_amount', 5000) // assert that the key exists and the value is equal
+  expect(invoice).toHaveProperty('isActive') // 断言键存在
+  expect(invoice).toHaveProperty('total_amount', 5000) // 断言键存在且值相等
 
-  expect(invoice).not.toHaveProperty('account') // assert that this key does not exist
+  expect(invoice).not.toHaveProperty('account') // 断言此键不存在
 
-  // Deep referencing using dot notation
+  // 使用点表示法进行深度引用
   expect(invoice).toHaveProperty('customer.first_name')
   expect(invoice).toHaveProperty('customer.last_name', 'Doe')
   expect(invoice).not.toHaveProperty('customer.location', 'India')
 
-  // Deep referencing using an array containing the key
+  // 使用包含键的数组进行深度引用
   expect(invoice).toHaveProperty('items[0].type', 'apples')
-  expect(invoice).toHaveProperty('items.0.type', 'apples') // dot notation also works
+  expect(invoice).toHaveProperty('items.0.type', 'apples') // 点表示法也有效
 
-  // Deep referencing using an array containing the keyPath
+  // 使用包含键路径的数组进行深度引用
   expect(invoice).toHaveProperty(['items', 0, 'type'], 'apples')
-  expect(invoice).toHaveProperty(['items', '0', 'type'], 'apples') // string notation also works
+  expect(invoice).toHaveProperty(['items', '0', 'type'], 'apples') // 字符串表示法也有效
 
-  // Wrap your key in an array to avoid the key from being parsed as a deep reference
+  // 将键包装在数组中以避免键被解析为深度引用
   expect(invoice).toHaveProperty(['P.O'], '12345')
 
-  // Deep equality of object property
+  // 对象属性的深度相等
   expect(invoice).toHaveProperty('items[0]', { type: 'apples', quantity: 10 })
 })
 ```
 
 ## toMatch
 
-- **Type:** `(received: string | regexp) => Awaitable<void>`
+- **类型:** `(received: string | regexp) => Awaitable<void>`
 
-`toMatch` asserts if a string matches a regular expression or a string.
+`toMatch` 断言字符串是否匹配正则表达式或字符串。
 
 ```ts
 import { expect, test } from 'vitest'
 
 test('top fruits', () => {
   expect('top fruits include apple, orange and grape').toMatch(/apple/)
-  expect('applefruits').toMatch('fruit') // toMatch also accepts a string
+  expect('applefruits').toMatch('fruit') // toMatch 也接受字符串
 })
 ```
 
 ## toMatchObject
 
-- **Type:** `(received: object | array) => Awaitable<void>`
+- **类型:** `(received: object | array) => Awaitable<void>`
 
-`toMatchObject` asserts if an object matches a subset of the properties of an object.
+`toMatchObject` 断言对象是否匹配对象的属性子集。
 
-You can also pass an array of objects. This is useful if you want to check that two arrays match in their number and order of elements, as opposed to `arrayContaining`, which allows for extra elements in the received array.
+你也可以传递对象数组。如果你想检查两个数组的元素数量和顺序是否匹配（而不是像 `arrayContaining` 那样允许接收数组中存在额外元素），这很有用。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -779,22 +779,22 @@ test('the number of elements must match exactly', () => {
 
 ## toThrow
 
-- **Type:** `(expected?: any) => Awaitable<void>`
+- **类型:** `(expected?: any) => Awaitable<void>`
 
-- **Alias:** `toThrowError` <Deprecated />
+- **别名:** `toThrowError` <Deprecated />
 
-`toThrow` asserts if a function throws an error when it is called.
+`toThrow` 断言函数在被调用时是否抛出错误。
 
-You can provide an optional argument to test that a specific error is thrown:
+你可以提供一个可选参数来测试是否抛出了特定错误：
 
-- `RegExp`: error message matches the pattern
-- `string`: error message includes the substring
-- any other value: compare with thrown value using deep equality (similar to `toEqual`)
+- `RegExp`：错误消息匹配模式
+- `string`：错误消息包含子字符串
+- 任何其他值：使用深度相等性比较抛出的值（类似于 `toEqual`）
 
 :::tip
-You must wrap the code in a function, otherwise the error will not be caught, and test will fail.
+你必须将代码包装在函数中，否则错误将被捕获不到，测试将失败。
 
-This does not apply for async calls as [rejects](#rejects) correctly unwraps the promise:
+这不适用于异步调用，因为 [rejects](#rejects) 会正确地解包 promise：
 ```ts
 test('expect rejects toThrow', async ({ expect }) => {
   const promise = Promise.reject(new Error('Test'))
@@ -803,7 +803,7 @@ test('expect rejects toThrow', async ({ expect }) => {
 ```
 :::
 
-For example, if we want to test that `getFruitStock('pineapples')` throws, we could write:
+例如，如果我们想测试 `getFruitStock('pineapples')` 抛出错误，我们可以写：
 
 ```ts
 import { expect, test } from 'vitest'
@@ -813,15 +813,15 @@ function getFruitStock(type: string) {
     throw new Error('Pineapples are not in stock')
   }
 
-  // Do some other stuff
+  // 做一些其他事情
 }
 
 test('throws on pineapples', () => {
-  // Test that the error message says "stock" somewhere: these are equivalent
+  // 测试错误消息在某处包含 "stock"：这些是等效的
   expect(() => getFruitStock('pineapples')).toThrow(/stock/)
   expect(() => getFruitStock('pineapples')).toThrow('stock')
 
-  // Test the exact error message
+  // 测试确切的错误消息
   expect(() => getFruitStock('pineapples')).toThrow(
     /^Pineapples are not in stock$/,
   )
@@ -836,7 +836,7 @@ test('throws on pineapples', () => {
 ```
 
 :::tip
-To test async functions, use in combination with [rejects](#rejects).
+要测试异步函数，请与 [rejects](#rejects) 结合使用。
 
 ```js
 function getAsyncFruitStock() {
@@ -850,7 +850,7 @@ test('throws on pineapples', async () => {
 :::
 
 :::tip
-You can also test non-Error values that are thrown:
+你也可以测试抛出的非 Error 值：
 
 ```ts
 test('throws non-Error values', () => {
@@ -860,8 +860,8 @@ test('throws non-Error values', () => {
 ```
 :::
 
-:::warning Unhandled Rejections with Fake Timers
-When using fake timers, an async function that rejects _during_ a `vi.advanceTimersByTimeAsync` call will trigger an [unhandled rejection](https://nodejs.org/api/process.html#event-unhandledrejection) — even if you later assert it with `.rejects.toThrow()`. This happens because the error is thrown before the `expect` chain has a chance to catch it.
+:::warning 使用假定时器时的未处理拒绝
+当使用假定时器时，在 `vi.advanceTimersByTimeAsync` 调用期间拒绝的异步函数将触发 [未处理拒绝](https://nodejs.org/api/process.html#event-unhandledrejection) — 即使你稍后使用 `.rejects.toThrow()` 断言它。这是因为错误在 `expect` 链有机会捕获它之前就被抛出了。
 
 ```ts
 async function foo() {
@@ -874,12 +874,12 @@ test('rejects', async () => {
 
   await vi.advanceTimersByTimeAsync(100)
 
-  // The assertion passes, but the error was already "unhandled" during advanceTimersByTimeAsync
+  // 断言通过，但错误在 advanceTimersByTimeAsync 期间已经“未处理”
   await expect(result).rejects.toThrow()
 })
 ```
 
-To avoid this, prefer [`vi.setTimerTickMode('nextTimerAsync')`](/api/vi#vi-settimertickmode) so that timers tick automatically as promises settle, without needing a manual advance:
+为了避免这种情况，建议使用 [`vi.setTimerTickMode('nextTimerAsync')`](/api/vi#vi-settimertickmode)，这样定时器会在 promise 结算时自动触发，无需手动推进：
 
 ```ts
 beforeEach(() => {
@@ -888,12 +888,12 @@ beforeEach(() => {
 })
 
 test('rejects', async () => {
-  // No advanceTimersByTimeAsync needed — the error is caught by rejects.toThrow()
+  // 不需要 advanceTimersByTimeAsync — 错误被 rejects.toThrow() 捕获
   await expect(foo()).rejects.toThrow('boom')
 })
 ```
 
-Alternatively, set up the `.rejects.toThrow()` assertion _before_ advancing timers so the rejection is handled immediately:
+或者，在推进定时器之前设置 `.rejects.toThrow()` 断言，以便立即处理拒绝：
 
 ```ts
 test('rejects', async () => {
@@ -908,14 +908,14 @@ test('rejects', async () => {
 
 ## toMatchSnapshot
 
-- **Type:** `<T>(shape?: Partial<T> | string, hint?: string) => void`
+- **类型:** `<T>(shape?: Partial<T> | string, hint?: string) => void`
 
-This ensures that a value matches the most recent snapshot.
+这确保值匹配最近的快照。
 
-You can provide an optional `hint` string argument that is appended to the test name. Although Vitest always appends a number at the end of a snapshot name, short descriptive hints might be more useful than numbers to differentiate multiple snapshots in a single it or test block. Vitest sorts snapshots by name in the corresponding `.snap` file.
+你可以提供一个可选的 `hint` 字符串参数，它会附加到测试名称后面。虽然 Vitest 总是在快照名称末尾附加一个数字，但简短的描述性提示可能比数字更有用，以便在单个 it 或 test 块中区分多个快照。Vitest 在相应的 `.snap` 文件中按名称对快照进行排序。
 
 :::tip
-  When a snapshot mismatches and causes the test to fail, if the mismatch is expected, you can press `u` key to update the snapshot once. Or you can pass `-u` or `--update` CLI options to make Vitest always update the tests.
+  当快照不匹配导致测试失败时，如果预期不匹配，你可以按 `u` 键更新快照一次。或者你可以传递 `-u` 或 `--update` CLI 选项让 Vitest 始终更新测试。
 :::
 
 ```ts
@@ -927,7 +927,7 @@ test('matches snapshot', () => {
 })
 ```
 
-You can also provide a shape of an object, if you are testing just a shape of an object, and don't need it to be 100% compatible:
+如果你只测试对象的形状，而不需要 100% 兼容，你也可以提供对象的形状：
 
 ```ts
 import { expect, test } from 'vitest'
@@ -940,18 +940,18 @@ test('matches snapshot', () => {
 
 ## toMatchInlineSnapshot
 
-- **Type:** `<T>(shape?: Partial<T> | string, snapshot?: string, hint?: string) => void`
+- **类型:** `<T>(shape?: Partial<T> | string, snapshot?: string, hint?: string) => void`
 
-This ensures that a value matches the most recent snapshot.
+这确保值匹配最近的快照。
 
-Vitest adds and updates the inlineSnapshot string argument to the matcher in the test file (instead of an external `.snap` file).
+Vitest 会在测试文件中向 matcher 添加和更新 inlineSnapshot 字符串参数（而不是外部 `.snap` 文件）。
 
 ```ts
 import { expect, test } from 'vitest'
 
 test('matches inline snapshot', () => {
   const data = { foo: new Set(['bar', 'snapshot']) }
-  // Vitest will update following content when updating the snapshot
+  // 更新快照时 Vitest 将更新以下内容
   expect(data).toMatchInlineSnapshot(`
     {
       "foo": Set {
@@ -963,7 +963,7 @@ test('matches inline snapshot', () => {
 })
 ```
 
-You can also provide a shape of an object, if you are testing just a shape of an object, and don't need it to be 100% compatible:
+如果你只测试对象的形状，而不需要 100% 兼容，你也可以提供对象的形状：
 
 ```ts
 import { expect, test } from 'vitest'
@@ -983,9 +983,9 @@ test('matches snapshot', () => {
 
 ## toMatchFileSnapshot {#tomatchfilesnapshot}
 
-- **Type:** `<T>(filepath: string, hint?: string) => Promise<void>`
+- **类型:** `<T>(filepath: string, hint?: string) => Promise<void>`
 
-Compare or update the snapshot with the content of a file explicitly specified (instead of the `.snap` file).
+比较或更新快照与显式指定的文件内容（而不是 `.snap` 文件）。
 
 ```ts
 import { expect, it } from 'vitest'
@@ -996,25 +996,25 @@ it('render basic', async () => {
 })
 ```
 
-Note that since file system operation is async, you need to use `await` with `toMatchFileSnapshot()`. If `await` is not used, Vitest treats it like `expect.soft`, meaning the code after the statement will continue to run even if the snapshot mismatches. After the test finishes, Vitest will check the snapshot and fail if there is a mismatch.
+请注意，由于文件系统操作是异步的，你需要对 `toMatchFileSnapshot()` 使用 `await`。如果未使用 `await`，Vitest 会将其视为 `expect.soft`，这意味着即使快照不匹配，语句后的代码也会继续运行。测试结束后，Vitest 将检查快照，如果不匹配则失败。
 
 ## toThrowErrorMatchingSnapshot
 
-- **Type:** `(hint?: string) => void`
+- **类型:** `(hint?: string) => void`
 
-The same as [`toMatchSnapshot`](#tomatchsnapshot), but expects the same value as [`toThrow`](#tothrow).
+与 [`toMatchSnapshot`](#tomatchsnapshot) 相同，但期望值与 [`toThrow`](#tothrow) 相同。
 
 ## toThrowErrorMatchingInlineSnapshot
 
-- **Type:** `(snapshot?: string, hint?: string) => void`
+- **类型:** `(snapshot?: string, hint?: string) => void`
 
-The same as [`toMatchInlineSnapshot`](#tomatchinlinesnapshot), but expects the same value as [`toThrow`](#tothrow).
+与 [`toMatchInlineSnapshot`](#tomatchinlinesnapshot) 相同，但期望值与 [`toThrow`](#tothrow) 相同。
 
 ## toHaveBeenCalled
 
-- **Type:** `() => Awaitable<void>`
+- **类型:** `() => Awaitable<void>`
 
-This assertion is useful for testing that a function has been called. Requires a spy function to be passed to `expect`.
+此断言对于测试函数是否被调用很有用。需要将间谍函数传递给 `expect`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1038,9 +1038,9 @@ test('spy function', () => {
 
 ## toHaveBeenCalledTimes
 
-- **Type**: `(amount: number) => Awaitable<void>`
+- **类型**: `(amount: number) => Awaitable<void>`
 
-This assertion checks if a function was called a certain amount of times. Requires a spy function to be passed to `expect`.
+此断言检查函数是否被调用了特定次数。需要将间谍函数传递给 `expect`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1063,9 +1063,9 @@ test('spy function called two times', () => {
 
 ## toHaveBeenCalledWith
 
-- **Type**: `(...args: any[]) => Awaitable<void>`
+- **类型**: `(...args: any[]) => Awaitable<void>`
 
-This assertion checks if a function was called at least once with certain parameters. Requires a spy function to be passed to `expect`.
+此断言检查函数是否至少使用特定参数被调用过一次。需要将间谍函数传递给 `expect`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1089,9 +1089,9 @@ test('spy function', () => {
 
 ## toHaveBeenCalledBefore
 
-- **Type**: `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => Awaitable<void>`
+- **类型**: `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => Awaitable<void>`
 
-This assertion checks if a `Mock` was called before another `Mock`.
+此断言检查一个 `Mock` 是否在另一个 `Mock` 之前被调用。
 
 ```ts
 test('calls mock1 before mock2', () => {
@@ -1108,9 +1108,9 @@ test('calls mock1 before mock2', () => {
 
 ## toHaveBeenCalledAfter
 
-- **Type**: `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => Awaitable<void>`
+- **类型**: `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => Awaitable<void>`
 
-This assertion checks if a `Mock` was called after another `Mock`.
+此断言检查一个 `Mock` 是否在另一个 `Mock` 之后被调用。
 
 ```ts
 test('calls mock1 after mock2', () => {
@@ -1127,9 +1127,9 @@ test('calls mock1 after mock2', () => {
 
 ## toHaveBeenCalledExactlyOnceWith
 
-- **Type**: `(...args: any[]) => Awaitable<void>`
+- **类型**: `(...args: any[]) => Awaitable<void>`
 
-This assertion checks if a function was called exactly once and with certain parameters. Requires a spy function to be passed to `expect`.
+此断言检查一个函数是否恰好被调用了一次且带有特定参数。需要向 `expect` 传递一个 spy 函数。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1151,9 +1151,9 @@ test('spy function', () => {
 
 ## toHaveBeenLastCalledWith
 
-- **Type**: `(...args: any[]) => Awaitable<void>`
+- **类型**: `(...args: any[]) => Awaitable<void>`
 
-This assertion checks if a function was called with certain parameters at its last invocation. Requires a spy function to be passed to `expect`.
+此断言检查一个函数在其最后一次调用时是否带有特定参数。需要向 `expect` 传递一个 spy 函数。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1177,11 +1177,11 @@ test('spy function', () => {
 
 ## toHaveBeenNthCalledWith
 
-- **Type**: `(time: number, ...args: any[]) => Awaitable<void>`
+- **类型**: `(time: number, ...args: any[]) => Awaitable<void>`
 
-This assertion checks if a function was called with certain parameters at the certain time. The count starts at 1. So, to check the second entry, you would write `.toHaveBeenNthCalledWith(2, ...)`.
+此断言检查一个函数在第几次调用时是否带有特定参数。计数从 1 开始。因此，要检查第二次条目，你应该写 `.toHaveBeenNthCalledWith(2, ...)`。
 
-Requires a spy function to be passed to `expect`.
+需要向 `expect` 传递一个 spy 函数。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1204,9 +1204,9 @@ test('first call of spy function called with right params', () => {
 
 ## toHaveReturned
 
-- **Type**: `() => Awaitable<void>`
+- **类型**: `() => Awaitable<void>`
 
-This assertion checks if a function has successfully returned a value at least once (i.e., did not throw an error). Requires a spy function to be passed to `expect`.
+此断言检查一个函数是否至少成功返回过一次值（即没有抛出错误）。需要向 `expect` 传递一个 spy 函数。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1228,9 +1228,9 @@ test('spy function returned a value', () => {
 
 ## toHaveReturnedTimes
 
-- **Type**: `(amount: number) => Awaitable<void>`
+- **类型**: `(amount: number) => Awaitable<void>`
 
-This assertion checks if a function has successfully returned a value an exact amount of times (i.e., did not throw an error). Requires a spy function to be passed to `expect`.
+此断言检查一个函数是否成功返回了确切次数的值（即没有抛出错误）。需要向 `expect` 传递一个 spy 函数。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1247,9 +1247,9 @@ test('spy function returns a value two times', () => {
 
 ## toHaveReturnedWith
 
-- **Type**: `(returnValue: any) => Awaitable<void>`
+- **类型**: `(returnValue: any) => Awaitable<void>`
 
-You can call this assertion to check if a function has successfully returned a value with certain parameters at least once. Requires a spy function to be passed to `expect`.
+你可以调用此断言来检查一个函数是否至少成功返回过一次带有特定参数的值。需要向 `expect` 传递一个 spy 函数。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1265,9 +1265,9 @@ test('spy function returns a product', () => {
 
 ## toHaveLastReturnedWith
 
-- **Type**: `(returnValue: any) => Awaitable<void>`
+- **类型**: `(returnValue: any) => Awaitable<void>`
 
-You can call this assertion to check if a function has successfully returned a certain value when it was last invoked. Requires a spy function to be passed to `expect`.
+你可以调用此断言来检查一个函数在最后一次被调用时是否成功返回了特定值。需要向 `expect` 传递一个 spy 函数。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1284,11 +1284,11 @@ test('spy function returns bananas on a last call', () => {
 
 ## toHaveNthReturnedWith
 
-- **Type**: `(time: number, returnValue: any) => Awaitable<void>`
+- **类型**: `(time: number, returnValue: any) => Awaitable<void>`
 
-You can call this assertion to check if a function has successfully returned a value with certain parameters on a certain call. Requires a spy function to be passed to `expect`.
+你可以调用此断言来检查一个函数在某次调用时是否成功返回了带有特定参数的值。需要向 `expect` 传递一个 spy 函数。
 
-The count starts at 1. So, to check the second entry, you would write `.toHaveNthReturnedWith(2, ...)`.
+计数从 1 开始。因此，要检查第二次条目，你应该写 `.toHaveNthReturnedWith(2, ...)`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1305,11 +1305,11 @@ test('spy function returns bananas on second call', () => {
 
 ## toHaveResolved
 
-- **Type**: `() => Awaitable<void>`
+- **类型**: `() => Awaitable<void>`
 
-This assertion checks if a function has successfully resolved a value at least once (i.e., did not reject). Requires a spy function to be passed to `expect`.
+此断言检查一个函数是否至少成功解析过一个值（即没有发生拒绝）。需要向 `expect` 传递一个 spy 函数。
 
-If the function returned a promise, but it was not resolved yet, this will fail.
+如果函数返回了一个 promise，但尚未解析，这将失败。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1331,11 +1331,11 @@ test('spy function resolved a value', async () => {
 
 ## toHaveResolvedTimes
 
-- **Type**: `(amount: number) => Awaitable<void>`
+- **类型**: `(amount: number) => Awaitable<void>`
 
-This assertion checks if a function has successfully resolved a value an exact amount of times (i.e., did not reject). Requires a spy function to be passed to `expect`.
+此断言检查一个函数是否成功解析了确切次数的值（即没有发生拒绝）。需要向 `expect` 传递一个 spy 函数。
 
-This will only count resolved promises. If the function returned a promise, but it was not resolved yet, it will not be counted.
+这只会计数已解析的 promise。如果函数返回了一个 promise，但尚未解析，它将不会被计数。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1352,11 +1352,11 @@ test('spy function resolved a value two times', async () => {
 
 ## toHaveResolvedWith
 
-- **Type**: `(returnValue: any) => Awaitable<void>`
+- **类型**: `(returnValue: any) => Awaitable<void>`
 
-You can call this assertion to check if a function has successfully resolved a certain value at least once. Requires a spy function to be passed to `expect`.
+你可以调用此断言来检查一个函数是否至少成功解析过某个特定值。需要向 `expect` 传递一个 spy 函数。
 
-If the function returned a promise, but it was not resolved yet, this will fail.
+如果函数返回了一个 promise，但尚未解析，这将失败。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1372,11 +1372,11 @@ test('spy function resolved a product', async () => {
 
 ## toHaveLastResolvedWith
 
-- **Type**: `(returnValue: any) => Awaitable<void>`
+- **类型**: `(returnValue: any) => Awaitable<void>`
 
-You can call this assertion to check if a function has successfully resolved a certain value when it was last invoked. Requires a spy function to be passed to `expect`.
+你可以调用此断言来检查一个函数在最后一次被调用时是否成功解析了某个特定值。需要向 `expect` 传递一个 spy 函数。
 
-If the function returned a promise, but it was not resolved yet, this will fail.
+如果函数返回了一个 promise，但尚未解析，这将失败。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1393,13 +1393,13 @@ test('spy function resolves bananas on a last call', async () => {
 
 ## toHaveNthResolvedWith
 
-- **Type**: `(time: number, returnValue: any) => Awaitable<void>`
+- **类型**: `(time: number, returnValue: any) => Awaitable<void>`
 
-You can call this assertion to check if a function has successfully resolved a certain value on a specific invocation. Requires a spy function to be passed to `expect`.
+你可以调用此断言来检查一个函数在特定调用时是否成功解析了某个特定值。需要向 `expect` 传递一个 spy 函数。
 
-If the function returned a promise, but it was not resolved yet, this will fail.
+如果函数返回了一个 promise，但尚未解析，这将失败。
 
-The count starts at 1. So, to check the second entry, you would write `.toHaveNthResolvedWith(2, ...)`.
+计数从 1 开始。因此，要检查第二次条目，你应该写 `.toHaveNthResolvedWith(2, ...)`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1416,12 +1416,12 @@ test('spy function returns bananas on second call', async () => {
 
 ## called <Version>4.1.0</Version> {#called}
 
-- **Type:** `Assertion` (property, not a method)
+- **类型:** `Assertion`（属性，而非方法）
 
-Chai-style assertion that checks if a spy was called at least once. This is equivalent to `toHaveBeenCalled()`.
+Chai 风格的断言，检查 spy 是否至少被调用过一次。这等同于 `toHaveBeenCalled()`。
 
 ::: tip
-This is a property assertion following sinon-chai conventions. Access it without parentheses: `expect(spy).to.have.been.called`
+这是一个属性断言，遵循 sinon-chai 约定。访问时不要加括号：`expect(spy).to.have.been.called`
 :::
 
 ```ts
@@ -1439,9 +1439,9 @@ test('spy was called', () => {
 
 ## callCount <Version>4.1.0</Version> {#callcount}
 
-- **Type:** `(count: number) => void`
+- **类型:** `(count: number) => void`
 
-Chai-style assertion that checks if a spy was called a specific number of times. This is equivalent to `toHaveBeenCalledTimes(count)`.
+Chai 风格的断言，检查 spy 是否被调用了特定次数。这等同于 `toHaveBeenCalledTimes(count)`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1459,9 +1459,9 @@ test('spy call count', () => {
 
 ## calledWith <Version>4.1.0</Version> {#calledwith}
 
-- **Type:** `(...args: any[]) => void`
+- **类型:** `(...args: any[]) => void`
 
-Chai-style assertion that checks if a spy was called with specific arguments at least once. This is equivalent to `toHaveBeenCalledWith(...args)`.
+Chai 风格的断言，检查 spy 是否至少有一次使用特定参数被调用。这等同于 `toHaveBeenCalledWith(...args)`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1481,10 +1481,10 @@ test('spy called with arguments', () => {
 
 - **Type:** `Assertion` (property, not a method)
 
-Chai-style assertion that checks if a spy was called exactly once. This is equivalent to `toHaveBeenCalledOnce()`.
+检查 spy 是否恰好被调用一次的 Chai 风格断言。这等同于 `toHaveBeenCalledOnce()`。
 
 ::: tip
-This is a property assertion following sinon-chai conventions. Access it without parentheses: `expect(spy).to.have.been.calledOnce`
+这是遵循 sinon-chai 约定的属性断言。访问时不要加括号：`expect(spy).to.have.been.calledOnce`
 :::
 
 ```ts
@@ -1503,7 +1503,7 @@ test('spy called once', () => {
 
 - **Type:** `(...args: any[]) => void`
 
-Chai-style assertion that checks if a spy was called exactly once with specific arguments. This is equivalent to `toHaveBeenCalledExactlyOnceWith(...args)`.
+检查 spy 是否恰好使用特定参数被调用一次的 Chai 风格断言。这等同于 `toHaveBeenCalledExactlyOnceWith(...args)`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1521,10 +1521,10 @@ test('spy called once with arguments', () => {
 
 - **Type:** `Assertion` (property, not a method)
 
-Chai-style assertion that checks if a spy was called exactly twice. This is equivalent to `toHaveBeenCalledTimes(2)`.
+检查 spy 是否恰好被调用两次的 Chai 风格断言。这等同于 `toHaveBeenCalledTimes(2)`。
 
 ::: tip
-This is a property assertion following sinon-chai conventions. Access it without parentheses: `expect(spy).to.have.been.calledTwice`
+这是遵循 sinon-chai 约定的属性断言。访问时不要加括号：`expect(spy).to.have.been.calledTwice`
 :::
 
 ```ts
@@ -1544,10 +1544,10 @@ test('spy called twice', () => {
 
 - **Type:** `Assertion` (property, not a method)
 
-Chai-style assertion that checks if a spy was called exactly three times. This is equivalent to `toHaveBeenCalledTimes(3)`.
+检查 spy 是否恰好被调用三次的 Chai 风格断言。这等同于 `toHaveBeenCalledTimes(3)`。
 
 ::: tip
-This is a property assertion following sinon-chai conventions. Access it without parentheses: `expect(spy).to.have.been.calledThrice`
+这是遵循 sinon-chai 约定的属性断言。访问时不要加括号：`expect(spy).to.have.been.calledThrice`
 :::
 
 ```ts
@@ -1568,7 +1568,7 @@ test('spy called thrice', () => {
 
 - **Type:** `(...args: any[]) => void`
 
-Chai-style assertion that checks if the last call to a spy was made with specific arguments. This is equivalent to `toHaveBeenLastCalledWith(...args)`.
+检查对 spy 的最后一次调用是否使用特定参数的 Chai 风格断言。这等同于 `toHaveBeenLastCalledWith(...args)`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1587,7 +1587,7 @@ test('spy last called with', () => {
 
 - **Type:** `(n: number, ...args: any[]) => void`
 
-Chai-style assertion that checks if the nth call to a spy was made with specific arguments. This is equivalent to `toHaveBeenNthCalledWith(n, ...args)`.
+检查对 spy 的第 n 次调用是否使用特定参数的 Chai 风格断言。这等同于 `toHaveBeenNthCalledWith(n, ...args)`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1607,7 +1607,7 @@ test('spy nth called with', () => {
 
 - **Type:** `(value: any) => void`
 
-Chai-style assertion that checks if a spy returned a specific value at least once. This is equivalent to `toHaveReturnedWith(value)`.
+检查 spy 是否至少一次返回了特定值的 Chai 风格断言。这等同于 `toHaveReturnedWith(value)`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1625,7 +1625,7 @@ test('spy returned', () => {
 
 - **Type:** `(value: any) => void`
 
-Chai-style assertion that checks if a spy returned a specific value at least once. This is equivalent to `toHaveReturnedWith(value)`.
+检查 spy 是否至少一次返回了特定值的 Chai 风格断言。这等同于 `toHaveReturnedWith(value)`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1647,7 +1647,7 @@ test('spy returned with value', () => {
 
 - **Type:** `(count: number) => void`
 
-Chai-style assertion that checks if a spy returned successfully a specific number of times. This is equivalent to `toHaveReturnedTimes(count)`.
+检查 spy 是否成功返回了特定次数的 Chai 风格断言。这等同于 `toHaveReturnedTimes(count)`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1667,7 +1667,7 @@ test('spy returned times', () => {
 
 - **Type:** `(value: any) => void`
 
-Chai-style assertion that checks if the last return value of a spy matches the expected value. This is equivalent to `toHaveLastReturnedWith(value)`.
+检查 spy 的最后一次返回值是否与预期值匹配的 Chai 风格断言。这等同于 `toHaveLastReturnedWith(value)`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1688,7 +1688,7 @@ test('spy last returned with', () => {
 
 - **Type:** `(n: number, value: any) => void`
 
-Chai-style assertion that checks if the nth return value of a spy matches the expected value. This is equivalent to `toHaveNthReturnedWith(n, value)`.
+检查 spy 的第 n 次返回值是否与预期值匹配的 Chai 风格断言。这等同于 `toHaveNthReturnedWith(n, value)`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1711,7 +1711,7 @@ test('spy nth returned with', () => {
 
 - **Type:** `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => void`
 
-Chai-style assertion that checks if a spy was called before another spy. This is equivalent to `toHaveBeenCalledBefore(mock, failIfNoFirstInvocation)`.
+检查一个 spy 是否在另一个 spy 之前被调用的 Chai 风格断言。这等同于 `toHaveBeenCalledBefore(mock, failIfNoFirstInvocation)`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1731,7 +1731,7 @@ test('spy called before another', () => {
 
 - **Type:** `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => void`
 
-Chai-style assertion that checks if a spy was called after another spy. This is equivalent to `toHaveBeenCalledAfter(mock, failIfNoFirstInvocation)`.
+检查一个 spy 是否在另一个 spy 之后被调用的 Chai 风格断言。这等同于 `toHaveBeenCalledAfter(mock, failIfNoFirstInvocation)`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1747,15 +1747,15 @@ test('spy called after another', () => {
 })
 ```
 
-::: tip Migration Guide
-For a complete guide on migrating from Mocha+Chai+Sinon to Vitest, see the [Migration Guide](/guide/migration#mocha-chai-sinon).
+::: tip 迁移指南
+有关从 Mocha+Chai+Sinon 迁移到 Vitest 的完整指南，请参阅 [迁移指南](/guide/migration#mocha-chai-sinon)。
 :::
 
 ## toSatisfy
 
 - **Type:** `(predicate: (value: any) => boolean) => Awaitable<void>`
 
-This assertion checks if a value satisfies a certain predicate.
+此断言检查值是否满足特定谓词。
 
 ```ts
 import { describe, expect, it } from 'vitest'
@@ -1777,11 +1777,11 @@ describe('toSatisfy()', () => {
 
 - **Type:** `Promisify<Assertions>`
 
-`resolves` is intended to remove boilerplate when asserting asynchronous code. Use it to unwrap value from the pending promise and assert its value with usual assertions. If the promise rejects, the assertion will fail.
+`resolves` 旨在减少断言异步代码时的样板代码。使用它从待处理的 promise 中解包值，并使用常规断言对其值进行断言。如果 promise 拒绝，断言将失败。
 
-It returns the same `Assertions` object, but all matchers now return `Promise`, so you would need to `await` it. Also works with `chai` assertions.
+它返回相同的 `Assertions` 对象，但现在所有匹配器都返回 `Promise`，所以你需要 `await` 它。也适用于 `chai` 断言。
 
-For example, if you have a function, that makes an API call and returns some data, you may use this code to assert its return value:
+例如，如果你有一个函数发起 API 调用并返回一些数据，你可以使用此代码断言其返回值：
 
 ```ts
 import { expect, test } from 'vitest'
@@ -1791,27 +1791,27 @@ async function buyApples() {
 }
 
 test('buyApples returns new stock id', async () => {
-  // toEqual returns a promise now, so you HAVE to await it
-  await expect(buyApples()).resolves.toEqual({ id: 1 }) // jest API
-  await expect(buyApples()).resolves.to.equal({ id: 1 }) // chai API
+  // toEqual 现在返回一个 promise，所以你必须 await 它
+  await expect(buyApples()).resolves.toEqual({ id: 1 }) // jest 风格 API
+  await expect(buyApples()).resolves.to.equal({ id: 1 }) // chai 风格 API
 })
 ```
 
 :::warning
-If the assertion is not awaited, then you will have a false-positive test that will pass every time. To make sure that assertions are actually called, you may use [`expect.assertions(number)`](#expect-assertions).
+如果断言未被 await，那么你将会得到一个每次都会通过的假阳性测试。为了确保断言确实被调用，你可以使用 [`expect.assertions(number)`](#expect-assertions)。
 
-Since Vitest 3, if a method is not awaited, Vitest will show a warning at the end of the test. In Vitest 4, the test will be marked as "failed" if the assertion is not awaited.
+自 Vitest 3 起，如果方法未被 await，Vitest 将在测试结束时显示警告。在 Vitest 4 中，如果断言未被 await，测试将被标记为“失败”。
 :::
 
 ## rejects
 
 - **Type:** `Promisify<Assertions>`
 
-`rejects` is intended to remove boilerplate when asserting asynchronous code. Use it to unwrap reason why the promise was rejected, and assert its value with usual assertions. If the promise successfully resolves, the assertion will fail.
+`rejects` 旨在减少断言异步代码时的样板代码。使用它解包 promise 被拒绝的原因，并使用常规断言对其值进行断言。如果 promise 成功解决，断言将失败。
 
-It returns the same `Assertions` object, but all matchers now return `Promise`, so you would need to `await` it. Also works with `chai` assertions.
+它返回相同的 `Assertions` 对象，但现在所有匹配器都返回 `Promise`，所以你需要 `await` 它。也适用于 `chai` 断言。
 
-For example, if you have a function that fails when you call it, you may use this code to assert the reason:
+例如，如果你有一个调用时会失败的函数，你可以使用此代码断言原因：
 
 ```ts
 import { expect, test } from 'vitest'
@@ -1823,24 +1823,24 @@ async function buyApples(id) {
 }
 
 test('buyApples throws an error when no id provided', async () => {
-  // toThrow returns a promise now, so you HAVE to await it
+  // toThrow 现在返回一个 promise，所以你必须 await 它
   await expect(buyApples()).rejects.toThrow('no id')
 })
 ```
 
 :::warning
-If the assertion is not awaited, then you will have a false-positive test that will pass every time. To make sure that assertions were actually called, you can use [`expect.assertions(number)`](#expect-assertions).
+如果断言未被 await，那么你将会得到一个每次都会通过的假阳性测试。为了确保断言确实被调用，你可以使用 [`expect.assertions(number)`](#expect-assertions)。
 
-Since Vitest 3, if a method is not awaited, Vitest will show a warning at the end of the test. In Vitest 4, the test will be marked as "failed" if the assertion is not awaited.
+自 Vitest 3 起，如果方法未被 await，Vitest 将在测试结束时显示警告。在 Vitest 4 中，如果断言未被 await，测试将被标记为“失败”。
 :::
 
 ## expect.assertions
 
 - **Type:** `(count: number) => void`
 
-After the test has passed or failed verify that a certain number of assertions was called during a test. A useful case would be to check if an asynchronous code was called.
+在测试通过或失败后，验证测试期间是否调用了特定数量的断言。一个有用的用例是检查异步代码是否被调用。
 
-For example, if we have a function that asynchronously calls two matchers, we can assert that they were actually called.
+例如，如果我们有一个异步调用两个匹配器的函数，我们可以断言它们确实被调用了。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -1864,16 +1864,16 @@ test('all assertions are called', async () => {
 })
 ```
 ::: warning
-When using `assertions` with async concurrent tests, `expect` from the local [Test Context](/guide/test-context) must be used to ensure the right test is detected.
+当在异步并发测试中使用 `assertions` 时，必须使用本地 [测试上下文](/guide/test-context) 中的 `expect` 以确保检测到正确的测试。
 :::
 
 ## expect.hasAssertions
 
-- **Type:** `() => void`
+- **类型：** `() => void`
 
-After the test has passed or failed verify that at least one assertion was called during a test. A useful case would be to check if an asynchronous code was called.
+在测试通过或失败后，验证测试期间是否至少调用了一次断言。一个有用的用例是检查是否调用了异步代码。
 
-For example, if you have a code that calls a callback, we can make an assertion inside a callback, but the test will always pass if we don't check if an assertion was called.
+例如，如果你有一段调用回调的代码，我们可以在回调内部进行断言，但如果不检查是否调用了断言，测试将始终通过。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -1885,7 +1885,7 @@ function onSelect(cb) {
   cbs.push(cb)
 }
 
-// after selecting from db, we call all callbacks
+// 从数据库选择后，我们调用所有回调
 function select(id) {
   return db.select({ id }).then((data) => {
     return Promise.all(
@@ -1897,22 +1897,22 @@ function select(id) {
 test('callback was called', async () => {
   expect.hasAssertions()
   onSelect((data) => {
-    // should be called on select
+    // 应该在选择时调用
     expect(data).toBeTruthy()
   })
-  // if not awaited, test will fail
-  // if you don't have expect.hasAssertions(), test will pass
+  // 如果不等待，测试将失败
+  // 如果没有 expect.hasAssertions()，测试将通过
   await select(3)
 })
 ```
 
 ## expect.unreachable
 
-- **Type:** `(message?: string) => never`
+- **类型：** `(message?: string) => never`
 
-This method is used to assert that a line should never be reached.
+此方法用于断言某行代码永远不应该被执行到。
 
-For example, if we want to test that `build()` throws due to receiving directories having no `src` folder, and also handle each error separately, we could do this:
+例如，如果我们想测试 `build()` 因为接收到的目录没有 `src` 文件夹而抛出错误，并且还要单独处理每个错误，我们可以这样做：
 
 ```ts
 import { expect, test } from 'vitest'
@@ -1942,7 +1942,7 @@ test.each(errorDirs)('build fails with "%s"', async (dir) => {
         expect(err.message).toBe(`${dir}/src does not exist`)
         break
       default:
-        // to exhaust all error tests
+        // 穷尽所有错误测试
         expect.unreachable('All error test must be handled')
         break
     }
@@ -1952,9 +1952,9 @@ test.each(errorDirs)('build fails with "%s"', async (dir) => {
 
 ## expect.anything
 
-- **Type:** `() => any`
+- **类型：** `() => any`
 
-This asymmetric matcher matches anything except `null` or `undefined`. Useful if you just want to be sure that a property exists with any value that's not either `null` or `undefined`.
+此非对称匹配器匹配除 `null` 或 `undefined` 之外的任何内容。如果你只想确保某个属性存在且其值不是 `null` 或 `undefined`，这很有用。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -1966,9 +1966,9 @@ test('object has "apples" key', () => {
 
 ## expect.any
 
-- **Type:** `(constructor: unknown) => any`
+- **类型：** `(constructor: unknown) => any`
 
-This asymmetric matcher, when used with an equality check, will return `true` only if the value is an instance of a specified constructor. Useful, if you have a value that is generated each time, and you only want to know that it exists with a proper type.
+此非对称匹配器在与相等性检查一起使用时，仅当值是指定构造函数的实例时才返回 `true`。如果你有一个每次生成的值，并且只想知道它是否存在且具有正确的类型，这很有用。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -1981,13 +1981,13 @@ test('"id" is a number', () => {
 
 ## expect.closeTo {#expect-closeto}
 
-- **Type:** `(expected: any, precision?: number) => any`
+- **类型：** `(expected: any, precision?: number) => any`
 
-`expect.closeTo` is useful when comparing floating point numbers in object properties or array item. If you need to compare a number, please use `.toBeCloseTo` instead.
+`expect.closeTo` 在比较对象属性或数组项中的浮点数时很有用。如果你需要比较一个数字，请改用 `.toBeCloseTo`。
 
-The optional `precision` argument limits the number of digits to check **after** the decimal point. For the default value `2`, the test criterion is `Math.abs(expected - received) < 0.005 (that is, 10 ** -2 / 2)`.
+可选的 `precision` 参数限制了对小数点**后**要检查的位数。对于默认值 `2`，测试标准是 `Math.abs(expected - received) < 0.005`（即 `10 ** -2 / 2`）。
 
-For example, this test passes with a precision of 5 digits:
+例如，此测试在精度为 5 位小数时通过：
 
 ```js
 test('compare float in object properties', () => {
@@ -2003,9 +2003,9 @@ test('compare float in object properties', () => {
 
 ## expect.arrayContaining
 
-- **Type:** `<T>(expected: T[]) => any`
+- **类型：** `<T>(expected: T[]) => any`
 
-When used with an equality check, this asymmetric matcher will return `true` if the value is an array and contains specified items.
+当与相等性检查一起使用时，如果值是数组且包含指定项，此非对称匹配器将返回 `true`。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -2027,14 +2027,14 @@ test('basket includes fuji', () => {
 ```
 
 :::tip
-You can use `expect.not` with this matcher to negate the expected value.
+你可以在此匹配器中使用 `expect.not` 来否定预期值。
 :::
 
 ## expect.objectContaining
 
-- **Type:** `(expected: any) => any`
+- **类型：** `(expected: any) => any`
 
-When used with an equality check, this asymmetric matcher will return `true` if the value has a similar shape.
+当与相等性检查一起使用时，如果值具有相似的形状，此非对称匹配器将返回 `true`。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -2057,14 +2057,14 @@ test('basket has empire apples', () => {
 ```
 
 :::tip
-You can use `expect.not` with this matcher to negate the expected value.
+你可以在此匹配器中使用 `expect.not` 来否定预期值。
 :::
 
 ## expect.stringContaining
 
-- **Type:** `(expected: any) => any`
+- **类型：** `(expected: any) => any`
 
-When used with an equality check, this asymmetric matcher will return `true` if the value is a string and contains a specified substring.
+当与相等性检查一起使用时，如果值是字符串且包含指定的子字符串，此非对称匹配器将返回 `true`。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -2082,14 +2082,14 @@ test('variety has "Emp" in its name', () => {
 ```
 
 :::tip
-You can use `expect.not` with this matcher to negate the expected value.
+你可以在此匹配器中使用 `expect.not` 来否定预期值。
 :::
 
 ## expect.stringMatching
 
-- **Type:** `(expected: any) => any`
+- **类型：** `(expected: any) => any`
 
-When used with an equality check, this asymmetric matcher will return `true` if the value is a string and contains a specified substring or if the string matches a regular expression.
+当与相等性检查一起使用时，如果值是字符串且包含指定的子字符串，或者字符串匹配正则表达式，此非对称匹配器将返回 `true`。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -2107,14 +2107,14 @@ test('variety ends with "re"', () => {
 ```
 
 :::tip
-You can use `expect.not` with this matcher to negate the expected value.
+你可以在此匹配器中使用 `expect.not` 来否定预期值。
 :::
 
 ## expect.schemaMatching
 
-- **Type:** `(expected: StandardSchemaV1) => any`
+- **类型：** `(expected: StandardSchemaV1) => any`
 
-When used with an equality check, this asymmetric matcher will return `true` if the value matches the provided schema. The schema must implement the [Standard Schema v1](https://standardschema.dev/) specification.
+当与相等性检查一起使用时，如果值匹配提供的模式，此非对称匹配器将返回 `true`。该模式必须实现 [Standard Schema v1](https://standardschema.dev/) 规范。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -2143,28 +2143,28 @@ test('email validation', () => {
 ```
 
 :::tip
-You can use `expect.not` with this matcher to negate the expected value.
+你可以在此匹配器中使用 `expect.not` 来否定预期值。
 :::
 
 ## expect.addSnapshotSerializer
 
-- **Type:** `(plugin: PrettyFormatPlugin) => void`
+- **类型：** `(plugin: PrettyFormatPlugin) => void`
 
-This method adds custom serializers that are called when creating a snapshot. This is an advanced feature - if you want to know more, please read a [guide on custom serializers](/guide/snapshot#custom-serializer).
+此方法添加在创建快照时调用的自定义序列化器。这是一个高级功能 - 如果你想了解更多，请阅读 [自定义序列化器指南](/guide/snapshot#custom-serializer)。
 
-If you are adding custom serializers, you should call this method inside [`setupFiles`](/config/setupfiles). This will affect every snapshot.
+如果你正在添加自定义序列化器，应该在 [`setupFiles`](/config/setupfiles) 内部调用此方法。这将影响每个快照。
 
 :::tip
-If you previously used Vue CLI with Jest, you might want to install [jest-serializer-vue](https://npmx.dev/package/jest-serializer-vue). Otherwise, your snapshots will be wrapped in a string, which cases `"` to be escaped.
+如果你之前将 Vue CLI 与 Jest 一起使用，你可能想要安装 [jest-serializer-vue](https://npmx.dev/package/jest-serializer-vue)。否则，你的快照将被包裹在字符串中，导致 `"` 被转义。
 :::
 
 ## expect.extend
 
-- **Type:** `(matchers: MatchersObject) => void`
+- **类型：** `(matchers: MatchersObject) => void`
 
-You can extend default matchers with your own. This function is used to extend the matchers object with custom matchers.
+你可以用自己的匹配器扩展默认匹配器。此函数用于使用自定义匹配器扩展匹配器对象。
 
-When you define matchers that way, you also create asymmetric matchers that can be used like `expect.stringContaining`.
+当你以这种方式定义匹配器时，你还会创建可以像 `expect.stringContaining` 一样使用的非对称匹配器。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -2187,12 +2187,12 @@ test('custom matchers', () => {
 ```
 
 ::: tip
-If you want your matchers to appear in every test, you should call this method inside [`setupFiles`](/config/setupfiles).
+如果你希望匹配器出现在每个测试中，应该在 [`setupFiles`](/config/setupfiles) 内部调用此方法。
 :::
 
-This function is compatible with Jest's `expect.extend`, so any library that uses it to create custom matchers will work with Vitest.
+此函数与 Jest 的 `expect.extend` 兼容，因此任何使用它创建自定义匹配器的库都将与 Vitest 一起工作。
 
-If you are using TypeScript, since Vitest 0.31.0 you can extend default `Assertion` interface in an ambient declaration file (e.g: `vitest.d.ts`) with the code below:
+如果你使用的是 TypeScript，自 Vitest 0.31.0 起，你可以在环境声明文件（例如：`vitest.d.ts`）中使用以下代码扩展默认 `Assertion` 接口：
 
 ```ts
 interface CustomMatchers<R = unknown> {
@@ -2206,18 +2206,18 @@ declare module 'vitest' {
 ```
 
 ::: warning
-Don't forget to include the ambient declaration file in your `tsconfig.json`.
+别忘了将环境声明文件包含在你的 `tsconfig.json` 中。
 :::
 
 :::tip
-If you want to know more, checkout [guide on extending matchers](/guide/extending-matchers).
+如果你想了解更多，请查看 [扩展匹配器指南](/guide/extending-matchers)。
 :::
 
 ## expect.addEqualityTesters {#expect-addequalitytesters}
 
-- **Type:** `(tester: Array<Tester>) => void`
+- **类型：** `(tester: Array<Tester>) => void`
 
-You can use this method to define custom testers, which are methods used by matchers, to test if two objects are equal. It is compatible with Jest's `expect.addEqualityTesters`.
+你可以使用此方法定义自定义测试器，这些是匹配器使用的方法，用于测试两个对象是否相等。它与 Jest 的 `expect.addEqualityTesters` 兼容。
 
 ```ts
 import { expect, test } from 'vitest'

@@ -1,16 +1,16 @@
 ---
-title: watch | Config
+title: watch | 配置
 outline: deep
 ---
 
 # watch <CRoot /> {#watch}
 
-- **Type:** `boolean`
-- **Default:** `!process.env.CI && process.stdin.isTTY`
-- **CLI:** `-w`, `--watch`, `--watch=false`
+- **类型:** `boolean`
+- **默认值:** `!process.env.CI && process.stdin.isTTY`
+- **命令行:** `-w`, `--watch`, `--watch=false`
 
-Enable watch mode
+启用监视模式
 
-In interactive environments, this is the default, unless `--run` is specified explicitly.
+在交互式环境中，这是默认设置，除非显式指定 `--run`。
 
-In CI, or when run from a non-interactive shell, "watch" mode is not the default, but can be enabled explicitly with this flag.
+在 CI 中，或从非交互式 shell 运行时，“监视”模式不是默认设置，但可以通过此标志显式启用。

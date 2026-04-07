@@ -1,30 +1,30 @@
-# Extending Reporters <Badge type="danger">advanced</Badge> {#extending-reporters}
+# 扩展报告器 <Badge type="danger">高级</Badge> {#extending-reporters}
 
 ::: warning
-This is an advanced API. If you just want to configure built-in reporters, read the ["Reporters"](/guide/reporters) guide.
+这是一个高级 API。如果你只是想配置内置报告器，请阅读 ["Reporters"](/guide/reporters) 指南。
 :::
 
-You can import reporters from `vitest/node` and extend them to create your custom reporters.
+你可以从 `vitest/node` 导入报告器并扩展它们以创建自定义报告器。
 
-## Extending Built-in Reporters
+## 扩展内置报告器
 
-In general, you don't need to create your reporter from scratch. `vitest` comes with several default reporting programs that you can extend.
+通常，你不需要从头创建你的报告器。`vitest` 自带了几个你可以扩展的默认报告器。
 
 ```ts
 import { DefaultReporter } from 'vitest/node'
 
 export default class MyDefaultReporter extends DefaultReporter {
-  // do something
+  // 做一些事情
 }
 ```
 
 ::: warning
-However, note that exposed reports are not considered stable and can change the shape of their API within a minor version.
+但是，请注意，暴露的报告器不被视为稳定的，并且它们的 API 结构可能会在小版本内发生变化。
 :::
 
-Of course, you can create your reporter from scratch. Just implement the [`Reporter`](/api/advanced/reporters) interface:
+当然，你可以从头创建你的报告器。只需实现 [`Reporter`](/api/advanced/reporters) 接口：
 
-And here is an example of a custom reporter:
+下面是一个自定义报告器的示例：
 
 ```ts [custom-reporter.js]
 import type { Reporter } from 'vitest/node'
@@ -40,7 +40,7 @@ export default class CustomReporter implements Reporter {
 }
 ```
 
-Then you can use your custom reporter in the `vitest.config.ts` file:
+然后你可以在 `vitest.config.ts` 文件中使用你的自定义报告器：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
@@ -53,9 +53,9 @@ export default defineConfig({
 })
 ```
 
-## Reported Tasks
+## 报告的任务
 
-Reported [events](/api/advanced/reporters) receive tasks for [tests](/api/advanced/test-case), [suites](/api/advanced/test-suite) and [modules](/api/advanced/test-module):
+报告的 [事件](/api/advanced/reporters) 接收用于 [测试](/api/advanced/test-case)、[套件](/api/advanced/test-suite) 和 [模块](/api/advanced/test-module) 的任务：
 
 ```ts twoslash
 import type { Reporter, TestModule } from 'vitest/node'
@@ -72,11 +72,11 @@ class MyReporter implements Reporter {
 }
 ```
 
-## Exported Reporters
+## 导出的报告器
 
-`vitest` comes with a few [built-in reporters](/guide/reporters) that you can use out of the box.
+`vitest` 自带了一些你可以开箱即用的 [内置报告器](/guide/reporters)。
 
-### Built-in reporters:
+### 内置报告器：
 
 1. `DefaultReporter`
 2. `DotReporter`
@@ -88,6 +88,6 @@ class MyReporter implements Reporter {
 8. `HangingProcessReporter`
 9. `TreeReporter`
 
-### Interface reporters:
+### 接口报告器：
 
 1. `Reporter`

@@ -1,12 +1,12 @@
 ---
-title: teardownTimeout | Config
+title: teardownTimeout | 配置
 outline: deep
 ---
 
 # teardownTimeout <CRoot /> {#teardowntimeout}
 
-- **Type:** `number`
-- **Default:** `10000`
-- **CLI:** `--teardown-timeout=5000`, `--teardownTimeout=5000`
+- **类型:** `number`
+- **默认值:** `10000`
+- **命令行:** `--teardown-timeout=5000`, `--teardownTimeout=5000`
 
-Default timeout to wait for close when Vitest shuts down, in milliseconds
+Vitest 关闭时等待关闭的默认超时时间，单位为毫秒。

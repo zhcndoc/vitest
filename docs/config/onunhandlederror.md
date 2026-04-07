@@ -1,11 +1,11 @@
 ---
-title: onUnhandledError | Config
+title: onUnhandledError | 配置
 outline: deep
 ---
 
 # onUnhandledError <CRoot /> <Version>4.0.0</Version>
 
-- **Type:**
+- **类型：**
 
 ```ts
 function onUnhandledError(
@@ -13,15 +13,15 @@ function onUnhandledError(
 ): boolean | void
 ```
 
-A custom callback for filtering unhandled errors that should not be reported. When an error is filtered out, it no longer affects the result of the test run.
+一个用于过滤不应报告的未处理错误的自定义回调。当错误被过滤掉时，它不再影响测试运行的结果。
 
-To report unhandled errors without affecting the test outcome, use the [`dangerouslyIgnoreUnhandledErrors`](/config/dangerouslyignoreunhandlederrors) option instead.
+若要报告未处理错误而不影响测试结果，请改用 [`dangerouslyIgnoreUnhandledErrors`](/config/dangerouslyignoreunhandlederrors) 选项。
 
 ::: tip
-This callback is called on the main thread, it doesn't have access to your test context.
+此回调在主线程上调用，它无法访问你的测试上下文。
 :::
 
-## Example
+## 示例
 
 ```ts
 import type { ParsedStack } from 'vitest'
@@ -30,7 +30,7 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   test: {
     onUnhandledError(error): boolean | void {
-      // Ignore all errors with the name "MySpecialError".
+      // 忽略所有名为 "MySpecialError" 的错误。
       if (error.name === 'MySpecialError') {
         return false
       }

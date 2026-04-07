@@ -1,101 +1,101 @@
 ---
-title: Component Testing | Guide
+title: 组件测试 | 指南
 outline: deep
 ---
 
-# Component Testing
+# 组件测试
 
-Component testing is a testing strategy that focuses on testing individual UI components in isolation. Unlike end-to-end tests that test entire user flows, component tests verify that each component works correctly on its own, making them faster to run and easier to debug.
+组件测试是一种测试策略，专注于孤立地测试各个 UI 组件。与测试整个用户流程的端到端测试不同，组件测试验证每个组件自身是否正常工作，这使得它们运行更快且更易于调试。
 
-Vitest provides comprehensive support for component testing across multiple frameworks including Vue, React, Svelte, Lit, Preact, Qwik, Solid, Marko, and more. This guide covers the specific patterns, tools, and best practices for testing components effectively with Vitest.
+Vitest 为包括 Vue、React、Svelte、Lit、Preact、Qwik、Solid、Marko 等在内的多个框架提供了全面的组件测试支持。本指南涵盖了使用 Vitest 有效测试组件的具体模式、工具和最佳实践。
 
-## Why Component Testing?
+## 为什么需要组件测试？
 
-Component testing sits between unit tests and end-to-end tests, offering several advantages:
+组件测试位于单元测试和端到端测试之间，提供以下几个优势：
 
-- **Faster feedback** - Test individual components without loading entire applications
-- **Isolated testing** - Focus on component behavior without external dependencies
-- **Better debugging** - Easier to pinpoint issues in specific components
-- **Comprehensive coverage** - Test edge cases and error states more easily
+- **更快的反馈** - 无需加载整个应用程序即可测试单个组件
+- **孤立测试** - 专注于组件行为，无需外部依赖
+- **更好的调试** - 更容易定位特定组件中的问题
+- **全面的覆盖** - 更容易测试边界情况和错误状态
 
-## Browser Mode for Component Testing
+## 用于组件测试的浏览器模式
 
-Component testing in Vitest uses **Browser Mode** to run tests in real browser environments using Playwright, WebdriverIO, or preview mode. This provides the most accurate testing environment as your components run in real browsers with actual DOM implementations, CSS rendering, and browser APIs.
+Vitest 中的组件测试使用 **浏览器模式** 通过 Playwright、WebdriverIO 或预览模式在真实的浏览器环境中运行测试。这提供了最准确的测试环境，因为你的组件在真实浏览器中运行，具有实际的 DOM 实现、CSS 渲染和浏览器 API。
 
-### Why Browser Mode?
+### 为什么使用浏览器模式？
 
-Browser Mode is the recommended approach for component testing because it provides the most accurate testing environment. Unlike DOM simulation libraries, Browser Mode catches real-world issues that can affect your users.
+浏览器模式是组件测试的推荐方法，因为它提供了最准确的测试环境。与 DOM 模拟库不同，浏览器模式能够捕捉到可能影响用户的现实世界问题。
 
 ::: tip
-Browser Mode catches issues that DOM simulation libraries might miss, including:
-- CSS layout and styling problems
-- Real browser API behavior
-- Accurate event handling and propagation
-- Proper focus management and accessibility features
+浏览器模式能够捕捉到 DOM 模拟库可能忽略的问题，包括：
+- CSS 布局和样式问题
+- 真实的浏览器 API 行为
+- 准确的事件处理和传播
+- 正确的焦点管理和无障碍功能
 
 :::
 
-### Purpose of This Guide
+### 本指南的目的
 
-This guide focuses specifically on **component testing patterns and best practices** using Vitest's capabilities. While many examples use Browser Mode (as it's the recommended approach), the focus here is on component-specific testing strategies rather than browser configuration details.
+本指南专门关注使用 Vitest 功能的 **组件测试模式和最佳实践**。虽然许多示例使用浏览器模式（因为它是推荐的方法），但这里的重点是组件特定的测试策略，而不是浏览器配置细节。
 
-For detailed browser setup, configuration options, and advanced browser features, refer to the [Browser Mode documentation](/guide/browser/).
+有关详细的浏览器设置、配置选项和高级浏览器功能，请参阅 [浏览器模式文档](/guide/browser/)。
 
-## What Makes a Good Component Test
+## 什么是好的组件测试
 
-Good component tests focus on **behavior and user experience** rather than implementation details:
+好的组件测试专注于 **行为和用户体验** 而不是实现细节：
 
-- **Test the contract** - How components receive inputs (props) and produce outputs (events, renders)
-- **Test user interactions** - Clicks, form submissions, keyboard navigation
-- **Test edge cases** - Error states, loading states, empty states
-- **Avoid testing internals** - State variables, private methods, CSS classes
+- **测试契约** - 组件如何接收输入（props）并产生输出（事件、渲染）
+- **测试用户交互** - 点击、表单提交、键盘导航
+- **测试边界情况** - 错误状态、加载状态、空状态
+- **避免测试内部实现** - 状态变量、私有方法、CSS 类
 
-### Component Testing Hierarchy
+### 组件测试层级
 
 ```
-1. Critical User Paths → Always test these
-2. Error Handling      → Test failure scenarios
-3. Edge Cases          → Empty data, extreme values
-4. Accessibility       → Screen readers, keyboard nav
-5. Performance         → Large datasets, animations
+1. 关键用户路径 → 始终测试这些
+2. 错误处理      → 测试失败场景
+3. 边界情况      → 空数据、极端值
+4. 无障碍        → 屏幕阅读器、键盘导航
+5. 性能          → 大数据集、动画
 ```
 
-## Component Testing Strategies
+## 组件测试策略
 
-### Isolation Strategy
+### 孤立策略
 
-Test components in isolation by mocking dependencies:
+通过模拟依赖项来孤立测试组件：
 
 ```tsx
-// For API requests, we recommend MSW (Mock Service Worker)
-// See: https://vitest.dev/guide/mocking/requests
+// 对于 API 请求，我们推荐使用 MSW (Mock Service Worker)
+// 参见：https://vitest.dev/guide/mocking/requests
 //
 // vi.mock(import('../api/userService'), () => ({
 //   fetchUser: vi.fn().mockResolvedValue({ name: 'John' })
 // }))
 
-// Mock child components to focus on parent logic
+// 模拟子组件以专注于父组件逻辑
 vi.mock(import('../components/UserCard'), () => ({
   default: vi.fn(({ user }) => `<div>User: ${user.name}</div>`)
 }))
 
-test('UserProfile handles loading and data states', async () => {
+test('UserProfile 处理加载和数据状态', async () => {
   const { getByText } = render(<UserProfile userId="123" />)
 
-  // Test loading state
+  // 测试加载状态
   await expect.element(getByText('Loading...')).toBeInTheDocument()
 
-  // Test for data to load (expect.element auto-retries)
+  // 测试数据加载（expect.element 会自动重试）
   await expect.element(getByText('User: John')).toBeInTheDocument()
 })
 ```
 
-### Integration Strategy
+### 集成策略
 
-Test component collaboration and data flow:
+测试组件协作和数据流：
 
 ```tsx
-test('ProductList filters and displays products correctly', async () => {
+test('ProductList 正确过滤和显示产品', async () => {
   const mockProducts = [
     { id: 1, name: 'Laptop', category: 'Electronics', price: 999 },
     { id: 2, name: 'Book', category: 'Education', price: 29 }
@@ -105,185 +105,185 @@ test('ProductList filters and displays products correctly', async () => {
     <ProductList products={mockProducts} />
   )
 
-  // Initially shows all products
+  // 最初显示所有产品
   await expect.element(getByText('Laptop')).toBeInTheDocument()
   await expect.element(getByText('Book')).toBeInTheDocument()
 
-  // Filter by category
+  // 按类别过滤
   await userEvent.selectOptions(
     getByLabelText(/category/i),
     'Electronics'
   )
 
-  // Only electronics should remain
+  // 只应保留电子产品
   await expect.element(getByText('Laptop')).toBeInTheDocument()
   await expect.element(queryByText('Book')).not.toBeInTheDocument()
 })
 ```
 
-## Testing Library Integration
+## Testing Library 集成
 
-While Vitest provides official packages for popular frameworks ([`vitest-browser-vue`](https://npmx.dev/package/vitest-browser-vue), [`vitest-browser-react`](https://npmx.dev/package/vitest-browser-react), [`vitest-browser-svelte`](https://npmx.dev/package/vitest-browser-svelte)), you can integrate with [Testing Library](https://testing-library.com/) for frameworks not yet officially supported.
+虽然 Vitest 为流行框架提供了官方包 ([`vitest-browser-vue`](https://npmx.dev/package/vitest-browser-vue), [`vitest-browser-react`](https://npmx.dev/package/vitest-browser-react), [`vitest-browser-svelte`](https://npmx.dev/package/vitest-browser-svelte))，但对于尚未官方支持的框架，你可以集成 [Testing Library](https://testing-library.com/)。
 
-### When to Use Testing Library
+### 何时使用 Testing Library
 
-- Your framework doesn't have an official Vitest browser package yet
-- You're migrating existing tests that use Testing Library
-- You prefer Testing Library's API for specific testing scenarios
+- 你的框架还没有官方的 Vitest 浏览器包
+- 你正在迁移使用 Testing Library 的现有测试
+- 你更喜欢 Testing Library 的 API 用于特定测试场景
 
-### Integration Pattern
+### 集成模式
 
-The key is using `page.elementLocator()` to bridge Testing Library's DOM output with Vitest's browser mode APIs:
+关键是使用 `page.elementLocator()` 将 Testing Library 的 DOM 输出与 Vitest 的浏览器模式 API 桥接起来：
 
 ```jsx
-// For Solid.js components
+// 对于 Solid.js 组件
 import { render } from '@testing-library/solid'
 import { page } from 'vitest/browser'
 
-test('Solid component handles user interaction', async () => {
-  // Use Testing Library to render the component
+test('Solid 组件处理用户交互', async () => {
+  // 使用 Testing Library 渲染组件
   const { baseElement, getByRole } = render(() =>
     <Counter initialValue={0} />
   )
 
-  // Bridge to Vitest's browser mode for interactions and assertions
+  // 桥接到 Vitest 的浏览器模式以进行交互和断言
   const screen = page.elementLocator(baseElement)
 
-  // Use Vitest's page queries for finding elements
+  // 使用 Vitest 的页面查询查找元素
   const incrementButton = screen.getByRole('button', { name: /increment/i })
 
-  // Use Vitest's assertions and interactions
+  // 使用 Vitest 的断言和交互
   await expect.element(screen.getByText('Count: 0')).toBeInTheDocument()
 
-  // Trigger user interaction using Vitest's page API
+  // 使用 Vitest 的页面 API 触发用户交互
   await incrementButton.click()
 
   await expect.element(screen.getByText('Count: 1')).toBeInTheDocument()
 })
 ```
 
-### Available Testing Library Packages
+### 可用的 Testing Library 包
 
-Popular Testing Library packages that work well with Vitest:
+与 Vitest 配合良好的流行 Testing Library 包：
 
-- [`@testing-library/solid`](https://github.com/solidjs/solid-testing-library) - For Solid.js
-- [`@marko/testing-library`](https://testing-library.com/docs/marko-testing-library/intro) - For Marko
-- [`@testing-library/svelte`](https://testing-library.com/docs/svelte-testing-library/intro) - Alternative to [`vitest-browser-svelte`](https://npmx.dev/package/vitest-browser-svelte)
-- [`@testing-library/vue`](https://testing-library.com/docs/vue-testing-library/intro) - Alternative to [`vitest-browser-vue`](https://npmx.dev/package/vitest-browser-vue)
+- [`@testing-library/solid`](https://github.com/solidjs/solid-testing-library) - 用于 Solid.js
+- [`@marko/testing-library`](https://testing-library.com/docs/marko-testing-library/intro) - 用于 Marko
+- [`@testing-library/svelte`](https://testing-library.com/docs/svelte-testing-library/intro) - [`vitest-browser-svelte`](https://npmx.dev/package/vitest-browser-svelte) 的替代方案
+- [`@testing-library/vue`](https://testing-library.com/docs/vue-testing-library/intro) - [`vitest-browser-vue`](https://npmx.dev/package/vitest-browser-vue) 的替代方案
 
-::: tip Migration Path
-If your framework gets official Vitest support later, you can gradually migrate by replacing Testing Library's `render` function while keeping most of your test logic intact.
+::: tip 迁移路径
+如果你的框架后来获得了官方 Vitest 支持，你可以通过替换 Testing Library 的 `render` 函数来逐步迁移，同时保持大部分测试逻辑不变。
 :::
 
-## Best Practices
+## 最佳实践
 
-### 1. Use Browser Mode for CI/CD
-Ensure tests run in real browser environments for the most accurate testing. Browser Mode provides accurate CSS rendering, real browser APIs, and proper event handling.
+### 1. 在 CI/CD 中使用浏览器模式
+确保测试在真实的浏览器环境中运行以获得最准确的测试。浏览器模式提供准确的 CSS 渲染、真实的浏览器 API 和正确的事件处理。
 
-### 2. Test User Interactions
-Simulate real user behavior using Vitest's [Interactivity API](/api/browser/interactivity). Use `page.getByRole()` and `userEvent` methods as shown in our [Advanced Testing Patterns](#advanced-testing-patterns):
+### 2. 测试用户交互
+模拟真实的用户行为使用 Vitest 的 [交互 API](/api/browser/interactivity)。如我们的 [高级测试模式](#advanced-testing-patterns) 所示，使用 `page.getByRole()` 和 `userEvent` 方法：
 
 ```tsx
-// Good: Test actual user interactions
+// 好：测试实际的用户交互
 await page.getByRole('button', { name: /submit/i }).click()
 await page.getByLabelText(/email/i).fill('user@example.com')
 
-// Avoid: Testing implementation details
+// 避免：测试实现细节
 // component.setState({ email: 'user@example.com' })
 ```
 
-### 3. Test Accessibility
-Ensure components work for all users by testing keyboard navigation, focus management, and ARIA attributes. See our [Testing Accessibility](#testing-accessibility) example for practical patterns:
+### 3. 测试无障碍性
+通过测试键盘导航、焦点管理和 ARIA 属性，确保组件适用于所有用户。请参阅我们的 [测试无障碍性](#testing-accessibility) 示例以获取实用模式：
 
 ```tsx
-// Test keyboard navigation
+// 测试键盘导航
 await userEvent.keyboard('{Tab}')
 await expect.element(document.activeElement).toHaveFocus()
 
-// Test ARIA attributes
+// 测试 ARIA 属性
 await expect.element(modal).toHaveAttribute('aria-modal', 'true')
 ```
 
-### 4. Mock External Dependencies
-Focus tests on component logic by mocking APIs and external services. This makes tests faster and more reliable. See our [Isolation Strategy](#isolation-strategy) for examples:
+### 4. 模拟外部依赖
+通过模拟 API 和外部服务，将测试集中在组件逻辑上。这使得测试更快且更可靠。请参阅我们的 [孤立策略](#isolation-strategy) 示例：
 
 ```tsx
-// For API requests, we recommend using MSW (Mock Service Worker)
-// See: https://vitest.dev/guide/mocking/requests
-// This provides more realistic request/response mocking
+// 对于 API 请求，我们推荐使用 MSW (Mock Service Worker)
+// 参见：https://vitest.dev/guide/mocking/requests
+// 这提供了更真实的请求/响应模拟
 
-// For module mocking, use the import() syntax
+// 对于模块模拟，使用 import() 语法
 vi.mock(import('../components/UserCard'), () => ({
   default: vi.fn(() => <div>Mocked UserCard</div>)
 }))
 ```
 
-### 5. Use Meaningful Test Descriptions
-Write test descriptions that explain the expected behavior, not implementation details:
+### 5. 使用有意义的测试描述
+编写解释预期行为的测试描述，而不是实现细节：
 
 ```tsx
-// Good: Describes user-facing behavior
-test('shows error message when email format is invalid')
-test('disables submit button while form is submitting')
+// 好：描述面向用户的行为
+test('当电子邮件格式无效时显示错误消息')
+test('表单提交时禁用提交按钮')
 
-// Avoid: Implementation-focused descriptions
-test('calls validateEmail function')
-test('sets isSubmitting state to true')
+// 避免：面向实现的描述
+test('调用 validateEmail 函数')
+test('将 isSubmitting 状态设置为 true')
 ```
 
-## Advanced Testing Patterns
+## 高级测试模式
 
-### Testing Component State Management
+### 测试组件状态管理
 
 ```tsx
-// Testing stateful components and state transitions
-test('ShoppingCart manages items correctly', async () => {
+// 测试有状态组件和状态转换
+test('ShoppingCart 正确管理项目', async () => {
   const { getByText, getByTestId } = render(<ShoppingCart />)
 
-  // Initially empty
+  // 最初为空
   await expect.element(getByText('Your cart is empty')).toBeInTheDocument()
 
-  // Add item
+  // 添加项目
   await page.getByRole('button', { name: /add laptop/i }).click()
 
-  // Verify state change
+  // 验证状态变化
   await expect.element(getByText('1 item')).toBeInTheDocument()
   await expect.element(getByText('Laptop - $999')).toBeInTheDocument()
 
-  // Test quantity updates
+  // 测试数量更新
   await page.getByRole('button', { name: /increase quantity/i }).click()
   await expect.element(getByText('2 items')).toBeInTheDocument()
 })
 ```
 
-### Testing Async Components with Data Fetching
+### 测试带有数据获取的异步组件
 
 ```tsx
-// Option 1: Recommended - Use MSW (Mock Service Worker) for API mocking
+// 选项 1：推荐 - 使用 MSW (Mock Service Worker) 进行 API 模拟
 import { http, HttpResponse } from 'msw'
 import { setupWorker } from 'msw/browser'
 
-// Set up MSW worker with API handlers
+// 设置带有 API 处理程序的 MSW worker
 const worker = setupWorker(
   http.get('/api/users/:id', ({ params }) => {
-    // Describe the happy path
+    // 描述成功路径
     return HttpResponse.json({ id: params.id, name: 'John Doe', email: 'john@example.com' })
   })
 )
 
-// Start the worker before all tests
+// 在所有测试之前启动 worker
 beforeAll(() => worker.start())
 afterEach(() => worker.resetHandlers())
 afterAll(() => worker.stop())
 
-test('UserProfile handles loading, success, and error states', async () => {
-  // Test success state
+test('UserProfile 处理加载、成功和错误状态', async () => {
+  // 测试成功状态
   const { getByText } = render(<UserProfile userId="123" />)
-  // expect.element auto-retries until elements are found
+  // expect.element 会自动重试直到找到元素
   await expect.element(getByText('John Doe')).toBeInTheDocument()
   await expect.element(getByText('john@example.com')).toBeInTheDocument()
 
-  // Test error state by overriding the handler for this test
+  // 通过覆盖此测试的处理程序来测试错误状态
   worker.use(
     http.get('/api/users/:id', () => {
       return HttpResponse.json({ error: 'User not found' }, { status: 404 })
@@ -296,14 +296,14 @@ test('UserProfile handles loading, success, and error states', async () => {
 ```
 
 ::: tip
-See more details on [using MSW in the browser](https://mswjs.io/docs/integrations/browser).
+查看更多关于 [在浏览器中使用 MSW](https://mswjs.io/docs/integrations/browser) 的详情。
 :::
 
-### Testing Component Communication
+### 测试组件通信
 
 ```tsx
-// Test parent-child component interaction
-test('parent and child components communicate correctly', async () => {
+// 测试父子组件交互
+test('父组件和子组件正确通信', async () => {
   const mockOnSelectionChange = vi.fn()
 
   const { getByText } = render(
@@ -313,24 +313,24 @@ test('parent and child components communicate correctly', async () => {
     </ProductCatalog>
   )
 
-  // Interact with child component
+  // 与子组件交互
   await page.getByRole('checkbox', { name: /electronics/i }).click()
 
-  // Verify parent receives the communication
+  // 验证父组件接收通信
   expect(mockOnSelectionChange).toHaveBeenCalledWith({
     category: 'electronics',
     filters: ['electronics']
   })
 
-  // Verify other child component updates (expect.element auto-retries)
+  // 验证其他子组件更新（expect.element 会自动重试）
   await expect.element(getByText('Showing Electronics products')).toBeInTheDocument()
 })
 ```
 
-### Testing Complex Forms with Validation
+### 测试带有验证的复杂表单
 
 ```tsx
-test('ContactForm handles complex validation scenarios', async () => {
+test('ContactForm 处理复杂验证场景', async () => {
   const mockSubmit = vi.fn()
   const { getByLabelText, getByText } = render(
     <ContactForm onSubmit={mockSubmit} />
@@ -341,27 +341,27 @@ test('ContactForm handles complex validation scenarios', async () => {
   const messageInput = page.getByLabelText(/message/i)
   const submitButton = page.getByRole('button', { name: /send message/i })
 
-  // Test validation triggers
+  // 测试验证触发
   await submitButton.click()
 
   await expect.element(getByText('Name is required')).toBeInTheDocument()
   await expect.element(getByText('Email is required')).toBeInTheDocument()
   await expect.element(getByText('Message is required')).toBeInTheDocument()
 
-  // Test partial validation
+  // 测试部分验证
   await nameInput.fill('John Doe')
   await submitButton.click()
 
   await expect.element(getByText('Name is required')).not.toBeInTheDocument()
   await expect.element(getByText('Email is required')).toBeInTheDocument()
 
-  // Test email format validation
+  // 测试电子邮件格式验证
   await emailInput.fill('invalid-email')
   await submitButton.click()
 
   await expect.element(getByText('Please enter a valid email')).toBeInTheDocument()
 
-  // Test successful submission
+  // 测试成功提交
   await emailInput.fill('john@example.com')
   await messageInput.fill('Hello, this is a test message.')
   await submitButton.click()
@@ -374,10 +374,10 @@ test('ContactForm handles complex validation scenarios', async () => {
 })
 ```
 
-### Testing Error Boundaries
+### 测试错误边界
 
 ```tsx
-// Test how components handle and recover from errors
+// 测试组件如何处理和从错误中恢复
 function ThrowError({ shouldThrow }: { shouldThrow: boolean }) {
   if (shouldThrow) {
     throw new Error('Component error!')
@@ -385,82 +385,82 @@ function ThrowError({ shouldThrow }: { shouldThrow: boolean }) {
   return <div>Component working fine</div>
 }
 
-test('ErrorBoundary catches and displays errors gracefully', async () => {
+test('ErrorBoundary 捕获并优雅地显示错误', async () => {
   const { getByText, rerender } = render(
     <ErrorBoundary fallback={<div>Something went wrong</div>}>
       <ThrowError shouldThrow={false} />
     </ErrorBoundary>
   )
 
-  // Initially working
+  // 最初正常工作
   await expect.element(getByText('Component working fine')).toBeInTheDocument()
 
-  // Trigger error
+  // 触发错误
   rerender(
     <ErrorBoundary fallback={<div>Something went wrong</div>}>
       <ThrowError shouldThrow={true} />
     </ErrorBoundary>
   )
 
-  // Error boundary should catch it
+  // 错误边界应该捕获它
   await expect.element(getByText('Something went wrong')).toBeInTheDocument()
 })
 ```
 
-### Testing Accessibility
+### 测试无障碍性
 
 ```tsx
-test('Modal component is accessible', async () => {
+test('Modal 组件是可访问的', async () => {
   const { getByRole, getByLabelText } = render(
     <Modal isOpen={true} title="Settings">
       <SettingsForm />
     </Modal>
   )
 
-  // Test focus management - modal should receive focus when opened
-  // This is crucial for screen reader users to know a modal opened
+  // 测试焦点管理 - 模态框打开时应接收焦点
+  // 这对于屏幕阅读器用户知道模态框已打开至关重要
   const modal = getByRole('dialog')
   await expect.element(modal).toHaveFocus()
 
-  // Test ARIA attributes - these provide semantic information to screen readers
-  await expect.element(modal).toHaveAttribute('aria-labelledby') // Links to title element
-  await expect.element(modal).toHaveAttribute('aria-modal', 'true') // Indicates modal behavior
+  // 测试 ARIA 属性 - 这些为屏幕阅读器提供语义信息
+  await expect.element(modal).toHaveAttribute('aria-labelledby') // 链接到标题元素
+  await expect.element(modal).toHaveAttribute('aria-modal', 'true') // 指示模态框行为
 
-  // Test keyboard navigation - Escape key should close modal
-  // This is required by ARIA authoring practices
+  // 测试键盘导航 - Escape 键应关闭模态框
+  // 这是 ARIA 创作实践所要求的
   await userEvent.keyboard('{Escape}')
-  // expect.element auto-retries until modal is removed
+  // expect.element 会自动重试直到模态框被移除
   await expect.element(modal).not.toBeInTheDocument()
 
-  // Test focus trap - tab navigation should cycle within modal
-  // This prevents users from tabbing to content behind the modal
+  // 测试焦点陷阱 - 标签导航应在模态框内循环
+  // 这防止用户标签导航到模态框后面的内容
   const firstInput = getByLabelText(/username/i)
   const lastButton = getByRole('button', { name: /save/i })
 
-  // Use click to focus on the first input, then test tab navigation
+  // 使用点击聚焦到第一个输入，然后测试标签导航
   await firstInput.click()
-  await userEvent.keyboard('{Shift>}{Tab}{/Shift}') // Shift+Tab goes backwards
-  await expect.element(lastButton).toHaveFocus() // Should wrap to last element
+  await userEvent.keyboard('{Shift>}{Tab}{/Shift}') // Shift+Tab 向后移动
+  await expect.element(lastButton).toHaveFocus() // 应该环绕到最后一个元素
 })
 ```
 
-## Debugging Component Tests
+## 调试组件测试
 
-### 1. Use Browser Dev Tools
+### 1. 使用浏览器开发工具
 
-Browser Mode runs tests in real browsers, giving you access to full developer tools. When tests fail, you can:
+Browser Mode 在真实浏览器中运行测试，让你可以使用完整的开发工具。当测试失败时，你可以：
 
-- **Open browser dev tools** during test execution (F12 or right-click → Inspect)
-- **Set breakpoints** in your test code or component code
-- **Inspect the DOM** to see the actual rendered output
-- **Check console errors** for JavaScript errors or warnings
-- **Monitor network requests** to debug API calls
+- 在测试执行期间**打开浏览器开发工具**（F12 或右键 → 检查）
+- 在测试代码或组件代码中**设置断点**
+- **检查 DOM** 以查看实际渲染的输出
+- **检查控制台错误** 以查找 JavaScript 错误或警告
+- **监控网络请求** 以调试 API 调用
 
-For headful mode debugging, add `headless: false` to your browser config temporarily.
+对于有头模式调试，临时在你的浏览器配置中添加 `headless: false`。
 
-### 2. Add Debug Statements
+### 2. 添加调试语句
 
-Use strategic logging to understand test failures:
+使用策略性日志记录来理解测试失败原因：
 
 ```tsx
 test('debug form validation', async () => {
@@ -469,7 +469,7 @@ test('debug form validation', async () => {
   const submitButton = page.getByRole('button', { name: /submit/i })
   await submitButton.click()
 
-  // Debug: Check if element exists with different query
+  // 调试：使用不同的查询检查元素是否存在
   const errorElement = page.getByText('Email is required')
   console.log('Error element found:', errorElement.length)
 
@@ -477,100 +477,100 @@ test('debug form validation', async () => {
 })
 ```
 
-### 3. Inspect Rendered Output
+### 3. 检查渲染输出
 
-When components don't render as expected, investigate systematically:
+当组件未按预期渲染时，系统地调查：
 
-**Use Vitest's browser UI:**
-- Run tests with browser mode enabled
-- Open the browser URL shown in the terminal to see tests running
-- Visual inspection helps identify CSS issues, layout problems, or missing elements
+**使用 Vitest 的浏览器 UI：**
+- 启用 browser mode 运行测试
+- 打开终端中显示的浏览器 URL 以查看测试运行
+- 视觉检查有助于识别 CSS 问题、布局问题或缺失的元素
 
-**Test element queries:**
+**测试元素查询：**
 ```tsx
-// Debug why elements can't be found
+// 调试为什么找不到元素
 const button = page.getByRole('button', { name: /submit/i })
-console.log('Button count:', button.length) // Should be 1
+console.log('Button count:', button.length) // 应该是 1
 
-// Try alternative queries if the first one fails
+// 如果第一个查询失败，尝试替代查询
 if (button.length === 0) {
   console.log('All buttons:', page.getByRole('button').length)
   console.log('By test ID:', page.getByTestId('submit-btn').length)
 }
 ```
 
-### 4. Verify Selectors
+### 4. 验证选择器
 
-Selector issues are common causes of test failures. Debug them systematically:
+选择器问题是测试失败的常见原因。系统地调试它们：
 
-**Check accessible names:**
+**检查可访问名称：**
 ```tsx
-// If getByRole fails, check what roles/names are available
+// 如果 getByRole 失败，检查有哪些可用的角色/名称
 const buttons = page.getByRole('button').all()
 for (const button of buttons) {
-  // Use element() to get the DOM element and access native properties
+  // 使用 element() 获取 DOM 元素并访问原生属性
   const element = button.element()
   const accessibleName = element.getAttribute('aria-label') || element.textContent
   console.log(`Button: "${accessibleName}"`)
 }
 ```
 
-**Test different query strategies:**
+**测试不同的查询策略：**
 ```tsx
-// Multiple ways to find the same element using .or for auto-retrying
-const submitButton = page.getByRole('button', { name: /submit/i }) // By accessible name
-  .or(page.getByTestId('submit-button')) // By test ID
-  .or(page.getByText('Submit')) // By exact text
-// Note: Vitest doesn't have page.locator(), use specific getBy* methods instead
+// 使用 .or 自动重试的多种查找同一元素的方法
+const submitButton = page.getByRole('button', { name: /submit/i }) // 通过可访问名称
+  .or(page.getByTestId('submit-button')) // 通过测试 ID
+  .or(page.getByText('Submit')) // 通过精确文本
+// 注意：Vitest 没有 page.locator()，请使用特定的 getBy* 方法代替
 ```
 
-**Common selector debugging patterns:**
+**常见选择器调试模式：**
 ```tsx
 test('debug element queries', async () => {
   render(<LoginForm />)
 
-  // Check if element is visible and enabled
+  // 检查元素是否可见且启用
   const emailInput = page.getByLabelText(/email/i)
-  await expect.element(emailInput).toBeVisible() // Will show if element is visible and print DOM if not
+  await expect.element(emailInput).toBeVisible() // 如果元素可见将显示，否则将打印 DOM
 })
 ```
 
-### 5. Debugging Async Issues
+### 5. 调试异步问题
 
-Component tests often involve timing issues:
+组件测试通常涉及时序问题：
 
 ```tsx
 test('debug async component behavior', async () => {
   render(<AsyncUserProfile userId="123" />)
 
-  // expect.element will automatically retry and show helpful error messages
+  // expect.element 将自动重试并显示有用的错误消息
   await expect.element(page.getByText('John Doe')).toBeInTheDocument()
 })
 ```
 
-## Migration from Other Testing Frameworks
+## 从其他测试框架迁移
 
-### From Jest + Testing Library
+### 从 Jest + Testing Library
 
-Most Jest + Testing Library tests work with minimal changes:
+大多数 Jest + Testing Library 测试只需极少更改即可工作：
 
 ```ts
-// Before (Jest)
+// 之前 (Jest)
 import { render, screen } from '@testing-library/react' // [!code --]
 
-// After (Vitest)
+// 之后 (Vitest)
 import { render } from 'vitest-browser-react' // [!code ++]
 ```
 
-### Key Differences
+### 主要区别
 
-- Use `await expect.element()` instead of `expect()` for DOM assertions
-- Use `vitest/browser` for user interactions instead of `@testing-library/user-event`
-- Browser Mode provides real browser environment for accurate testing
+- 对于 DOM 断言，使用 `await expect.element()` 而不是 `expect()`
+- 对于用户交互，使用 `vitest/browser` 而不是 `@testing-library/user-event`
+- Browser Mode 提供真实的浏览器环境以实现准确测试
 
-## Learn More
+## 了解更多
 
-- [Browser Mode Documentation](/guide/browser/)
-- [Assertion API](/api/browser/assertions)
-- [Interactivity API](/api/browser/interactivity)
-- [Example Repository](https://github.com/vitest-tests/browser-examples)
+- [Browser Mode 文档](/guide/browser/)
+- [断言 API](/api/browser/assertions)
+- [交互 API](/api/browser/interactivity)
+- [示例仓库](https://github.com/vitest-tests/browser-examples)

@@ -1,30 +1,30 @@
 ---
-title: setupFiles | Config
+title: setupFiles | 配置
 outline: deep
 ---
 
 # setupFiles
 
-- **Type:** `string | string[]`
+- **类型：** `string | string[]`
 
-Paths to setup files resolved relative to the [`root`](/config/root). They will run before each _test file_ in the same process. By default, all test files run in parallel, but you can configure it with [`sequence.setupFiles`](/config/sequence#sequence-setupfiles) option.
+相对于 [`root`](/config/root) 解析的设置文件路径。它们将在同一进程中的每个 _测试文件_ 之前运行。默认情况下，所有测试文件并行运行，但你可以使用 [`sequence.setupFiles`](/config/sequence#sequence-setupfiles) 选项进行配置。
 
-Vitest will ignore any exports from these files.
+Vitest 将忽略这些文件中的任何导出。
 
 :::warning
-Note that setup files are executed in the same process as tests, unlike [`globalSetup`](/config/globalsetup) that runs once in the main thread before any test worker is created.
+请注意，设置文件在与测试相同的进程中执行，这与 [`globalSetup`](/config/globalsetup) 不同，后者在任何测试工作器创建之前在主线程中运行一次。
 :::
 
 :::info
-Editing a setup file will automatically trigger a rerun of all tests.
+编辑设置文件将自动触发所有测试的重新运行。
 :::
 
-If you have a heavy process running in the background, you can use `process.env.VITEST_POOL_ID` (integer-like string) inside to distinguish between workers and spread the workload.
+如果你在后台运行一个繁重的进程，你可以在内部使用 `process.env.VITEST_POOL_ID`（类似整数的字符串）来区分工作器并分散工作负载。
 
 :::warning
-If [isolation](/config/isolate) is disabled, imported modules are cached, but the setup file itself is executed again before each test file, meaning that you are accessing the same global object before each test file. Make sure you are not doing the same thing more than necessary.
+如果禁用了 [隔离](/config/isolate)，导入的模块会被缓存，但设置文件本身会在每个测试文件之前再次执行，这意味着你在每个测试文件之前访问的是同一个全局对象。确保你没有做超过必要的重复操作。
 
-For example, you may rely on a global variable:
+例如，你可能依赖一个全局变量：
 
 ```ts
 import { config } from '@some-testing-lib'
@@ -35,7 +35,7 @@ if (!globalThis.setupInitialized) {
   globalThis.setupInitialized = true
 }
 
-// hooks reset before each test file
+// 每个测试文件之前的钩子重置
 afterEach(() => {
   cleanup()
 })

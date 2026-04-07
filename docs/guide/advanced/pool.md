@@ -1,24 +1,24 @@
-# Custom Pool <Badge type="danger">advanced</Badge> {#custom-pool}
+# 自定义池 <Badge type="danger">高级</Badge> {#custom-pool}
 
 ::: warning
-This is an advanced, experimental and very low-level API. If you just want to [run tests](/guide/), you probably don't need this. It is primarily used by library authors.
+这是一个高级、实验性且非常底层的 API。如果你只是想 [运行测试](/guide/)，可能不需要这个。它主要供库作者使用。
 :::
 
-Vitest runs tests in a pool. By default, there are several pool runners:
+Vitest 在池（pool）中运行测试。默认情况下，有几种池运行器：
 
-- `threads` to run tests using `node:worker_threads` (isolation is provided with a new worker context)
-- `forks` to run tests using `node:child_process` (isolation is provided with a new `child_process.fork` process)
-- `vmThreads` to run tests using `node:worker_threads` (but isolation is provided with `vm` module instead of a new worker context)
-- `browser` to run tests using browser providers
-- `typescript` to run typechecking on tests
+- `threads` 使用 `node:worker_threads` 运行测试（隔离通过新的 worker 上下文提供）
+- `forks` 使用 `node:child_process` 运行测试（隔离通过新的 `child_process.fork` 进程提供）
+- `vmThreads` 使用 `node:worker_threads` 运行测试（但隔离通过 `vm` 模块提供，而不是新的 worker 上下文）
+- `browser` 使用浏览器 provider 运行测试
+- `typescript` 对测试运行类型检查
 
 ::: tip
-See [`vitest-pool-example`](https://npmx.dev/package/vitest-pool-example) for example of a custom pool runner implementation.
+查看 [`vitest-pool-example`](https://npmx.dev/package/vitest-pool-example) 以获取自定义池运行器实现的示例。
 :::
 
-## Usage
+## 用法
 
-You can provide your own pool runner by a function that returns `PoolRunnerInitializer`.
+你可以通过返回 `PoolRunnerInitializer` 的函数来提供自己的池运行器。
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
@@ -26,7 +26,7 @@ import customPool from './my-custom-pool.ts'
 
 export default defineConfig({
   test: {
-    // will run every file with a custom pool by default
+    // 默认情况下将使用自定义池运行每个文件
     pool: customPool({
       customProperty: true,
     })
@@ -34,7 +34,7 @@ export default defineConfig({
 })
 ```
 
-If you need to run tests in different pools, use the [`projects`](/guide/projects) feature:
+如果你需要在不同的池中运行测试，请使用 [`projects`](/guide/projects) 功能：
 
 ```ts [vitest.config.ts]
 import customPool from './my-custom-pool.ts'
@@ -63,7 +63,7 @@ export default defineConfig({
 
 ## API
 
-The `pool` option accepts a `PoolRunnerInitializer` that can be used for custom pool runners. The `name` property should indicate name of the custom pool runner. It should be identical with your worker's `name` property.
+`pool` 选项接受一个 `PoolRunnerInitializer`，可用于自定义池运行器。`name` 属性应指示自定义池运行器的名称。它应该与你的 worker 的 `name` 属性相同。
 
 ```ts [my-custom-pool.ts]
 import type { PoolRunnerInitializer } from 'vitest/node'
@@ -76,7 +76,7 @@ export function customPool(customOptions: CustomOptions): PoolRunnerInitializer 
 }
 ```
 
-In your `CustomPoolWorker` you need to define all required methods:
+在你的 `CustomPoolWorker` 中，你需要定义所有必需的方法：
 
 ```ts [my-custom-pool.ts]
 import type { PoolOptions, PoolWorker, WorkerRequest } from 'vitest/node'
@@ -90,23 +90,23 @@ class CustomPoolWorker implements PoolWorker {
   }
 
   send(message: WorkerRequest): void {
-    // Provide way to send your worker a message
+    // 提供向你的 worker 发送消息的方法
   }
 
   on(event: string, callback: (arg: any) => void): void {
-    // Provide way to listen to your workers events, e.g. message, error, exit
+    // 提供监听你的 worker 事件的方法，例如 message, error, exit
   }
 
   off(event: string, callback: (arg: any) => void): void {
-    // Provide way to unsubscribe `on` listeners
+    // 提供取消订阅 `on` 监听器的方法
   }
 
   async start() {
-    // do something when the worker is started
+    // 当 worker 启动时执行某些操作
   }
 
   async stop() {
-    // cleanup the state
+    // 清理状态
   }
 
   deserialize(data) {
@@ -115,31 +115,31 @@ class CustomPoolWorker implements PoolWorker {
 }
 ```
 
-Your `CustomPoolRunner` will be controlling how your custom test runner worker life cycles and communication channel works. For example, your `CustomPoolRunner` could launch a `node:worker_threads` `Worker`, and provide communication via `Worker.postMessage` and `parentPort`.
+你的 `CustomPoolRunner` 将控制自定义测试运行器 worker 的生命周期和通信通道如何工作。例如，你的 `CustomPoolRunner` 可以启动一个 `node:worker_threads` `Worker`，并通过 `Worker.postMessage` 和 `parentPort` 提供通信。
 
-In your worker file, you can import helper utilities from `vitest/worker`:
+在你的 worker 文件中，你可以从 `vitest/worker` 导入辅助工具：
 
 ```ts [my-worker.ts]
 import { init, runBaseTests, setupEnvironment } from 'vitest/worker'
 
 init({
   post: (response) => {
-    // Provide way to send this message to CustomPoolRunner's onWorker as message event
+    // 提供将此消息作为 message 事件发送到 CustomPoolRunner 的 onWorker 的方法
   },
   on: (callback) => {
-    // Provide a way to listen CustomPoolRunner's "postMessage" calls
+    // 提供监听 CustomPoolRunner 的 "postMessage" 调用的方法
   },
   off: (callback) => {
-    // Optional, provide a way to remove listeners added by "on" calls
+    // 可选，提供一种移除由 "on" 调用添加的监听器的方法
   },
   teardown: () => {
-    // Optional, provide a way to teardown worker, e.g. unsubscribe all the `on` listeners
+    // 可选，提供一种销毁 worker 的方法，例如取消订阅所有 `on` 监听器
   },
   serialize: (value) => {
-    // Optional, provide custom serializer for `post` calls
+    // 可选，为 `post` 调用提供自定义序列化器
   },
   deserialize: (value) => {
-    // Optional, provide custom deserializer for `on` callbacks
+    // 可选，为 `on` 回调提供自定义反序列化器
   },
   runTests: (state, traces) => runBaseTests('run', state, traces),
   collectTests: (state, traces) => runBaseTests('collect', state, traces),

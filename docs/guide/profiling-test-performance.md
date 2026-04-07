@@ -1,6 +1,6 @@
-# Profiling Test Performance
+# 分析测试性能
 
-When you run Vitest it reports multiple time metrics of your tests:
+当你运行 Vitest 时，它会报告测试的多个时间指标：
 
 > ```bash
 > RUN  v2.1.1 /x/vitest/examples/profiling
@@ -12,28 +12,28 @@ When you run Vitest it reports multiple time metrics of your tests:
 >      Tests  1 passed (1)
 >   Start at  09:32:53
 >   Duration  4.80s (transform 44ms, setup 0ms, import 35ms, tests 4.52s, environment 0ms)
->   # Time metrics ^^
+>   # 时间指标 ^^
 > ```
 
-- Transform: How much time was spent transforming the files. See [File Transform](#file-transform).
-- Setup: Time spent for running the [`setupFiles`](/config/setupfiles) files.
-- Import: Time it took to import your test files and their dependencies. This also includes the time spent collecting all tests. Note that this doesn't include dynamic imports inside of tests.
-- Tests: Time spent for actually running the test cases.
-- Environment: Time spent for setting up the test [`environment`](/config/environment), for example JSDOM.
+- Transform：花费在转换文件上的时间。参见 [文件转换](#file-transform)。
+- Setup：运行 [`setupFiles`](/config/setupfiles) 文件所花费的时间。
+- Import：导入测试文件及其依赖所花费的时间。这也包括收集所有测试所花费的时间。注意，这不包括测试内部的动态导入。
+- Tests：实际运行测试用例所花费的时间。
+- Environment：设置测试 [`environment`](/config/environment) 所花费的时间，例如 JSDOM。
 
-## Test Runner
+## 测试运行器
 
-In cases where your test execution time is high, you can generate a profile of the test runner. See NodeJS documentation for following options:
+在测试执行时间较高的情况下，你可以生成测试运行器的性能分析文件。参见 NodeJS 文档了解以下选项：
 
 - [`--cpu-prof`](https://nodejs.org/api/cli.html#--cpu-prof)
 - [`--heap-prof`](https://nodejs.org/api/cli.html#--heap-prof)
 - [`--prof`](https://nodejs.org/api/cli.html#--prof)
 
 :::warning
-The `--prof` option does not work with `pool: 'threads'` due to `node:worker_threads` limitations.
+`--prof` 选项由于 `node:worker_threads` 的限制，无法与 `pool: 'threads'` 一起使用。
 :::
 
-To pass these options to Vitest's test runner, define `execArgv` in your Vitest configuration:
+要将这些选项传递给 Vitest 的测试运行器，请在你的 Vitest 配置中定义 `execArgv`：
 
 ```ts
 import { defineConfig } from 'vitest/config'
@@ -51,41 +51,41 @@ export default defineConfig({
 })
 ```
 
-After the tests have run there should be a `test-runner-profile/*.cpuprofile` and `test-runner-profile/*.heapprofile` files generated. See [Inspecting profiling records](#inspecting-profiling-records) for instructions how to analyze these files.
+测试运行后，应该会生成 `test-runner-profile/*.cpuprofile` 和 `test-runner-profile/*.heapprofile` 文件。参见 [检查性能分析记录](#inspecting-profiling-records) 了解如何分析这些文件的说明。
 
-See [Profiling | Examples](https://github.com/vitest-dev/vitest/tree/main/examples/profiling) for example.
+参见 [性能分析 | 示例](https://github.com/vitest-dev/vitest/tree/main/examples/profiling) 了解示例。
 
-## Main Thread
+## 主线程
 
-Profiling main thread is useful for debugging Vitest's Vite usage and [`globalSetup`](/config/globalsetup) files.
-This is also where your Vite plugins are running.
+分析主线程对于调试 Vitest 的 Vite 用法和 [`globalSetup`](/config/globalsetup) 文件很有用。
+你的 Vite 插件也是在这里运行的。
 
 :::tip
-See [Performance | Vite](https://vitejs.dev/guide/performance.html) for more tips about Vite specific profiling.
+参见 [性能 | Vite](https://vitejs.dev/guide/performance.html) 了解更多关于 Vite 特定性能分析的技巧。
 
-We recommend [`vite-plugin-inspect`](https://github.com/antfu-collective/vite-plugin-inspect) for profiling your Vite plugin performance.
+我们推荐使用 [`vite-plugin-inspect`](https://github.com/antfu-collective/vite-plugin-inspect) 来分析你的 Vite 插件性能。
 :::
 
-To do this you'll need to pass arguments to the Node process that runs Vitest.
+为此，你需要将参数传递给运行 Vitest 的 Node 进程。
 
 ```bash
 $ node --cpu-prof --cpu-prof-dir=main-profile ./node_modules/vitest/vitest.mjs --run
 #      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                  ^^^^^
-#               NodeJS arguments                                           Vitest arguments
+#               NodeJS 参数                                           Vitest 参数
 ```
 
-After the tests have run there should be a `main-profile/*.cpuprofile` file generated. See [Inspecting profiling records](#inspecting-profiling-records) for instructions how to analyze these files.
+测试运行后，应该会生成 `main-profile/*.cpuprofile` 文件。参见 [检查性能分析记录](#inspecting-profiling-records) 了解如何分析这些文件的说明。
 
-## File Transform
+## 文件转换
 
-This profiling strategy is a good way to identify unnecessary transforms caused by [barrel files](https://vitejs.dev/guide/performance.html#avoid-barrel-files).
-If these logs contain files that should not be loaded when your test is run, you might have barrel files that are importing files unnecessarily.
+这种性能分析策略是识别由 [barrel 文件](https://vitejs.dev/guide/performance.html#avoid-barrel-files) 引起的不必要转换的好方法。
+如果这些日志包含在你的测试运行时不应加载的文件，你可能拥有不必要的导入文件的 barrel 文件。
 
-You can also use [Vitest UI](/guide/ui) to debug slowness caused by barrel file.
-The example below shows how importing files without barrel file reduces amount of transformed files by ~85%.
+你也可以使用 [Vitest UI](/guide/ui) 来调试由 barrel 文件引起的缓慢问题。
+下面的示例展示了不使用 barrel 文件导入文件如何减少约 85% 的转换文件数量。
 
 ::: code-group
-``` [File tree]
+``` [文件树]
 ├── src
 │   └── utils
 │       ├── currency.ts
@@ -110,16 +110,16 @@ test('formatter works', () => {
 ```
 :::
 
-<img src="/module-graph-barrel-file.png" alt="Vitest UI demonstrating barrel file issues" />
+<img src="/module-graph-barrel-file.png" alt="Vitest UI 演示 barrel 文件问题" />
 
-To see how files are transformed, you can open the "Module Info" view in the UI:
+要查看文件是如何转换的，你可以在 UI 中打开 "Module Info" 视图：
 
-<img alt="The module info view for an inlined module" img-light src="/ui/light-module-info.png">
-<img alt="The module info view for an inlined module" img-dark src="/ui/dark-module-info.png">
+<img alt="内联模块的模块信息视图" img-light src="/ui/light-module-info.png">
+<img alt="内联模块的模块信息视图" img-dark src="/ui/dark-module-info.png">
 
-## File Import
+## 文件导入
 
-Some modules just take a long time to load. To identify which modules are the slowest, enable [`experimental.importDurations`](/config/experimental#experimental-importdurations) in your configuration:
+有些模块加载就是需要很长时间。要识别哪些模块最慢，请在你的配置中启用 [`experimental.importDurations`](/config/experimental#experimental-importdurations)：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
@@ -135,7 +135,7 @@ export default defineConfig({
 })
 ```
 
-This will print a breakdown of the slowest imports after your tests finish:
+这将在测试完成后打印最慢导入的细分情况：
 
 ```bash
 Import Duration Breakdown (Top 10)
@@ -146,28 +146,28 @@ date-fns/index.js          500ms    500ms [████████████�
 src/utils/helpers.ts        10ms    120ms [████████░░░░░░░░░░░░]
 ```
 
-You can also use `--experimental.importDurations.print` from the CLI without changing your configuration:
+你也可以在不更改配置的情况下从 CLI 使用 `--experimental.importDurations.print`：
 
 ```bash
 vitest --experimental.importDurations.print
 ```
 
-Once you've identified the slow modules, there are several strategies to speed up imports:
+一旦你识别了慢速模块，有几种策略可以加速导入：
 
-### Use Specific Entry Points
+### 使用特定入口点
 
-Many libraries ship multiple entry points. Importing the main entry point (which is often a [barrel file](https://vitejs.dev/guide/performance.html#avoid-barrel-files)) can pull in far more code than you need.
+许多库提供多个入口点。导入主入口点（通常是 [barrel 文件](https://vitejs.dev/guide/performance.html#avoid-barrel-files)）可能会引入远超你所需的代码。
 
-For example, `date-fns` re-exports hundreds of functions from its main entry point. Instead of importing from the top-level module, import directly from the specific function:
+例如，`date-fns` 从其主入口点重新导出了数百个函数。不要从顶层模块导入，而是直接从特定函数导入：
 
 ```ts
 import { format } from 'date-fns' // [!code --]
 import { format } from 'date-fns/format' // [!code ++]
 ```
 
-### Use `resolve.alias` to Redirect Imports
+### 使用 resolve.alias 重定向导入
 
-If a dependency doesn't provide granular entry points, or if third-party code imports the heavy entry point, you can use [`resolve.alias`](https://vite.dev/config/shared-options#resolve-alias) to redirect imports to a lighter alternative:
+如果依赖项不提供细粒度的入口点，或者第三方代码导入了沉重的入口点，你可以使用 [`resolve.alias`](https://vite.dev/config/shared-options#resolve-alias) 将导入重定向到更轻量级的替代方案：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
@@ -184,9 +184,9 @@ export default defineConfig({
 })
 ```
 
-### Use the Dependency Optimizer
+### 使用依赖优化器
 
-Vitest can bundle external libraries into a single file using [`deps.optimizer`](/config/deps#deps-optimizer), which reduces the overhead of importing packages with many internal modules:
+Vitest 可以使用 [`deps.optimizer`](/config/deps#deps-optimizer) 将外部库捆绑到单个文件中，这减少了导入具有许多内部模块的包的开销：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
@@ -205,11 +205,11 @@ export default defineConfig({
 })
 ```
 
-This is especially effective for UI libraries and packages with deep import trees. Use `optimizer.ssr` for `node`/`edge` environments and `optimizer.client` for `jsdom`/`happy-dom` environments.
+这对于 UI 库和具有深层导入树的包特别有效。对 `node`/`edge` 环境使用 `optimizer.ssr`，对 `jsdom`/`happy-dom` 环境使用 `optimizer.client`。
 
-## Code Coverage
+## 代码覆盖率
 
-If code coverage generation is slow on your project you can use `DEBUG=vitest:coverage` environment variable to enable performance logging.
+如果你的项目中代码覆盖率生成缓慢，你可以使用 `DEBUG=vitest:coverage` 环境变量来启用性能日志记录。
 
 ```bash
 $ DEBUG=vitest:coverage vitest --run --coverage
@@ -229,15 +229,15 @@ $ DEBUG=vitest:coverage vitest --run --coverage
   vitest:coverage Generate coverage total time 3521 ms
 ```
 
-This profiling approach is great for detecting large files that are accidentally picked by coverage providers.
-For example if your configuration is accidentally including large built minified Javascript files in code coverage, they should appear in logs.
-In these cases you might want to adjust your [`coverage.include`](/config/coverage#coverage-include) and [`coverage.exclude`](/config/coverage#coverage-exclude) options.
+这种性能分析方法非常适合检测被覆盖率提供者意外选取的大文件。
+例如，如果你的配置意外地将大型构建后的压缩 Javascript 文件包含在代码覆盖率中，它们应该出现在日志中。
+在这些情况下，你可能想要调整你的 [`coverage.include`](/config/coverage#coverage-include) 和 [`coverage.exclude`](/config/coverage#coverage-exclude) 选项。
 
-## Inspecting Profiling Records
+## 检查性能分析记录
 
-You can inspect the contents of `*.cpuprofile` and `*.heapprofile` with various tools. See list below for examples.
+你可以使用各种工具检查 `*.cpuprofile` 和 `*.heapprofile` 的内容。参见下面的列表示例。
 
 - [Speedscope](https://www.speedscope.app/)
-- [Performance Profiling JavaScript in Visual Studio Code](https://code.visualstudio.com/docs/nodejs/profiling#_analyzing-a-profile)
-- [Profile Node.js performance with the Performance panel | developer.chrome.com](https://developer.chrome.com/docs/devtools/performance/nodejs#analyze)
-- [Memory panel overview | developer.chrome.com](https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#view_snapshots)
+- [在 Visual Studio Code 中分析 JavaScript 性能](https://code.visualstudio.com/docs/nodejs/profiling#_analyzing-a-profile)
+- [使用 Performance 面板分析 Node.js 性能 | developer.chrome.com](https://developer.chrome.com/docs/devtools/performance/nodejs#analyze)
+- [Memory 面板概览 | developer.chrome.com](https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#view_snapshots)

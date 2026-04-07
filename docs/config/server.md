@@ -1,28 +1,28 @@
 ---
-title: server | Config
+title: server | 配置
 outline: deep
 ---
 
 # server <Deprecated />
 
-Before Vitest 4, this option was used to define the configuration for the `vite-node` server.
+在 Vitest 4 之前，此选项用于定义 `vite-node` 服务器的配置。
 
-At the moment, this option allows you to configure the inlining and externalization mechanisms, along with the module runner debugging configuration.
+目前，此选项允许你配置内联和外部化机制，以及模块运行器的调试配置。
 
 ::: warning
-These options should be used only as the last resort to improve performance by externalizing auto-inlined dependencies or to fix issues by inlining invalid external dependencies.
+这些选项应仅作为最后的手段使用，以便通过外部化自动内联的依赖项来提高性能，或通过内联无效的外部依赖项来修复问题。
 
-Normally, Vitest should do this automatically.
+通常，Vitest 应该自动执行此操作。
 :::
 
 ## server.deps
 
 ### server.deps.external
 
-- **Type:** `(string | RegExp)[]`
-- **Default:** files inside [`moduleDirectories`](/config/deps#moduledirectories)
+- **类型：** `(string | RegExp)[]`
+- **默认：** [`moduleDirectories`](/config/deps#moduledirectories) 内的文件
 
-Specifies modules that should not be transformed by Vite and should instead be processed directly by the engine. These modules are imported via native dynamic `import` and bypass both transformation and resolution phases.
+指定不应由 Vite 转换而应直接由引擎处理的模块。这些模块通过原生动态 `import` 导入，并绕过转换和解析阶段。
 
 ```js [vitest.config.js]
 import { defineConfig } from 'vitest/config'
@@ -38,36 +38,36 @@ export default defineConfig({
 })
 ```
 
-External modules and their dependencies are not present in the module graph and will not trigger test restarts when they change.
+外部模块及其依赖项不在模块图中，当它们更改时不会触发测试重启。
 
-Typically, packages under `node_modules` are externalized.
+通常，`node_modules` 下的包会被外部化。
 
 ::: tip
-If a string is provided, it is first normalized by prefixing the `/node_modules/` or other [`moduleDirectories`](/config/deps#moduledirectories) segments (for example, `'react'` becomes `/node_modules/react/`), and the resulting string is then matched against the full file path. For example, package `@company/some-name` located inside `packages/some-name` should be specified as `some-name`, and `packages` should be included in `deps.moduleDirectories`.
+如果提供的是字符串，它首先会通过添加 `/node_modules/` 或其他 [`moduleDirectories`](/config/deps#moduledirectories) 段前缀进行标准化（例如，`'react'` 变为 `/node_modules/react/`），然后将结果字符串与完整文件路径进行匹配。例如，位于 `packages/some-name` 内的包 `@company/some-name` 应指定为 `some-name`，并且 `packages` 应包含在 `deps.moduleDirectories` 中。
 
-If a `RegExp` is provided, it is matched against the full file path.
+如果提供的是 `RegExp`，则它与完整文件路径进行匹配。
 :::
 
 ### server.deps.inline
 
-- **Type:** `(string | RegExp)[] | true`
-- **Default:** everything that is not externalized
+- **类型：** `(string | RegExp)[] | true`
+- **默认：** 所有未外部化的内容
 
-Specifies modules that should be transformed and resolved by Vite. These modules are run by Vite's [module runner](https://vite.dev/guide/api-environment-runtimes#modulerunner).
+指定应由 Vite 转换和解析的模块。这些模块由 Vite 的 [module runner](https://vite.dev/guide/api-environment-runtimes#modulerunner) 运行。
 
-Typically, your source files are inlined.
+通常，你的源文件会被内联。
 
 ::: tip
-If a string is provided, it is first normalized by prefixing the `/node_modules/` or other [`moduleDirectories`](/config/deps#moduledirectories) segments (for example, `'react'` becomes `/node_modules/react/`), and the resulting string is then matched against the full file path. For example, package `@company/some-name` located inside `packages/some-name` should be specified as `some-name`, and `packages` should be included in `deps.moduleDirectories`.
+如果提供的是字符串，它首先会通过添加 `/node_modules/` 或其他 [`moduleDirectories`](/config/deps#moduledirectories) 段前缀进行标准化（例如，`'react'` 变为 `/node_modules/react/`），然后将结果字符串与完整文件路径进行匹配。例如，位于 `packages/some-name` 内的包 `@company/some-name` 应指定为 `some-name`，并且 `packages` 应包含在 `deps.moduleDirectories` 中。
 
-If a `RegExp` is provided, it is matched against the full file path.
+如果提供的是 `RegExp`，则它与完整文件路径进行匹配。
 :::
 
 ### server.deps.fallbackCJS
 
-- **Type:** `boolean`
-- **Default:** `false`
+- **类型：** `boolean`
+- **默认：** `false`
 
-When enabled, Vitest will try to guess a CommonJS build for an ESM entry by checking a few common CJS/UMD file name and folder patterns (like `.mjs`, `.umd.js`, `.cjs.js`, `umd/`, `cjs/`, `lib/`).
+启用后，Vitest 将通过检查一些常见的 CJS/UMD 文件名和文件夹模式（如 `.mjs`、`.umd.js`、`.cjs.js`、`umd/`、`cjs/`、`lib/`）来尝试猜测 ESM 入口的 CommonJS 构建。
 
-This is a best-effort heuristic to work around confusing or incorrect ESM/CJS packaging and may not work for all dependencies.
+这是一种尽力而为的启发式方法，用于绕过混乱或不正确的 ESM/CJS 打包，可能不适用于所有依赖项。

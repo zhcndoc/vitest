@@ -4,7 +4,7 @@ outline: deep
 
 # vitest-browser-vue
 
-The community [`vitest-browser-vue`](https://npmx.dev/package/vitest-browser-vue) package renders [Vue](https://vuejs.org/) components in [Browser Mode](/guide/browser/).
+社区 [`vitest-browser-vue`](https://npmx.dev/package/vitest-browser-vue) 包在 [浏览器模式](/guide/browser/) 中渲染 [Vue](https://vuejs.org/) 组件。
 
 ```ts
 import { render } from 'vitest-browser-vue'
@@ -25,14 +25,14 @@ test('counter button increments the count', async () => {
 ```
 
 ::: warning
-This library takes inspiration from [`@testing-library/vue`](https://github.com/testing-library/vue-testing-library).
+这个库的灵感来自 [`@testing-library/vue`](https://github.com/testing-library/vue-testing-library)。
 
-If you have used `@testing-library/vue` in your tests before, you can keep using it, however the `vitest-browser-vue` package provides certain benefits unique to the Browser Mode that `@testing-library/vue` lacks:
+如果你之前在测试中使用过 `@testing-library/vue`，你可以继续使用它，但是 `vitest-browser-vue` 包提供了一些 `@testing-library/vue` 所缺乏的、浏览器模式独有的优势：
 
-`vitest-browser-vue` returns APIs that interact well with built-in [locators](/api/browser/locators), [user events](/api/browser/interactivity) and [assertions](/api/browser/assertions): for example, Vitest will automatically retry the element until the assertion is successful, even if it was rerendered between the assertions.
+`vitest-browser-vue` 返回的 API 能与内置的 [定位器](/api/browser/locators)、[用户事件](/api/browser/interactivity) 和 [断言](/api/browser/assertions) 很好地交互：例如，即使元素在断言之间被重新渲染，Vitest 也会自动重试该元素直到断言成功。
 :::
 
-The package exposes two entry points: `vitest-browser-vue` and `vitest-browser-vue/pure`. They expose identical API, but the `pure` entry point doesn't add a handler to remove the component before the next test has started.
+该包暴露了两个入口点：`vitest-browser-vue` 和 `vitest-browser-vue/pure`。它们暴露相同的 API，但 `pure` 入口点不会添加一个在下一次测试开始前移除组件的处理程序。
 
 ## render
 
@@ -43,10 +43,10 @@ export function render(
 ): RenderResult & PromiseLike<RenderResult>
 ```
 
-The `render` function records a `vue.render` trace mark, visible in the [Trace View](/guide/browser/trace-view).
+`render` 函数会记录一个 `vue.render` 追踪标记，可在 [追踪视图](/guide/browser/trace-view) 中看到。
 
 ::: warning
-Synchronous usage of `render` is deprecated and will be removed in the next major version. Please always `await` the result:
+`render` 的同步用法已弃用，并将在下一个主要版本中移除。请始终 `await` 结果：
 
 ```ts
 const screen = render(Component) // [!code --]
@@ -54,33 +54,33 @@ const screen = await render(Component) // [!code ++]
 ```
 :::
 
-### Options
+### 选项
 
-The `render` function supports all [`mount` options](https://test-utils.vuejs.org/api/#mount) from `@vue/test-utils` (except `attachTo` - use `container` instead). In addition to them, there are also `container` and `baseElement`.
+`render` 函数支持来自 `@vue/test-utils` 的所有 [`mount` 选项](https://test-utils.vuejs.org/api/#mount)（除了 `attachTo` - 请使用 `container` 代替）。除此之外，还有 `container` 和 `baseElement`。
 
 #### container
 
-By default, Vitest will create a `div`, append it to `document.body`, and render your component there. If you provide your own `HTMLElement` container, it will not be appended automatically — you'll need to call `document.body.appendChild(container)` before `render`.
+默认情况下，Vitest 会创建一个 `div`，将其附加到 `document.body`，并在那里渲染你的组件。如果你提供自己的 `HTMLElement` 容器，它不会被自动附加 —— 你需要在 `render` 之前调用 `document.body.appendChild(container)`。
 
-For example, if you are unit testing a `tbody` element, it cannot be a child of a `div`. In this case, you can specify a `table` as the render container.
+例如，如果你正在对 `tbody` 元素进行单元测试，它不能是 `div` 的子元素。在这种情况下，你可以指定一个 `table` 作为渲染容器。
 
 ```js
 const table = document.createElement('table')
 
 const { container } = await render(TableBody, {
   props,
-  // ⚠️ appending the element to `body` manually before rendering
+  // ⚠️ 在渲染前手动将元素附加到 `body`
   container: document.body.appendChild(table),
 })
 ```
 
 #### baseElement
 
-If the `container` is specified, then this defaults to that, otherwise this defaults to `document.body`. This is used as the base element for the queries as well as what is printed when you use `debug()`.
+如果指定了 `container`，则默认为该值，否则默认为 `document.body`。它用作查询的基础元素，以及在使用 `debug()` 时打印的内容。
 
-### Render Result
+### 渲染结果
 
-In addition to documented return value, the `render` function also returns all available [locators](/api/browser/locators) relative to the [`baseElement`](#baseelement), including [custom ones](/api/browser/locators#custom-locators).
+除了文档化的返回值外，`render` 函数还返回相对于 [`baseElement`](#baseelement) 的所有可用 [定位器](/api/browser/locators)，包括 [自定义的](/api/browser/locators#custom-locators)。
 
 ```ts
 const screen = await render(TableBody, { props })
@@ -90,25 +90,25 @@ await screen.getByRole('link', { name: 'Expand' }).click()
 
 #### container
 
-The containing DOM node where your Vue component is rendered. This is a regular DOM node, so you technically could call `container.querySelector` etc. to inspect the children.
+渲染你的 Vue 组件的包含 DOM 节点。这是一个普通的 DOM 节点，所以从技术上讲，你可以调用 `container.querySelector` 等来检查子元素。
 
 :::danger
-If you find yourself using `container` to query for rendered elements then you should reconsider! The [locators](/api/browser/locators) are designed to be more resilient to changes that will be made to the component you're testing. Avoid using `container` to query for elements!
+如果你发现自己使用 `container` 来查询渲染的元素，那么你应该重新考虑！[定位器](/api/browser/locators) 旨在对你测试的组件将要进行的更改更具弹性。避免使用 `container` 来查询元素！
 :::
 
 #### baseElement
 
-The containing DOM node where your Vue component is rendered in the `container`. If you don't specify the `baseElement` in the options of render, it will default to `document.body`.
+你的 Vue 组件在 `container` 中渲染的包含 DOM 节点。如果你在 render 的选项中没有指定 `baseElement`，它将默认为 `document.body`。
 
-This is useful when the component you want to test renders something outside the container `div`, e.g. when you want to snapshot test your portal component which renders its HTML directly in the body.
+当你想要测试的组件在容器 `div` 之外渲染某些内容时，这很有用，例如，当你想要对直接在 body 中渲染 HTML 的 portal 组件进行快照测试时。
 
 :::tip
-The queries returned by the `render` looks into `baseElement`, so you can use queries to test your portal component without the `baseElement`.
+`render` 返回的查询会查找 `baseElement`，所以你可以使用查询来测试你的 portal 组件而无需 `baseElement`。
 :::
 
 #### locator
 
-The [locator](/api/browser/locators) of your `container`. It is useful to use queries scoped only to your component, or pass it down to other assertions:
+你的 `container` 的 [定位器](/api/browser/locators)。它对于仅限定于你的组件的查询很有用，或者将其传递给其他断言：
 
 ```js
 import { render } from 'vitest-browser-vue'
@@ -131,7 +131,7 @@ function debug(
 ): void
 ```
 
-This method is a shortcut for `console.log(prettyDOM(baseElement))`. It will print the DOM content of the container or specified elements to the console.
+此方法是 `console.log(prettyDOM(baseElement))` 的快捷方式。它会将容器或指定元素的 DOM 内容打印到控制台。
 
 #### rerender
 
@@ -139,12 +139,12 @@ This method is a shortcut for `console.log(prettyDOM(baseElement))`. It will pri
 function rerender(props: Partial<Props>): void & PromiseLike<void>
 ```
 
-Also records a `vue.rerender` trace mark in the [Trace View](/guide/browser/trace-view).
+同样会在 [追踪视图](/guide/browser/trace-view) 中记录一个 `vue.rerender` 追踪标记。
 
-It is better if you test the component that's doing the prop updating to ensure that the props are being updated correctly to avoid relying on implementation details in your tests. That said, if you'd prefer to update the props of a rendered component in your test, this function can be used to update props of the rendered component.
+最好测试正在执行属性更新的组件，以确保属性被正确更新，从而避免在测试中依赖实现细节。也就是说，如果你更喜欢在测试中更新已渲染组件的属性，此函数可用于更新已渲染组件的属性。
 
 ::: warning
-Synchronous usage of `rerender` is deprecated and will be removed in the next major version. Please always `await` the result.
+`rerender` 的同步用法已弃用，并将在下一个主要版本中移除。请始终 `await` 结果。
 :::
 
 ```js
@@ -152,7 +152,7 @@ import { render } from 'vitest-browser-vue'
 
 const { rerender } = await render(NumberDisplay, { props: { number: 1 } })
 
-// re-render the same component with different props
+// 使用不同的属性重新渲染相同的组件
 await rerender({ number: 2 })
 ```
 
@@ -162,10 +162,10 @@ await rerender({ number: 2 })
 function unmount(): void & PromiseLike<void>
 ```
 
-This will cause the rendered component to be unmounted. Also records a `vue.unmount` trace mark in the [Trace View](/guide/browser/trace-view). This is useful for testing what happens when your component is removed from the page (like testing that you don't leave event handlers hanging around causing memory leaks).
+这将导致渲染的组件被卸载。同样会在 [追踪视图](/guide/browser/trace-view) 中记录一个 `vue.unmount` 追踪标记。这对于测试当你的组件从页面移除时会发生什么很有用（例如测试你是否留下了导致内存泄漏的事件处理程序）。
 
 ::: warning
-Synchronous usage of `unmount` is deprecated and will be removed in the next major version. Please always `await` the result.
+`unmount` 的同步用法已弃用，并将在下一个主要版本中移除。请始终 `await` 结果。
 :::
 
 #### emitted
@@ -175,10 +175,10 @@ function emitted<T = unknown>(): Record<string, T[]>
 function emitted<T = unknown[]>(eventName: string): undefined | T[]
 ```
 
-Returns the emitted events from the Component.
+返回组件发出的事件。
 
 ::: warning
-Emitted values are an implementation detail not exposed directly to the user, so it is better to test how your emitted values are changing the displayed content by using [locators](/api/browser/locators) instead.
+发出的值是未直接暴露给用户的实现细节，所以最好使用 [定位器](/api/browser/locators) 来测试你的发出值如何改变显示的内容。
 :::
 
 ## cleanup
@@ -187,11 +187,11 @@ Emitted values are an implementation detail not exposed directly to the user, so
 export function cleanup(): void
 ```
 
-Remove all components rendered with [`render`](#render).
+移除所有使用 [`render`](#render) 渲染的组件。
 
-## Extend Queries
+## 扩展查询
 
-To extend locator queries, see [`"Custom Locators"`](/api/browser/locators#custom-locators). For example, to make `render` return a new custom locator, define it using the `locators.extend` API:
+要扩展 locator 查询，请参阅 [`"Custom Locators"`](/api/browser/locators#custom-locators)。例如，要使 `render` 返回一个新的自定义 locator，请使用 `locators.extend` API 定义它：
 
 ```js {5-7,12}
 import { locators } from 'vitest/browser'
@@ -209,9 +209,9 @@ await expect.element(
 ).toBeVisible()
 ```
 
-## Configuration
+## 配置
 
-You can configure [Vue Test Utils](https://test-utils.vuejs.org/api/#config) options by assigning properties to the `config` export (available in both `vitest-browser-vue` and `vitest-browser-vue/pure`):
+你可以通过将属性赋值给 `config` 导出项来配置 [Vue Test Utils](https://test-utils.vuejs.org/api/#config) 选项（在 `vitest-browser-vue` 和 `vitest-browser-vue/pure` 中均可用）：
 
 ```js
 import { config } from 'vitest-browser-vue/pure'
@@ -221,6 +221,6 @@ config.global.stubs.CustomComponent = {
 }
 ```
 
-## See also
+## 另请参阅
 
-- [Vue Testing Library documentation](https://testing-library.com/docs/vue-testing-library/intro)
+- [Vue Testing Library 文档](https://testing-library.com/docs/vue-testing-library/intro)

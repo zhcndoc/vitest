@@ -1,94 +1,78 @@
 ---
-title: Visual Regression Testing
+title: 视觉回归测试
 outline: [2, 3]
 ---
 
-# Visual Regression Testing
+# 视觉回归测试
 
-Vitest can run visual regression tests out of the box. It captures screenshots
-of your UI components and pages, then compares them against reference images to
-detect unintended visual changes.
+Vitest 可以开箱即用地运行视觉回归测试。它会捕获 UI 组件和页面的截图，然后将它们与参考图像进行比较，以检测意外的视觉变化。
 
-Unlike functional tests that verify behavior, visual tests catch styling issues,
-layout shifts, and rendering problems that might otherwise go unnoticed without
-thorough manual testing.
+与验证行为的功能测试不同，视觉测试能够捕捉样式问题、布局偏移和渲染问题，这些问题如果没有彻底的手动测试可能会被忽视。
 
-## Why Visual Regression Testing?
+## 为什么要进行视觉回归测试？
 
-Visual bugs don’t throw errors, they just look wrong. That’s where visual
-testing comes in.
+视觉错误不会抛出错误，它们只是看起来不对。这就是视觉测试发挥作用的地方。
 
-- That button still submits the form... but why is it hot pink now?
-- The text fits perfectly... until someone views it on mobile
-- Everything works great... except those two containers are out of viewport
-- That careful CSS refactor works... but broke the layout on a page no one tests
+- 那个按钮仍然可以提交表单……但为什么现在变成了亮粉色？
+- 文本完美适配……直到有人在手机上查看
+- 一切运行良好……除了那两个容器超出了视口
+- 那个仔细的 CSS 重构起作用了……但破坏了一个没人测试的页面的布局
 
-Visual regression testing acts as a safety net for your UI, automatically
-catching these visual changes before they reach production.
+视觉回归测试充当了 UI 的安全网，在这些视觉变化到达生产环境之前自动捕获它们。
 
-## Getting Started
+## 入门
 
-::: warning Browser Rendering Differences
-Visual regression tests are **inherently unstable across different
-environments**. Screenshots will look different on different machines because
-of:
+::: warning 浏览器渲染差异
+视觉回归测试在不同环境中**本质上是不稳定的**。截图在不同机器上看起来会有所不同，原因是：
 
-- Font rendering (the big one. Windows, macOS, Linux, they all render text
-differently)
-- GPU drivers and hardware acceleration
-- Whether you're running headless or not
-- Browser settings and versions
-- ...and honestly, sometimes just the phase of the moon
+- 字体渲染（这是个大问题。Windows、macOS、Linux，它们渲染文本的方式都不同）
+- GPU 驱动程序和硬件加速
+- 是否以无头模式运行
+- 浏览器设置和版本
+- ……老实说，有时甚至取决于月相
 
-That's why Vitest includes the browser and platform in screenshot names (like
-`button-chromium-darwin.png`).
+这就是为什么 Vitest 在截图名称中包含浏览器和平台（例如 `button-chromium-darwin.png`）。
 
-For stable tests, use the same environment everywhere. We **strongly recommend**
-cloud services like
-[Azure App Testing](https://azure.microsoft.com/en-us/products/app-testing/)
-or [Docker containers](https://playwright.dev/docs/docker).
+为了获得稳定的测试，请在所有地方使用相同的环境。我们**强烈建议**使用云服务，如 [Azure App Testing](https://azure.microsoft.com/en-us/products/app-testing/) 或 [Docker 容器](https://playwright.dev/docs/docker)。
 :::
 
-Visual regression testing in Vitest can be done through the
-[`toMatchScreenshot` assertion](/api/browser/assertions.html#tomatchscreenshot):
+Vitest 中的视觉回归测试可以通过 [`toMatchScreenshot` 断言](/api/browser/assertions.html#tomatchscreenshot) 来完成：
 
 ```ts
 import { expect, test } from 'vitest'
 import { page } from 'vitest/browser'
 
 test('hero section looks correct', async () => {
-  // ...the rest of the test
+  // ... 测试的其余部分
 
-  // capture and compare screenshot
+  // 捕获并比较截图
   await expect(page.getByTestId('hero')).toMatchScreenshot('hero-section')
 })
 ```
 
-### Creating References
+### 创建参考图
 
-When you run a visual test for the first time, Vitest creates a reference (also
-called baseline) screenshot and fails the test with the following error message:
+当你第一次运行视觉测试时，Vitest 会创建一个参考（也称为基线）截图，并使用以下错误消息使测试失败：
 
 ```
 expect(element).toMatchScreenshot()
 
-No existing reference screenshot found; a new one was created. Review it before running tests again.
+未找到现有的参考截图；已创建一个新截图。在再次运行测试之前请检查它。
 
-Reference screenshot:
+参考截图：
   tests/__screenshots__/hero.test.ts/hero-section-chromium-darwin.png
 ```
 
-This is normal. Check that the screenshot looks right, then run the test again.
-Vitest will now compare future runs against this baseline.
+这是正常的。检查截图看起来是否正确，然后再次运行测试。Vitest 现在会将未来的运行与此基线进行比较。
 
 ::: tip
-Reference screenshots live in `__screenshots__` folders next to your tests.
-**Don't forget to commit them!**
+参考截图位于测试旁边的 `__screenshots__` 文件夹中。
+**别忘了提交它们！**
 :::
 
-### Screenshot Organization
+### 截图组织
 
-By default, screenshots are organized as:
+默认情况下，截图的组织方式如下：
 
 ```
 .
@@ -100,51 +84,46 @@ By default, screenshots are organized as:
 └── test-file.test.ts
 ```
 
-The naming convention includes:
-- **Test name**: either the first argument of the `toMatchScreenshot()` call,
-or automatically generated from the test's name.
-- **Browser name**: `chrome`, `chromium`, `firefox` or `webkit`.
-- **Platform**: `aix`, `darwin`, `freebsd`, `linux`, `openbsd`, `sunos`, or
-`win32`.
+命名约定包括：
+- **测试名称**：`toMatchScreenshot()` 调用的第一个参数，或从测试名称自动生成。
+- **浏览器名称**：`chrome`、`chromium`、`firefox` 或 `webkit`。
+- **平台**：`aix`、`darwin`、`freebsd`、`linux`、`openbsd`、`sunos` 或 `win32`。
 
-This ensures screenshots from different environments don't overwrite each other.
+这确保了来自不同环境的截图不会相互覆盖。
 
-### Updating References
+### 更新参考图
 
-When you intentionally change your UI, you'll need to update the reference
-screenshots:
+当你有意更改 UI 时，你需要更新参考截图：
 
 ```bash
 $ vitest --update
 ```
 
-Review updated screenshots before committing to make sure changes are
-intentional.
+在提交之前检查更新的截图，以确保更改是有意的。
 
-## How Visual Tests Work
+## 视觉测试的工作原理
 
-Visual regression tests need stable screenshots to compare against. But pages aren't instantly stable as images load, animations finish, fonts render, and layouts settle.
+视觉回归测试需要稳定的截图来进行比较。但是页面不会瞬间稳定，因为图像正在加载、动画结束、字体渲染以及布局稳定。
 
-Vitest handles this automatically through "Stable Screenshot Detection":
+Vitest 通过“稳定截图检测”自动处理这个问题：
 
-1. Vitest takes a first screenshot (or uses the reference screenshot if available) as baseline
-1. It takes another screenshot and compares it with the baseline
-    - If the screenshots match, the page is stable and testing continues
-    - If they differ, Vitest uses the newest screenshot as the baseline and repeats
-1. This continues until stability is achieved or the timeout is reached
+1. Vitest 拍摄第一张截图（如果可用则使用参考截图）作为基线
+1. 它拍摄另一张截图并将其与基线进行比较
+    - 如果截图匹配，页面稳定且测试继续
+    - 如果它们不同，Vitest 使用最新的截图作为基线并重复
+1. 这将持续直到达到稳定或达到超时
 
-This ensures that transient visual changes (like loading spinners or animations) don't cause false failures. If something never stops animating though, you'll hit the timeout, so consider [disabling animations during testing](#disable-animations).
+这确保了短暂的视觉变化（如加载旋转器或动画）不会导致错误失败。但是如果某些东西从未停止动画，你将达到超时，所以考虑 [在测试期间禁用动画](#disable-animations)。
 
-If a stable screenshot is captured after retries (one or more) and a reference screenshot exists, Vitest performs a final comparison with the reference using `createDiff: true`. This will generate a diff image if they don't match.
+如果在重试（一次或多次）后捕获了稳定截图且存在参考截图，Vitest 会使用 `createDiff: true` 执行与参考图的最终比较。如果它们不匹配，这将生成差异图像。
 
-During stability detection, Vitest calls comparators with `createDiff: false` since it only needs to know if screenshots match. This keeps the detection process fast.
+在稳定性检测期间，Vitest 使用 `createDiff: false` 调用比较器，因为它只需要知道截图是否匹配。这使检测过程保持快速。
 
-## Configuring Visual Tests
+## 配置视觉测试
 
-### Global Configuration
+### 全局配置
 
-Configure visual regression testing defaults in your
-[Vitest config](/config/browser/expect#tomatchscreenshot):
+在你的 [Vitest 配置](/config/browser/expect#tomatchscreenshot) 中配置视觉回归测试默认值：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
@@ -156,9 +135,9 @@ export default defineConfig({
         toMatchScreenshot: {
           comparatorName: 'pixelmatch',
           comparatorOptions: {
-            // 0-1, how different can colors be?
+            // 0-1，颜色可以有多大差异？
             threshold: 0.2,
-            // 1% of pixels can differ
+            // 允许 1% 的像素不同
             allowedMismatchedPixelRatio: 0.01,
           },
         },
@@ -168,42 +147,37 @@ export default defineConfig({
 })
 ```
 
-### Per-Test Configuration
+### 每个测试的配置
 
-Override global settings for specific tests:
+为特定测试覆盖全局设置：
 
 ```ts
 await expect(element).toMatchScreenshot('button-hover', {
   comparatorName: 'pixelmatch',
   comparatorOptions: {
-    // more lax comparison for text-heavy elements
+    // 对文本密集的元素进行更宽松的比较
     allowedMismatchedPixelRatio: 0.1,
   },
 })
 ```
 
-## Best Practices
+## 最佳实践
 
-### Test Specific Elements
+### 测试特定元素
 
-Unless you explicitly want to test the whole page, prefer capturing specific
-components to reduce false positives:
+除非你明确想要测试整个页面，否则建议捕获特定组件以减少误报：
 
 ```ts
-// ❌ Captures entire page; prone to unrelated changes
+// ❌ 捕获整个页面；容易受到无关更改的影响
 await expect(page).toMatchScreenshot()
 
-// ✅ Captures only the component under test
+// ✅ 仅捕获正在测试的组件
 await expect(page.getByTestId('product-card')).toMatchScreenshot()
 ```
 
-### Handle Dynamic Content
+### 处理动态内容
 
-Dynamic content like timestamps, user data, or random values will cause tests
-to fail. You can either mock the sources of dynamic content or mask them when
-using the Playwright provider by using the
-[`mask` option](https://playwright.dev/docs/api/class-page#page-screenshot-option-mask)
-in `screenshotOptions`.
+时间戳、用户数据或随机值等动态内容会导致测试失败。你可以模拟动态内容的来源，或者在使用 Playwright 提供者时通过使用 `screenshotOptions` 中的 [`mask` 选项](https://playwright.dev/docs/api/class-page#page-screenshot-option-mask) 来屏蔽它们。
 
 ```ts
 await expect(page.getByTestId('profile')).toMatchScreenshot({
@@ -213,10 +187,9 @@ await expect(page.getByTestId('profile')).toMatchScreenshot({
 })
 ```
 
-### Disable Animations
+### 禁用动画
 
-Animations can cause flaky tests. Disable them during testing by injecting
-a custom CSS snippet:
+动画可能导致测试不稳定。通过注入自定义 CSS 代码片段在测试期间禁用它们：
 
 ```css
 *, *::before, *::after {
@@ -228,29 +201,20 @@ a custom CSS snippet:
 ```
 
 ::: tip
-When using the Playwright provider, animations are automatically disabled
-when using the assertion: the `animations` option's value in `screenshotOptions`
-is set to `"disabled"` by default.
+使用 Playwright 提供者时，使用断言会自动禁用动画：`screenshotOptions` 中 `animations` 选项的值默认设置为 `"disabled"`。
 :::
 
-### Set Appropriate Thresholds
+### 设置适当的阈值
 
-Tuning thresholds is tricky. It depends on the content, test environment,
-what's acceptable for your app, and might also change based on the test.
+调整阈值很棘手。它取决于内容、测试环境、你的应用可接受的内容，并且也可能根据测试而变化。
 
-Vitest does not set a default for the mismatching pixels, that's up for the
-user to decide based on their needs. The recommendation is to use
-`allowedMismatchedPixelRatio`, so that the threshold is computed on the size
-of the screenshot and not a fixed number.
+Vitest 不为不匹配的像素设置默认值，这由用户根据其需求决定。建议使用 `allowedMismatchedPixelRatio`，以便阈值是根据截图的大小计算的，而不是固定数字。
 
-When setting both `allowedMismatchedPixelRatio` and
-`allowedMismatchedPixels`, Vitest uses whichever limit is stricter.
+当同时设置 `allowedMismatchedPixelRatio` 和 `allowedMismatchedPixels` 时，Vitest 使用更严格的限制。
 
-### Set consistent viewport sizes
+### 设置一致的视口大小
 
-As the browser instance might have a different default size, it's best to
-set a specific viewport size, either on the test or the instance
-configuration:
+由于浏览器实例可能具有不同的默认大小，最好设置特定的视口大小，无论是在测试上还是在实例配置上：
 
 ```ts
 await page.viewport(1280, 720)
@@ -276,123 +240,115 @@ export default defineConfig({
 })
 ```
 
-### Use Git LFS
+### 使用 Git LFS
 
-Store reference screenshots in
-[Git LFS](https://github.com/git-lfs/git-lfs?tab=readme-ov-file) if you plan to
-have a large test suite.
+如果你计划拥有大型测试套件，请将参考截图存储在 [Git LFS](https://github.com/git-lfs/git-lfs?tab=readme-ov-file) 中。
 
-## Debugging Failed Tests
+## 调试失败的测试
 
-When a visual test fails, Vitest provides three images to help debug:
+当视觉测试失败时，Vitest 提供三张图像来帮助调试：
 
-1. **Reference screenshot**: the expected baseline image
-1. **Actual screenshot**: what was captured during the test
-1. **Diff image**: highlights the differences, but this might not get generated
+1. **参考截图**：预期的基线图像
+1. **实际截图**：测试期间捕获的内容
+1. **差异图像**：突出显示差异，但这可能不会生成
 
-You'll see something like:
+你会看到类似的内容：
 
 ```
 expect(element).toMatchScreenshot()
 
-Screenshot does not match the stored reference.
-245 pixels (ratio 0.03) differ.
+截图与存储的参考图不匹配。
+245 个像素（比例 0.03）不同。
 
-Reference screenshot:
+参考截图：
   tests/__screenshots__/button.test.ts/button-chromium-darwin.png
 
-Actual screenshot:
+实际截图：
   tests/.vitest-attachments/button.test.ts/button-chromium-darwin-actual.png
 
-Diff image:
+差异图像：
   tests/.vitest-attachments/button.test.ts/button-chromium-darwin-diff.png
 ```
 
-### Understanding the diff image
+### 理解差异图像
 
-- **Red pixels** are areas that differ between reference and actual
-- **Yellow pixels** are anti-aliasing differences (when anti-alias is not ignored)
-- **Transparent/original** are unchanged areas
+- **红色像素**是参考图和实际图之间不同的区域
+- **黄色像素**是抗锯齿差异（当不忽略抗锯齿时）
+- **透明/原始**是未更改的区域
 
 :::tip
-If the diff is mostly red, something's really wrong. If it's speckled with a
-few red pixels around text, you probably just need to bump your threshold.
+如果差异大部分是红色的，说明真的有问题。如果文本周围点缀着几个红色像素，你可能只需要提高阈值。
 :::
 
-## Common Issues and Solutions
+## 常见问题和解决方案
 
-### False Positives from Font Rendering
+### 字体渲染导致的误报
 
-Font availability and rendering varies significantly between systems. Some
-possible solutions might be to:
+字体的可用性和渲染在不同系统之间差异很大。一些可能的解决方案可能是：
 
-- Use web fonts and wait for them to load:
+- 使用 Web 字体并等待它们加载：
 
   ```ts
-  // wait for fonts to load
+  // 等待字体加载
   await document.fonts.ready
 
-  // continue with your tests
+  // 继续你的测试
   ```
 
-- Increase comparison threshold for text-heavy areas:
+- 增加文本密集区域的比较阈值：
 
   ```ts
   await expect(page.getByTestId('article-summary')).toMatchScreenshot({
     comparatorName: 'pixelmatch',
     comparatorOptions: {
-      // 10% of the pixels are allowed to change
+      // 允许 10% 的像素发生变化
       allowedMismatchedPixelRatio: 0.1,
     },
   })
   ```
 
-- Use a cloud service or containerized environment for consistent font rendering.
+- 使用云服务或容器化环境以获得一致的字体渲染。
 
-### Flaky Tests or Different Screenshot Sizes
+### 测试不稳定或截图尺寸不同
 
-If tests pass and fail randomly, or if screenshots have different dimensions
-between runs:
+如果测试随机通过和失败，或者截图在不同运行之间具有不同的尺寸：
 
-- Wait for everything to load, including loading indicators
-- Set explicit viewport sizes: `await page.viewport(1920, 1080)`
-- Check for responsive behavior at viewport boundaries
-- Check for unintended animations or transitions
-- Increase test timeout for large screenshots
-- Use a cloud service or containerized environment
+- 等待所有内容加载，包括加载指示器
+- 设置明确的视口大小：`await page.viewport(1920, 1080)`
+- 检查视口边界的响应行为
+- 检查意外的动画或过渡
+- 增加大截图的测试超时时间
+- 使用云服务或容器化环境
 
-## Visual Regression Testing for Teams
+## 团队的视觉回归测试
 
-Remember when we mentioned visual tests need a stable environment? Well, here's
-the thing: your local machine isn't it.
+还记得我们提到过视觉测试需要稳定的环境吗？好吧，事实是：你的本地机器并不是那个环境。
 
-For teams, you've basically got three options:
+对于团队来说，你基本上有三个选项：
 
-1. **Self-hosted runners**, complex to set up, painful to maintain
-1. **GitHub Actions**, free (for open source), works with any provider
-1. **Cloud services**, like
-[Azure App Testing](https://azure.microsoft.com/en-us/products/app-testing/),
-built for this exact problem
+1. **自托管运行器**，设置复杂，维护痛苦
+1. **GitHub Actions**，免费（对于开源项目），适用于任何提供商
+1. **云服务**，比如
+[Azure App Testing](https://azure.microsoft.com/en-us/products/app-testing/)，
+专为解决此问题而建
 
-We'll focus on options 2 and 3 since they're the quickest to get running.
+我们将重点关注选项 2 和 3，因为它们启动最快。
 
-To be upfront, the main trade-offs for each are:
+坦白说，每种方案的主要权衡如下：
 
-- **GitHub Actions**: visual tests only run in CI (developers can't run them
-locally)
-- **Microsoft's service**: works everywhere but costs money and only works
-with Playwright
+- **GitHub Actions**：视觉测试仅在 CI 中运行（开发人员无法在本地运行）
+- **Microsoft 的服务**：随处可用，但需要付费且仅适用于 Playwright
 
 :::: tabs key:vrt-for-teams
 === GitHub Actions
 
-The trick here is keeping visual tests separate from your regular tests,
-otherwise, you'll waste hours checking failing logs of screenshot mismatches.
+这里的技巧是将视觉测试与常规测试分开，
+否则，你将浪费数小时检查截图不匹配的失败日志。
 
-### Organizing Your Tests
+### 组织你的测试
 
-First, isolate your visual tests. Stick them in a `visual` folder (or whatever
-makes sense for your project):
+首先，隔离你的视觉测试。将它们放在 `visual` 文件夹中（或者任何
+适合你项目的结构）：
 
 ```json [package.json]
 {
@@ -403,41 +359,41 @@ makes sense for your project):
 }
 ```
 
-Now developers can run `npm run test:unit` locally without visual tests getting
-in the way. Visual tests stay in CI where the environment is consistent.
+现在开发人员可以在本地运行 `npm run test:unit` 而不会受到视觉测试的
+干扰。视觉测试保留在环境一致的 CI 中。
 
-::: tip Alternative
-Not a fan of glob patterns? You could also use separate
-[Test Projects](/guide/projects) instead and run them using:
+::: tip 替代方案
+不喜欢 glob 模式？你也可以使用单独的
+[测试项目](/guide/projects) 并使用以下命令运行：
 
 - `vitest --project unit`
 - `vitest --project visual`
 :::
 
-### CI Setup
+### CI 设置
 
-Your CI needs browsers installed. How you do this depends on your provider:
+你的 CI 需要安装浏览器。具体操作取决于你的提供商：
 
 ::: tabs key:provider
 == Playwright
 
-[Playwright](https://npmx.dev/package/playwright) makes this easy. Just pin
-your version and add this before running tests:
+[Playwright](https://npmx.dev/package/playwright) 让这变得很简单。只需固定
+你的版本并在运行测试前添加以下内容：
 
 ```yaml [.github/workflows/ci.yml]
-# ...the rest of the workflow
+# ...工作流的其余部分
 - name: Install Playwright Browsers
   run: npx --no playwright install --with-deps --only-shell
 ```
 
 == WebdriverIO
 
-[WebdriverIO](https://npmx.dev/package/webdriverio) expects you to bring
-your own browsers. The folks at
-[@browser-actions](https://github.com/browser-actions) have your back:
+[WebdriverIO](https://npmx.dev/package/webdriverio) 期望你自带
+浏览器。来自
+[@browser-actions](https://github.com/browser-actions) 的团队为你提供了支持：
 
 ```yaml [.github/workflows/ci.yml]
-# ...the rest of the workflow
+# ...工作流的其余部分
 - uses: browser-actions/setup-chrome@v1
   with:
     chrome-version: 120
@@ -445,49 +401,49 @@ your own browsers. The folks at
 
 :::
 
-Then run your visual tests:
+然后运行你的视觉测试：
 
 ```yaml [.github/workflows/ci.yml]
-# ...the rest of the workflow
-# ...browser setup
+# ...工作流的其余部分
+# ...浏览器设置
 - name: Visual Regression Testing
   run: npm run test:visual
 ```
 
-### The Update Workflow
+### 更新工作流
 
-Here's where it gets interesting. You don't want to update screenshots on every
-PR automatically <small>*(chaos!)*</small>. Instead, create a
-manually-triggered workflow that developers can run when they intentionally
-change the UI.
+有趣的地方在这里。你不希望在每个
+PR 上自动更新截图 <small>*(混乱！)*</small>。相反，创建一个
+手动触发的工作流，开发人员可以在有意更改
+UI 时运行它。
 
-The workflow below:
-- Only runs on feature branches (never on main)
-- Credits the person who triggered it as co-author
-- Prevents concurrent runs on the same branch
-- Shows a nice summary:
-  - **When screenshots changed**, it lists what changed
+下面的工作流：
+- 仅在功能分支上运行（绝不在 main 上）
+- 将触发者列为共同作者
+- 防止同一分支上的并发运行
+- 显示漂亮的摘要：
+  - **当截图发生变化时**，它会列出变化内容
 
-    <img alt="Action summary after updates" img-light src="/vrt-gha-summary-update-light.png">
-    <img alt="Action summary after updates" img-dark src="/vrt-gha-summary-update-dark.png">
+    <img alt="更新后的操作摘要" img-light src="/vrt-gha-summary-update-light.png">
+    <img alt="更新后的操作摘要" img-dark src="/vrt-gha-summary-update-dark.png">
 
-  - **When nothing changed**, well, it tells you that too
+  - **当没有任何变化时**，它也会告诉你
 
-    <img alt="Action summary after no updates" img-light src="/vrt-gha-summary-no-update-light.png">
-    <img alt="Action summary after no updates" img-dark src="/vrt-gha-summary-no-update-dark.png">
+    <img alt="无更新时的操作摘要" img-light src="/vrt-gha-summary-no-update-light.png">
+    <img alt="无更新时的操作摘要" img-dark src="/vrt-gha-summary-no-update-dark.png">
 
 ::: tip
-This is just one approach. Some teams prefer PR comments (`/update-screenshots`),
-others use labels. Adjust it to fit your workflow!
+这只是一种方法。有些团队更喜欢 PR 评论（`/update-screenshots`），
+ others 使用标签。调整它以适合你的工作流！
 
-The important part is having a controlled way to update baselines.
+重要的是要有一种受控的方式来更新基线。
 :::
 
 ```yaml [.github/workflows/update-screenshots.yml]
 name: Update Visual Regression Screenshots
 
 on:
-  workflow_dispatch: # manual trigger only
+  workflow_dispatch: # 仅手动触发
 
 env:
   AUTHOR_NAME: 'github-actions[bot]'
@@ -501,23 +457,23 @@ jobs:
   update-screenshots:
     runs-on: ubuntu-24.04
 
-    # safety first: don't run on main
+    # 安全第一：不要在 main 分支上运行
     if: github.ref_name != github.event.repository.default_branch
 
-    # one at a time per branch
+    # 每个分支一次只运行一个
     concurrency:
       group: visual-regression-screenshots@${{ github.ref_name }}
       cancel-in-progress: true
 
     permissions:
-      contents: write # needs to push changes
+      contents: write # 需要推送更改
 
     steps:
       - name: Checkout selected branch
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref_name }}
-          # use PAT if triggering other workflows
+          # 如果触发其他工作流请使用 PAT
           # token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Configure Git
@@ -525,7 +481,7 @@ jobs:
           git config --global user.name "${{ env.AUTHOR_NAME }}"
           git config --global user.email "${{ env.AUTHOR_EMAIL }}"
 
-      # your setup steps here (node, pnpm, whatever)
+      # 这里的设置步骤（node, pnpm, 任意）
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -537,11 +493,11 @@ jobs:
       - name: Install Playwright Browsers
         run: npx --no playwright install --with-deps --only-shell
 
-      # the magic happens below 🪄
+      # 魔法发生在下面 🪄
       - name: Update Visual Regression Screenshots
         run: npm run test:visual --update
 
-      # check what changed
+      # 检查发生了什么变化
       - name: Check for changes
         id: check_changes
         run: |
@@ -550,7 +506,7 @@ jobs:
             echo "changes=true" >> $GITHUB_OUTPUT
             echo "Changes detected"
 
-            # save the list for the summary
+            # 保存列表用于摘要
             echo "changed_files<<EOF" >> $GITHUB_OUTPUT
             echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
             echo "EOF" >> $GITHUB_OUTPUT
@@ -560,7 +516,7 @@ jobs:
             echo "No changes detected"
           fi
 
-      # commit if there are changes
+      # 如果有更改则提交
       - name: Commit changes
         if: steps.check_changes.outputs.changes == 'true'
         run: |
@@ -571,7 +527,7 @@ jobs:
         if: steps.check_changes.outputs.changes == 'true'
         run: git push origin ${{ github.ref_name }}
 
-      # pretty summary for humans
+      # 给人看的漂亮摘要
       - name: Summary
         run: |
           if [[ "${{ steps.check_changes.outputs.changes }}" == "true" ]]; then
@@ -596,15 +552,15 @@ jobs:
 
 === Azure App Testing
 
-Your tests stay local, only the browsers run in the cloud. It's Playwright's
-remote browser feature, but Microsoft handles all the infrastructure.
+你的测试保持在本地，只有浏览器在云中运行。这是 Playwright 的
+远程浏览器功能，但 Microsoft 处理所有基础设施。
 
-### Organizing Your Tests
+### 组织你的测试
 
-Keep visual tests separate to control costs. Only tests that actually take
-screenshots should use the service.
+保持视觉测试分离以控制成本。只有实际拍摄
+截图的测试才应使用该服务。
 
-The cleanest approach is using [Test Projects](/guide/projects):
+最干净的方法是使用 [测试项目](/guide/projects)：
 
 ```ts [vitest.config.ts]
 import { env } from 'node:process'
@@ -612,23 +568,23 @@ import { defineConfig } from 'vitest/config'
 import { playwright } from '@vitest/browser-playwright'
 
 export default defineConfig({
-  // ...global Vite config
+  // ...全局 Vite 配置
   tests: {
-    // ...global Vitest config
+    // ...全局 Vitest 配置
     projects: [
       {
         extends: true,
         test: {
           name: 'unit',
           include: ['tests/**/*.test.ts'],
-          // regular config, can use local browsers
+          // 常规配置，可以使用本地浏览器
         },
       },
       {
         extends: true,
         test: {
           name: 'visual',
-          // or you could use a different suffix, e.g.,: `tests/**/*.visual.ts?(x)`
+          // 或者你也可以使用不同的后缀，例如：`tests/**/*.visual.ts?(x)`
           include: ['visual-regression-tests/**/*.test.ts?(x)'],
           browser: {
             enabled: true,
@@ -636,8 +592,8 @@ export default defineConfig({
               connectOptions: {
                 wsEndpoint: `${env.PLAYWRIGHT_SERVICE_URL}?${new URLSearchParams({
                   'api-version': '2025-09-01',
-                  'os': 'linux', // always use Linux for consistency
-                  // helps identifying runs in the service's dashboard
+                  'os': 'linux', // 始终使用 Linux 以保持一致性
+                  // 有助于在服务仪表板中识别运行
                   'runName': `Vitest ${env.CI ? 'CI' : 'local'} run @${new Date().toISOString()}`,
                 })}`,
                 exposeNetwork: '<loopback>',
@@ -662,20 +618,20 @@ export default defineConfig({
 })
 ```
 
-Follow the [official guide to create a Playwright Workspace](https://learn.microsoft.com/en-us/azure/app-testing/playwright-workspaces/quickstart-run-end-to-end-tests?tabs=playwrightcli&pivots=playwright-test-runner#create-a-workspace).
+遵循 [创建 Playwright 工作区的官方指南](https://learn.microsoft.com/en-us/azure/app-testing/playwright-workspaces/quickstart-run-end-to-end-tests?tabs=playwrightcli&pivots=playwright-test-runner#create-a-workspace)。
 
-Once your workspace is created, configure Vitest to use it:
+创建工作区后，配置 Vitest 以使用它：
 
-1. **Set the endpoint URL**: following the [official guide](https://learn.microsoft.com/en-us/azure/app-testing/playwright-workspaces/quickstart-run-end-to-end-tests?tabs=playwrightcli&pivots=playwright-test-runner#configure-the-browser-endpoint), retrieve the URL and set it as the `PLAYWRIGHT_SERVICE_URL` environment variable.
-1. **Enable token authentication**: [enable access tokens](https://learn.microsoft.com/en-us/azure/app-testing/playwright-workspaces/how-to-manage-authentication?pivots=playwright-test-runner#enable-authentication-using-access-tokens) for your workspace, then [generate a token](https://learn.microsoft.com/en-us/azure/app-testing/playwright-workspaces/how-to-manage-access-tokens#generate-a-workspace-access-token) and set it as the `PLAYWRIGHT_SERVICE_ACCESS_TOKEN` environment variable.
+1. **设置端点 URL**：遵循 [官方指南](https://learn.microsoft.com/en-us/azure/app-testing/playwright-workspaces/quickstart-run-end-to-end-tests?tabs=playwrightcli&pivots=playwright-test-runner#configure-the-browser-endpoint)，检索 URL 并将其设置为 `PLAYWRIGHT_SERVICE_URL` 环境变量。
+1. **启用令牌认证**：为你的工作区 [启用访问令牌](https://learn.microsoft.com/en-us/azure/app-testing/playwright-workspaces/how-to-manage-authentication?pivots=playwright-test-runner#enable-authentication-using-access-tokens)，然后 [生成令牌](https://learn.microsoft.com/en-us/azure/app-testing/playwright-workspaces/how-to-manage-access-tokens#generate-a-workspace-access-token) 并将其设置为 `PLAYWRIGHT_SERVICE_ACCESS_TOKEN` 环境变量。
 
-::: danger Keep that Token Secret!
-Never commit `PLAYWRIGHT_SERVICE_ACCESS_TOKEN` to your repository. Anyone with
-the token can rack up your bill. Use environment variables locally and secrets
-in CI.
+::: danger 保管好该 Token 秘密！
+切勿将 `PLAYWRIGHT_SERVICE_ACCESS_TOKEN` 提交到你的仓库。任何拥有
+该令牌的人都可能增加你的账单。在本地使用环境变量，在
+CI 中使用 secrets。
 :::
 
-Then split your `test` script like this:
+然后像这样拆分你的 `test` 脚本：
 
 ```json [package.json]
 {
@@ -686,27 +642,27 @@ Then split your `test` script like this:
 }
 ```
 
-### Running Tests
+### 运行测试
 
 ```bash
-# Local development
-npm run test:unit    # free, runs locally
-npm run test:visual  # uses cloud browsers
+# 本地开发
+npm run test:unit    # 免费，在本地运行
+npm run test:visual  # 使用云浏览器
 
-# Update screenshots
+# 更新截图
 npm run test:visual -- --update
 ```
 
-The best part of this approach is that it just works:
+这种方法最好的部分是它 просто работает（ просто работает 意为“就是能用”）：
 
-- **Consistent screenshots**, everyone uses the same cloud browsers
-- **Works locally**, developers can run and update visual tests on their machines
-- **Pay for what you use**, only visual tests consume service minutes
-- **No Docker or workflow setups needed**, nothing to manage or maintain
+- **一致的截图**，每个人都使用相同的云浏览器
+- **本地可用**，开发人员可以在他们的机器上运行和更新视觉测试
+- **按需付费**，只有视觉测试消耗服务分钟数
+- **无需 Docker 或工作流设置**，无需管理或维护
 
-### CI Setup
+### CI 设置
 
-In your CI, add the secrets:
+在你的 CI 中，添加 secrets：
 
 ```yaml
 env:
@@ -714,26 +670,26 @@ env:
   PLAYWRIGHT_SERVICE_ACCESS_TOKEN: ${{ secrets.PLAYWRIGHT_SERVICE_ACCESS_TOKEN }}
 ```
 
-Then run your tests like normal. The service handles the rest.
+然后像往常一样运行测试。服务会处理其余部分。
 
 ::::
 
-### So Which One?
+### 那么选哪一个？
 
-Both approaches work. The real question is what pain points matter most to your
-team.
+两种方法都有效。真正的问题是哪些痛点对你的
+团队最重要。
 
-If you're already deep in the GitHub ecosystem, GitHub Actions is hard to beat.
-Free for open source, works with any browser provider, and you control
-everything.
+如果你已经深入 GitHub 生态系统，GitHub Actions 很难被击败。
+对开源免费，适用于任何浏览器提供商，并且你控制
+一切。
 
-The downside? That "works on my machine" conversation when someone generates
-screenshots locally and they don't match CI expectations anymore.
+缺点？当有人在本地生成
+截图且它们不再符合 CI 预期时，会出现“在我机器上是好的”这种对话。
 
-A cloud service makes sense if developers need to run visual tests locally.
+如果开发人员需要在本地运行视觉测试，云服务就有意义了。
 
-Some teams have designers checking their work or developers who prefer catching
-issues before pushing. It allows skipping the push-wait-check-fix-push cycle.
+有些团队让设计师检查工作，或者开发人员更喜欢在
+推送之前发现问题。它允许跳过 推送 - 等待 - 检查 - 修复 - 推送 循环。
 
-Still on the fence? Start with GitHub Actions. You can always add a cloud
-service later if local testing becomes a pain point.
+还在犹豫？从 GitHub Actions 开始。如果本地测试成为
+痛点，你以后可以随时添加云服务。

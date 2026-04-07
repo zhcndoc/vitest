@@ -1,11 +1,11 @@
 ---
-title: projects | Config
+title: projects | 配置
 outline: deep
 ---
 
 # projects <CRoot />
 
-- **Type:** `TestProjectConfiguration[]`
-- **Default:** `[]`
+- **类型:** `TestProjectConfiguration[]`
+- **默认值:** `[]`
 
-An array of [projects](/guide/projects).
+一个 [projects](/guide/projects) 数组。

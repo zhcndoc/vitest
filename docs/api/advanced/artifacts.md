@@ -1,137 +1,137 @@
 ---
 outline: deep
-title: Test Artifacts
+title: 测试工件
 ---
 
-# Test Artifacts <Advanced /> <Version type="experimental">4.0.11</Version> <Experimental />
+# 测试工件 <Advanced /> <Version type="experimental">4.0.11</Version> <Experimental />
 
 ::: warning
-This is an advanced API. As a user, you most likely want to use [test annotations](/guide/test-annotations) to add notes or context to your tests instead. This is primarily used internally and by library authors.
+这是一个高级 API。作为用户，你很可能想要使用 [测试注解](/guide/test-annotations) 来为你的测试添加笔记或上下文。这主要用于内部和库作者。
 :::
 
-Test artifacts allow attaching or recording structured data, files, or metadata during test execution. This is a low-level feature primarily designed for:
+测试工件允许在测试执行期间附加或记录结构化数据、文件或元数据。这是一个低级功能，主要设计用于：
 
-- Internal use ([`annotate`](/guide/test-annotations) is built on top of the artifact system)
-- Framework authors creating custom testing tools on top of Vitest
+- 内部使用（[`annotate`](/guide/test-annotations) 是建立在工件系统之上的）
+- 框架作者在 Vitest 之上创建自定义测试工具
 
-Each artifact includes:
+每个工件包括：
 
-- A type discriminator which is a unique identifier for the artifact type
-- Custom data, can be any relevant information
-- Optional attachments, either files or inline content associated with the artifact
-- A source code location indicating where the artifact was created
+- 一个类型区分符，它是工件类型的唯一标识符
+- 自定义数据，可以是任何相关信息
+- 可选附件，要么是文件要么是与工件关联的内联内容
+- 一个源代码位置，指示工件创建的位置
 
-Vitest automatically manages attachment serialization (files are copied to [`attachmentsDir`](/config/attachmentsdir)) and injects source location metadata, so you can focus on the data you want to record. All artifacts **must** extend from [`TestArtifactBase`](#testartifactbase) and all attachments from [`TestAttachment`](#testattachment) to be correctly handled internally.
+Vitest 自动管理附件序列化（文件被复制到 [`attachmentsDir`](/config/attachmentsdir)）并注入源代码位置元数据，所以你可以专注于想要记录的数据。所有工件 **必须** 继承自 [`TestArtifactBase`](#testartifactbase) 并且所有附件继承自 [`TestAttachment`](#testattachment) 才能在内部被正确处理。
 
 ## API
 
 ### `recordArtifact` <Experimental /> {#recordartifact}
 
 ::: warning
-`recordArtifact` is an experimental API. Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+`recordArtifact` 是一个实验性 API。破坏性变更可能不遵循 SemVer，请在使用时锁定 Vitest 的版本。
 
-The API surface may change based on feedback. We encourage you to try it out and share your experience with the team.
+API 表面可能会根据反馈而变化。我们鼓励你尝试并与团队分享你的经验。
 :::
 
 ```ts
 function recordArtifact<Artifact extends TestArtifact>(task: Test, artifact: Artifact): Promise<Artifact>
 ```
 
-The `recordArtifact` function records an artifact during test execution and returns it. It expects a [task](/api/advanced/runner#tasks) as the first parameter and an object assignable to [`TestArtifact`](#testartifact) as the second.
+`recordArtifact` 函数在测试执行期间记录工件并返回它。它期望第一个参数是一个 [task](/api/advanced/runner#tasks)，第二个参数是一个可赋值给 [`TestArtifact`](#testartifact) 的对象。
 
 ::: info
-Artifacts must be recorded before the task is reported. Any artifacts recorded after that will not be included in the task.
+工件必须在任务被报告之前记录。之后记录的任何工件将不会包含在任务中。
 :::
 
-When an artifact is recorded on a test, it emits an `onTestArtifactRecord` runner event and a [`onTestCaseArtifactRecord` reporter event](/api/advanced/reporters#ontestcaseartifactrecord). To retrieve recorded artifacts from a test case, use the [`artifacts()`](/api/advanced/test-case#artifacts) method.
+当在测试上记录工件时，它会发出 `onTestArtifactRecord` 运行器事件和 [`onTestCaseArtifactRecord` 报告器事件](/api/advanced/reporters#ontestcaseartifactrecord)。要从测试用例中检索记录的工件，请使用 [`artifacts()`](/api/advanced/test-case#artifacts) 方法。
 
-Note: annotations, [even though they're built on top of this feature](#relationship-with-annotations), won't appear in the `task.artifacts` array for backwards compatibility reasons until the next major version.
+注意：注解，[即使它们是建立在此功能之上的](#relationship-with-annotations)，为了向后兼容原因，直到下一个主要版本之前，不会出现在 `task.artifacts` 数组中。
 
 ### `TestArtifact`
 
-The `TestArtifact` type is a union containing all artifacts Vitest can produce, including custom ones. All artifacts extend from [`TestArtifactBase`](#testartifactbase)
+`TestArtifact` 类型是一个联合类型，包含 Vitest 可以产生的所有工件，包括自定义的。所有工件都扩展自 [`TestArtifactBase`](#testartifactbase)
 
 ### `TestArtifactBase` <Experimental /> {#testartifactbase}
 
 ```ts
 export interface TestArtifactBase {
-  /** File or data attachments associated with this artifact */
+  /** 与此工件关联的文件或数据附件 */
   attachments?: TestAttachment[]
-  /** Source location where this artifact was created */
+  /** 创建此工件的源代码位置 */
   location?: TestArtifactLocation
 }
 ```
 
-The `TestArtifactBase` interface is the base for all test artifacts.
+`TestArtifactBase` 接口是所有测试工件的基础。
 
-Extend this interface when creating custom test artifacts. Vitest automatically manages the `attachments` array and injects the `location` property to indicate where the artifact was created in your test code.
+创建自定义测试工件时扩展此接口。Vitest 自动管理 `attachments` 数组并注入 `location` 属性以指示工件是在测试代码中的何处创建的。
 
 ::: danger
-When running with [`api.allowWrite`](/config/api#api-allowwrite) or [`browser.api.allowWrite`](/config/browser/api#api-allowwrite) disabled, Vitest empties the `attachments` array on every artifact before reporting it.
+当在 [`api.allowWrite`](/config/api#api-allowwrite) 或 [`browser.api.allowWrite`](/config/browser/api#api-allowwrite) 禁用的情况下运行时，Vitest 会在报告之前清空每个工件上的 `attachments` 数组。
 
-If your custom artifact narrows the `attachments` type (e.g. to a tuple), include `| []` in the union so the type reflects what actually happens at runtime.
+如果你的自定义工件缩小了 `attachments` 类型（例如变为元组），请在联合类型中包含 `| []`，以便类型反映运行时实际发生的情况。
 :::
 
 ### `TestAttachment`
 
 ```ts
 export interface TestAttachment {
-  /** MIME type of the attachment (e.g., 'image/png', 'text/plain') */
+  /** 附件的 MIME 类型（例如，'image/png', 'text/plain'） */
   contentType?: string
-  /** File system path to the attachment */
+  /** 附件的文件系统路径 */
   path?: string
-  /** Inline attachment content as a string or raw binary data */
+  /** 内联附件内容，作为字符串或原始二进制数据 */
   body?: string | Uint8Array
   /**
    * @experimental
-   * How the string `body` is encoded.
-   * - `'base64'` (default): body is already base64-encoded
-   * - `'utf-8'`: body is a utf8 string
+   * 字符串 `body` 是如何编码的。
+   * - `'base64'` (默认): body 已经是 base64 编码
+   * - `'utf-8'`: body 是一个 utf8 字符串
    */
   bodyEncoding?: 'base64' | 'utf-8'
 }
 ```
 
-The `TestAttachment` interface represents a file or data attachment associated with a test artifact.
+`TestAttachment` 接口表示与测试工件关联的文件或数据附件。
 
-Attachments can be either file-based (via `path`) or inline content (via `body`). The `contentType` helps consumers understand how to interpret the attachment data.
+附件可以是基于文件的（通过 `path`）或内联内容（通过 `body`）。`contentType` 帮助使用者理解如何解释附件数据。
 
-If you pass a string `body`, Vitest assumes it is already base64-encoded unless you set `bodyEncoding: 'utf-8'`. When you pass `body` as a `Uint8Array`, Vitest automatically encodes it as base64. The `bodyEncoding` option only applies to inline `body` attachments, not `path` attachments.
+如果你传递一个字符串 `body`，Vitest 假设它已经是 base64 编码的，除非你设置 `bodyEncoding: 'utf-8'`。当你传递 `body` 为 `Uint8Array` 时，Vitest 自动将其编码为 base64。`bodyEncoding` 选项仅适用于内联 `body` 附件，不适用于 `path` 附件。
 
 ### `TestArtifactLocation`
 
 ```ts
 export interface TestArtifactLocation {
-  /** Line number in the source file (1-indexed) */
+  /** 源文件中的行号（从 1 开始索引） */
   line: number
-  /** Column number in the line (1-indexed) */
+  /** 行中的列号（从 1 开始索引） */
   column: number
-  /** Path to the source file */
+  /** 源文件的路径 */
   file: string
 }
 ```
 
-The `TestArtifactLocation` interface represents the source code location information for a test artifact. It indicates where in the source code the artifact originated from.
+`TestArtifactLocation` 接口表示测试工件的源代码位置信息。它指示工件源自源代码中的何处。
 
 ### `TestArtifactRegistry`
 
-The `TestArtifactRegistry` interface is a registry for custom test artifact types.
+`TestArtifactRegistry` 接口是自定义测试工件类型的注册表。
 
-Augmenting this interface using [TypeScript's module augmentation feature](https://typescriptlang.org/docs/handbook/declaration-merging#module-augmentation) allows registering custom artifact types that tests can produce.
+使用 [TypeScript 的模块增强功能](https://typescriptlang.org/docs/handbook/declaration-merging#module-augmentation) 增强此接口允许注册测试可以产生的自定义工件类型。
 
-Each custom artifact should extend [`TestArtifactBase`](#testartifactbase) and include a unique `type` discriminator property.
+每个自定义工件应该扩展 [`TestArtifactBase`](#testartifactbase) 并包含一个唯一的 `type` 区分符属性。
 
-Here are a few guidelines or best practices to follow:
+以下是一些要遵循的指南或最佳实践：
 
-- Try using a `Symbol` as the **registry key** to guarantee uniqueness
-- The `type` property should follow the pattern `'package-name:artifact-name'`, **`'internal:'` is a reserved prefix**
-- Use `attachments` to include files or data; extend [`TestAttachment`](#testattachment) for custom metadata
-- If you narrow the `attachments` type (e.g. to a tuple), include `| []` in the union since Vitest may empty the array at runtime (see [`TestArtifactBase`](#testartifactbase))
-- `location` property is automatically injected
+- 尝试使用 `Symbol` 作为 **注册表键** 以保证唯一性
+- `type` 属性应遵循模式 `'package-name:artifact-name'`，**`'internal:'` 是保留前缀**
+- 使用 `attachments` 包含文件或数据；扩展 [`TestAttachment`](#testattachment) 以获取自定义元数据
+- 如果你缩小了 `attachments` 类型（例如变为元组），在联合类型中包含 `| []`，因为 Vitest 可能在运行时清空数组（见 [`TestArtifactBase`](#testartifactbase)）
+- `location` 属性是自动注入的
 
-## Custom Artifacts
+## 自定义工件
 
-To use and manage artifacts in a type-safe manner, you need to create its type and register it:
+要以类型安全的方式使用和管理工件，你需要创建其类型并注册它：
 
 ```ts
 import type { TestArtifactBase, TestAttachment } from 'vitest'
@@ -157,7 +157,7 @@ declare module 'vitest' {
 }
 ```
 
-As long as the types are assignable to their bases and don't have errors, everything should work fine and you should be able to record artifacts using [`recordArtifact`](#recordartifact):
+只要类型可分配给它们的基础且没有错误，一切应该正常工作，你应该能够使用 [`recordArtifact`](#recordartifact) 记录工件：
 
 ```ts
 async function toBeAccessible(
@@ -184,11 +184,11 @@ async function toBeAccessible(
 }
 ```
 
-## Relationship with Annotations
+## 与注解的关系
 
-Test annotations are built on top of the artifact system. When using annotations in tests, they create `internal:annotation` artifacts under the hood. However, annotations are:
+测试注解是建立在工件系统之上的。当在测试中使用注解时，它们在底层创建 `internal:annotation` 工件。然而，注解是：
 
-- Simpler to use
-- Designed for end-users, not developers
+- 更易于使用
+- 为最终用户设计，而不是开发者
 
-Use annotations if you just want to add notes to your tests. Use artifacts if you need custom data.
+如果你只是想给测试添加笔记，请使用注解。如果你需要自定义数据，请使用工件。

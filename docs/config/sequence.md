@@ -1,15 +1,15 @@
 ---
-title: sequence | Config
+title: sequence | 配置
 outline: deep
 ---
 
 # sequence
 
-- **Type**: `{ sequencer?, shuffle?, seed?, hooks?, setupFiles?, groupOrder }`
+- **类型**: `{ sequencer?, shuffle?, seed?, hooks?, setupFiles?, groupOrder }`
 
-Options for how tests should be sorted.
+测试排序方式的选项。
 
-You can provide sequence options to CLI with dot notation:
+你可以使用点表示法向 CLI 提供 sequence 选项：
 
 ```sh
 npx vitest --sequence.shuffle --sequence.seed=1000
@@ -17,31 +17,31 @@ npx vitest --sequence.shuffle --sequence.seed=1000
 
 ## sequence.sequencer <CRoot />
 
-- **Type**: `TestSequencerConstructor`
-- **Default**: `BaseSequencer`
+- **类型**: `TestSequencerConstructor`
+- **默认值**: `BaseSequencer`
 
-A custom class that defines methods for sharding and sorting. You can extend `BaseSequencer` from `vitest/node`, if you only need to redefine one of the `sort` and `shard` methods, but both should exist.
+一个自定义类，用于定义分片和排序的方法。如果你只需要重新定义 `sort` 和 `shard` 方法中的一个，可以从 `vitest/node` 扩展 `BaseSequencer`，但两者都必须存在。
 
-Sharding is happening before sorting, and only if `--shard` option is provided.
+分片发生在排序之前，且仅在提供了 `--shard` 选项时发生。
 
-If [`sequence.groupOrder`](#sequence-grouporder) is specified, the sequencer will be called once for each group and pool.
+如果指定了 [`sequence.groupOrder`](#sequence-grouporder)，sequencer 将为每个组和池调用一次。
 
 ## sequence.groupOrder
 
-- **Type:** `number`
-- **Default:** `0`
+- **类型:** `number`
+- **默认值:** `0`
 
-Controls the order in which this project runs its tests when using multiple [projects](/guide/projects).
+控制在使用多个 [项目](/guide/projects) 时，该项目运行测试的顺序。
 
-- Projects with the same group order number will run together, and groups are run from lowest to highest.
-- If you don't set this option, all projects run in parallel.
-- If several projects use the same group order, they will run at the same time.
+- 具有相同组顺序号的项目将一起运行，组按从低到高的顺序运行。
+- 如果不设置此选项，所有项目将并行运行。
+- 如果几个项目使用相同的组顺序，它们将同时运行。
 
-This setting only affects the order in which projects run, not the order of tests within a project.
-To control test isolation or the order of tests inside a project, use the [`isolate`](/config/isolate) and [`sequence.sequencer`](/config/sequence#sequence-sequencer) options.
+此设置仅影响项目运行的顺序，不影响项目内测试的顺序。
+要控制测试隔离或项目内测试的顺序，请使用 [`isolate`](/config/isolate) 和 [`sequence.sequencer`](/config/sequence#sequence-sequencer) 选项。
 
-::: details Example
-Consider this example:
+::: details 示例
+考虑此示例：
 
 ```ts
 import { defineConfig } from 'vitest/config'
@@ -78,86 +78,86 @@ export default defineConfig({
 })
 ```
 
-Tests in these projects will run in this order:
+这些项目中的测试将按以下顺序运行：
 
 ```
  0. slow  |
-          |> running together
+          |> 一起运行
  0. fast  |
 
- 1. flaky |> runs after slow and fast alone
+ 1. flaky |> 在 slow 和 fast 之后单独运行
 ```
 :::
 
 ## sequence.shuffle
 
-- **Type**: `boolean | { files?, tests? }`
-- **Default**: `false`
+- **类型**: `boolean | { files?, tests? }`
+- **默认值**: `false`
 - **CLI**: `--sequence.shuffle`, `--sequence.shuffle=false`
 
-If you want files and tests to run randomly, you can enable it with this option, or CLI argument [`--sequence.shuffle`](/guide/cli).
+如果你希望文件和测试随机运行，可以通过此选项或 CLI 参数 [`--sequence.shuffle`](/guide/cli) 启用它。
 
-Vitest usually uses cache to sort tests, so long-running tests start earlier, which makes tests run faster. If your files and tests run in random order, you will lose this performance improvement, but it may be useful to track tests that accidentally depend on another test run previously.
+Vitest 通常使用缓存来排序测试，因此运行时间较长的测试会更早开始，从而使测试运行得更快。如果你的文件和测试按随机顺序运行，你将失去这种性能改进，但它可能有助于跟踪偶然依赖于之前运行的另一个测试的测试。
 
 ### sequence.shuffle.files {#sequence-shuffle-files}
 
-- **Type**: `boolean`
-- **Default**: `false`
+- **类型**: `boolean`
+- **默认值**: `false`
 - **CLI**: `--sequence.shuffle.files`, `--sequence.shuffle.files=false`
 
-Whether to randomize files, be aware that long running tests will not start earlier if you enable this option.
+是否随机化文件，请注意，如果启用此选项，运行时间较长的测试将不会更早开始。
 
 ### sequence.shuffle.tests {#sequence-shuffle-tests}
 
-- **Type**: `boolean`
-- **Default**: `false`
+- **类型**: `boolean`
+- **默认值**: `false`
 - **CLI**: `--sequence.shuffle.tests`, `--sequence.shuffle.tests=false`
 
-Whether to randomize tests.
+是否随机化测试。
 
 ## sequence.concurrent {#sequence-concurrent}
 
-- **Type**: `boolean`
-- **Default**: `false`
+- **类型**: `boolean`
+- **默认值**: `false`
 - **CLI**: `--sequence.concurrent`, `--sequence.concurrent=false`
 
-If you want tests to run in parallel, you can enable it with this option, or CLI argument [`--sequence.concurrent`](/guide/cli).
+如果你希望测试并行运行，可以通过此选项或 CLI 参数 [`--sequence.concurrent`](/guide/cli) 启用它。
 
 ::: warning
-When you run tests with `sequence.concurrent` and `expect.requireAssertions` set to `true`, you should use [local expect](/guide/test-context.html#expect) instead of the global one. Otherwise, this may cause false negatives in [some situations (#8469)](https://github.com/vitest-dev/vitest/issues/8469).
+当你在 `sequence.concurrent` 和 `expect.requireAssertions` 设置为 `true` 的情况下运行测试时，应该使用 [本地 expect](/guide/test-context.html#expect) 而不是全局的。否则，这可能在 [某些情况 (#8469)](https://github.com/vitest-dev/vitest/issues/8469) 导致假阴性。
 :::
 
 ## sequence.seed <CRoot />
 
-- **Type**: `number`
-- **Default**: `Date.now()`
+- **类型**: `number`
+- **默认值**: `Date.now()`
 - **CLI**: `--sequence.seed=1000`
 
-Sets the randomization seed, if tests are running in random order.
+设置随机化种子，如果测试按随机顺序运行。
 
 ## sequence.hooks
 
-- **Type**: `'stack' | 'list' | 'parallel'`
-- **Default**: `'stack'`
+- **类型**: `'stack' | 'list' | 'parallel'`
+- **默认值**: `'stack'`
 - **CLI**: `--sequence.hooks=<value>`
 
-Changes the order in which hooks are executed.
+更改钩子执行的顺序。
 
-- `stack` will order "after" hooks in reverse order, "before" hooks will run in the order they were defined
-- `list` will order all hooks in the order they are defined
-- `parallel` runs hooks in a single group in parallel (hooks in parent suites still run before the current suite's hooks). The actual number of simultaneously running hooks is limited by [`maxConcurrency`](/config/maxconcurrency).
+- `stack` 将以相反顺序排列 "after" 钩子，"before" 钩子将按定义顺序运行
+- `list` 将按定义顺序排列所有钩子
+- `parallel` 并行运行单个组中的钩子（父套件中的钩子仍然在当前套件的钩子之前运行）。同时运行的钩子的实际数量受 [`maxConcurrency`](/config/maxconcurrency) 限制。
 
 ::: tip
-This option doesn't affect [`onTestFinished`](/api/hooks#ontestfinished). It is always called in reverse order.
+此选项不影响 [`onTestFinished`](/api/hooks#ontestfinished)。它总是按相反顺序调用。
 :::
 
 ## sequence.setupFiles {#sequence-setupfiles}
 
-- **Type**: `'list' | 'parallel'`
-- **Default**: `'parallel'`
+- **类型**: `'list' | 'parallel'`
+- **默认值**: `'parallel'`
 - **CLI**: `--sequence.setupFiles=<value>`
 
-Changes the order in which setup files are executed.
+更改 setup 文件执行的顺序。
 
-- `list` will run setup files in the order they are defined
-- `parallel` will run setup files in parallel
+- `list` 将按定义顺序运行 setup 文件
+- `parallel` 将并行运行 setup 文件

@@ -1,28 +1,28 @@
 ---
-title: Debugging | Guide
+title: 调试 | 指南
 ---
 
-# Debugging
+# 调试
 
 :::tip
-When debugging tests you might want to use following options:
+调试测试时，你可能想要使用以下选项：
 
-- [`--test-timeout=0`](/guide/cli#testtimeout) to prevent tests from timing out when stopping at breakpoints
-- [`--no-file-parallelism`](/guide/cli#fileparallelism) to prevent test files from running parallel
+- [`--test-timeout=0`](/guide/cli#testtimeout) 防止在断点处停止时测试超时
+- [`--no-file-parallelism`](/guide/cli#fileparallelism) 防止测试文件并行运行
 
 :::
 
 ## VS Code
 
-Quick way to debug tests in VS Code is via `JavaScript Debug Terminal`. Open a new `JavaScript Debug Terminal` and run `npm run test` or `vitest` directly. *this works with any code run in Node, so will work with most JS testing frameworks*
+在 VS Code 中调试测试的快速方法是通过 `JavaScript Debug Terminal`。打开一个新的 `JavaScript Debug Terminal` 并直接运行 `npm run test` 或 `vitest`。*这适用于任何在 Node 中运行的代码，因此适用于大多数 JS 测试框架*
 
 ![image](https://user-images.githubusercontent.com/5594348/212169143-72bf39ce-f763-48f5-822a-0c8b2e6a8484.png)
 
-You can also add a dedicated launch configuration to debug a test file in VS Code:
+你也可以在 VS Code 中添加专用的启动配置来调试测试文件：
 
 ```json
 {
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  // 更多信息，请访问：https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
     {
@@ -40,11 +40,11 @@ You can also add a dedicated launch configuration to debug a test file in VS Cod
 }
 ```
 
-Then in the debug tab, ensure 'Debug Current Test File' is selected. You can then open the test file you want to debug and press F5 to start debugging.
+然后在调试标签页中，确保选中了 'Debug Current Test File'。然后你可以打开想要调试的测试文件并按下 F5 开始调试。
 
-### Browser mode
+### 浏览器模式
 
-To debug [Vitest Browser Mode](/guide/browser/index.md), pass `--inspect` or `--inspect-brk` in CLI or define it in your Vitest configuration:
+要调试 [Vitest 浏览器模式](/guide/browser/index.md)，在 CLI 中传递 `--inspect` 或 `--inspect-brk`，或者在 Vitest 配置中定义它：
 
 ::: code-group
 ```bash [CLI]
@@ -67,13 +67,13 @@ export default defineConfig({
 ```
 :::
 
-By default Vitest will use port `9229` as debugging port. You can overwrite it with by passing value in `--inspect-brk`:
+默认情况下 Vitest 会使用端口 `9229` 作为调试端口。你可以通过在 `--inspect-brk` 中传递值来覆盖它：
 
 ```bash
 vitest --inspect-brk=127.0.0.1:3000 --browser --no-file-parallelism
 ```
 
-Use following [VSCode Compound configuration](https://code.visualstudio.com/docs/editor/debugging#_compound-launch-configurations) for launching Vitest and attaching debugger in the browser:
+使用以下 [VSCode 复合配置](https://code.visualstudio.com/docs/editor/debugging#_compound-launch-configurations) 来启动 Vitest 并在浏览器中附加调试器：
 
 ```json
 {
@@ -106,26 +106,26 @@ Use following [VSCode Compound configuration](https://code.visualstudio.com/docs
 
 ## IntelliJ IDEA
 
-Create a [vitest](https://www.jetbrains.com/help/idea/vitest.html#createRunConfigVitest) run configuration. Use the following settings to run all tests in debug mode:
+创建一个 [vitest](https://www.jetbrains.com/help/idea/vitest.html#createRunConfigVitest) 运行配置。使用以下设置以调试模式运行所有测试：
 
-Setting | Value
+设置 | 值
  --- | ---
-Working directory | `/path/to/your-project-root`
+工作目录 | `/path/to/your-project-root`
 
-Then run this configuration in debug mode. The IDE will stop at JS/TS breakpoints set in the editor.
+然后以调试模式运行此配置。IDE 将在编辑器中设置的 JS/TS 断点处停止。
 
-## Node Inspector, e.g. Chrome DevTools
+## Node Inspector，例如 Chrome DevTools
 
-Vitest also supports debugging tests without IDEs. However this requires that tests are not run parallel. Use one of the following commands to launch Vitest.
+Vitest 也支持在没有 IDE 的情况下调试测试。但这要求测试不能并行运行。使用以下命令之一启动 Vitest。
 
 ```sh
-# To run in a single worker
+# 在单个 worker 中运行
 vitest --inspect-brk --no-file-parallelism
 
-# To run in browser mode
+# 在浏览器模式下运行
 vitest --inspect-brk --browser --no-file-parallelism
 ```
 
-Once Vitest starts it will stop execution and wait for you to open developer tools that can connect to [Node.js inspector](https://nodejs.org/en/docs/guides/debugging-getting-started/). You can use Chrome DevTools for this by opening `chrome://inspect` on browser.
+Vitest 启动后，它将停止执行并等待你打开可以连接到 [Node.js inspector](https://nodejs.org/en/docs/guides/debugging-getting-started/) 的开发人员工具。你可以通过在浏览器中打开 `chrome://inspect` 来使用 Chrome DevTools 进行此操作。
 
-In watch mode you can keep the debugger open during test re-runs by using the `--isolate false` options.
+在监视模式下，你可以通过使用 `--isolate false` 选项，在测试重新运行期间保持调试器打开。

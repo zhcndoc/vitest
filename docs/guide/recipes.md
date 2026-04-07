@@ -1,12 +1,12 @@
 ---
-title: Recipes | Guide
+title: 示例 | 指南
 ---
 
-# Recipes
+# 示例
 
-## Disabling Isolation for Specific Test Files Only
+## 仅针对特定测试文件禁用隔离
 
-You can speed up your test run by disabling isolation for specific set of files by specifying `isolate` per `projects` entries:
+你可以通过为每个 `projects` 条目指定 `isolate` 来禁用特定文件集的隔离，从而加快测试运行速度：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
@@ -16,7 +16,7 @@ export default defineConfig({
     projects: [
       {
         test: {
-          // Non-isolated unit tests
+          // 非隔离的单元测试
           name: 'Unit tests',
           isolate: false,
           exclude: ['**.integration.test.ts'],
@@ -24,7 +24,7 @@ export default defineConfig({
       },
       {
         test: {
-          // Isolated integration tests
+          // 隔离的集成测试
           name: 'Integration tests',
           include: ['**.integration.test.ts'],
         },
@@ -34,9 +34,9 @@ export default defineConfig({
 })
 ```
 
-## Parallel and Sequential Test Files
+## 并行和串行测试文件
 
-You can split test files into parallel and sequential groups by using `projects` option:
+你可以使用 `projects` 选项将测试文件分为并行和串行组：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'

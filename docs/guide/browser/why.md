@@ -1,32 +1,32 @@
 ---
-title: Why Browser Mode | Browser Mode
+title: 为什么需要浏览器模式 | 浏览器模式
 outline: deep
 ---
 
-# Why Browser Mode
+# 为什么需要浏览器模式
 
-## Motivation
+## 动机
 
-We developed the Vitest browser mode feature to help improve testing workflows and achieve more accurate and reliable test results. This addition to our testing API allows developers to run tests in a native browser environment. In this section, we'll explore the motivations behind this feature and its benefits for testing.
+我们开发了 Vitest 浏览器模式功能，以帮助改进测试工作流程并获得更准确、可靠的测试结果。这一测试 API 的补充允许开发者在原生浏览器环境中运行测试。在本节中，我们将探讨此功能背后的动机及其对测试的好处。
 
-### Different Ways of Testing
+### 不同的测试方式
 
-There are different ways to test JavaScript code. Some testing frameworks simulate browser environments in Node.js, while others run tests in real browsers. In this context, [jsdom](https://npmx.dev/package/jsdom) is an example of a spec implementation that simulates a browser environment by being used with a test runner like Jest or Vitest, while other testing tools such as [WebdriverIO](https://webdriver.io/) or [Cypress](https://www.cypress.io/) allow developers to test their applications in a real browser or in case of [Playwright](https://playwright.dev/) provide you a browser engine.
+测试 JavaScript 代码有不同的方式。一些测试框架在 Node.js 中模拟浏览器环境，而另一些则在真实浏览器中运行测试。在这种情况下，[jsdom](https://npmx.dev/package/jsdom) 是一个规范实现的示例，它通过与 Jest 或 Vitest 等测试运行器配合使用来模拟浏览器环境，而其他测试工具如 [WebdriverIO](https://webdriver.io/) 或 [Cypress](https://www.cypress.io/) 允许开发者在真实浏览器中测试他们的应用程序，或者像 [Playwright](https://playwright.dev/) 那样提供浏览器引擎。
 
-### The Simulation Caveat
+### 模拟环境的注意事项
 
-Testing JavaScript programs in simulated environments such as jsdom or happy-dom has simplified the test setup and provided an easy-to-use API, making them suitable for many projects and increasing confidence in test results. However, it is crucial to keep in mind that these tools only simulate a browser environment and not an actual browser, which may result in some discrepancies between the simulated environment and the real environment. Therefore, false positives or negatives in test results may occur.
+在 jsdom 或 happy-dom 等模拟环境中测试 JavaScript 程序简化了测试设置并提供了易用的 API，使它们适合许多项目并增加了对测试结果的信心。然而，至关重要的是要记住，这些工具仅模拟浏览器环境而非实际浏览器，这可能导致模拟环境与真实环境之间存在一些差异。因此，测试结果中可能会出现假阳性或假阴性。
 
-To achieve the highest level of confidence in our tests, it's crucial to test in a real browser environment. This is why we developed the browser mode feature in Vitest, allowing developers to run tests natively in a browser and gain more accurate and reliable test results. With browser-level testing, developers can be more confident that their application will work as intended in a real-world scenario.
+为了在测试中获得最高级别的信心，在真实浏览器环境中进行测试至关重要。这就是我们在 Vitest 中开发浏览器模式功能的原因，它允许开发者在浏览器中原生运行测试并获得更准确、可靠的测试结果。通过浏览器级别的测试，开发者可以更有信心地认为他们的应用程序将在真实场景中按预期工作。
 
-## Drawbacks
+## 缺点
 
-When using Vitest browser, it is important to consider the following drawbacks:
+使用 Vitest 浏览器模式时，重要的是要考虑以下缺点：
 
-### Early Development
+### 早期开发阶段
 
-The browser mode feature of Vitest is still in its early stages of development. As such, it may not yet be fully optimized, and there may be some bugs or issues that have not yet been ironed out. It is recommended that users augment their Vitest browser experience with a standalone browser-side test runner like WebdriverIO, Cypress or Playwright.
+Vitest 的浏览器模式功能仍处于早期开发阶段。因此，它可能尚未完全优化，并且可能存在一些尚未解决的 bug 或问题。建议用户使用独立的浏览器端测试运行器（如 WebdriverIO、Cypress 或 Playwright）来补充他们的 Vitest 浏览器模式体验。
 
-### Longer Initialization
+### 初始化时间较长
 
-Vitest browser requires spinning up the provider and the browser during the initialization process, which can take some time. This can result in longer initialization times compared to other testing patterns.
+Vitest 浏览器模式需要在初始化过程中启动提供程序和浏览器，这可能需要一些时间。与其他测试模式相比，这可能导致初始化时间更长。

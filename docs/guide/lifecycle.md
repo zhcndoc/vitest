@@ -1,199 +1,199 @@
 ---
-title: Test Run Lifecycle | Guide
+title: 测试运行生命周期 | 指南
 outline: deep
 ---
 
-# Test Run Lifecycle
+# 测试运行生命周期
 
-Understanding the test run lifecycle is essential for writing effective tests, debugging issues, and optimizing your test suite. This guide explains when and in what order different lifecycle phases occur in Vitest, from initialization to teardown.
+理解测试运行生命周期对于编写有效的测试、调试问题和优化你的测试套件至关重要。本指南解释了 Vitest 中不同生命周期阶段何时以及按什么顺序发生，从初始化到清理。
 
-## Overview
+## 概述
 
-A typical Vitest test run goes through these main phases:
+典型的 Vitest 测试运行会经历以下主要阶段：
 
-1. **Initialization:** Configuration loading and project setup
-2. **Global Setup:** One-time setup before any tests run
-3. **Worker Creation:** Test workers are spawned based on the [pool](/config/pool) configuration
-4. **Test File Collection:** Test files are discovered and organized
-5. **Test Execution:** Tests run with their hooks and assertions
-6. **Reporting:** Results are collected and reported
-7. **Global Teardown:** Final cleanup after all tests complete
+1. **初始化：** 配置加载和项目设置
+2. **全局设置：** 在任何测试运行之前的一次性设置
+3. **Worker 创建：** 根据 [pool](/config/pool) 配置生成测试 worker
+4. **测试文件收集：** 发现并组织测试文件
+5. **测试执行：** 测试与其钩子和断言一起运行
+6. **报告：** 收集并报告结果
+7. **全局清理：** 所有测试完成后的最终清理
 
-Phases 4–6 run once for each test file, so across your test suite they will execute multiple times and may also run in parallel across different files when you use more than [1 worker](/config/maxworkers).
+阶段 4–6 为每个测试文件运行一次，因此在整个测试套件中它们将执行多次，并且当你使用多于 [1 个 worker](/config/maxworkers) 时，它们也可能在不同文件之间并行运行。
 
-## Detailed Lifecycle Phases
+## 详细生命周期阶段
 
-### 1. Initialization Phase
+### 1. 初始化阶段
 
-When you run `vitest`, the framework first loads your configuration and prepares the test environment.
+当你运行 `vitest` 时，框架首先加载你的配置并准备测试环境。
 
-**What happens:**
-- [Command-line](/guide/cli) arguments are parsed
-- [Configuration file](/config/) is loaded
-- Project structure is validated
+**发生什么：**
+- 解析 [命令行](/guide/cli) 参数
+- 加载 [配置文件](/config/)
+- 验证项目结构
 
-This phase can run again if the config file or one of its imports changes.
+如果配置文件或其导入之一发生更改，此阶段可以再次运行。
 
-**Scope:** Main process (before any test workers are created)
+**范围：** 主进程（在任何测试 worker 创建之前）
 
-### 2. Global Setup Phase
+### 2. 全局设置阶段
 
-If you have configured [`globalSetup`](/config/globalsetup) files, they run once before any test workers are created.
+如果你配置了 [`globalSetup`](/config/globalsetup) 文件，它们会在任何测试 worker 创建之前运行一次。
 
-**What happens:**
-- `setup()` functions (or exported `default` function) from global setup files execute sequentially
-- Multiple global setup files run in the order they are defined
+**发生什么：**
+- 全局设置文件中的 `setup()` 函数（或导出的 `default` 函数）按顺序执行
+- 多个全局设置文件按定义顺序运行
 
-**Scope:** Main process (separate from test workers)
+**范围：** 主进程（与测试 worker 分离）
 
-**Important notes:**
-- Global setup runs in a **different global scope** from your tests
-- Tests cannot access variables defined in global setup (use [`provide`/`inject`](/config/provide) instead)
-- Global setup only runs if there is at least one test queued
+**重要说明：**
+- 全局设置在与测试**不同的全局范围**中运行
+- 测试无法访问全局设置中定义的变量（使用 [`provide`/`inject`](/config/provide) 代替）
+- 只有当至少有一个测试排队时，全局设置才会运行
 
 ```ts [globalSetup.ts]
 export function setup(project) {
-  // Runs once before all tests
+  // 在所有测试之前运行一次
   console.log('Global setup')
 
-  // Share data with tests
+  // 与测试共享数据
   project.provide('apiUrl', 'http://localhost:3000')
 }
 
 export function teardown() {
-  // Runs once after all tests
+  // 在所有测试之后运行一次
   console.log('Global teardown')
 }
 ```
 
-### 3. Worker Creation Phase
+### 3. Worker 创建阶段
 
-After global setup completes, Vitest creates test workers based on your [pool configuration](/config/pool).
+全局设置完成后，Vitest 根据你的 [池配置](/config/pool) 创建测试 worker。
 
-**What happens:**
-- Workers are spawned according to the `browser.enabled` or `pool` setting (`threads`, `forks`, `vmThreads`, or `vmForks`)
-- Each worker gets its own isolated environment (unless [isolation](/config/isolate) is disabled)
-- By default, workers are not reused to provide isolation. Workers are reused only if:
-  - [isolation](/config/isolate) is disabled
-  - OR pool is `vmThreads` or `vmForks` because [VM](https://nodejs.org/api/vm.html) provides enough isolation
+**发生什么：**
+- 根据 `browser.enabled` 或 `pool` 设置生成 Worker（`threads`、`forks`、`vmThreads` 或 `vmForks`）
+- 每个 Worker 都有自己的隔离环境（除非禁用 [隔离](/config/isolate)）
+- 默认情况下，为了提供隔离，Worker 不会被复用。只有在以下情况下才会复用 Worker：
+  - 禁用 [隔离](/config/isolate)
+  - 或者池是 `vmThreads` 或 `vmForks`，因为 [VM](https://nodejs.org/api/vm.html) 提供了足够的隔离
 
-**Scope:** Worker processes/threads
+**范围：** Worker 进程/线程
 
-### 4. Test File Setup Phase
+### 4. 测试文件设置阶段
 
-Before each test file runs, [setup files](/config/setupfiles) are executed.
+在每个测试文件运行之前，执行 [设置文件](/config/setupfiles)。
 
-**What happens:**
-- Setup files run in the same process as your tests
-- By default, setup files run in **parallel** (configurable via [`sequence.setupFiles`](/config/sequence#sequence-setupfiles))
-- Setup files execute before **each test file**
-- Any global _state_ or configuration can be initialized here
+**发生什么：**
+- 设置文件与测试在同一进程中运行
+- 默认情况下，设置文件**并行**运行（可通过 [`sequence.setupFiles`](/config/sequence#sequence-setupfiles) 配置）
+- 设置文件在**每个测试文件**之前执行
+- 任何全局_状态_或配置都可以在此处初始化
 
-**Scope:** Worker process (same as your tests)
+**范围：** Worker 进程（与测试相同）
 
-**Important notes:**
-- If [isolation](/config/isolate) is disabled, setup files still rerun before each test file to trigger side effects, but imported modules are cached
-- Editing a setup file triggers a rerun of all tests in watch mode
+**重要说明：**
+- 如果禁用 [隔离](/config/isolate)，设置文件仍会在每个测试文件之前重新运行以触发副作用，但导入的模块会被缓存
+- 编辑设置文件会触发 watch 模式下所有测试的重新运行
 
 ```ts [setupFile.ts]
 import { afterEach } from 'vitest'
 
-// Runs before each test file
+// 在每个测试文件之前运行
 console.log('Setup file executing')
 
-// Register hooks that apply to all tests
+// 注册适用于所有测试的钩子
 afterEach(() => {
   cleanup()
 })
 ```
 
-### 5. Test Collection and Execution Phase
+### 5. 测试收集和执行阶段
 
-This is the main phase where your tests actually run.
+这是测试实际运行的主要阶段。
 
-#### Test File Execution Order
+#### 测试文件执行顺序
 
-Test files are executed based on your configuration:
+测试文件根据你的配置执行：
 
-- **Sequential by default** within a worker
-- Files will run in **parallel** across different workers, configured by [`maxWorkers`](/config/maxworkers)
-- Order can be randomized with [`sequence.shuffle`](/config/sequence#sequence-shuffle) or fine-tuned with [`sequence.sequencer`](/config/sequence#sequence-sequencer)
-- Long-running tests typically start earlier (based on cache) unless shuffle is enabled
+- 在 worker 内默认**顺序**执行
+- 文件将在不同 worker 之间**并行**运行，由 [`maxWorkers`](/config/maxworkers) 配置
+- 顺序可以通过 [`sequence.shuffle`](/config/sequence#sequence-shuffle) 随机化，或通过 [`sequence.sequencer`](/config/sequence#sequence-sequencer) 微调
+- 长时间运行的测试通常更早开始（基于缓存），除非启用了 shuffle
 
-#### Within Each Test File
+#### 在每个测试文件内
 
-The execution follows this order:
+执行遵循以下顺序：
 
-1. **File-level code:** All code outside `describe` blocks runs immediately
-2. **Test collection:** `describe` blocks are processed, and tests are registered as side effects of importing the test file
-3. **[`aroundAll`](/api/hooks#aroundall) hooks:** Wrap around all tests in the suite (must call `runSuite()`)
-4. **[`beforeAll`](/api/hooks#beforeall) hooks:** Run once before any tests in the suite
-5. **For each test:**
-   - [`aroundEach`](/api/hooks#aroundeach) hooks wrap around the test (must call `runTest()`)
-   - `beforeEach` hooks execute (in order defined, or based on [`sequence.hooks`](/config/sequence#sequence-hooks))
-   - Test function executes
-   - `afterEach` hooks execute (reverse order by default with `sequence.hooks: 'stack'`)
-   - [`onTestFinished`](/api/hooks#ontestfinished) callbacks run (always in reverse order)
-   - If test failed: [`onTestFailed`](/api/hooks#ontestfailed) callbacks run
-   - Note: if `repeats` or `retry` are set, all of these steps are executed again
-6. **[`afterAll`](/api/hooks#afterall) hooks:** Run once after all tests in the suite complete
+1. **文件级代码：** 所有 `describe` 块之外的代码立即运行
+2. **测试收集：** 处理 `describe` 块，测试作为导入测试文件的副作用被注册
+3. **[`aroundAll`](/api/hooks#aroundall) 钩子：** 包裹套件中的所有测试（必须调用 `runSuite()`）
+4. **[`beforeAll`](/api/hooks#beforeall) 钩子：** 在套件中的任何测试之前运行一次
+5. **对于每个测试：**
+   - [`aroundEach`](/api/hooks#aroundeach) 钩子包裹测试（必须调用 `runTest()`）
+   - `beforeEach` 钩子执行（按定义顺序，或基于 [`sequence.hooks`](/config/sequence#sequence-hooks)）
+   - 测试函数执行
+   - `afterEach` 钩子执行（默认逆序，使用 `sequence.hooks: 'stack'`）
+   - [`onTestFinished`](/api/hooks#ontestfinished) 回调运行（始终逆序）
+   - 如果测试失败：[`onTestFailed`](/api/hooks#ontestfailed) 回调运行
+   - 注意：如果设置了 `repeats` 或 `retry`，所有这些步骤将再次执行
+6. **[`afterAll`](/api/hooks#afterall) 钩子：** 在套件中的所有测试完成后运行一次
 
-**Example execution flow:**
+**示例执行流程：**
 
 ```ts
-// This runs immediately (collection phase)
+// 这立即运行（收集阶段）
 console.log('File loaded')
 
 describe('User API', () => {
-  // This runs immediately (collection phase)
+  // 这立即运行（收集阶段）
   console.log('Suite defined')
 
   aroundAll(async (runSuite) => {
-    // Wraps around all tests in this suite
+    // 包裹此套件中的所有测试
     console.log('aroundAll before')
     await runSuite()
     console.log('aroundAll after')
   })
 
   beforeAll(() => {
-    // Runs once before all tests in this suite
+    // 在此套件中的所有测试之前运行一次
     console.log('beforeAll')
   })
 
   aroundEach(async (runTest) => {
-    // Wraps around each test
+    // 包裹每个测试
     console.log('aroundEach before')
     await runTest()
     console.log('aroundEach after')
   })
 
   beforeEach(() => {
-    // Runs before each test
+    // 在每个测试之前运行
     console.log('beforeEach')
   })
 
   test('creates user', () => {
-    // Test executes
+    // 测试执行
     console.log('test 1')
   })
 
   test('updates user', () => {
-    // Test executes
+    // 测试执行
     console.log('test 2')
   })
 
   afterEach(() => {
-    // Runs after each test
+    // 在每个测试之后运行
     console.log('afterEach')
   })
 
   afterAll(() => {
-    // Runs once after all tests in this suite
+    // 在此套件中的所有测试之后运行一次
     console.log('afterAll')
   })
 })
 
-// Output:
+// 输出：
 // File loaded
 // Suite defined
 // aroundAll before
@@ -212,9 +212,9 @@ describe('User API', () => {
 // aroundAll after
 ```
 
-#### Nested Suites
+#### 嵌套套件
 
-When using nested `describe` blocks, hooks follow a hierarchical pattern. The `aroundAll` and `aroundEach` hooks wrap around their respective scopes, with parent hooks wrapping child hooks:
+使用嵌套 `describe` 块时，钩子遵循层次模式。`aroundAll` 和 `aroundEach` 钩子包裹它们各自的范围，父钩子包裹子钩子：
 
 ```ts
 describe('outer', () => {
@@ -263,7 +263,7 @@ describe('outer', () => {
   afterAll(() => console.log('outer afterAll'))
 })
 
-// Output:
+// 输出：
 // outer aroundAll before
 //   outer beforeAll
 //   outer aroundEach before
@@ -288,93 +288,93 @@ describe('outer', () => {
 // outer aroundAll after
 ```
 
-#### Concurrent Tests
+#### 并发测试
 
-When using `test.concurrent` or [`sequence.concurrent`](/config/sequence#sequence-concurrent):
+当使用 `test.concurrent` 或 [`sequence.concurrent`](/config/sequence#sequence-concurrent) 时：
 
-- Tests within the same file can run in parallel
-- Each concurrent test still runs its own `beforeEach` and `afterEach` hooks
-- Use [test context](/guide/test-context) for concurrent snapshots: `test.concurrent('name', async ({ expect }) => {})`
+- 同一文件内的测试可以并行运行
+- 每个并发测试仍然运行其自己的 `beforeEach` 和 `afterEach` 钩子
+- 使用 [测试上下文](/guide/test-context) 进行并发快照：`test.concurrent('name', async ({ expect }) => {})`
 
-### 6. Reporting Phase
+### 6. 报告阶段
 
-Throughout the test run, reporters receive lifecycle events and display results.
+在整个测试运行过程中，报告器接收生命周期事件并显示结果。
 
-**What happens:**
-- Reporters receive events as tests progress
-- Results are collected and formatted
-- Test summaries are generated
-- Coverage reports are generated (if enabled)
+**发生什么：**
+- 报告器在测试进行时接收事件
+- 结果被收集和格式化
+- 生成测试摘要
+- 生成覆盖率报告（如果启用）
 
-For detailed information about the reporter lifecycle, see the [Reporters](/api/advanced/reporters) guide.
+有关报告器生命周期的详细信息，请参阅 [报告器](/api/advanced/reporters) 指南。
 
-### 7. Global Teardown Phase
+### 7. 全局清理阶段
 
-After all tests complete, global teardown functions execute.
+所有测试完成后，全局清理函数执行。
 
-**What happens:**
-- `teardown()` functions from [`globalSetup`](/config/globalsetup) files run
-- Multiple teardown functions run in **reverse order** of their setup
-- In watch mode, teardown runs before process exit, not between test reruns
+**发生什么：**
+- [`globalSetup`](/config/globalsetup) 文件中的 `teardown()` 函数运行
+- 多个清理函数按其设置的**逆序**运行
+- 在 watch 模式下，清理在进程退出前运行，而不是在测试重新运行之间
 
-**Scope:** Main process
+**范围：** 主进程
 
 ```ts [globalSetup.ts]
 export function teardown() {
-  // Clean up global resources
+  // 清理全局资源
   console.log('Global teardown complete')
 }
 ```
 
-## Lifecycle in Different Scopes
+## 不同作用域中的生命周期
 
-Understanding where code executes is crucial for avoiding common pitfalls:
+了解代码执行的位置对于避免常见陷阱至关重要：
 
-| Phase | Scope | Access to Test Context | Runs |
+| 阶段 | 作用域 | 访问测试上下文 | 运行次数 |
 |-------|-------|----------------------|------|
-| Config File | Main process | ❌ No | Once per Vitest run |
-| Global Setup | Main process | ❌ No (use `provide`/`inject`) | Once per Vitest run |
-| Setup Files | Worker (same as tests) | ✅ Yes | Before each test file |
-| File-level code | Worker | ✅ Yes | Once per test file |
-| `aroundAll` | Worker | ✅ Yes | Once per suite (wraps all tests) |
-| `beforeAll` / `afterAll` | Worker | ✅ Yes | Once per suite |
-| `aroundEach` | Worker | ✅ Yes | Per test (wraps each test) |
-| `beforeEach` / `afterEach` | Worker | ✅ Yes | Per test |
-| Test function | Worker | ✅ Yes | Once (or more with retries/repeats) |
-| Global Teardown | Main process | ❌ No | Once per Vitest run |
+| 配置文件 | 主进程 | ❌ 否 | 每次 Vitest 运行一次 |
+| 全局设置 | 主进程 | ❌ 否（使用 `provide`/`inject`） | 每次 Vitest 运行一次 |
+| 设置文件 | 工作线程（与测试相同） | ✅ 是 | 每个测试文件之前 |
+| 文件级代码 | 工作线程 | ✅ 是 | 每个测试文件一次 |
+| `aroundAll` | 工作线程 | ✅ 是 | 每个套件一次（包裹所有测试） |
+| `beforeAll` / `afterAll` | 工作线程 | ✅ 是 | 每个套件一次 |
+| `aroundEach` | 工作线程 | ✅ 是 | 每个测试（包裹每个测试） |
+| `beforeEach` / `afterEach` | 工作线程 | ✅ 是 | 每个测试 |
+| 测试函数 | 工作线程 | ✅ 是 | 一次（重试/重复时可能多次） |
+| 全局清理 | 主进程 | ❌ 否 | 每次 Vitest 运行一次 |
 
-## Watch Mode Lifecycle
+## 监视模式生命周期
 
-In watch mode, the lifecycle repeats with some differences:
+在监视模式下，生命周期会重复，但有一些区别：
 
-1. **Initial run:** Full lifecycle as described above
-2. **On file change:**
-   - New [test run](/api/advanced/reporters#ontestrunstart) starts
-   - Only affected test files are re-run
-   - [Setup files](/config/setupfiles) run again for those test files
-   - [Global setup](/config/globalsetup) does **not** re-run (use [`project.onTestsRerun`](/config/globalsetup#handling-test-reruns) for rerun-specific logic)
-3. **On exit:**
-   - Global teardown executes
-   - Process terminates
+1. **初始运行：** 完整的生命周期，如上所述
+2. **文件变更时：**
+   - 新的 [测试运行](/api/advanced/reporters#ontestrunstart) 开始
+   - 仅重新运行受影响的测试文件
+   - [设置文件](/config/setupfiles) 会为这些测试文件再次运行
+   - [全局设置](/config/globalsetup) **不会**重新运行（使用 [`project.onTestsRerun`](/config/globalsetup#handling-test-reruns) 处理特定于重新运行的逻辑）
+3. **退出时：**
+   - 执行全局清理
+   - 进程终止
 
-## Performance Considerations
+## 性能考量
 
-Understanding the lifecycle helps optimize test performance:
+了解生命周期有助于优化测试性能：
 
-- **Global setup** is ideal for expensive one-time operations (database seeding, server startup)
-- **Setup files** run before each test file - avoid heavy operations here if you have many test files
-- **`beforeAll`** is better than `beforeEach` for expensive setup that doesn't need isolation
-- **Disabling [isolation](/config/isolate)** improves performance, but setup files still execute before each file
-- **[Pool configuration](/config/pool)** affects parallelization and available APIs
+- **全局设置** 适合用于昂贵的一次性操作（数据库种子数据、服务器启动）
+- **设置文件** 在每个测试文件之前运行 - 如果你有很多测试文件，请避免在此处进行繁重操作
+- 对于不需要隔离的昂贵设置，**`beforeAll`** 比 `beforeEach` 更好
+- **禁用 [隔离](/config/isolate)** 可以提高性能，但设置文件仍然会在每个文件之前执行
+- **[池配置](/config/pool)** 影响并行化和可用的 API
 
-For tips on how to improve performance, read the [Improving Performance](/guide/improving-performance) guide.
+有关如何提高性能的技巧，请阅读 [提高性能](/guide/improving-performance) 指南。
 
-## Related Documentation
+## 相关文档
 
-- [Global Setup Configuration](/config/globalsetup)
-- [Setup Files Configuration](/config/setupfiles)
-- [Test Sequencing Options](/config/sequence)
-- [Isolation Configuration](/config/isolate)
-- [Pool Configuration](/config/pool)
-- [Extending Reporters](/guide/advanced/reporters) - for reporter lifecycle events
-- [Test API Reference](/api/hooks) - for hook APIs
+- [全局设置配置](/config/globalsetup)
+- [设置文件配置](/config/setupfiles)
+- [测试排序选项](/config/sequence)
+- [隔离配置](/config/isolate)
+- [池配置](/config/pool)
+- [扩展报告器](/guide/advanced/reporters) - 用于报告器生命周期事件
+- [测试 API 参考](/api/hooks) - 用于钩子 API

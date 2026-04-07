@@ -1,12 +1,12 @@
 ---
-title: logHeapUsage | Config
+title: logHeapUsage | 配置
 outline: deep
 ---
 
 # logHeapUsage
 
-- **Type**: `boolean`
-- **Default**: `false`
-- **CLI:** `--logHeapUsage`, `--logHeapUsage=false`
+- **类型**: `boolean`
+- **默认值**: `false`
+- **命令行:** `--logHeapUsage`, `--logHeapUsage=false`
 
-Show heap usage after each test. Useful for debugging memory leaks.
+显示每次测试后的堆内存使用情况。有助于调试内存泄漏。

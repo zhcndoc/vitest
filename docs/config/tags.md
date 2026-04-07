@@ -1,25 +1,25 @@
 ---
-title: tags | Config
+title: tags | 配置
 outline: deep
 ---
 
 # tags <Version>4.1.0</Version> {#tags}
 
-- **Type:** `TestTagDefinition[]`
-- **Default:** `[]`
+- **类型：** `TestTagDefinition[]`
+- **默认值：** `[]`
 
-Defines all [available tags](/guide/test-tags) in your test project. By default, if test defines a name not listed here, Vitest will throw an error, but this can be configured via a [`strictTags`](/config/stricttags) option.
+定义测试项目中所有 [可用的标签](/guide/test-tags)。默认情况下，如果测试定义的名称未在此列出，Vitest 将抛出错误，但可以通过 [`strictTags`](/config/stricttags) 选项进行配置。
 
-If you are using [`projects`](/config/projects), they will inherit all global tags definitions automatically.
+如果你正在使用 [`projects`](/config/projects)，它们将自动继承所有全局标签定义。
 
-Use [`--tags-filter`](/guide/test-tags#syntax) to filter tests by their tags. Use [`--list-tags`](/guide/cli#listtags) to print every tag in your Vitest workspace.
+使用 [`--tags-filter`](/guide/test-tags#syntax) 根据标签过滤测试。使用 [`--list-tags`](/guide/cli#listtags) 打印 Vitest 工作区中的每个标签。
 
 ## name
 
-- **Type:** `string`
-- **Required:** `true`
+- **类型：** `string`
+- **必填：** `true`
 
-The name of the tag. This is what you use in the `tags` option in tests.
+标签的名称。这是你在测试的 `tags` 选项中使用的内容。
 
 ```ts
 export default defineConfig({
@@ -33,7 +33,7 @@ export default defineConfig({
 ```
 
 ::: tip
-If you are using TypeScript, you can enforce what tags are available by augmenting the `TestTags` type with a property that contains a union of strings (make sure this file is included by your `tsconfig`):
+如果你使用的是 TypeScript，你可以通过扩充 `TestTags` 类型来强制规定可用的标签，该类型包含一个字符串联合属性（确保此文件被你的 `tsconfig` 包含）：
 
 ```ts [vitest.shims.ts]
 import 'vitest'
@@ -52,9 +52,9 @@ declare module 'vitest' {
 
 ## description
 
-- **Type:** `string`
+- **类型：** `string`
 
-A human-readable description for the tag. This will be shown in UI and inside error messages when a tag is not found.
+标签的人类可读描述。当找不到标签时，这将显示在 UI 和错误消息中。
 
 ```ts
 export default defineConfig({
@@ -71,10 +71,10 @@ export default defineConfig({
 
 ## priority
 
-- **Type:** `number`
-- **Default:** `Infinity`
+- **类型：** `number`
+- **默认值：** `Infinity`
 
-Priority for merging options when multiple tags with the same options are applied to a test. Lower number means higher priority (e.g., priority `1` takes precedence over priority `3`).
+当多个具有相同选项的标签应用于测试时，用于合并选项的优先级。数字越小意味着优先级越高（例如，优先级 `1` 优先于优先级 `3`）。
 
 ```ts
 export default defineConfig({
@@ -83,31 +83,31 @@ export default defineConfig({
       {
         name: 'flaky',
         timeout: 30_000,
-        priority: 1, // higher priority
+        priority: 1, // 更高优先级
       },
       {
         name: 'db',
         timeout: 60_000,
-        priority: 2, // lower priority
+        priority: 2, // 更低优先级
       },
     ],
   },
 })
 ```
 
-When a test has both tags, the `timeout` will be `30_000` because `flaky` has a higher priority.
+当测试同时拥有这两个标签时，`timeout` 将为 `30_000`，因为 `flaky` 具有更高的优先级。
 
-## Test Options
+## 测试选项
 
-Tags can define [test options](/api/test#test-options) that will be applied to every test marked with the tag. These options are merged with the test's own options, with the test's options taking precedence.
+标签可以定义 [测试选项](/api/test#test-options)，这些选项将应用于标记了该标签的每个测试。这些选项与测试自身的选项合并，测试自身的选项优先。
 
 ::: warning
-The [`retry.condition`](/api/test#retry) can only be a regexp because the config values need to be serialised.
+[`retry.condition`](/api/test#retry) 只能是正则表达式，因为配置值需要被序列化。
 
-Tags also cannot apply other [tags](/api/test#tags) via these options.
+标签也不能通过这些选项应用其他 [标签](/api/test#tags)。
 :::
 
-## Example
+## 示例
 
 ```ts
 import { defineConfig } from 'vitest/config'

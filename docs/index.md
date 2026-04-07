@@ -1,6 +1,6 @@
 ---
-title: Vitest
-titleTemplate: Next Generation testing framework
+title: Vitest 中文文档
+titleTemplate: 基于 Vite 的原生测试框架
 layout: home
 theme: dark
 ---

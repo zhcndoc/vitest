@@ -1,15 +1,15 @@
 ---
-title: browser.trackUnhandledErrors | Config
+title: browser.trackUnhandledErrors | 配置
 outline: deep
 ---
 
 # browser.trackUnhandledErrors
 
-- **Type:** `boolean`
-- **Default:** `true`
+- **类型:** `boolean`
+- **默认值:** `true`
 
-Enables tracking uncaught errors and exceptions so they can be reported by Vitest.
+启用对未捕获错误和异常的跟踪，以便 Vitest 可以报告它们。
 
-If you need to hide certain errors, it is recommended to use [`onUnhandledError`](/config/onunhandlederror) option instead.
+如果你需要隐藏某些错误，建议改用 [`onUnhandledError`](/config/onunhandlederror) 选项。
 
-Disabling this will completely remove all Vitest error handlers, which can help debugging with the "Pause on exceptions" checkbox turned on.
+禁用此项将完全移除所有 Vitest 错误处理器，这有助于在开启“遇到异常时暂停”复选框的情况下进行调试。

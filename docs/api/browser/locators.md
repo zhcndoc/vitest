@@ -1,26 +1,26 @@
 ---
-title: Locators | Browser Mode
+title: 定位器 | 浏览器模式
 outline: [2, 3]
 ---
 
-# Locators
+# 定位器
 
-A locator is a representation of an element or a number of elements. Every locator is defined by a string called a selector. Vitest abstracts this selector by providing convenient methods that generate them behind the scenes.
+定位器是元素或多个元素的表示。每个定位器都由一个称为选择器的字符串定义。Vitest 通过提供在幕后生成这些选择器的便捷方法，对此选择器进行了抽象。
 
-The locator API uses a fork of [Playwright's locators](https://playwright.dev/docs/api/class-locator) called [Ivya](https://npmx.dev/ivya). However, Vitest provides this API to every [provider](/config/browser/provider), not just playwright.
+定位器 API 使用了 [Playwright 的定位器](https://playwright.dev/docs/api/class-locator) 的一个分支，称为 [Ivya](https://npmx.dev/ivya)。然而，Vitest 向每个 [提供者](/config/browser/provider) 提供此 API，不仅仅是 playwright。
 
 ::: tip
-This page covers API usage. To better understand locators and their usage, read [Playwright's "Locators" documentation](https://playwright.dev/docs/locators).
+本页涵盖 API 用法。为了更好地理解定位器及其用法，请阅读 [Playwright 的“定位器”文档](https://playwright.dev/docs/locators)。
 :::
 
-::: tip Difference from `testing-library`
-Vitest's `page.getBy*` methods return a locator object, not a DOM element. This makes locator queries composable and allows Vitest to retry interactions and assertions when needed.
+::: tip 与 testing-library 的区别
+Vitest 的 `page.getBy*` 方法返回一个定位器对象，而不是 DOM 元素。这使得定位器查询可组合，并允许 Vitest 在需要时重试交互和断言。
 
-Compared to testing-library queries:
+与 testing-library 查询相比：
 
-- Use locator chaining (`.getBy*`, `.filter`, `.nth`) instead of `within(...)`.
-- Keep locators around and interact with them later (`await locator.click()`), instead of resolving elements up front.
-- Single-element escape hatches like `.element()` and `.query()` are strict and throw if multiple elements match.
+- 使用定位器链式调用（`.getBy*`、`.filter`、`.nth`）而不是 `within(...)`。
+- 保留定位器并在稍后与它们交互（`await locator.click()`），而不是预先解析元素。
+- 单元素逃生舱口如 `.element()` 和 `.query()` 是严格的，如果匹配多个元素则抛出错误。
 
 ```ts
 import { expect } from 'vitest'
@@ -45,13 +45,13 @@ function getByRole(
 ): Locator
 ```
 
-Creates a way to locate an element by its [ARIA role](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles), [ARIA attributes](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes) and [accessible name](https://developer.mozilla.org/en-US/docs/Glossary/Accessible_name).
+创建一种通过其 [ARIA 角色](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles)、[ARIA 属性](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes) 和 [可访问名称](https://developer.mozilla.org/en-US/docs/Glossary/Accessible_name) 来定位元素的方法。
 
 ::: tip
-If you only query for a single element with `getByText('The name')` it's oftentimes better to use `getByRole(expectedRole, { name: 'The name' })`. The accessible name query does not replace other queries such as `*ByAltText` or `*ByTitle`. While the accessible name can be equal to these attributes, it does not replace the functionality of these attributes.
+如果你只查询单个元素 `getByText('The name')`，通常最好使用 `getByRole(expectedRole, { name: 'The name' })`。可访问名称查询不会替换其他查询，如 `*ByAltText` 或 `*ByTitle`。虽然可访问名称可以等于这些属性，但它不会替换这些属性的功能。
 :::
 
-Consider the following DOM structure.
+考虑以下 DOM 结构。
 
 ```html
 <h3>Sign up</h3>
@@ -67,7 +67,7 @@ Consider the following DOM structure.
 <button>Submit</button>
 ```
 
-You can locate each element by its implicit role:
+你可以通过其隐式角色定位每个元素：
 
 ```ts
 await expect.element(
@@ -81,18 +81,18 @@ await page.getByRole('button', { name: /submit/i }).click()
 ```
 
 ::: warning
-Roles are matched by string equality, without inheriting from the ARIA role hierarchy. As a result, querying a superclass role like `checkbox` will not include elements with a subclass role like `switch`.
+角色通过字符串相等性匹配，不从 ARIA 角色层次结构继承。因此，查询超类角色（如 `checkbox`）不会包含具有子类角色（如 `switch`）的元素。
 
-By default, many semantic elements in HTML have a role; for example, `<input type="radio">` has the "radio" role. Non-semantic elements in HTML do not have a role; `<div>` and `<span>` without added semantics return `null`. The `role` attribute can provide semantics.
+默认情况下，HTML 中的许多语义元素都有角色；例如，`<input type="radio">` 具有 "radio" 角色。HTML 中的非语义元素没有角色；没有添加语义的 `<div>` 和 `<span>` 返回 `null`。`role` 属性可以提供语义。
 
-Providing roles via `role` or `aria-*` attributes to built-in elements that already have an implicit role is **highly discouraged** by ARIA guidelines.
+根据 ARIA 指南，通过 `role` 或 `aria-*` 属性为已经具有隐式角色的内置元素提供角色是 **强烈不推荐** 的。
 :::
 
-**Options**
+**选项**
 
 - `exact: boolean`
 
-  Whether the `name` is matched exactly: case-sensitive and whole-string. Disabled by default. This option is ignored if `name` is a regular expression. Note that exact match still trims whitespace.
+  是否精确匹配 `name`：区分大小写且全字符串匹配。默认禁用。如果 `name` 是正则表达式，则忽略此选项。注意，精确匹配仍然会修剪空白字符。
 
   ```tsx
   <button>Hello World</button>
@@ -104,9 +104,9 @@ Providing roles via `role` or `aria-*` attributes to built-in elements that alre
 
 - `checked: boolean`
 
-  Should checked elements (set by `aria-checked` or `<input type="checkbox"/>`) be included or not. By default, the filter is not applied.
+  是否应包含已选中的元素（由 `aria-checked` 或 `<input type="checkbox"/>` 设置）。默认情况下，不应用过滤器。
 
-  See [`aria-checked`](https://www.w3.org/TR/wai-aria-1.2/#aria-checked) for more information
+  参见 [`aria-checked`](https://www.w3.org/TR/wai-aria-1.2/#aria-checked) 获取更多信息
 
   ```tsx
   <>
@@ -120,9 +120,9 @@ Providing roles via `role` or `aria-*` attributes to built-in elements that alre
 
 - `disabled: boolean`
 
-  Should disabled elements be included or not. By default, the filter is not applied. Note that unlike other attributes, `disable` state is inherited.
+  是否应包含禁用的元素。默认情况下，不应用过滤器。注意，与其他属性不同，`disable` 状态是继承的。
 
-  See [`aria-disabled`](https://www.w3.org/TR/wai-aria-1.2/#aria-disabled) for more information
+  参见 [`aria-disabled`](https://www.w3.org/TR/wai-aria-1.2/#aria-disabled) 获取更多信息
 
   ```tsx
   <input type="text" disabled />
@@ -133,9 +133,9 @@ Providing roles via `role` or `aria-*` attributes to built-in elements that alre
 
 - `expanded: boolean`
 
-  Should expanded elements be included or not. By default, the filter is not applied.
+  是否应包含展开的元素。默认情况下，不应用过滤器。
 
-  See [`aria-expanded`](https://www.w3.org/TR/wai-aria-1.2/#aria-expanded) for more information
+  参见 [`aria-expanded`](https://www.w3.org/TR/wai-aria-1.2/#aria-expanded) 获取更多信息
 
   ```tsx
   <a aria-expanded="true" href="example.com">Link</a>
@@ -146,9 +146,9 @@ Providing roles via `role` or `aria-*` attributes to built-in elements that alre
 
 - `includeHidden: boolean`
 
-  Should elements that are [normally excluded](https://www.w3.org/TR/wai-aria-1.2/#tree_exclusion) from the accessibility tree be queried. By default, only non-hidden elements are matched by role selector.
+  是否应查询 [通常被排除](https://www.w3.org/TR/wai-aria-1.2/#tree_exclusion) 在无障碍树之外的元素。默认情况下，只有非隐藏元素通过角色选择器匹配。
 
-  Note that roles `none` and `presentation` are always included.
+  注意，角色 `none` 和 `presentation` 始终包含在内。
 
   ```tsx
   <button style="display: none" />
@@ -160,9 +160,9 @@ Providing roles via `role` or `aria-*` attributes to built-in elements that alre
 
 - `level: number`
 
-  A number attribute that is usually present for `heading`, `listitem`, `row`, `treeitem` roles with default values for `<h1>-<h6>` elements. By default, the filter is not applied.
+  一个数字属性，通常存在于 `heading`、`listitem`、`row`、`treeitem` 角色中，`<h1>-<h6>` 元素有默认值。默认情况下，不应用过滤器。
 
-  See [`aria-level`](https://www.w3.org/TR/wai-aria-1.2/#aria-level) for more information
+  参见 [`aria-level`](https://www.w3.org/TR/wai-aria-1.2/#aria-level) 获取更多信息
 
   ```tsx
   <>
@@ -176,7 +176,7 @@ Providing roles via `role` or `aria-*` attributes to built-in elements that alre
 
 - `name: string | RegExp`
 
-  [An accessible name](https://developer.mozilla.org/en-US/docs/Glossary/Accessible_name). By default, matching is case-insensitive and searches for a substring. Use `exact` option to control this behavior.
+  [可访问名称](https://developer.mozilla.org/en-US/docs/Glossary/Accessible_name)。默认情况下，匹配不区分大小写并搜索子字符串。使用 `exact` 选项来控制此行为。
 
   ```tsx
   <button>Click Me!</button>
@@ -188,9 +188,9 @@ Providing roles via `role` or `aria-*` attributes to built-in elements that alre
 
 - `pressed: boolean`
 
-  Should pressed elements be included or not. By default, the filter is not applied.
+  是否应包含按下的元素。默认情况下，不应用过滤器。
 
-  See [`aria-pressed`](https://www.w3.org/TR/wai-aria-1.2/#aria-pressed) for more information
+  参见 [`aria-pressed`](https://www.w3.org/TR/wai-aria-1.2/#aria-pressed) 获取更多信息
 
   ```tsx
   <button aria-pressed="true">👍</button>
@@ -201,9 +201,9 @@ Providing roles via `role` or `aria-*` attributes to built-in elements that alre
 
 - `selected: boolean`
 
-  Should selected elements be included or not. By default, the filter is not applied.
+  是否应包含选中的元素。默认情况下，不应用过滤器。
 
-  See [`aria-selected`](https://www.w3.org/TR/wai-aria-1.2/#aria-selected) for more information
+  参见 [`aria-selected`](https://www.w3.org/TR/wai-aria-1.2/#aria-selected) 获取更多信息
 
   ```tsx
   <button role="tab" aria-selected="true">Vue</button>
@@ -212,11 +212,11 @@ Providing roles via `role` or `aria-*` attributes to built-in elements that alre
   page.getByRole('button', { selected: false }) // ❌
   ```
 
-**See also**
+**另见**
 
-- [List of ARIA roles at MDN](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles)
-- [List of ARIA roles at w3.org](https://www.w3.org/TR/wai-aria-1.2/#role_definitions)
-- [testing-library's `ByRole`](https://testing-library.com/docs/queries/byrole/)
+- [MDN 上的 ARIA 角色列表](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles)
+- [w3.org 上的 ARIA 角色列表](https://www.w3.org/TR/wai-aria-1.2/#role_definitions)
+- [testing-library 的 `ByRole`](https://testing-library.com/docs/queries/byrole/)
 
 ## getByAltText
 
@@ -227,7 +227,7 @@ function getByAltText(
 ): Locator
 ```
 
-Creates a locator capable of finding an element with an `alt` attribute that matches the text. Unlike testing-library's implementation, Vitest will match any element that has a matching `alt` attribute.
+创建能够查找具有匹配 `alt` 属性的元素的定位器。与 testing-library 的实现不同，Vitest 将匹配任何具有匹配 `alt` 属性的元素。
 
 ```tsx
 <img alt="Incredibles 2 Poster" src="/incredibles-2.png" />
@@ -236,15 +236,15 @@ page.getByAltText(/incredibles.*? poster/i) // ✅
 page.getByAltText('non existing alt text') // ❌
 ```
 
-**Options**
+**选项**
 
 - `exact: boolean`
 
-  Whether the `text` is matched exactly: case-sensitive and whole-string. Disabled by default. This option is ignored if `text` is a regular expression. Note that exact match still trims whitespace.
+  是否精确匹配 `text`：区分大小写且全字符串匹配。默认禁用。如果 `text` 是正则表达式，则忽略此选项。注意，精确匹配仍然会修剪空白字符。
 
-**See also**
+**另见**
 
-- [testing-library's `ByAltText`](https://testing-library.com/docs/queries/byalttext/)
+- [testing-library 的 `ByAltText`](https://testing-library.com/docs/queries/byalttext/)
 
 ## getByLabelText
 
@@ -255,43 +255,43 @@ function getByLabelText(
 ): Locator
 ```
 
-Creates a locator capable of finding an element that has an associated label.
+创建能够查找具有关联标签的元素的定位器。
 
-The `page.getByLabelText('Username')` locator will find every input in the example below:
+`page.getByLabelText('Username')` 定位器将找到下面示例中的每个输入：
 
 ```html
-// for/htmlFor relationship between label and form element id
+// label 和表单元素 id 之间的 for/htmlFor 关系
 <label for="username-input">Username</label>
 <input id="username-input" />
 
-// The aria-labelledby attribute with form elements
+// 带有表单元素的 aria-labelledby 属性
 <label id="username-label">Username</label>
 <input aria-labelledby="username-label" />
 
-// Wrapper labels
+// 包装标签
 <label>Username <input /></label>
 
-// Wrapper labels where the label text is in another child element
+// 标签文本在另一个子元素中的包装标签
 <label>
   <span>Username</span>
   <input />
 </label>
 
-// aria-label attributes
-// Take care because this is not a label that users can see on the page,
-// so the purpose of your input must be obvious to visual users.
+// aria-label 属性
+// 请注意，因为这不是用户在页面上可以看到的标签，
+// 所以你的输入目的对于视觉用户来说必须是显而易见的。
 <input aria-label="Username" />
 ```
 
-**Options**
+**选项**
 
 - `exact: boolean`
 
-  Whether the `text` is matched exactly: case-sensitive and whole-string. Disabled by default. This option is ignored if `text` is a regular expression. Note that exact match still trims whitespace.
+  是否精确匹配 `text`：区分大小写且全字符串匹配。默认禁用。如果 `text` 是正则表达式，则忽略此选项。注意，精确匹配仍然会修剪空白字符。
 
-**See also**
+**另见**
 
-- [testing-library's `ByLabelText`](https://testing-library.com/docs/queries/bylabeltext/)
+- [testing-library 的 `ByLabelText`](https://testing-library.com/docs/queries/bylabeltext/)
 
 ## getByPlaceholder
 
@@ -302,7 +302,7 @@ function getByPlaceholder(
 ): Locator
 ```
 
-Creates a locator capable of finding an element that has the specified `placeholder` attribute. Vitest will match any element that has a matching `placeholder` attribute, not just `input`.
+创建能够查找具有指定 `placeholder` 属性的元素的定位器。Vitest 将匹配任何具有匹配 `placeholder` 属性的元素，不仅仅是 `input`。
 
 ```tsx
 <input placeholder="Username" />
@@ -312,18 +312,18 @@ page.getByPlaceholder('not found') // ❌
 ```
 
 ::: warning
-It is generally better to rely on a label using [`getByLabelText`](#getbylabeltext) than a placeholder.
+通常最好依赖使用 [`getByLabelText`](#getbylabeltext) 的标签而不是占位符。
 :::
 
-**Options**
+**选项**
 
 - `exact: boolean`
 
-  Whether the `text` is matched exactly: case-sensitive and whole-string. Disabled by default. This option is ignored if `text` is a regular expression. Note that exact match still trims whitespace.
+  是否精确匹配 `text`：区分大小写且全字符串匹配。默认禁用。如果 `text` 是正则表达式，则忽略此选项。注意，精确匹配仍然会修剪空白字符。
 
-**See also**
+**另见**
 
-- [testing-library's `ByPlaceholderText`](https://testing-library.com/docs/queries/byplaceholdertext/)
+- [testing-library 的 `ByPlaceholderText`](https://testing-library.com/docs/queries/byplaceholdertext/)
 
 ## getByText
 
@@ -334,7 +334,7 @@ function getByText(
 ): Locator
 ```
 
-Creates a locator capable of finding an element that contains the specified text. The text will be matched against TextNode's [`nodeValue`](https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeValue) or input's value if the type is `button` or `reset`. Matching by text always normalizes whitespace, even with exact match. For example, it turns multiple spaces into one, turns line breaks into spaces and ignores leading and trailing whitespace.
+创建一个能够查找包含指定文本的元素的定位器。文本将与 TextNode 的 [`nodeValue`](https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeValue) 匹配，如果类型是 `button` 或 `reset`，则与 input 的 value 匹配。文本匹配总是会规范化空白字符，即使是精确匹配。例如，它将多个空格变为一个，将换行符变为空格，并忽略前导和尾随空白。
 
 ```tsx
 <a href="/about">About ℹ️</a>
@@ -344,18 +344,18 @@ page.getByText('about', { exact: true }) // ❌
 ```
 
 ::: tip
-This locator is useful for locating non-interactive elements. If you need to locate an interactive element, like a button or an input, prefer [`getByRole`](#getbyrole).
+此定位器适用于查找非交互元素。如果你需要查找交互元素，如按钮或输入框，建议使用 [`getByRole`](#getbyrole)。
 :::
 
-**Options**
+**选项**
 
 - `exact: boolean`
 
-  Whether the `text` is matched exactly: case-sensitive and whole-string. Disabled by default. This option is ignored if `text` is a regular expression. Note that exact match still trims whitespace.
+  `text` 是否精确匹配：区分大小写且为整个字符串。默认禁用。如果 `text` 是正则表达式，则忽略此选项。注意，精确匹配仍然会修剪空白。
 
-**See also**
+**另见**
 
-- [testing-library's `ByText`](https://testing-library.com/docs/queries/bytext/)
+- [testing-library 的 `ByText`](https://testing-library.com/docs/queries/bytext/)
 
 ## getByTitle
 
@@ -366,7 +366,7 @@ function getByTitle(
 ): Locator
 ```
 
-Creates a locator capable of finding an element that has the specified `title` attribute. Unlike testing-library's `getByTitle`, Vitest cannot find `title` elements within an SVG.
+创建一个能够查找具有指定 `title` 属性的元素的定位器。与 testing-library 的 `getByTitle` 不同，Vitest 无法在 SVG 内查找 `title` 元素。
 
 ```tsx
 <span title="Delete" id="2"></span>
@@ -375,15 +375,15 @@ page.getByTitle('Delete') // ✅
 page.getByTitle('Create') // ❌
 ```
 
-**Options**
+**选项**
 
 - `exact: boolean`
 
-  Whether the `text` is matched exactly: case-sensitive and whole-string. Disabled by default. This option is ignored if `text` is a regular expression. Note that exact match still trims whitespace.
+  `text` 是否精确匹配：区分大小写且为整个字符串。默认禁用。如果 `text` 是正则表达式，则忽略此选项。注意，精确匹配仍然会修剪空白。
 
-**See also**
+**另见**
 
-- [testing-library's `ByTitle`](https://testing-library.com/docs/queries/bytitle/)
+- [testing-library 的 `ByTitle`](https://testing-library.com/docs/queries/bytitle/)
 
 ## getByTestId
 
@@ -391,7 +391,7 @@ page.getByTitle('Create') // ❌
 function getByTestId(text: string | RegExp): Locator
 ```
 
-Creates a locator capable of finding an element that matches the specified test id attribute. You can configure the attribute name with [`browser.locators.testIdAttribute`](/config/browser/locators#testidattribute).
+创建一个能够查找匹配指定测试 id 属性的元素的定位器。你可以使用 [`browser.locators.testIdAttribute`](/config/browser/locators#testidattribute) 配置属性名称。
 
 ```tsx
 <div data-testid="custom-element" />
@@ -401,18 +401,18 @@ page.getByTestId('non-existing-element') // ❌
 ```
 
 ::: warning
-It is recommended to use this only after the other locators don't work for your use case. Using `data-testid` attributes does not resemble how your software is used and should be avoided if possible.
+建议仅在其他定位器不适用于你的用例时使用此方法。使用 `data-testid` 属性并不像你的软件被使用的方式，如果可能应避免使用。
 :::
 
-**Options**
+**选项**
 
 - `exact: boolean`
 
-  Whether the `text` is matched exactly: case-sensitive and whole-string. Disabled by default. This option is ignored if `text` is a regular expression. Note that exact match still trims whitespace.
+  `text` 是否精确匹配：区分大小写且为整个字符串。默认禁用。如果 `text` 是正则表达式，则忽略此选项。注意，精确匹配仍然会修剪空白。
 
-**See also**
+**另见**
 
-- [testing-library's `ByTestId`](https://testing-library.com/docs/queries/bytestid/)
+- [testing-library 的 `ByTestId`](https://testing-library.com/docs/queries/bytestid/)
 
 ## nth
 
@@ -420,7 +420,7 @@ It is recommended to use this only after the other locators don't work for your 
 function nth(index: number): Locator
 ```
 
-This method returns a new locator that matches only a specific index within a multi-element query result. It's zero based, `nth(0)` selects the first element. Unlike `elements()[n]`, the `nth` locator will be retried until the element is present.
+此方法返回一个新的定位器，仅匹配多元素查询结果中的特定索引。它是从零开始的，`nth(0)` 选择第一个元素。与 `elements()[n]` 不同，`nth` 定位器会重试直到元素出现。
 
 ```html
 <div aria-label="one"><input/><input/><input/></div>
@@ -433,14 +433,14 @@ page.getByRole('textbox').nth(4) // ❌
 ```
 
 ::: tip
-Before resorting to `nth`, you may find it useful to use chained locators to narrow down your search.
-Sometimes there is no better way to distinguish than by element position; although this can lead to flake, it's better than nothing.
+在使用 `nth` 之前，你可能会发现使用链式定位器来缩小搜索范围很有用。
+有时除了元素位置外没有更好的区分方法；虽然这可能导致不稳定，但总比没有好。
 :::
 
 ```tsx
-page.getByLabel('two').getByRole('input') // ✅ better alternative to page.getByRole('textbox').nth(3)
-page.getByLabel('one').getByRole('input') // ❌ too ambiguous
-page.getByLabel('one').getByRole('input').nth(1) // ✅ pragmatic compromise
+page.getByLabel('two').getByRole('input') // ✅ page.getByRole('textbox').nth(3) 的更好替代方案
+page.getByLabel('one').getByRole('input') // ❌ 太模糊
+page.getByLabel('one').getByRole('input').nth(1) // ✅ 务实的妥协
 ```
 
 ## first
@@ -449,8 +449,8 @@ page.getByLabel('one').getByRole('input').nth(1) // ✅ pragmatic compromise
 function first(): Locator
 ```
 
-This method returns a new locator that matches only the first index of a multi-element query result.
-It is sugar for `nth(0)`.
+此方法返回一个新的定位器，仅匹配多元素查询结果的第一个索引。
+它是 `nth(0)` 的语法糖。
 
 ```html
 <input/> <input/> <input/>
@@ -466,8 +466,8 @@ page.getByRole('textbox').first() // ✅
 function last(): Locator
 ```
 
-This method returns a new locator that matches only the last index of a multi-element query result.
-It is sugar for `nth(-1)`.
+此方法返回一个新的定位器，仅匹配多元素查询结果的最后一个索引。
+它是 `nth(-1)` 的语法糖。
 
 ```html
 <input/> <input/> <input/>
@@ -483,7 +483,7 @@ page.getByRole('textbox').last() // ✅
 function and(locator: Locator): Locator
 ```
 
-This method creates a new locator that matches both the parent and provided locator. The following example finds a button with a specific title:
+此方法创建一个新的定位器，同时匹配父级和提供的定位器。以下示例查找具有特定标题的按钮：
 
 ```ts
 page.getByRole('button').and(page.getByTitle('Subscribe'))
@@ -495,10 +495,10 @@ page.getByRole('button').and(page.getByTitle('Subscribe'))
 function or(locator: Locator): Locator
 ```
 
-This method creates a new locator that matches either one or both locators.
+此方法创建一个新的定位器，匹配其中一个或两个定位器。
 
 ::: warning
-Note that if locator matches more than a single element, calling another method might throw an error if it expects a single element:
+注意，如果定位器匹配多个元素，调用另一个方法可能会抛出错误，如果它期望单个元素：
 
 ```tsx
 <>
@@ -508,7 +508,7 @@ Note that if locator matches more than a single element, calling another method 
 
 page.getByRole('button')
   .or(page.getByRole('link'))
-  .click() // ❌ matches multiple elements
+  .click() // ❌ 匹配多个元素
 ```
 :::
 
@@ -518,13 +518,13 @@ page.getByRole('button')
 function filter(options: LocatorOptions): Locator
 ```
 
-This methods narrows down the locator according to the options, such as filtering by text. It can be chained to apply multiple filters.
+此方法根据选项缩小定位器范围，例如按文本过滤。它可以链式调用以应用多个过滤器。
 
 ### has
 
-- **Type:** `Locator`
+- **类型:** `Locator`
 
-This options narrows down the selector to match elements that contain other elements matching provided locator. For example, with this HTML:
+此选项缩小选择器以匹配包含其他匹配所提供定位器的元素的元素。例如，使用此 HTML：
 
 ```html{1,3}
 <article>
@@ -535,26 +535,26 @@ This options narrows down the selector to match elements that contain other elem
 </article>
 ```
 
-We can narrow down the locator to only find the `article` with `Vitest` text inside:
+我们可以缩小定位器范围以仅查找内部包含 `Vitest` 文本的 `article`：
 
 ```ts
 page.getByRole('article').filter({ has: page.getByText('Vitest') }) // ✅
 ```
 
 ::: warning
-Provided locator (`page.getByText('Vitest')` in the example) must be relative to the parent locator (`page.getByRole('article')` in the example). It will be queried starting with the parent locator, not the document root.
+提供的定位器（示例中的 `page.getByText('Vitest')`）必须相对于父级定位器（示例中的 `page.getByRole('article')`）。它将从父级定位器开始查询，而不是文档根节点。
 
-Meaning, you cannot pass down a locator that queries the element outside of the parent locator:
+意味着，你不能传递一个查询父级定位器外部元素的定位器：
 
 ```ts
 page.getByText('Vitest').filter({ has: page.getByRole('article') }) // ❌
 ```
 
-This example will fail because the `article` element is outside the element with `Vitest` text.
+此示例将失败，因为 `article` 元素在包含 `Vitest` 文本的元素外部。
 :::
 
 ::: tip
-This method can be chained to narrow down the element even further:
+此方法可以链式调用以进一步缩小元素范围：
 
 ```ts
 page.getByRole('article')
@@ -565,9 +565,9 @@ page.getByRole('article')
 
 ### hasNot
 
-- **Type:** `Locator`
+- **类型:** `Locator`
 
-This option narrows down the selector to match elements that do not contain other elements matching provided locator. For example, with this HTML:
+此选项缩小选择器以匹配不包含其他匹配所提供定位器的元素的元素。例如，使用此 HTML：
 
 ```html{1,3}
 <article>
@@ -578,7 +578,7 @@ This option narrows down the selector to match elements that do not contain othe
 </article>
 ```
 
-We can narrow down the locator to only find the `article` that doesn't have `Rolldown` inside.
+我们可以缩小定位器范围以仅查找内部不包含 `Rolldown` 的 `article`。
 
 ```ts
 page.getByRole('article')
@@ -588,14 +588,14 @@ page.getByRole('article')
 ```
 
 ::: warning
-Note that provided locator is queried against the parent, not the document root, just like [`has`](#has) option.
+注意，提供的定位器是针对父级查询的，而不是文档根节点，就像 [`has`](#has) 选项一样。
 :::
 
 ### hasText
 
-- **Type:** `string | RegExp`
+- **类型:** `string | RegExp`
 
-This options narrows down the selector to only match elements that contain provided text somewhere inside. When the `string` is passed, matching is case-insensitive and searches for a substring.
+此选项缩小选择器以仅匹配内部某处包含所提供文本的元素。当传递 `string` 时，匹配是不区分大小写的，并搜索子字符串。
 
 ```html{1,3}
 <article>
@@ -606,7 +606,7 @@ This options narrows down the selector to only match elements that contain provi
 </article>
 ```
 
-Both locators will find the same element because the search is case-insensitive:
+两个定位器都会找到相同的元素，因为搜索是不区分大小写的：
 
 ```ts
 page.getByRole('article').filter({ hasText: 'Vitest' }) // ✅
@@ -615,13 +615,13 @@ page.getByRole('article').filter({ hasText: 'Vite' }) // ✅
 
 ### hasNotText
 
-- **Type:** `string | RegExp`
+- **类型:** `string | RegExp`
 
-This options narrows down the selector to only match elements that do not contain provided text somewhere inside. When the `string` is passed, matching is case-insensitive and searches for a substring.
+此选项缩小选择器以仅匹配内部某处不包含所提供文本的元素。当传递 `string` 时，匹配是不区分大小写的，并搜索子字符串。
 
-## Methods
+## 方法
 
-All methods are asynchronous and must be awaited. Since Vitest 3, tests will fail if a method is not awaited.
+所有方法都是异步的，必须被等待。自 Vitest 3 起，如果方法未被等待，测试将失败。
 
 ### click
 
@@ -629,7 +629,7 @@ All methods are asynchronous and must be awaited. Since Vitest 3, tests will fai
 function click(options?: UserEventClickOptions): Promise<void>
 ```
 
-Click on an element. You can use the options to set the cursor position.
+点击一个元素。你可以使用选项来设置光标位置。
 
 ```ts
 import { page } from 'vitest/browser'
@@ -637,7 +637,7 @@ import { page } from 'vitest/browser'
 await page.getByRole('img', { name: 'Rose' }).click()
 ```
 
-- [See more at `userEvent.click`](/api/browser/interactivity#userevent-click)
+- [查看更多 `userEvent.click`](/api/browser/interactivity#userevent-click)
 
 ### dblClick
 
@@ -645,7 +645,7 @@ await page.getByRole('img', { name: 'Rose' }).click()
 function dblClick(options?: UserEventDoubleClickOptions): Promise<void>
 ```
 
-Triggers a double click event on an element. You can use the options to set the cursor position.
+在元素上触发双击事件。你可以使用选项来设置光标位置。
 
 ```ts
 import { page } from 'vitest/browser'
@@ -653,7 +653,7 @@ import { page } from 'vitest/browser'
 await page.getByRole('img', { name: 'Rose' }).dblClick()
 ```
 
-- [See more at `userEvent.dblClick`](/api/browser/interactivity#userevent-dblclick)
+- [查看更多 `userEvent.dblClick`](/api/browser/interactivity#userevent-dblclick)
 
 ### tripleClick
 
@@ -661,7 +661,7 @@ await page.getByRole('img', { name: 'Rose' }).dblClick()
 function tripleClick(options?: UserEventTripleClickOptions): Promise<void>
 ```
 
-Triggers a triple click event on an element. Since there is no `tripleclick` in browser api, this method will fire three click events in a row.
+在元素上触发三击事件。由于浏览器 API 中没有 `tripleclick`，此方法将连续触发三次点击事件。
 
 ```ts
 import { page } from 'vitest/browser'
@@ -669,7 +669,7 @@ import { page } from 'vitest/browser'
 await page.getByRole('img', { name: 'Rose' }).tripleClick()
 ```
 
-- [See more at `userEvent.tripleClick`](/api/browser/interactivity#userevent-tripleclick)
+- [查看更多 `userEvent.tripleClick`](/api/browser/interactivity#userevent-tripleclick)
 
 ### wheel <Version>4.1.0</Version> {#wheel}
 
@@ -677,16 +677,16 @@ await page.getByRole('img', { name: 'Rose' }).tripleClick()
 function wheel(options: UserEventWheelOptions): Promise<void>
 ```
 
-Triggers a [`wheel` event](https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event) on an element. You can use the options to choose a general scroll `direction` or a precise `delta` value.
+在元素上触发 [`wheel` 事件](https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event)。你可以使用选项来选择一般的滚动 `direction` 或精确的 `delta` 值。
 
 ```ts
 import { page } from 'vitest/browser'
 
-// Scroll right
+// 向右滚动
 await page.getByRole('tablist').wheel({ direction: 'right' })
 ```
 
-- [See more at `userEvent.wheel`](/api/browser/interactivity#userevent-wheel)
+- [查看更多 `userEvent.wheel`](/api/browser/interactivity#userevent-wheel)
 
 ### clear
 
@@ -694,7 +694,7 @@ await page.getByRole('tablist').wheel({ direction: 'right' })
 function clear(options?: UserEventClearOptions): Promise<void>
 ```
 
-Clears the input element content.
+清除输入元素的内容。
 
 ```ts
 import { page } from 'vitest/browser'
@@ -702,7 +702,7 @@ import { page } from 'vitest/browser'
 await page.getByRole('textbox', { name: 'Full Name' }).clear()
 ```
 
-- [See more at `userEvent.clear`](/api/browser/interactivity#userevent-clear)
+- [查看更多 `userEvent.clear`](/api/browser/interactivity#userevent-clear)
 
 ### hover
 
@@ -710,7 +710,7 @@ await page.getByRole('textbox', { name: 'Full Name' }).clear()
 function hover(options?: UserEventHoverOptions): Promise<void>
 ```
 
-Moves the cursor position to the selected element.
+将光标位置移动到选定的元素。
 
 ```ts
 import { page } from 'vitest/browser'
@@ -718,7 +718,7 @@ import { page } from 'vitest/browser'
 await page.getByRole('img', { name: 'Rose' }).hover()
 ```
 
-- [See more at `userEvent.hover`](/api/browser/interactivity#userevent-hover)
+- [查看更多 `userEvent.hover`](/api/browser/interactivity#userevent-hover)
 
 ### unhover
 
@@ -726,7 +726,7 @@ await page.getByRole('img', { name: 'Rose' }).hover()
 function unhover(options?: UserEventHoverOptions): Promise<void>
 ```
 
-This works the same as [`locator.hover`](#hover), but moves the cursor to the `document.body` element instead.
+这与 [`locator.hover`](#hover) 工作原理相同，但将光标移动到 `document.body` 元素。
 
 ```ts
 import { page } from 'vitest/browser'
@@ -734,7 +734,7 @@ import { page } from 'vitest/browser'
 await page.getByRole('img', { name: 'Rose' }).unhover()
 ```
 
-- [See more at `userEvent.unhover`](/api/browser/interactivity#userevent-unhover)
+- [查看更多 `userEvent.unhover`](/api/browser/interactivity#userevent-unhover)
 
 ### fill
 
@@ -742,7 +742,7 @@ await page.getByRole('img', { name: 'Rose' }).unhover()
 function fill(text: string, options?: UserEventFillOptions): Promise<void>
 ```
 
-Sets the value of the current `input`, `textarea` or `contenteditable` element.
+设置当前 `input`、`textarea` 或 `contenteditable` 元素的值。
 
 ```ts
 import { page } from 'vitest/browser'
@@ -750,7 +750,7 @@ import { page } from 'vitest/browser'
 await page.getByRole('input', { name: 'Full Name' }).fill('Mr. Bean')
 ```
 
-- [See more at `userEvent.fill`](/api/browser/interactivity#userevent-fill)
+- [查看更多 `userEvent.fill`](/api/browser/interactivity#userevent-fill)
 
 ### dropTo
 
@@ -761,7 +761,7 @@ function dropTo(
 ): Promise<void>
 ```
 
-Drags the current element to the target location.
+将当前元素拖动到目标位置。
 
 ```ts
 import { page } from 'vitest/browser'
@@ -772,7 +772,7 @@ const france = page.getByText('France')
 await paris.dropTo(france)
 ```
 
-- [See more at `userEvent.dragAndDrop`](/api/browser/interactivity#userevent-draganddrop)
+- [查看更多 `userEvent.dragAndDrop`](/api/browser/interactivity#userevent-draganddrop)
 
 ### selectOptions
 
@@ -789,7 +789,7 @@ function selectOptions(
 ): Promise<void>
 ```
 
-Choose one or more values from a `<select>` element.
+从 `<select>` 元素中选择一个或多个值。
 
 ```ts
 import { page } from 'vitest/browser'
@@ -804,7 +804,7 @@ await languages.selectOptions([
 ])
 ```
 
-- [See more at `userEvent.selectOptions`](/api/browser/interactivity#userevent-selectoptions)
+- [查看更多 `userEvent.selectOptions`](/api/browser/interactivity#userevent-selectoptions)
 
 ### screenshot
 
@@ -817,11 +817,11 @@ function screenshot(options: LocatorScreenshotOptions & { base64: true }): Promi
 function screenshot(options?: LocatorScreenshotOptions & { base64?: false }): Promise<string>
 ```
 
-Creates a screenshot of the element matching the locator's selector.
+创建与定位器选择器匹配元素的截图。
 
-You can specify the save location for the screenshot using the `path` option, which is relative to the current test file. If the `path` option is not set, Vitest will default to using [`browser.screenshotDirectory`](/config/browser/screenshotdirectory) (`__screenshot__` by default), along with the names of the file and the test to determine the screenshot's filepath.
+你可以使用 `path` 选项指定截图的保存位置，该位置相对于当前测试文件。如果未设置 `path` 选项，Vitest 将默认使用 [`browser.screenshotDirectory`](/config/browser/screenshotdirectory)（默认为 `__screenshot__`），以及文件和测试的名称来确定截图的文件路径。
 
-If you also need the content of the screenshot, you can specify `base64: true` to return it alongside the filepath where the screenshot is saved.
+如果你还需要截图的内容，可以指定 `base64: true` 以 alongside 返回截图保存的文件路径。
 
 ```ts
 import { page } from 'vitest/browser'
@@ -832,15 +832,15 @@ const path = await button.screenshot()
 
 const { path, base64 } = await button.screenshot({
   path: './button-click-me.png',
-  base64: true, // also return base64 string
+  base64: true, // 同时返回 base64 字符串
 })
-// path - fullpath to the screenshot
-// bas64 - base64 encoded string of the screenshot
+// path - 截图的完整路径
+// bas64 - 截图的 base64 编码字符串
 ```
 
-::: warning WARNING <Version>3.2.0</Version>
-Note that `screenshot` will always return a base64 string if `save` is set to `false`.
-The `path` is also ignored in that case.
+::: warning 警告 <Version>3.2.0</Version>
+注意，如果 `save` 设置为 `false`，`screenshot` 将始终返回 base64 字符串。
+在这种情况下，`path` 也会被忽略。
 :::
 
 ### mark
@@ -849,9 +849,9 @@ The `path` is also ignored in that case.
 function mark(name: string, options?: { stack?: string }): Promise<void>
 ```
 
-Adds a named marker to the trace timeline and uses the current locator as marker context.
+在跟踪时间线上添加一个命名标记，并使用当前定位器作为标记上下文。
 
-Pass `options.stack` to override the callsite location in trace metadata. This is useful for wrapper libraries that need to preserve the end-user source location.
+传递 `options.stack` 以覆盖跟踪元数据中的调用站点位置。这对于需要保留最终用户源代码位置的包装库很有用。
 
 ```ts
 import { page } from 'vitest/browser'
@@ -864,7 +864,7 @@ await submitButton.mark('after submit')
 ```
 
 ::: tip
-This method is useful only when [`browser.trace`](/config/browser/trace) is enabled.
+此方法仅在启用 [`browser.trace`](/config/browser/trace) 时有用。
 :::
 
 ### query
@@ -873,22 +873,22 @@ This method is useful only when [`browser.trace`](/config/browser/trace) is enab
 function query(): Element | null
 ```
 
-This method returns a single element matching the locator's selector or `null` if no element is found.
+此方法返回与定位器选择器匹配的单个元素，如果未找到元素则返回 `null`。
 
-If multiple elements match the selector, this method will throw an error.  Use [`.elements()`](#elements) when you need all matching DOM Elements or [`.all()`](#all) if you need an array of locators matching the selector.
+如果多个元素匹配选择器，此方法将抛出错误。当你需要所有匹配的 DOM 元素时使用 [`.elements()`](#elements)，如果你需要匹配选择器的定位器数组时使用 [`.all()`](#all)。
 
 ::: danger
-This is an escape hatch for external APIs that do not support locators. Prefer using locator methods instead.
+这是针对不支持定位器的外部 API 的应急方案。建议优先使用定位器方法。
 :::
 
-Consider the following DOM structure:
+考虑以下 DOM 结构：
 
 ```html
 <div>Hello <span>World</span></div>
 <div>Hello</div>
 ```
 
-These locators will not throw an error:
+这些定位器不会抛出错误：
 
 ```ts
 page.getByText('Hello World').query() // ✅ HTMLDivElement
@@ -897,10 +897,10 @@ page.getByText('World').query() // ✅ HTMLSpanElement
 page.getByText('Hello', { exact: true }).query() // ✅ HTMLSpanElement
 ```
 
-These locators will throw an error:
+这些定位器将抛出错误：
 
 ```ts
-// returns multiple elements
+// 返回多个元素
 page.getByText('Hello').query() // ❌
 page.getByText(/^Hello/).query() // ❌
 ```
@@ -911,23 +911,23 @@ page.getByText(/^Hello/).query() // ❌
 function element(): Element
 ```
 
-This method returns a single element matching the locator's selector.
+此方法返回与定位器选择器匹配的单个元素。
 
-If _no element_ matches the selector, an error is thrown. Consider using [`.query()`](#query) when you just need to check if the element exists.
+如果_没有元素_匹配选择器，则抛出错误。当你只需要检查元素是否存在时，考虑使用 [`.query()`](#query)。
 
-If _multiple elements_ match the selector, an error is thrown. Use [`.elements()`](#elements) when you need all matching DOM Elements or [`.all()`](#all) if you need an array of locators matching the selector.
+如果_多个元素_匹配选择器，则抛出错误。当你需要所有匹配的 DOM 元素时使用 [`.elements()`](#elements)，如果你需要匹配选择器的定位器数组时使用 [`.all()`](#all)。
 
 ::: danger
-This is an escape hatch for external APIs that do not support locators. Prefer using locator methods instead.
+这是针对不支持定位器的外部 API 的应急方案。建议优先使用定位器方法。
 
-It is called automatically when locator is used with `expect.element` every time the assertion is [retried](/api/browser/assertions):
+每当断言被 [重试](/api/browser/assertions) 时，当定位器与 `expect.element` 一起使用时会自动调用：
 
 ```ts
 await expect.element(page.getByRole('button')).toBeDisabled()
 ```
 :::
 
-Consider the following DOM structure:
+考虑以下 DOM 结构：
 
 ```html
 <div>Hello <span>World</span></div>
@@ -935,7 +935,7 @@ Consider the following DOM structure:
 <div>Hello</div>
 ```
 
-These locators will not throw an error:
+这些定位器不会抛出错误：
 
 ```ts
 page.getByText('Hello World').element() // ✅
@@ -944,14 +944,14 @@ page.getByText('World').element() // ✅
 page.getByText('Hello', { exact: true }).element() // ✅
 ```
 
-These locators will throw an error:
+这些定位器将抛出错误：
 
 ```ts
-// returns multiple elements
+// 返回多个元素
 page.getByText('Hello').element() // ❌
 page.getByText(/^Hello/).element() // ❌
 
-// returns no elements
+// 未返回元素
 page.getByText('Hello USA').element() // ❌
 ```
 
@@ -961,18 +961,18 @@ page.getByText('Hello USA').element() // ❌
 function elements(): Element[]
 ```
 
-This method returns an array of elements matching the locator's selector.
+此方法返回与定位器选择器匹配的元素数组。
 
-This function never throws an error. If there are no elements matching the selector, this method will return an empty array.
+此函数从不抛出错误。如果没有元素匹配选择器，此方法将返回一个空数组。
 
-Consider the following DOM structure:
+考虑以下 DOM 结构：
 
 ```html
 <div>Hello <span>World</span></div>
 <div>Hello</div>
 ```
 
-These locators will always succeed:
+这些定位器将始终成功：
 
 ```ts
 page.getByText('Hello World').elements() // ✅ [HTMLElement]
@@ -990,22 +990,22 @@ function findElement(
 ): Promise<HTMLElement | SVGElement>
 ```
 
-::: danger WARNING
-This is an escape hatch for cases where you need the raw DOM element — for example, to pass it to a third-party library like FormKit that doesn't accept Vitest locators. If you are interacting with the element yourself, use other [builtin methods](#methods) instead.
+::: danger 警告
+这是针对你需要原始 DOM 元素的情况的应急方案——例如，将其传递给像 FormKit 这样不接受 Vitest 定位器的第三方库。如果你自己与元素交互，请使用其他 [内置方法](#methods)。
 :::
 
-This method returns an element matching the locator. Unlike [`.element()`](#element), this method will wait and retry until a matching element appears in the DOM, using increasing intervals (0, 20, 50, 100, 100, 500ms).
+此方法返回与定位器匹配的元素。与 [`.element()`](#element) 不同，此方法将等待并重试直到匹配的元素出现在 DOM 中，使用递增的间隔 (0, 20, 50, 100, 100, 500ms)。
 
-If _no element_ is found before the timeout, an error is thrown. By default, the timeout matches the test timeout.
+如果在超时前_未找到元素_，则抛出错误。默认情况下，超时与测试超时匹配。
 
-If _multiple elements_ match the selector and `strict` is `true` (the default), an error is thrown immediately without retrying. Set `strict` to `false` to return the first matching element instead.
+如果_多个元素_匹配选择器且 `strict` 为 `true`（默认），则立即抛出错误而不重试。将 `strict` 设置为 `false` 以改为返回第一个匹配的元素。
 
-It accepts options:
+它接受选项：
 
-- `timeout: number` - How long to wait in milliseconds until at least one element is found. By default, this shares timeout with the test.
-- `strict: boolean` - When `true` (default), throws an error if multiple elements match the locator. When `false`, returns the first matching element.
+- `timeout: number` - 等待多长时间（毫秒）直到找到至少一个元素。默认情况下，这与测试共享超时。
+- `strict: boolean` - 当为 `true`（默认）时，如果多个元素匹配定位器则抛出错误。当为 `false` 时，返回第一个匹配的元素。
 
-Consider the following DOM structure:
+考虑以下 DOM 结构：
 
 ```html
 <div>Hello <span>World</span></div>
@@ -1013,7 +1013,7 @@ Consider the following DOM structure:
 <div>Hello</div>
 ```
 
-These locators will resolve successfully:
+这些定位器将成功解析：
 
 ```ts
 await page.getByText('Hello World').findElement() // ✅ HTMLDivElement
@@ -1021,21 +1021,21 @@ await page.getByText('World').findElement() // ✅ HTMLSpanElement
 await page.getByText('Hello Germany').findElement() // ✅ HTMLDivElement
 ```
 
-These locators will throw an error:
+这些定位器将抛出错误：
 
 ```ts
-// multiple elements match, strict mode rejects
+// 多个元素匹配，严格模式拒绝
 await page.getByText('Hello').findElement() // ❌
 await page.getByText(/^Hello/).findElement() // ❌
 
-// no matching element before timeout
+// 超时前未找到匹配元素
 await page.getByText('Hello USA').findElement() // ❌
 ```
 
-Using `strict: false` to allow multiple matches:
+使用 `strict: false` 允许多个匹配：
 
 ```ts
-// returns the first matching element instead of throwing
+// 返回第一个匹配元素而不是抛出错误
 await page.getByText('Hello').findElement({ strict: false }) // ✅ HTMLDivElement
 ```
 
@@ -1045,28 +1045,28 @@ await page.getByText('Hello').findElement({ strict: false }) // ✅ HTMLDivEleme
 function all(): Locator[]
 ```
 
-This method returns an array of new locators that match the selector.
+此方法返回一个匹配选择器的新定位器数组。
 
-Internally, this method calls `.elements` and wraps every element using [`page.elementLocator`](/api/browser/context#page).
+在内部，此方法调用 `.elements` 并使用 [`page.elementLocator`](/api/browser/context#page) 包装每个元素。
 
-- [See `locator.elements()`](#elements)
+- [查看 `locator.elements()`](#elements)
 
-## Properties
+## 属性
 
 ### selector
 
-The `selector` is a string that will be used to locate the element by the browser provider. Playwright will use a `playwright` locator syntax while `preview` and `webdriverio` will use CSS.
+`selector` 是一个字符串，将被浏览器提供者用于定位元素。Playwright 将使用 `playwright` 定位器语法，而 `preview` 和 `webdriverio` 将使用 CSS。
 
 ::: danger
-You should not use this string in your test code. The `selector` string should only be used when working with the Commands API:
+你不应该在测试代码中使用这个字符串。`selector` 字符串仅在使用 Commands API 时使用：
 
 ```ts [commands.ts]
 import type { BrowserCommand } from 'vitest/node'
 
 const test: BrowserCommand<string> = function test(context, selector) {
-  // playwright
+  // 适用于 playwright
   await context.iframe.locator(selector).click()
-  // webdriverio
+  // 适用于 webdriverio
   await context.browser.$(selector).click()
 }
 ```
@@ -1077,7 +1077,7 @@ import { commands, page } from 'vitest/browser'
 
 test('works correctly', async () => {
   await commands.test(page.getByText('Hello').selector) // ✅
-  // vitest will automatically unwrap it to a string
+  // vitest 会自动将其解包为字符串
   await commands.test(page.getByText('Hello')) // ✅
 })
 ```
@@ -1085,16 +1085,16 @@ test('works correctly', async () => {
 
 ### length
 
-This getter returns a number of elements that this locator is matching. It is equivalent to calling `locator.elements().length`.
+此 getter 返回此定位器匹配的元素数量。它等同于调用 `locator.elements().length`。
 
-Consider the following DOM structure:
+考虑以下 DOM 结构：
 
 ```html
 <button>Click Me!</button>
 <button>Don't click me!</button>
 ```
 
-This property will always succeed:
+此属性将始终成功：
 
 ```ts
 page.getByRole('button').length // ✅ 2
@@ -1102,16 +1102,16 @@ page.getByRole('button', { title: 'Click Me!' }).length // ✅ 1
 page.getByRole('alert').length // ✅ 0
 ```
 
-## Custom Locators <Version>3.2.0</Version> <Badge type="danger">advanced</Badge> {#custom-locators}
+## 自定义定位器 <Version>3.2.0</Version> <Badge type="danger">高级</Badge> {#custom-locators}
 
-You can extend built-in locators API by defining an object of locator factories. These methods will exist as methods on the `page` object and any created locator.
+你可以通过定义定位器工厂对象来扩展内置的定位器 API。这些方法将作为 `page` 对象和任何创建的定位器上的方法存在。
 
-These locators can be useful if built-in locators are not enough. For example, when you use a custom framework for your UI.
+如果内置定位器不够用，这些定位器会很有用。例如，当你为 UI 使用自定义框架时。
 
-The locator factory needs to return a selector string or a locator itself.
+定位器工厂需要返回一个选择器字符串或定位器本身。
 
 ::: tip
-The selector syntax is identical to Playwright locators. Please, read [their guide](https://playwright.dev/docs/other-locators) to better understand how to work with them.
+选择器语法与 Playwright 定位器相同。请阅读 [他们的指南](https://playwright.dev/docs/other-locators) 以更好地了解如何使用它们。
 :::
 
 ```ts
@@ -1125,9 +1125,9 @@ locators.extend({
     return `.comments :text("${count} comments")`
   },
   async previewComments() {
-    // you have access to the current locator via "this"
-    // beware that if the method was called on `page`, `this` will be `page`,
-    // not the locator!
+    // 你可以通过 "this" 访问当前定位器
+    // 注意，如果该方法是在 `page` 上调用的，`this` 将是 `page`，
+    // 而不是定位器！
     if (this !== page) {
       await this.click()
     }
@@ -1135,22 +1135,22 @@ locators.extend({
   }
 })
 
-// if you are using typescript, you can extend LocatorSelectors interface
-// to have the autocompletion in locators.extend, page.* and locator.* methods
+// 如果你使用的是 typescript，你可以扩展 LocatorSelectors 接口
+// 以便在 locators.extend, page.* 和 locator.* 方法中获得自动补全
 declare module 'vitest/browser' {
   interface LocatorSelectors {
-    // if the custom method returns a string, it will be converted into a locator
-    // if it returns anything else, then it will be returned as usual
+    // 如果自定义方法返回字符串，它将被转换为定位器
+    // 如果它返回其他任何内容，则将照常返回
     getByArticleTitle(title: string): Locator
     getByArticleCommentsCount(count: number): Locator
 
-    // Vitest will return a promise and won't try to convert it into a locator
+    // Vitest 将返回一个 promise，并且不会尝试将其转换为定位器
     previewComments(this: Locator): Promise<void>
   }
 }
 ```
 
-If the method is called on the global `page` object, then selector will be applied to the whole page. In the example below, `getByArticleTitle` will find all elements with an attribute `data-title` with the value of `title`. However, if the method is called on the locator, then it will be scoped to that locator.
+如果该方法是在全局 `page` 对象上调用的，那么选择器将应用于整个页面。在下面的示例中，`getByArticleTitle` 将找到所有具有属性 `data-title` 且值为 `title` 的元素。但是，如果该方法是在定位器上调用的，那么它将限定于该定位器范围。
 
 ```html
 <article data-title="Hello, World!">

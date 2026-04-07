@@ -1,48 +1,48 @@
 ---
-title: browser.trace | Config
+title: browser.trace | 配置
 outline: deep
 ---
 
 # browser.trace
 
-- **Type:** `'on' | 'off' | 'on-first-retry' | 'on-all-retries' | 'retain-on-failure' | object`
-- **CLI:** `--browser.trace=on`, `--browser.trace=retain-on-failure`
-- **Default:** `'off'`
+- **类型：** `'on' | 'off' | 'on-first-retry' | 'on-all-retries' | 'retain-on-failure' | object`
+- **CLI：** `--browser.trace=on`, `--browser.trace=retain-on-failure`
+- **默认值：** `'off'`
 
-Capture a trace of your browser test runs. You can preview traces with [Playwright Trace Viewer](https://trace.playwright.dev/).
+捕获浏览器测试运行的轨迹。您可以使用 [Playwright Trace Viewer](https://trace.playwright.dev/) 预览轨迹。
 
-This options supports the following values:
+此选项支持以下值：
 
-- `'on'` - capture trace for all tests. (not recommended as it's performance heavy)
-- `'off'` - do not capture traces.
-- `'on-first-retry'` - capture trace only when retrying the test for the first time.
-- `'on-all-retries'` - capture trace on every retry of the test.
-- `'retain-on-failure'` - capture trace only for tests that fail. This will automatically delete traces for tests that pass.
-- `object` - an object with the following shape:
+- `'on'` - 捕获所有测试的轨迹。（不推荐，因为性能开销大）
+- `'off'` - 不捕获轨迹。
+- `'on-first-retry'` - 仅在第一次重试测试时捕获轨迹。
+- `'on-all-retries'` - 在每次重试测试时捕获轨迹。
+- `'retain-on-failure'` - 仅捕获失败测试的轨迹。这将自动删除通过测试的轨迹。
+- `object` - 具有以下形状的对象：
 
 ```ts
 interface TraceOptions {
   mode: 'on' | 'off' | 'on-first-retry' | 'on-all-retries' | 'retain-on-failure'
   /**
-   * The directory where all traces will be stored. By default, Vitest
-   * stores all traces in `__traces__` folder close to the test file.
+   * 所有轨迹将存储的目录。默认情况下，Vitest
+   * 将所有轨迹存储在与测试文件相近的 `__traces__` 文件夹中。
    */
   tracesDir?: string
   /**
-   * Whether to capture screenshots during tracing. Screenshots are used to build a timeline preview.
+   * 是否在追踪期间捕获截图。截图用于构建时间线预览。
    * @default true
    */
   screenshots?: boolean
   /**
-   * If this option is true tracing will
-   * - capture DOM snapshot on every action
-   * - record network activity
+   * 如果此选项为 true，追踪将
+   * - 捕获每次操作的 DOM 快照
+   * - 记录网络活动
    * @default true
    */
   snapshots?: boolean
 }
 ```
 
-::: danger WARNING
-This option is supported only by the [**playwright**](/config/browser/playwright) provider.
+::: danger 警告
+此选项仅由 [**playwright**](/config/browser/playwright) 提供者支持。
 :::

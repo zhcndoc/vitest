@@ -1,11 +1,11 @@
 ---
-title: browser.screenshotFailures | Config
+title: browser.screenshotFailures | 配置
 outline: deep
 ---
 
 # browser.screenshotFailures
 
-- **Type:** `boolean`
-- **Default:** `!browser.ui`
+- **类型:** `boolean`
+- **默认值:** `!browser.ui`
 
-Should Vitest take screenshots if the test fails.
+如果测试失败，Vitest 是否应该截取屏幕截图。

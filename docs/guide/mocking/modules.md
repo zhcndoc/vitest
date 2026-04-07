@@ -1,8 +1,8 @@
-# Mocking Modules
+# 模拟模块
 
-## Defining a Module
+## 定义模块
 
-Before mocking a "module", we should define what it is. In Vitest context, the "module" is a file that exports something. Using [plugins](https://vite.dev/guide/api-plugin.html), any file can be turned into a JavaScript module. The "module object" is a namespace object that holds dynamic references to exported identifiers. Simply put, it's an object with exported methods and properties. In this example, `example.js` is a module that exports `answer` and `variable`:
+在模拟“模块”之前，我们应该定义它是什么。在 Vitest 上下文中，“模块”是导出某些内容的文件。使用 [插件](https://vite.dev/guide/api-plugin.html)，任何文件都可以变成 JavaScript 模块。“模块对象”是一个持有导出标识符动态引用的命名空间对象。简单来说，它是一个具有导出方法和属性的对象。在这个例子中，`example.js` 是一个导出 `answer` 和 `variable` 的模块：
 
 ```js [example.js]
 export function answer() {
@@ -13,37 +13,37 @@ export function answer() {
 export const variable = 'example'
 ```
 
-The `exampleObject` here is a module object:
+这里的 `exampleObject` 是一个模块对象：
 
 ```js [example.test.js]
 import * as exampleObject from './example.js'
 ```
 
-The `exampleObject` will always exist even if you imported the example using named imports:
+即使你使用命名导入导入示例，`exampleObject` 也将始终存在：
 
 ```js [example.test.js]
 import { answer, variable } from './example.js'
 ```
 
-You can only reference `exampleObject` outside the example module itself. For example, in a test.
+你只能在示例模块本身之外引用 `exampleObject`。例如，在测试中。
 
-## Mocking a Module
+## 模拟模块
 
-For the purpose of this guide, let's introduce some definitions.
+为了本指南的目的，让我们介绍一些定义。
 
-- **Mocked module** is a module that was completely replaced with another one.
-- **Spied module** is a mocked module, but its exported methods keep the original implementation. They can also be tracked.
-- **Mocked export** is a module export, which invocations can be tracked.
-- **Spied export** is a mocked export.
+- **被模拟的模块 (Mocked module)** 是完全被另一个模块替换的模块。
+- **被监听的模块 (Spied module)** 是被模拟的模块，但其导出的方法保留原始实现。它们也可以被追踪。
+- **被模拟的导出 (Mocked export)** 是一个模块导出，其调用可以被追踪。
+- **被监听的导出 (Spied export)** 是被模拟的导出。
 
-To mock a module completely, you can use the [`vi.mock` API](/api/vi#vi-mock). You can define a new module dynamically by providing a factory that returns a new module as a second argument:
+要完全模拟一个模块，你可以使用 [`vi.mock` API](/api/vi#vi-mock)。你可以通过提供一个返回新模块的工厂函数作为第二个参数来动态定义一个新模块：
 
 ```ts
 import { vi } from 'vitest'
 
-// The ./example.js module will be replaced with
-// the result of a factory function, and the
-// original ./example.js module will never be called
+// ./example.js 模块将被替换为
+// 工厂函数的结果，并且
+// 原始的 ./example.js 模块将永远不会被调用
 vi.mock(import('./example.js'), () => {
   return {
     answer() {
@@ -56,14 +56,14 @@ vi.mock(import('./example.js'), () => {
 ```
 
 ::: tip
-Remember that you can call `vi.mock` in a [setup file](/config/setupfiles) to apply the module mock in every test file automatically.
+记住，你可以在 [设置文件](/config/setupfiles) 中调用 `vi.mock`，以便在每个测试文件中自动应用模块模拟。
 :::
 
 ::: tip
-Note the usage of dynamic import: `import('./example.ts')`. Vitest will strip it before the code is executed, but it allows TypeScript to properly validate the string and type the `importOriginal` method in your IDE or CLI.
+注意动态导入的使用：`import('./example.ts')`。Vitest 会在代码执行之前剥离它，但它允许 TypeScript 正确地验证字符串并在你的 IDE 或 CLI 中为 `importOriginal` 方法 typing。
 :::
 
-If your code is trying to access a method that was not returned from this factory, Vitest will throw an error with a helpful message. Note that `answer` is not mocked, i.e. it cannot be tracked. To make it trackable, use `vi.fn()` instead:
+如果你的代码试图访问未从此工厂返回的方法，Vitest 将抛出一个带有有帮助消息的错误。注意 `answer` 没有被模拟，即它不能被追踪。要使其可追踪，请使用 `vi.fn()` 代替：
 
 ```ts
 import { vi } from 'vitest'
@@ -76,7 +76,7 @@ vi.mock(import('./example.js'), () => {
 })
 ```
 
-The factory method accepts an `importOriginal` function that will execute the original module and return its module object:
+工厂方法接受一个 `importOriginal` 函数，该函数将执行原始模块并返回其模块对象：
 
 ```ts
 import { expect, vi } from 'vitest'
@@ -97,12 +97,12 @@ expect(answer).toHaveReturned(42)
 ```
 
 ::: warning
-Note that `importOriginal` is asynchronous and needs to be awaited.
+注意 `importOriginal` 是异步的，需要被 await。
 :::
 
-In the above example, we provided the original `answer` to the `vi.fn()` call so it can keep calling it while being tracked at the same time.
+在上面的例子中，我们将原始 `answer` 提供给 `vi.fn()` 调用，以便它可以在被追踪的同时继续调用它。
 
-If you require the use of `importOriginal`, consider spying on the export directly via another API: `vi.spyOn`. Instead of replacing the whole module, you can spy only on a single exported method. To do that, you need to import the module as a namespace object:
+如果你需要使用 `importOriginal`，考虑通过另一个 API 直接监听导出：`vi.spyOn`。你可以只监听单个导出的方法，而不是替换整个模块。为此，你需要将模块作为命名空间对象导入：
 
 ```ts
 import { expect, vi } from 'vitest'
@@ -114,8 +114,8 @@ expect(exampleObject.answer()).toBe(0)
 expect(exampleObject.answer).toHaveBeenCalled()
 ```
 
-::: danger Browser Mode Support
-This will not work in the [Browser Mode](/guide/browser/) because it uses the browser's native ESM support to serve modules. The module namespace object is sealed and can't be reconfigured. To bypass this limitation, Vitest supports `{ spy: true }` option in `vi.mock('./example.js')`. This will automatically spy on every export in the module without replacing them with fake ones.
+::: danger 浏览器模式支持
+这在 [浏览器模式](/guide/browser/) 中不起作用，因为它使用浏览器的原生 ESM 支持来提供模块。模块命名空间对象是密封的，不能重新配置。要绕过此限制，Vitest 在 `vi.mock('./example.js')` 中支持 `{ spy: true }` 选项。这将自动监听模块中的每个导出，而不会用假的导出替换它们。
 
 ```ts
 import { vi } from 'vitest'
@@ -128,7 +128,7 @@ vi.mocked(exampleObject.answer).mockReturnValue(0)
 :::
 
 ::: warning
-You only need to import the module as a namespace object in the file where you are using the `vi.spyOn` utility. If the `answer` is called in another file and is imported there as a named export, Vitest will be able to properly track it as long as the function that called it is called after `vi.spyOn`:
+你只需要在使用 `vi.spyOn` 工具的文件中将模块导入为命名空间对象。如果 `answer` 在另一个文件中被调用并在那里作为命名导出导入，只要调用它的函数在 `vi.spyOn` 之后被调用，Vitest 将能够正确地追踪它：
 
 ```ts [source.js]
 import { answer } from './example.js'
@@ -143,9 +143,9 @@ export function question() {
 ```
 :::
 
-Note that `vi.spyOn` will only spy on calls that were done after it spied on the method. So, if the function is executed at the top level during an import or it was called before the spying, `vi.spyOn` will not be able to report on it.
+注意 `vi.spyOn` 只会监听在它监听该方法之后进行的调用。因此，如果函数在导入期间在顶层执行，或者在监听之前被调用，`vi.spyOn` 将无法报告它。
 
-To automatically mock any module before it is imported, you can call `vi.mock` with a path:
+要在任何模块被导入之前自动模拟它，你可以使用路径调用 `vi.mock`：
 
 ```ts
 import { vi } from 'vitest'
@@ -153,18 +153,18 @@ import { vi } from 'vitest'
 vi.mock(import('./example.js'))
 ```
 
-If the file `./__mocks__/example.js` exists, then Vitest will load it instead. Otherwise, Vitest will load the original module and replace everything recursively:
+如果文件 `./__mocks__/example.js` 存在，那么 Vitest 将加载它。否则，Vitest 将加载原始模块并递归替换所有内容：
 
 {#automocking-algorithm}
 
-- All arrays will be empty
-- All primitives will stay untouched
-- All getters will return `undefined`
-- All methods will return `undefined`
-- All objects will be deeply cloned
-- All instances of classes and their prototypes will be cloned
+- 所有数组将为空
+- 所有原始值将保持不变
+- 所有 getter 将返回 `undefined`
+- 所有方法将返回 `undefined`
+- 所有对象将被深度克隆
+- 所有类实例及其原型将被克隆
 
-To disable this behavior, you can pass down `spy: true` as the second argument:
+要禁用此行为，你可以传递 `spy: true` 作为第二个参数：
 
 ```ts
 import { vi } from 'vitest'
@@ -172,7 +172,7 @@ import { vi } from 'vitest'
 vi.mock(import('./example.js'), { spy: true })
 ```
 
-Instead of returning `undefined`, all methods will call the original implementation, but you can still keep track of these calls:
+所有方法将调用原始实现而不是返回 `undefined`，但你仍然可以追踪这些调用：
 
 ```ts
 import { expect, vi } from 'vitest'
@@ -180,13 +180,13 @@ import { answer } from './example.js'
 
 vi.mock(import('./example.js'), { spy: true })
 
-// calls the original implementation
+// 调用原始实现
 expect(answer()).toBe(42)
-// vitest can still track the invocations
+// vitest 仍然可以追踪这些调用
 expect(answer).toHaveBeenCalled()
 ```
 
-One nice thing that mocked modules support is sharing the state between the instance and its prototype. Consider this module:
+被模拟的模块支持的一个好处是在实例及其原型之间共享状态。考虑这个模块：
 
 ```ts [answer.js]
 export class Answer {
@@ -200,7 +200,7 @@ export class Answer {
 }
 ```
 
-By mocking it, we can keep track of every invocation of `.value()` even without having access to the instance itself:
+通过模拟它，我们可以追踪 `.value()` 的每次调用，即使无法访问实例本身：
 
 ```ts [answer.test.js]
 import { expect, test, vi } from 'vitest'
@@ -209,34 +209,34 @@ import { Answer } from './answer.js'
 vi.mock(import('./answer.js'), { spy: true })
 
 test('instance inherits the state', () => {
-  // these invocations could be private inside another function
-  // that you don't have access to in your test
+  // 这些调用可能是另一个函数内部的私有调用
+  // 你在测试中无法访问该函数
   const answer1 = new Answer(42)
   const answer2 = new Answer(0)
 
   expect(answer1.value()).toBe(42)
   expect(answer1.value).toHaveBeenCalled()
-  // note that different instances have their own states
+  // 注意不同的实例有自己的状态
   expect(answer2.value).not.toHaveBeenCalled()
 
   expect(answer2.value()).toBe(0)
 
-  // but the prototype state accumulates all calls
+  // 但原型状态累积所有调用
   expect(Answer.prototype.value).toHaveBeenCalledTimes(2)
   expect(Answer.prototype.value).toHaveReturned(42)
   expect(Answer.prototype.value).toHaveReturned(0)
 })
 ```
 
-This can be very useful to track calls to instances that are never exposed.
+这对于追踪从未暴露的实例的调用非常有用。
 
-## Mocking Non-existing Module
+## 模拟不存在的模块
 
-Vitest supports mocking virtual modules. These modules don't exist on the file system, but your code imports them. For example, this can happen when your development environment is different from production. One common example is mocking `vscode` APIs in your unit tests.
+Vitest 支持模拟虚拟模块。这些模块在文件系统中不存在，但你的代码导入它们。例如，当你的开发环境与生产环境不同时可能会发生这种情况。一个常见的例子是在单元测试中模拟 `vscode` API。
 
-By default, Vitest will fail transforming files if it cannot find the source of the import. To bypass this, you need to specify it in your config. You can either always redirect the import to a file, or just signal Vite to ignore it and use the `vi.mock` factory to define its exports.
+默认情况下，如果 Vitest 找不到导入的来源，它将无法转换文件并失败。要绕过此问题，你需要在配置中指定它。你可以总是将导入重定向到文件，或者只是信号通知 Vite 忽略它并使用 `vi.mock` 工厂来定义其导出。
 
-To redirect the import, use [`test.alias`](/config/alias) config option:
+要重定向导入，使用 [`test.alias`](/config/alias) 配置选项：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
@@ -251,7 +251,7 @@ export default defineConfig({
 })
 ```
 
-To mark the module as always resolved, return the same string from `resolveId` hook of a plugin:
+要将模块标记为始终已解析，从插件的 `resolveId` 钩子返回相同的字符串：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
@@ -271,7 +271,7 @@ export default defineConfig({
 })
 ```
 
-Now you can use `vi.mock` as usual in your tests:
+现在你可以在测试中像往常一样使用 `vi.mock`：
 
 ```ts
 import { vi } from 'vitest'
@@ -285,9 +285,9 @@ vi.mock(import('vscode'), () => {
 })
 ```
 
-## How it Works
+## 工作原理
 
-Vitest implements different module mocking mechanisms depending on the environment. The only feature they share is the plugin transformer. When Vitest sees that a file has `vi.mock` inside, it will transform every static import into a dynamic one and move the `vi.mock` call to the top of the file. This allows Vitest to register the mock before the import happens without breaking the ESM rule of hoisted imports.
+Vitest 根据环境实现不同的模块模拟机制。它们共享的唯一功能是插件转换器。当 Vitest 看到文件内部有 `vi.mock` 时，它将把每个静态导入转换为动态导入，并将 `vi.mock` 调用移动到文件顶部。这允许 Vitest 在导入发生之前注册模拟，而不会破坏 ESM 的提升导入规则。
 
 ::: code-group
 ```ts [example.js]
@@ -303,27 +303,27 @@ vi.mock('./answer.js')
 const __vitest_module_0__ = await __handle_mock__(
   () => import('./answer.js')
 )
-// to keep the live binding, we have to access
-// the export on the module namespace
+// 为了保持实时绑定，我们必须访问
+// 模块命名空间上的导出
 console.log(__vitest_module_0__.answer())
 ```
 :::
 
-The `__handle_mock__` wrapper just makes sure the mock is resolved before the import is initiated, it doesn't modify the module in any way.
+`__handle_mock__` 包装器只是确保在启动导入之前解析模拟，它不会以任何方式修改模块。
 
-The module mocking plugins are available in the [`@vitest/mocker` package](https://github.com/vitest-dev/vitest/tree/main/packages/mocker).
+模块模拟插件可在 [`@vitest/mocker` 包](https://github.com/vitest-dev/vitest/tree/main/packages/mocker) 中找到。
 
 ### JSDOM, happy-dom, Node
 
-When you run your tests in an emulated environment, Vitest creates a [module runner](https://vite.dev/guide/api-environment-runtimes.html#modulerunner) that can consume Vite code. The module runner is designed in such a way that Vitest can hook into the module evaluation and replace it with the mock, if it was registered. This means that Vitest runs your code in an ESM-like environment, but it doesn't use native ESM mechanism directly. This allows the test runner to bend the rules around ES Modules immutability, allowing users to call `vi.spyOn` on a seemingly ES Module.
+当你在模拟环境中运行测试时，Vitest 创建一个可以消费 Vite 代码的 [模块运行器](https://vite.dev/guide/api-environment-runtimes.html#modulerunner)。模块运行器的设计使得 Vitest 可以钩入模块评估并将其替换为模拟（如果已注册）。这意味着 Vitest 在类似 ESM 的环境中运行你的代码，但它不直接使用原生 ESM 机制。这允许测试运行器绕过 ES 模块不可变性的规则，允许用户在看似 ES 模块上调用 `vi.spyOn`。
 
-If module runner is [disabled](/config/experimental#experimental-vitemodulerunner) and [node loader](/config/experimental#experimental-nodeloader) is not explicitly disabled, Vitest will [register a loader hook](https://nodejs.org/api/module.html#customization-hooks) that transforms original modules into mocked ones. In this mode users cannot call `vi.spyOn` on an ES Module because Vitest uses a native loader mechanism with all its guard rails. In addition to that, Vitest also has to inject a `mock` query into every mocked module which is visible in the stack trace.
+如果模块运行器被 [禁用](/config/experimental#experimental-vitemodulerunner) 且 [node 加载器](/config/experimental#experimental-nodeloader) 未显式禁用，Vitest 将 [注册一个加载器钩子](https://nodejs.org/api/module.html#customization-hooks)，将原始模块转换为模拟模块。在此模式下，用户不能在 ES 模块上调用 `vi.spyOn`，因为 Vitest 使用具有所有保护机制的原生加载器机制。除此之外，Vitest 还必须向每个被模拟的模块注入一个 `mock` 查询，这在堆栈跟踪中可见。
 
-### Browser Mode
+### 浏览器模式
 
-Vitest uses native ESM in the Browser Mode. This means that we cannot replace the module so easily. Instead, Vitest intercepts the fetch request (via playwright's `page.route` or a Vite plugin API if using `preview` or `webdriverio`) and serves transformed code, if the module was mocked.
+Vitest 在浏览器模式中使用原生 ESM。这意味着我们不能那么容易地替换模块。相反，Vitest 拦截 fetch 请求（通过 playwright 的 `page.route` 或 Vite 插件 API，如果使用 `preview` 或 `webdriverio`），如果模块被模拟，则提供转换后的代码。
 
-For example, if the module is automocked, Vitest can parse static exports and create a placeholder module:
+例如，如果模块被自动模拟，Vitest 可以解析静态导出并创建一个占位模块：
 
 ::: code-group
 ```ts [answer.js]
@@ -345,9 +345,9 @@ export const answer = __private_module__.answer
 ```
 :::
 
-The example is simplified for brevity, but the concept is unchanged. We can inject a `__private_module__` variable into the module to hold the mocked values. If the user called `vi.mock` with `spy: true`, we pass down the original value; otherwise, we create a simple `vi.fn()` mock.
+示例为了简洁进行了简化，但概念不变。我们可以向模块中注入一个 `__private_module__` 变量来保存模拟值。如果用户使用 `spy: true` 调用 `vi.mock`，我们传递原始值；否则，我们创建一个简单的 `vi.fn()` 模拟。
 
-If user defined a custom factory, this makes it harder to inject the code, but not impossible. When the mocked file is served, we first resolve the factory in the browser, then pass down the keys back to the server, and use them to create a placeholder module:
+如果用户定义了自定义工厂，这使得注入代码变得更难，但并非不可能。当提供被模拟的文件时，我们首先在浏览器中解析工厂，然后将键传回服务器，并使用它们创建占位模块：
 
 ```ts
 const resolvedFactoryKeys = await resolveBrowserFactory(url)
@@ -357,11 +357,11 @@ ${resolvedFactoryKeys.map(key => `export const ${key} = __private_module__["${ke
 `
 ```
 
-This module can now be served back to the browser. You can inspect the code in the devtools when you run the tests.
+现在可以将此模块提供回浏览器。你可以在运行测试时在开发者工具中检查代码。
 
-## Mocking Modules Pitfalls
+## 模拟模块的陷阱
 
-Beware that it is not possible to mock calls to methods that are called inside other methods of the same file. For example, in this code:
+请注意，无法模拟同一文件中其他方法内部调用的方法。例如，在这段代码中：
 
 ```ts [foobar.js]
 export function foo() {
@@ -373,31 +373,31 @@ export function foobar() {
 }
 ```
 
-It is not possible to mock the `foo` method from the outside because it is referenced directly. So this code will have no effect on the `foo` call inside `foobar` (but it will affect the `foo` call in other modules):
+无法从外部模拟 `foo` 方法，因为它是被直接引用的。因此这段代码不会对 `foobar` 内部的 `foo` 调用产生任何影响（但它会影响其他模块中的 `foo` 调用）：
 
 ```ts [foobar.test.ts]
 import { vi } from 'vitest'
 import * as mod from './foobar.js'
 
-// this will only affect "foo" outside of the original module
+// 这只会影响原始模块外部的 "foo"
 vi.spyOn(mod, 'foo')
 vi.mock(import('./foobar.js'), async (importOriginal) => {
   return {
     ...await importOriginal(),
-    // this will only affect "foo" outside of the original module
+    // 这只会影响原始模块外部的 "foo"
     foo: () => 'mocked'
   }
 })
 ```
 
-You can confirm this behavior by providing the implementation to the `foobar` method directly:
+你可以通过直接向 `foobar` 方法提供实现来确认此行为：
 
 ```ts [foobar.test.js]
 import * as mod from './foobar.js'
 
 vi.spyOn(mod, 'foo')
 
-// exported foo references mocked method
+// 导出的 foo 引用了模拟方法
 mod.foobar(mod.foo)
 ```
 
@@ -411,4 +411,4 @@ export function foobar(injectedFoo) {
 }
 ```
 
-This is the intended behavior, and we do not plan to implement a workaround. Consider refactoring your code into multiple files or use techniques such as [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection). We believe that making the application testable is not the responsibility of the test runner, but of the application architecture.
+这是预期的行为，我们不计划提供变通方案。考虑将代码重构为多个文件，或使用诸如 [依赖注入](https://en.wikipedia.org/wiki/Dependency_injection) 之类的技术。我们相信，使应用程序可测试不是测试运行器的责任，而是应用程序架构的责任。

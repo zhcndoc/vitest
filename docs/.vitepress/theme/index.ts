@@ -1,5 +1,6 @@
 import type { Theme } from 'vitepress'
 import TwoslashFloatingVue from '@shikijs/vitepress-twoslash/client'
+import { h } from 'vue'
 import { inBrowser } from 'vitepress'
 import VitestTheme from '@voidzero-dev/vitepress-theme/src/vitest'
 import { enhanceAppWithTabs } from 'vitepress-plugin-tabs/client'
@@ -51,6 +52,22 @@ function getRedirectPath(url: URL) {
 
 export default {
   extends: VitestTheme as unknown as any,
+  Layout() {
+    return h(VitestTheme.Layout, null, {
+      'aside-outline-before': () =>
+        h('div', {
+          'class': 'wwads-cn wwads-vertical',
+          'style': 'margin-top: 0; margin-bottom: 1rem; max-width:200px;',
+          'data-id': '354',
+        }),
+      'doc-after': () =>
+        h('div', {
+          'class': 'wwads-cn wwads-horizontal',
+          'style': 'margin-top: 1rem; margin-bottom: 1rem; max-width:100%;',
+          'data-id': '354',
+        }),
+    })
+  },
   enhanceApp({ app }) {
     app.component('Version', Version)
     app.component('CRoot', CRoot)

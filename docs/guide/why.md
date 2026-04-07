@@ -1,25 +1,25 @@
 ---
-title: Why Vitest | Guide
+title: 为什么选择 Vitest | 指南
 ---
 
-# Why Vitest
+# 为什么选择 Vitest
 
-:::tip NOTE
-This guide assumes that you are familiar with Vite. A good way to start learning more is to read the [Why Vite Guide](https://vitejs.dev/guide/why.html), and [Next generation frontend tooling with ViteJS](https://www.youtube.com/watch?v=UJypSr8IhKY), a stream where [Evan You](https://bsky.app/profile/evanyou.me) did a demo explaining the main concepts.
+:::tip 注意
+本指南假设你已熟悉 Vite。开始深入了解的一个好方法是阅读 [为什么选择 Vite 指南](https://vitejs.dev/guide/why.html)，以及 [使用 ViteJS 进行下一代前端工具开发](https://www.youtube.com/watch?v=UJypSr8IhKY)，这是一个直播流，其中 [尤雨溪](https://bsky.app/profile/evanyou.me) 进行了演示并解释了主要概念。
 :::
 
-## The Need for a Vite Native Test Runner
+## 为什么需要一个 Vite 原生测试运行器
 
-Vite's out-of-the-box support for common web patterns, features like glob imports and SSR primitives, and its many plugins and integrations are fostering a vibrant ecosystem. Its dev and build story are key to its success. For docs, there are several SSG-based alternatives powered by Vite. Vite's Unit Testing story hasn't been clear though. Existing options like [Jest](https://jestjs.io/) were created in a different context. There is a lot of duplication between Jest and Vite, forcing users to configure two different pipelines.
+Vite 对常见 Web 模式的开箱即用支持、诸如 glob 导入和 SSR 原语等功能，以及其众多的插件和集成，正在培育一个充满活力的生态系统。它的开发和构建流程是其成功的关键。对于文档，有几个基于 Vite 的 SSG 替代方案。然而，Vite 的单元测试方案一直不够明确。现有的选项如 [Jest](https://jestjs.io/) 是在不同的背景下创建的。Jest 和 Vite 之间存在大量重复，迫使用户配置两个不同的流程。
 
-Using Vite dev server to transform your files during testing, enables the creation of a simple runner that doesn't need to deal with the complexity of transforming source files and can solely focus on providing the best DX during testing. A test runner that uses the same configuration of your App (through `vite.config.js`), sharing a common transformation pipeline during dev, build, and test time. That is extensible with the same plugin API that lets you and the maintainers of your tools provide first-class integration with Vite. A tool that is built with Vite in mind from the start, taking advantage of its improvements in DX, like its instant Hot Module Reload (HMR). This is Vitest, a next generation testing framework powered by Vite.
+使用 Vite 开发服务器在测试期间转换你的文件，使得创建一个简单的运行器成为可能，它无需处理转换源文件的复杂性，可以只专注于在测试期间提供最佳的开发体验。一个测试运行器，它使用与你 App 相同的配置（通过 `vite.config.js`），在开发、构建和测试期间共享共同的转换流程。它可通过相同的插件 API 进行扩展，让你和你的工具维护者能够提供与 Vite 的一流集成。一个从一开始就为 Vite 构建的工具，利用其在开发体验上的改进，比如即时的热模块替换 (HMR)。这就是 Vitest，一个由 Vite 驱动的下一代测试框架。
 
-Given Jest's massive adoption, Vitest provides a compatible API that allows you to use it as a drop-in replacement in most projects. It also includes the most common features required when setting up your unit tests (mocking, snapshots, coverage). Vitest cares a lot about performance and uses Worker threads to run as much as possible in parallel. Some ports have seen test running an order of magnitude faster. Watch mode is enabled by default, aligning itself with the way Vite pushes for a dev first experience. Even with all these improvements in DX, Vitest stays lightweight by carefully choosing its dependencies (or directly inlining needed pieces).
+鉴于 Jest 的巨大普及率，Vitest 提供了兼容的 API，允许你在大多数项目中将其作为直接替代品使用。它还包括设置单元测试时所需的最常见功能（模拟、快照、覆盖率）。Vitest 非常关心性能，并使用 Worker 线程尽可能并行运行。某些项目发现测试运行速度提高了一个数量级。监视模式默认启用，与 Vite 推动的开发优先体验保持一致。即使在开发体验上有所有这些改进，Vitest 通过仔细选择其依赖项（或直接内联需要的部分）保持轻量级。
 
-**Vitest aims to position itself as the Test Runner of choice for Vite projects, and as a solid alternative even for projects not using Vite.**
+**Vitest 旨在将自己定位为 Vite 项目的首选测试运行器，甚至对于不使用 Vite 的项目也是一个可靠的替代方案。**
 
-Continue reading in the [Getting Started Guide](./index)
+继续阅读 [入门指南](./index)
 
-## How is Vitest Different from X?
+## Vitest 与 X 有何不同？
 
-You can check out the [Comparisons](./comparisons) section for more details on how Vitest differs from other similar tools.
+你可以查看 [对比](./comparisons) 部分，了解更多关于 Vitest 与其他类似工具不同之处的详细信息。

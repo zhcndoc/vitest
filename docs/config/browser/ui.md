@@ -1,12 +1,12 @@
 ---
-title: browser.ui | Config
+title: browser.ui | 配置
 outline: deep
 ---
 
 # browser.ui
 
-- **Type:** `boolean`
-- **Default:** `!isCI`
+- **类型:** `boolean`
+- **默认值:** `!isCI`
 - **CLI:** `--browser.ui=false`
 
-Should Vitest UI be injected into the page. By default, injects UI iframe during development.
+是否将 Vitest UI 注入到页面中。默认情况下，在开发期间注入 UI iframe。

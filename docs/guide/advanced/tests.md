@@ -1,13 +1,13 @@
-# Running Tests <Badge type="danger">advanced</Badge> {#running-tests}
+# 运行测试 <Badge type="danger">高级</Badge> {#running-tests}
 
 ::: warning
-This guide explains how to use the advanced API to run tests via a Node.js script. If you just want to [run tests](/guide/), you probably don't need this. It is primarily used by library authors.
+本指南解释如何通过 Node.js 脚本使用高级 API 运行测试。如果你只是想 [运行测试](/guide/)，可能不需要这个。它主要由库作者使用。
 :::
 
-Vitest exposes two methods to initiate Vitest:
+Vitest 暴露了两个方法来启动 Vitest：
 
-- `startVitest` initiates Vitest, validates the packages are installed and runs tests immediately
-- `createVitest` only initiates Vitest and doesn't run any tests
+- `startVitest` 启动 Vitest，验证包已安装并立即运行测试
+- `createVitest` 仅启动 Vitest 且不运行任何测试
 
 ## `startVitest`
 
@@ -16,10 +16,10 @@ import { startVitest } from 'vitest/node'
 
 const vitest = await startVitest(
   'test',
-  [], // CLI filters
-  {}, // override test config
-  {}, // override Vite config
-  {}, // custom Vitest options
+  [], // CLI 过滤器
+  {}, // 覆盖测试配置
+  {}, // 覆盖 Vite 配置
+  {}, // 自定义 Vitest 选项
 )
 const testModules = vitest.state.getTestModules()
 for (const testModule of testModules) {
@@ -29,62 +29,62 @@ for (const testModule of testModules) {
 
 ## `createVitest`
 
-Creates a [Vitest](/api/advanced/vitest) instances without running tests.
+创建一个 [Vitest](/api/advanced/vitest) 实例而不运行测试。
 
-`createVitest` method doesn't validate that required packages are installed. It also doesn't respect `config.standalone` or `config.mergeReports`. Vitest won't be closed automatically even if `watch` is disabled.
+`createVitest` 方法不验证是否安装了所需的包。它也不尊重 `config.standalone` 或 `config.mergeReports`。即使禁用了 `watch`，Vitest 也不会自动关闭。
 
 ```ts
 import { createVitest } from 'vitest/node'
 
 const vitest = await createVitest(
   'test',
-  {}, // override test config
-  {}, // override Vite config
-  {}, // custom Vitest options
+  {}, // 覆盖测试配置
+  {}, // 覆盖 Vite 配置
+  {}, // 自定义 Vitest 选项
 )
 
-// called when `vitest.cancelCurrentRun()` is invoked
+// 当调用 `vitest.cancelCurrentRun()` 时触发
 vitest.onCancel(() => {})
-// called during `vitest.close()` call
+// 在 `vitest.close()` 调用期间触发
 vitest.onClose(() => {})
-// called when Vitest reruns test files
+// 当 Vitest 重新运行测试文件时触发
 vitest.onTestsRerun((files) => {})
 
 try {
-  // this will set process.exitCode to 1 if tests failed,
-  // and won't close the process automatically
+  // 如果测试失败，这将把 process.exitCode 设置为 1，
+  // 并且不会自动关闭进程
   await vitest.start(['my-filter'])
 }
 catch (err) {
-  // this can throw
-  // "FilesNotFoundError" if no files were found
-  // "GitNotFoundError" with `--changed` and repository is not initialized
+  // 这可能会抛出
+  // 如果没有找到文件则抛出 "FilesNotFoundError"
+  // 使用 `--changed` 且仓库未初始化时抛出 "GitNotFoundError"
 }
 finally {
   await vitest.close()
 }
 ```
 
-If you intend to keep the `Vitest` instance, make sure to at least call [`init`](/api/advanced/vitest#init). This will initialise reporters and the coverage provider, but won't run any tests. It is also recommended to enable the `watch` mode even if you don't intend to use the Vitest watcher, but want to keep the instance running. Vitest relies on this flag for some of its features to work correctly in a continuous process.
+如果你打算保留 `Vitest` 实例，请确保至少调用 [`init`](/api/advanced/vitest#init)。这将初始化报告器和覆盖率提供者，但不会运行任何测试。即使你不打算使用 Vitest 监视器，但想保持实例运行，也建议启用 `watch` 模式。Vitest 依赖此标志使其某些功能在持续进程中正常工作。
 
-After reporters are initialised, use [`runTestSpecifications`](/api/advanced/vitest#runtestspecifications) or [`rerunTestSpecifications`](/api/advanced/vitest#reruntestspecifications) to run tests if manual run is required:
+初始化报告器后，如果需要手动运行，请使用 [`runTestSpecifications`](/api/advanced/vitest#runtestspecifications) 或 [`rerunTestSpecifications`](/api/advanced/vitest#reruntestspecifications) 来运行测试：
 
 ```ts
 watcher.on('change', async (file) => {
   const specifications = vitest.getModuleSpecifications(file)
   if (specifications.length) {
     vitest.invalidateFile(file)
-    // you can use runTestSpecifications if "reporter.onWatcher*" hooks
-    // should not be invoked
+    // 如果 "reporter.onWatcher*" 钩子
+    // 不应被触发，你可以使用 runTestSpecifications
     await vitest.rerunTestSpecifications(specifications)
   }
 })
 ```
 
 ::: warning
-The example above shows a potential use-case if you disable the default watcher behaviour. By default, Vitest already reruns tests if files change.
+上述示例展示了禁用默认监视器行为时的一个潜在用例。默认情况下，如果文件发生变化，Vitest 已经会重新运行测试。
 
-Also note that `getModuleSpecifications` will not resolve test files unless they were already processed by `globTestSpecifications`. If the file was just created, use `project.matchesGlobPattern` instead:
+还要注意，`getModuleSpecifications` 不会解析测试文件，除非它们已经被 `globTestSpecifications` 处理过。如果文件是刚刚创建的，请改用 `project.matchesGlobPattern`：
 
 ```ts
 watcher.on('add', async (file) => {
@@ -102,7 +102,7 @@ watcher.on('add', async (file) => {
 ```
 :::
 
-In cases where you need to disable the watcher, you can pass down `server.watch: null` since Vite 5.3 or `server.watch: { ignored: ['*/*'] }` to a Vite config:
+在需要禁用监视器的情况下，自 Vite 5.3 起，你可以将 `server.watch: null` 或 `server.watch: { ignored: ['*/*'] }` 传递给 Vite 配置：
 
 ```ts
 await createVitest(

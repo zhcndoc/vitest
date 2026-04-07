@@ -1,22 +1,19 @@
 ---
-title: browser.expect | Config
+title: browser.expect | 配置
 outline: deep
 ---
 
 # browser.expect
 
-- **Type:** `ExpectOptions`
+- **类型:** `ExpectOptions`
 
 ## browser.expect.toMatchScreenshot
 
-Default options for the
-[`toMatchScreenshot` assertion](/api/browser/assertions.html#tomatchscreenshot).
-These options will be applied to all screenshot assertions.
+[`toMatchScreenshot` 断言](/api/browser/assertions.html#tomatchscreenshot) 的默认选项。
+这些选项将应用于所有截图断言。
 
 ::: tip
-Setting global defaults for screenshot assertions helps maintain consistency
-across your test suite and reduces repetition in individual tests. You can still
-override these defaults at the assertion level when needed for specific test cases.
+为截图断言设置全局默认值有助于保持测试套件的一致性，并减少单个测试中的重复内容。当特定测试用例需要时，您仍然可以在断言级别覆盖这些默认值。
 :::
 
 ```ts
@@ -42,24 +39,20 @@ export default defineConfig({
 })
 ```
 
-[All options available in the `toMatchScreenshot` assertion](/api/browser/assertions#options)
-can be configured here. Additionally, two path resolution functions are
-available: `resolveScreenshotPath` and `resolveDiffPath`.
+此处可配置 [`toMatchScreenshot` 断言](/api/browser/assertions#options) 中的所有选项。此外，还提供两个路径解析函数：`resolveScreenshotPath` 和 `resolveDiffPath`。
 
 ## browser.expect.toMatchScreenshot.resolveScreenshotPath
 
-- **Type:** `(data: PathResolveData) => string`
-- **Default output:** `` `${root}/${testFileDirectory}/${screenshotDirectory}/${testFileName}/${arg}-${browserName}-${platform}${ext}` ``
+- **类型:** `(data: PathResolveData) => string`
+- **默认输出:** `` `${root}/${testFileDirectory}/${screenshotDirectory}/${testFileName}/${arg}-${browserName}-${platform}${ext}` ``
 
-A function to customize where reference screenshots are stored. The function
-receives an object with the following properties:
+用于自定义参考截图存储位置的函数。该函数接收一个包含以下属性的对象：
 
 - `arg: string`
 
-  Path **without** extension, sanitized and relative to the test file.
+  路径，**不含**扩展名，经过清理且相对于测试文件。
 
-  This comes from the arguments passed to `toMatchScreenshot`; if called
-  without arguments this will be the auto-generated name.
+  这来自传递给 `toMatchScreenshot` 的参数；如果无参数调用，这将是自动生成的名称。
 
   ```ts
   test('calls `onClick`', () => {
@@ -76,49 +69,43 @@ receives an object with the following properties:
 
 - `ext: string`
 
-  Screenshot extension, with leading dot.
+  截图扩展名，包含前导点。
 
-  This can be set through the arguments passed to `toMatchScreenshot`, but
-  the value will fall back to `'.png'` if an unsupported extension is used.
+  这可以通过传递给 `toMatchScreenshot` 的参数进行设置，但如果使用了不支持的扩展名，该值将回退为 `'.png'`。
 
 - `browserName: string`
 
-  The instance's browser name.
+  实例的浏览器名称。
 
 - `platform: NodeJS.Platform`
 
-  The value of
-  [`process.platform`](https://nodejs.org/docs/v22.16.0/api/process.html#processplatform).
+  [`process.platform`](https://nodejs.org/docs/v22.16.0/api/process.html#processplatform) 的值。
 
 - `screenshotDirectory: string`
 
-  The value provided to
-  [`browser.screenshotDirectory`](/config/browser/screenshotdirectory),
-  if none is provided, its default value.
+  提供给 [`browser.screenshotDirectory`](/config/browser/screenshotdirectory) 的值，如果未提供，则为其默认值。
 
 - `root: string`
 
-  Absolute path to the project's [`root`](/config/root).
+  项目 [`root`](/config/root) 的绝对路径。
 
 - `testFileDirectory: string`
 
-  Path to the test file, relative to the project's [`root`](/config/root).
+  测试文件的路径，相对于项目的 [`root`](/config/root)。
 
 - `testFileName: string`
 
-  The test's filename.
+  测试的文件名。
 
 - `testName: string`
 
-  The [`test`](/api/test)'s name, including parent
-  [`describe`](/api/describe), sanitized.
+  [`test`](/api/test) 的名称，包括父级 [`describe`](/api/describe)，经过清理。
 
 - `attachmentsDir: string`
 
-  The value provided to [`attachmentsDir`](/config/attachmentsdir), if none is
-  provided, its default value.
+  提供给 [`attachmentsDir`](/config/attachmentsdir) 的值，如果未提供，则为其默认值。
 
-For example, to group screenshots by browser:
+例如，按浏览器对截图进行分组：
 
 ```ts
 resolveScreenshotPath: ({ arg, browserName, ext, root, testFileName }) =>
@@ -127,14 +114,12 @@ resolveScreenshotPath: ({ arg, browserName, ext, root, testFileName }) =>
 
 ## browser.expect.toMatchScreenshot.resolveDiffPath
 
-- **Type:** `(data: PathResolveData) => string`
-- **Default output:** `` `${root}/${attachmentsDir}/${testFileDirectory}/${testFileName}/${arg}-${browserName}-${platform}${ext}` ``
+- **类型:** `(data: PathResolveData) => string`
+- **默认输出:** `` `${root}/${attachmentsDir}/${testFileDirectory}/${testFileName}/${arg}-${browserName}-${platform}${ext}` ``
 
-A function to customize where diff images are stored when screenshot comparisons
-fail. Receives the same data object as
-[`resolveScreenshotPath`](#browser-expect-tomatchscreenshot-resolvescreenshotpath).
+当截图比较失败时，用于自定义差异图像存储位置的函数。接收与 [`resolveScreenshotPath`](#browser-expect-tomatchscreenshot-resolvescreenshotpath) 相同的数据对象。
 
-For example, to store diffs in a subdirectory of attachments:
+例如，将差异图像存储在附件的子目录中：
 
 ```ts
 resolveDiffPath: ({ arg, attachmentsDir, browserName, ext, root, testFileName }) =>
@@ -143,16 +128,16 @@ resolveDiffPath: ({ arg, attachmentsDir, browserName, ext, root, testFileName })
 
 ## browser.expect.toMatchScreenshot.comparators
 
-- **Type:** `Record<string, Comparator>`
+- **类型:** `Record<string, Comparator>`
 
-Register custom screenshot comparison algorithms, like [SSIM](https://en.wikipedia.org/wiki/Structural_similarity_index_measure) or other perceptual similarity metrics.
+注册自定义截图比较算法，例如 [SSIM](https://en.wikipedia.org/wiki/Structural_similarity_index_measure) 或其他感知相似度指标。
 
-To create a custom comparator, you need to register it in your config. If using TypeScript, declare its options in the `ScreenshotComparatorRegistry` interface.
+要创建自定义比较器，您需要在配置中注册它。如果使用 TypeScript，请在 `ScreenshotComparatorRegistry` 接口中声明其选项。
 
 ```ts
 import { defineConfig } from 'vitest/config'
 
-// 1. Declare the comparator's options type
+// 1. 声明比较器的选项类型
 declare module 'vitest/browser' {
   interface ScreenshotComparatorRegistry {
     myCustomComparator: {
@@ -162,7 +147,7 @@ declare module 'vitest/browser' {
   }
 }
 
-// 2. Implement the comparator
+// 2. 实现比较器
 export default defineConfig({
   test: {
     browser: {
@@ -173,12 +158,12 @@ export default defineConfig({
               reference,
               actual,
               {
-                createDiff, // always provided by Vitest
+                createDiff, // 始终由 Vitest 提供
                 sensitivity = 0.01,
                 ignoreColors = false,
               }
             ) => {
-              // ...algorithm implementation
+              // ...算法实现
               return { pass, diff, message }
             },
           },
@@ -189,7 +174,7 @@ export default defineConfig({
 })
 ```
 
-Then use it in your tests:
+然后在您的测试中使用它：
 
 ```ts
 await expect(locator).toMatchScreenshot({
@@ -201,7 +186,7 @@ await expect(locator).toMatchScreenshot({
 })
 ```
 
-**Comparator Function Signature:**
+**比较器函数签名:**
 
 ```ts
 type Comparator<Options> = (
@@ -227,21 +212,21 @@ type Comparator<Options> = (
 }
 ```
 
-The `reference` and `actual` images are decoded using the appropriate codec (currently only PNG). The `data` property is a flat `TypedArray` (`Buffer`, `Uint8Array`, or `Uint8ClampedArray`) containing pixel data in RGBA format:
+`reference` 和 `actual` 图像使用适当的编解码器解码（目前仅支持 PNG）。`data` 属性是一个扁平的 `TypedArray`（`Buffer`、`Uint8Array` 或 `Uint8ClampedArray`），包含 RGBA 格式的像素数据：
 
-- **4 bytes per pixel**: red, green, blue, alpha (from `0` to `255` each)
-- **Row-major order**: pixels are stored left-to-right, top-to-bottom
-- **Total length**: `width × height × 4` bytes
-- **Alpha channel**: always present. Images without transparency have alpha values set to `255` (fully opaque)
+- **每个像素 4 字节**: 红、绿、蓝、Alpha（每个从 `0` 到 `255`）
+- **行主序**: 像素从左到右、从上到下存储
+- **总长度**: `width × height × 4` 字节
+- **Alpha 通道**: 始终存在。没有透明度的图像 Alpha 值设置为 `255`（完全不透明）
 
-::: tip Performance Considerations
-The `createDiff` option indicates whether a diff image is needed. During [stable screenshot detection](/guide/browser/visual-regression-testing#how-visual-tests-work), Vitest calls comparators with `createDiff: false` to avoid unnecessary work.
+::: tip 性能考虑
+`createDiff` 选项指示是否需要差异图像。在 [稳定截图检测](/guide/browser/visual-regression-testing#how-visual-tests-work) 期间，Vitest 会以 `createDiff: false` 调用比较器以避免不必要的工作。
 
-**Respect this flag to keep your tests fast**.
+**尊重此标志以保持测试快速**。
 :::
 
-::: warning Handle Missing Options
-The `options` parameter in `toMatchScreenshot()` is optional, so users might not provide all your comparator options. Always make them optional with default values:
+::: warning 处理缺失选项
+`toMatchScreenshot()` 中的 `options` 参数是可选的，因此用户可能不会提供所有的比较器选项。始终将它们设为可选并提供默认值：
 
 ```ts
 myCustomComparator: (
@@ -249,7 +234,7 @@ myCustomComparator: (
   actual,
   { createDiff, threshold = 0.1, maxDiff = 100 },
 ) => {
-  // ...comparison logic
+  // ...比较逻辑
 }
 ```
 :::

@@ -1,20 +1,20 @@
-# Timers
+# 定时器
 
-When we test code that involves timeouts or intervals, instead of having our tests wait it out or timeout, we can speed up our tests by using "fake" timers that mock calls to `setTimeout` and `setInterval`.
+当我们测试涉及超时或间隔的代码时，我们可以使用模拟 `setTimeout` 和 `setInterval` 调用的“虚假”定时器来加速测试，而不必让测试实际等待或超时。
 
-See the [`vi.useFakeTimers` API section](/api/vi#vi-usefaketimers) for a more in depth detailed API description.
+请参阅 [`vi.useFakeTimers` API 部分](/api/vi#vi-usefaketimers) 以获取更深入的详细 API 描述。
 
-## Example
+## 示例
 
 ```js
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 function executeAfterTwoHours(func) {
-  setTimeout(func, 1000 * 60 * 60 * 2) // 2 hours
+  setTimeout(func, 1000 * 60 * 60 * 2) // 2 小时
 }
 
 function executeEveryMinute(func) {
-  setInterval(func, 1000 * 60) // 1 minute
+  setInterval(func, 1000 * 60) // 1 分钟
 }
 
 const mock = vi.fn(() => console.log('executed'))
@@ -33,7 +33,7 @@ describe('delayed execution', () => {
   })
   it('should not execute the function', () => {
     executeAfterTwoHours(mock)
-    // advancing by 2ms won't trigger the func
+    // 推进 2ms 不会触发该函数
     vi.advanceTimersByTime(2)
     expect(mock).not.toHaveBeenCalled()
   })

@@ -1,10 +1,10 @@
 ---
-title: name | Config
+title: name | 配置
 ---
 
 # name
 
-- **Type:**
+- **类型：**
 
 ```ts
 interface UserConfig {
@@ -12,13 +12,13 @@ interface UserConfig {
 }
 ```
 
-Assign a custom name to the test project or Vitest process. The name will be visible in the CLI and UI, and available in the Node.js API via [`project.name`](/api/advanced/test-project#name).
+为测试项目或 Vitest 进程分配一个自定义名称。该名称将在 CLI 和 UI 中可见，并可通过 [`project.name`](/api/advanced/test-project#name) 在 Node.js API 中使用。
 
-The color used by the CLI and UI can be changed by providing an object with a `color` property.
+通过提供带有 `color` 属性的对象，可以更改 CLI 和 UI 使用的颜色。
 
-## Colors
+## 颜色
 
-The displayed colors depend on your terminal’s color scheme. In the UI, colors match their CSS equivalents.
+显示的颜色取决于终端的配色方案。在 UI 中，颜色与其 CSS 等效值匹配。
 
 - black
 - red
@@ -29,10 +29,10 @@ The displayed colors depend on your terminal’s color scheme. In the UI, colors
 - cyan
 - white
 
-## Example
+## 示例
 
 ::: code-group
-```js [string]
+```js [字符串]
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -41,7 +41,7 @@ export default defineConfig({
   },
 })
 ```
-```js [object]
+```js [对象]
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -55,7 +55,7 @@ export default defineConfig({
 ```
 :::
 
-This property is mostly useful if you have several projects as it helps distinguish them in your terminal:
+如果你有多个项目，此属性非常有用，因为它有助于在终端中区分它们：
 
 ```js{7,11} [vitest.config.js]
 import { defineConfig } from 'vitest/config'
@@ -77,18 +77,18 @@ export default defineConfig({
 ```
 
 ::: tip
-Vitest automatically assigns a name when none is provided. Resolution order:
+当未提供名称时，Vitest 会自动分配一个名称。解析顺序：
 
-- If the project is specified by a config file or directory, Vitest uses the package.json's `name` field.
-- If there is no `package.json`, Vitest falls back to the project folder's basename.
-- If the project is defined inline in the `projects` array (an object), Vitest assigns a numeric name equal to that project's array index (0-based).
+- 如果项目由配置文件或目录指定，Vitest 会使用 package.json 的 `name` 字段。
+- 如果没有 `package.json`，Vitest 会回退到项目文件夹的基本名称。
+- 如果项目在 `projects` 数组中内联定义（一个对象），Vitest 会分配一个等于该项目数组索引的数字名称（从 0 开始）。
 :::
 
 ::: warning
-Note that projects cannot have the same name. Vitest will throw an error during the config resolution.
+请注意，项目不能具有相同的名称。Vitest 将在配置解析期间抛出错误。
 :::
 
-You can also assign different names to different browser [instances](/config/browser/instances):
+你也可以为不同的浏览器 [实例](/config/browser/instances) 分配不同的名称：
 
 ```js{10,11} [vitest.config.js]
 import { defineConfig } from 'vitest/config'
@@ -109,7 +109,7 @@ export default defineConfig({
 ```
 
 ::: tip
-Browser instances inherit their parent project's name with the browser name appended in parentheses. For example, a project named `browser` with a chromium instance will be shown as `browser (chromium)`.
+浏览器实例继承其父项目的名称，并在括号中附加浏览器名称。例如，名为 `browser` 的项目带有 chromium 实例将显示为 `browser (chromium)`。
 
-If the parent project has no name, or instances are defined at the root level (not inside a named project), the instance name defaults to the browser value (e.g. `chromium`). To override this behavior, set an explicit `name` on the instance.
+如果父项目没有名称，或者实例是在根级别定义的（不在命名项目内），则实例名称默认为浏览器值（例如 `chromium`）。要覆盖此行为，请在实例上设置显式的 `name`。
 :::

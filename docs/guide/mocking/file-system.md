@@ -1,25 +1,25 @@
-# Mocking the File System
+# 模拟文件系统
 
-Mocking the file system ensures that the tests do not depend on the actual file system, making the tests more reliable and predictable. This isolation helps in avoiding side effects from previous tests. It allows for testing error conditions and edge cases that might be difficult or impossible to replicate with an actual file system, such as permission issues, disk full scenarios, or read/write errors.
+模拟文件系统可确保测试不依赖于实际的文件系统，从而使测试更可靠、可预测。这种隔离有助于避免来自先前测试的副作用。它允许测试错误条件和边缘情况，这些情况在实际文件系统中可能难以或无法复制，例如权限问题、磁盘已满场景或读/写错误。
 
-Vitest doesn't provide any file system mocking API out of the box. You can use `vi.mock` to mock the `fs` module manually, but it's hard to maintain. Instead, we recommend using [`memfs`](https://npmx.dev/package/memfs) to do that for you. `memfs` creates an in-memory file system, which simulates file system operations without touching the actual disk. This approach is fast and safe, avoiding any potential side effects on the real file system.
+Vitest 没有提供任何开箱即用的文件系统模拟 API。你可以使用 `vi.mock` 手动模拟 `fs` 模块，但这很难维护。相反，我们推荐使用 [`memfs`](https://npmx.dev/package/memfs) 来为你完成这项工作。`memfs` 创建一个内存文件系统，它在不接触实际磁盘的情况下模拟文件系统操作。这种方法快速且安全，避免了对真实文件系统的任何潜在副作用。
 
-## Example
+## 示例
 
-To automatically redirect every `fs` call to `memfs`, you can create `__mocks__/fs.cjs` and `__mocks__/fs/promises.cjs` files at the root of your project:
+要自动将每个 `fs` 调用重定向到 `memfs`，你可以在项目根目录下创建 `__mocks__/fs.cjs` 和 `__mocks__/fs/promises.cjs` 文件：
 
 ::: code-group
 ```ts [__mocks__/fs.cjs]
-// we can also use `import`, but then
-// every export should be explicitly defined
+// 我们也可以使用 `import`，但那样
+// 每个导出都应该显式定义
 
 const { fs } = require('memfs')
 module.exports = fs
 ```
 
 ```ts [__mocks__/fs/promises.cjs]
-// we can also use `import`, but then
-// every export should be explicitly defined
+// 我们也可以使用 `import`，但那样
+// 每个导出都应该显式定义
 
 const { fs } = require('memfs')
 module.exports = fs.promises
@@ -39,13 +39,13 @@ import { beforeEach, expect, it, vi } from 'vitest'
 import { fs, vol } from 'memfs'
 import { readHelloWorld } from './read-hello-world.js'
 
-// tell vitest to use fs mock from __mocks__ folder
-// this can be done in a setup file if fs should always be mocked
+// 告诉 vitest 使用来自 __mocks__ 文件夹的 fs 模拟
+// 如果应该始终模拟 fs，这可以在 setup 文件中完成
 vi.mock('node:fs')
 vi.mock('node:fs/promises')
 
 beforeEach(() => {
-  // reset the state of in-memory fs
+  // 重置内存文件系统的状态
   vol.reset()
 })
 
@@ -58,13 +58,13 @@ it('should return correct text', () => {
 })
 
 it('can return a value multiple times', () => {
-  // you can use vol.fromJSON to define several files
+  // 你可以使用 vol.fromJSON 来定义多个文件
   vol.fromJSON(
     {
       './dir1/hw.txt': 'hello dir1',
       './dir2/hw.txt': 'hello dir2',
     },
-    // default cwd
+    // 默认 cwd
     '/tmp',
   )
 

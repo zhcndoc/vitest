@@ -1,14 +1,14 @@
 ---
-title: globals | Config
+title: globals | 配置
 ---
 
 # globals
 
-- **Type:** `boolean`
-- **Default:** `false`
-- **CLI:** `--globals`, `--no-globals`, `--globals=false`
+- **类型：** `boolean`
+- **默认值：** `false`
+- **CLI：** `--globals`, `--no-globals`, `--globals=false`
 
-By default, `vitest` does not provide global APIs for explicitness. If you prefer to use the APIs globally like Jest, you can pass the `--globals` option to CLI or add `globals: true` in the config.
+默认情况下，为了明确性，`vitest` 不提供全局 API。如果你像 Jest 一样更喜欢全局使用这些 API，你可以向 CLI 传递 `--globals` 选项，或在配置中添加 `globals: true`。
 
 ```js
 import { defineConfig } from 'vitest/config'
@@ -21,10 +21,10 @@ export default defineConfig({
 ```
 
 ::: tip
-Note that some libraries, e.g., `@testing-library/react`, rely on globals being present to perform auto cleanup.
+注意，某些库（例如 `@testing-library/react`）依赖全局变量存在来执行自动清理。
 :::
 
-To get TypeScript working with the global APIs, add `vitest/globals` to the `types` field in your `tsconfig.json`:
+要让 TypeScript 与全局 API 配合工作，请将 `vitest/globals` 添加到 `tsconfig.json` 的 `types` 字段中：
 
 ```json [tsconfig.json]
 {
@@ -34,7 +34,7 @@ To get TypeScript working with the global APIs, add `vitest/globals` to the `typ
 }
 ```
 
-If you have redefined your [`typeRoots`](https://www.typescriptlang.org/tsconfig/#typeRoots) to include additional types in your compilation, you will need to add back the `node_modules` to make `vitest/globals` discoverable:
+如果你重新定义了 [`typeRoots`](https://www.typescriptlang.org/tsconfig/#typeRoots) 以便在编译中包含额外的类型，你需要将 `node_modules` 添加回去，以使 `vitest/globals` 可被识别：
 
 ```json [tsconfig.json]
 {

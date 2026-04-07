@@ -1,11 +1,11 @@
 ---
-title: printConsoleTrace | Config
+title: printConsoleTrace | 配置
 outline: deep
 ---
 
 # printConsoleTrace
 
-- **Type:** `boolean`
-- **Default:** `false`
+- **类型:** `boolean`
+- **默认值:** `false`
 
-Always print console traces when calling any `console` method. This is useful for debugging.
+调用任何 `console` 方法时始终打印控制台追踪。这对于调试很有用。

@@ -1,8 +1,8 @@
 # TestSuite
 
-The `TestSuite` class represents a single suite. This class is only available in the main thread. Refer to the ["Runner API"](/api/advanced/runner#tasks) if you are working with runtime tasks.
+`TestSuite` 类表示单个套件。此类仅在主线程中可用。如果您正在处理运行时任务，请参阅 ["Runner API"](/api/advanced/runner#tasks)。
 
-The `TestSuite` instance always has a `type` property with the value of `suite`. You can use it to distinguish between different task types:
+`TestSuite` 实例始终具有值为 `suite` 的 `type` 属性。您可以使用它来区分不同的任务类型：
 
 ```ts
 if (task.type === 'suite') {
@@ -12,15 +12,15 @@ if (task.type === 'suite') {
 
 ## project
 
-This references the [`TestProject`](/api/advanced/test-project) that the test belongs to.
+这引用了测试所属的 [`TestProject`](/api/advanced/test-project)。
 
 ## module
 
-This is a direct reference to the [`TestModule`](/api/advanced/test-module) where the test is defined.
+这是对定义测试的 [`TestModule`](/api/advanced/test-module) 的直接引用。
 
 ## name
 
-This is a suite name that was passed to the `describe` function.
+这是传递给 `describe` 函数的套件名称。
 
 ```ts
 import { describe } from 'vitest'
@@ -33,7 +33,7 @@ describe('the validation logic', () => {
 
 ## fullName
 
-The name of the suite including all parent suites separated with `>` symbol. This suite has a full name "the validation logic > validating cities":
+套件名称，包括所有父套件，用 `>` 符号分隔。此套件的全名为 "the validation logic > validating cities"：
 
 ```ts
 import { describe, test } from 'vitest'
@@ -49,40 +49,40 @@ describe('the validation logic', () => {
 
 ## id
 
-This is suite's unique identifier. This ID is deterministic and will be the same for the same suite across multiple runs. The ID is based on the [project](/api/advanced/test-project) name, module ID and suite order.
+这是套件的唯一标识符。此 ID 是确定的，并且在多次运行中对于同一套件将保持不变。该 ID 基于 [项目](/api/advanced/test-project) 名称、模块 ID 和套件顺序。
 
-The ID looks like this:
+ID 看起来像这样：
 
 ```
 1223128da3_0_0_0
-^^^^^^^^^^ the file hash
-           ^ suite index
-             ^ nested suite index
-               ^ test index
+^^^^^^^^^^ 文件哈希
+           ^ 套件索引
+             ^ 嵌套套件索引
+               ^ 测试索引
 ```
 
 ::: tip
-You can generate file hash with `generateFileHash` function from `vitest/node` which is available since Vitest 3:
+您可以使用 `vitest/node` 中的 `generateFileHash` 函数生成文件哈希，该函数自 Vitest 3 起可用：
 
 ```ts
 import { generateFileHash } from 'vitest/node'
 
 const hash = generateFileHash(
-  '/file/path.js', // relative path
-  undefined, // the project name or `undefined` is not set
+  '/file/path.js', // 相对路径
+  undefined, // 项目名称，如果未设置则为 `undefined`
 )
 ```
 :::
 
 ::: danger
-Don't try to parse the ID. It can have a minus at the start: `-1223128da3_0_0_0`.
+不要尝试解析 ID。它在开头可能有一个减号：`-1223128da3_0_0_0`。
 :::
 
 ## location
 
-The location in the module where the suite was defined. Locations are collected only if [`includeTaskLocation`](/config/includetasklocation) is enabled in the config. Note that this option is automatically enabled if `--reporter=html`, `--ui` or `--browser` flags are used.
+套件在模块中定义的位置。仅在配置中启用了 [`includeTaskLocation`](/config/includetasklocation) 时才会收集位置。请注意，如果使用了 `--reporter=html`、`--ui` 或 `--browser` 标志，此选项会自动启用。
 
-The location of this suite will be equal to `{ line: 3, column: 1 }`:
+此套件的位置将等于 `{ line: 3, column: 1 }`：
 
 ```ts:line-numbers {3}
 import { describe } from 'vitest'
@@ -94,7 +94,7 @@ describe('the validation works correctly', () => {
 
 ## parent
 
-Parent suite. If the suite was called directly inside the [module](/api/advanced/test-module), the parent will be the module itself.
+父套件。如果套件是直接在该 [模块](/api/advanced/test-module) 内部调用的，则父级将是模块本身。
 
 ## options
 
@@ -111,11 +111,11 @@ interface TaskOptions {
 }
 ```
 
-The options that suite was collected with.
+套件收集时所带的选项。
 
 ## children
 
-This is a [collection](/api/advanced/test-collection) of all suites and tests inside the current suite.
+这是当前套件内所有套件和测试的 [集合](/api/advanced/test-collection)。
 
 ```ts
 for (const task of suite.children) {
@@ -123,24 +123,24 @@ for (const task of suite.children) {
     console.log('test', task.fullName)
   }
   else {
-    // task is TaskSuite
+    // task 是 TaskSuite
     console.log('suite', task.name)
   }
 }
 ```
 
 ::: warning
-Note that `suite.children` will only iterate the first level of nesting, it won't go deeper. If you need to iterate over all tests or suites, use [`children.allTests()`](/api/advanced/test-collection#alltests) or [`children.allSuites()`](/api/advanced/test-collection#allsuites). If you need to iterate over everything, use recursive function:
+请注意，`suite.children` 仅迭代第一层嵌套，不会更深。如果您需要迭代所有测试或套件，请使用 [`children.allTests()`](/api/advanced/test-collection#alltests) 或 [`children.allSuites()`](/api/advanced/test-collection#allsuites)。如果您需要迭代所有内容，请使用递归函数：
 
 ```ts
 function visit(collection: TestCollection) {
   for (const task of collection) {
     if (task.type === 'suite') {
-      // report a suite
+      // 报告一个套件
       visit(task.children)
     }
     else {
-      // report a test
+      // 报告一个测试
     }
   }
 }
@@ -153,7 +153,7 @@ function visit(collection: TestCollection) {
 function ok(): boolean
 ```
 
-Checks if the suite has any failed tests. This will also return `false` if suite failed during collection. In that case, check the [`errors()`](#errors) for thrown errors.
+检查套件是否有任何失败的测试。如果套件在收集期间失败，这也将返回 `false`。在这种情况下，请检查 [`errors()`](#errors) 以获取抛出的错误。
 
 ## state
 
@@ -161,15 +161,15 @@ Checks if the suite has any failed tests. This will also return `false` if suite
 function state(): TestSuiteState
 ```
 
-Checks the running state of the suite. Possible return values:
+检查套件的运行状态。可能的返回值：
 
-- **pending**: the tests in this suite did not finish running yet.
-- **failed**: this suite has failed tests or they couldn't be collected. If [`errors()`](#errors) is not empty, it means the suite failed to collect tests.
-- **passed**: every test inside this suite has passed.
-- **skipped**: this suite was skipped during collection.
+- **pending**：此套件中的测试尚未完成运行。
+- **failed**：此套件有失败的测试或无法收集它们。如果 [`errors()`](#errors) 不为空，则表示套件未能收集测试。
+- **passed**：此套件内的每个测试都已通过。
+- **skipped**：此套件在收集期间被跳过。
 
 ::: warning
-Note that [test module](/api/advanced/test-module) also has a `state` method that returns the same values, but it can also return an additional `queued` state if the module wasn't executed yet.
+请注意，[测试模块](/api/advanced/test-module) 也有一个 `state` 方法返回相同的值，但如果模块尚未执行，它还可以返回额外的 `queued` 状态。
 :::
 
 ## errors
@@ -178,7 +178,7 @@ Note that [test module](/api/advanced/test-module) also has a `state` method tha
 function errors(): TestError[]
 ```
 
-Errors that happened outside of the test run during collection, like syntax errors.
+在收集期间测试运行之外发生的错误，例如语法错误。
 
 ```ts {4}
 import { describe } from 'vitest'
@@ -189,7 +189,7 @@ describe('collection failed', () => {
 ```
 
 ::: warning
-Note that errors are serialized into simple objects: `instanceof Error` will always return `false`.
+请注意，错误被序列化为简单对象：`instanceof Error` 将始终返回 `false`。
 :::
 
 ## meta <Version>3.1.0</Version> {#meta}
@@ -198,27 +198,27 @@ Note that errors are serialized into simple objects: `instanceof Error` will alw
 function meta(): TaskMeta
 ```
 
-Custom [metadata](/api/advanced/metadata) that was attached to the suite during its execution or collection. Since Vitest 4.1, the meta can be attached by providing a `meta` object during test collection:
+在套件执行或收集期间附加到套件的自定义 [元数据](/api/advanced/metadata)。自 Vitest 4.1 起，可以通过在测试收集期间提供 `meta` 对象来附加元数据：
 
 ```ts {7,10}
 import { describe, test, TestRunner } from 'vitest'
 
 describe('the validation works correctly', { meta: { decorated: true } }, () => {
   test('some test', ({ task }) => {
-    // assign "decorated" during test run, it will be available
-    // only in onTestCaseReady hook
+    // 在测试运行期间分配 "decorated"，它将可用
+    // 仅在 onTestCaseReady 钩子中
     task.suite.meta.decorated = false
 
-    // tests inherit suite's metadata
+    // 测试继承套件的元数据
     task.meta.decorated === true
   })
 })
 ```
 
-Note that suite metadata will be inherited by tests since Vitest 4.1.
+请注意，自 Vitest 4.1 起，套件元数据将被测试继承。
 
 :::tip
-If metadata was attached during collection (outside of the `test` function), then it will be available in [`onTestModuleCollected`](./reporters#ontestmodulecollected) hook in the custom reporter.
+如果元数据是在收集期间附加的（在 `test` 函数之外），那么它将在自定义报告器中的 [`onTestModuleCollected`](./reporters#ontestmodulecollected) 钩子中可用。
 :::
 
 ## toTestSpecification <Version>4.1.0</Version> {#totestspecification}
@@ -227,4 +227,4 @@ If metadata was attached during collection (outside of the `test` function), the
 function toTestSpecification(): TestSpecification
 ```
 
-Returns a new [test specification](/api/advanced/test-specification) that can be used to filter or run this specific test suite.
+返回一个新的 [测试规范](/api/advanced/test-specification)，可用于过滤或运行此特定测试套件。

@@ -1,42 +1,42 @@
 ---
-title: browser.orchestratorScripts | Config
+title: browser.orchestratorScripts | 配置
 outline: deep
 ---
 
 # browser.orchestratorScripts
 
-- **Type:** `BrowserScript[]`
-- **Default:** `[]`
+- **类型:** `BrowserScript[]`
+- **默认值:** `[]`
 
-Custom scripts that should be injected into the orchestrator HTML before test iframes are initiated. This HTML document only sets up iframes and doesn't actually import your code.
+在测试 iframe 启动之前，应该注入到 orchestrator HTML 中的自定义脚本。此 HTML 文档仅设置 iframe，实际上并不导入您的代码。
 
-The script `src` and `content` will be processed by Vite plugins. Script should be provided in the following shape:
+脚本的 `src` 和 `content` 将由 Vite 插件处理。脚本应按以下结构提供：
 
 ```ts
 export interface BrowserScript {
   /**
-   * If "content" is provided and type is "module", this will be its identifier.
+   * 如果提供了 "content" 且 type 为 "module"，这将是其标识符。
    *
-   * If you are using TypeScript, you can add `.ts` extension here for example.
+   * 如果您使用的是 TypeScript，例如可以在此处添加 `.ts` 扩展名。
    * @default `injected-${index}.js`
    */
   id?: string
   /**
-   * JavaScript content to be injected. This string is processed by Vite plugins if type is "module".
+   * 要注入的 JavaScript 内容。如果 type 为 "module"，此字符串将由 Vite 插件处理。
    *
-   * You can use `id` to give Vite a hint about the file extension.
+   * 您可以使用 `id` 给 Vite 一个关于文件扩展名的提示。
    */
   content?: string
   /**
-   * Path to the script. This value is resolved by Vite so it can be a node module or a file path.
+   * 脚本的路径。此值由 Vite 解析，因此它可以是 node 模块或文件路径。
    */
   src?: string
   /**
-   * If the script should be loaded asynchronously.
+   * 脚本是否应异步加载。
    */
   async?: boolean
   /**
-   * Script type.
+   * 脚本类型。
    * @default 'module'
    */
   type?: string

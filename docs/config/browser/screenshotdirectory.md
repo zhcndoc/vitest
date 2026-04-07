@@ -1,11 +1,11 @@
 ---
-title: browser.screenshotDirectory | Config
+title: browser.screenshotDirectory | 配置
 outline: deep
 ---
 
 # browser.screenshotDirectory
 
-- **Type:** `string`
-- **Default:** `__screenshots__` in the test file directory
+- **类型:** `string`
+- **默认值:** 测试文件目录中的 `__screenshots__`
 
-Path to the screenshots directory relative to the `root`.
+相对于 `root` 的截图目录路径。
