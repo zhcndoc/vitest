@@ -5,10 +5,14 @@ outline: false
 
 # 模拟
 
-在编写测试时，迟早需要创建一个内部或外部服务的“伪造”版本。这通常被称为 **mocking**（模拟）。Vitest 通过其 `vi` 辅助工具提供实用函数来帮助你。你可以从 `vitest` 导入它，如果启用了 [`global` 配置](/config/globals)，也可以全局访问它。
+::: tip
+刚接触模拟？先从 [模拟函数](/guide/learn/mock-functions) 教程开始，了解 `vi.fn`、`vi.spyOn` 和 `vi.mock` 的实际操作。
+:::
+
+在编写测试时，总会有需要为内部或外部服务创建“伪造”版本的时候。这通常被称为 **模拟**。Vitest 提供了实用函数，通过其 `vi` 工具帮助你完成这项工作。你可以从 `vitest` 导入它，或者在启用 [`global` 配置](/config/globals) 时全局访问。
 
 ::: warning
-务必记得在每次测试运行之前或之后清除或恢复 mock，以撤销运行之间的 mock 状态更改！请参阅 [`mockReset`](/api/mock#mockreset) 文档了解更多信息。
+务必记得在每次测试运行前后清除或恢复 mock，以撤销运行之间的 mock 状态更改！请参阅 [`mockReset`](/api/mock#mockreset) 文档了解更多信息。
 :::
 
 如果你不熟悉 `vi.fn`、`vi.mock` 或 `vi.spyOn` 方法，请先查看 [API 部分](/api/vi)。

@@ -155,6 +155,10 @@ expect.extend({ customMatcher })
 
 断言是否作为 [`soft`](/api/expect#soft) 调用。你不需要处理它，Vitest 总是会捕获错误。
 
+## `assertion` <Advanced /> <Version type="experimental">4.1.4</Version> {#assertion}
+
+The underlying [Chai assertion](https://www.chaijs.com/guide/plugins/) object. This is the same instance that Chai plugins receive, giving you access to Chai's flag system and chainable methods. This can be useful for building custom matchers that need to interact with Chai's internals.
+
 ::: tip
 这些并不是所有可用的属性，只是最有用的那些。其他状态值由 Vitest 内部使用。
 :::

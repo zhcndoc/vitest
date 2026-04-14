@@ -714,11 +714,62 @@ export default ({ mode }: { mode: string }) => {
             ],
           },
           {
-            text: '浏览器模式',
+            text: 'Learn',
             collapsed: false,
             items: [
               {
-                text: '为什么使用浏览器模式',
+                text: 'Writing Tests',
+                link: '/guide/learn/writing-tests',
+                docFooterText: 'Writing Tests | Learn',
+              },
+              {
+                text: 'Using Matchers',
+                link: '/guide/learn/matchers',
+                docFooterText: 'Using Matchers | Learn',
+              },
+              {
+                text: 'Testing Async Code',
+                link: '/guide/learn/async',
+                docFooterText: 'Testing Async Code | Learn',
+              },
+              {
+                text: 'Setup and Teardown',
+                link: '/guide/learn/setup-teardown',
+                docFooterText: 'Setup and Teardown | Learn',
+              },
+              {
+                text: 'Mock Functions',
+                link: '/guide/learn/mock-functions',
+                docFooterText: 'Mock Functions | Learn',
+              },
+              {
+                text: 'Snapshot Testing',
+                link: '/guide/learn/snapshots',
+                docFooterText: 'Snapshot Testing | Learn',
+              },
+              {
+                text: 'Testing in Practice',
+                link: '/guide/learn/testing-in-practice',
+                docFooterText: 'Testing in Practice | Learn',
+              },
+              {
+                text: 'Debugging Tests',
+                link: '/guide/learn/debugging-tests',
+                docFooterText: 'Debugging Tests | Learn',
+              },
+              {
+                text: 'Writing Tests with AI',
+                link: '/guide/learn/writing-tests-with-ai',
+                docFooterText: 'Writing Tests with AI | Learn',
+              },
+            ],
+          },
+          {
+            text: 'Browser Mode',
+            collapsed: false,
+            items: [
+              {
+                text: 'Why Browser Mode',
                 link: '/guide/browser/why',
                 docFooterText: '为什么使用浏览器模式 | 浏览器模式',
               },
@@ -745,7 +796,12 @@ export default ({ mode }: { mode: string }) => {
               {
                 text: '轨迹视图',
                 link: '/guide/browser/trace-view',
-                docFooterText: '轨迹视图 | 浏览器模式',
+                docFooterText: 'Trace View | Browser Mode',
+              },
+              {
+                text: 'ARIA Snapshots',
+                link: '/guide/browser/aria-snapshots',
+                docFooterText: 'ARIA Snapshots | Browser Mode',
               },
             ],
           },
@@ -787,35 +843,35 @@ export default ({ mode }: { mode: string }) => {
                 collapsed: true,
                 items: [
                   {
-                    text: 'Mock 日期',
+                    text: 'Dates',
                     link: '/guide/mocking/dates',
                   },
                   {
-                    text: 'Mock 函数',
+                    text: 'Functions',
                     link: '/guide/mocking/functions',
                   },
                   {
-                    text: 'Mock 全局变量',
+                    text: 'Globals',
                     link: '/guide/mocking/globals',
                   },
                   {
-                    text: 'Mock 模块',
+                    text: 'Modules',
                     link: '/guide/mocking/modules',
                   },
                   {
-                    text: 'Mock 文件系统',
+                    text: 'File System',
                     link: '/guide/mocking/file-system',
                   },
                   {
-                    text: 'Mock 请求',
+                    text: 'Requests',
                     link: '/guide/mocking/requests',
                   },
                   {
-                    text: 'Mock 定时器',
+                    text: 'Timers',
                     link: '/guide/mocking/timers',
                   },
                   {
-                    text: 'Mock 类',
+                    text: 'Classes',
                     link: '/guide/mocking/classes',
                   },
                 ],

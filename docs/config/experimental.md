@@ -11,10 +11,10 @@ outline: deep
 请在 [GitHub 讨论](https://github.com/vitest-dev/vitest/discussions/9221) 中留下关于此功能的反馈。
 :::
 
-- **Type:** `boolean`
-- **Default:** `false`
+- **类型:** `boolean`
+- **默认值:** `false`
 
-启用此选项允许 Vitest 将缓存模块保留在文件系统上，使测试在重运行之间运行得更快。
+启用此选项允许 Vitest 将缓存模块保留在文件系统上，使测试在重新运行之间运行得更快。
 
 你可以通过运行 [`vitest --clearCache`](/guide/cli#clearcache) 来删除旧缓存。
 
@@ -22,7 +22,7 @@ outline: deep
 目前，此选项不影响 [浏览器模式](/guide/browser/)。
 :::
 
-你可以通过带有 `DEBUG=vitest:cache:fs` 环境变量运行 vitest 来调试你的模块是否被缓存：
+你可以通过设置 `DEBUG=vitest:cache:fs` 环境变量来运行 vitest，以调试模块是否被缓存：
 
 ```shell
 DEBUG=vitest:cache:fs vitest --experimental.fsModuleCache
@@ -30,7 +30,7 @@ DEBUG=vitest:cache:fs vitest --experimental.fsModuleCache
 
 ### 已知问题
 
-Vitest 基于文件内容、其 id、Vite 的环境配置和覆盖率状态创建持久文件哈希。Vitest 尝试使用尽可能多的配置信息，但它仍然不完整。目前，无法跟踪你的插件选项，因为没有标准接口。
+Vitest 基于文件内容、其 ID、Vite 的环境配置和覆盖率状态创建持久文件哈希。Vitest 尝试使用尽可能多的配置信息，但它仍然不完整。目前，无法跟踪你的插件选项，因为没有标准接口。
 
 如果你的插件依赖于文件内容或公共配置之外的事物（如读取另一个文件或文件夹），缓存可能会过时。为解决这个问题，你可以定义一个 [缓存键生成器](/api/advanced/plugin#definecachekeygenerator) 来指定动态选项或为该模块选择退出缓存：
 
@@ -96,8 +96,8 @@ export default defineConfig({
 
 ## experimental.fsModuleCachePath <Version type="experimental">4.0.11</Version> {#experimental-fsmodulecachepath}
 
-- **Type:** `string`
-- **Default:** `'node_modules/.experimental-vitest-cache'`
+- **类型:** `string`
+- **默认值:** `'node_modules/.experimental-vitest-cache'`
 
 文件系统缓存所在的目录。
 
@@ -111,7 +111,7 @@ export default defineConfig({
 请在 [GitHub 讨论](https://github.com/vitest-dev/vitest/discussions/9222) 中留下关于此功能的反馈。
 :::
 
-- **Type:**
+- **类型:**
 
 ```ts
 interface OpenTelemetryOptions {
@@ -127,7 +127,7 @@ interface OpenTelemetryOptions {
 }
 ```
 
-- **Default:** `{ enabled: false }`
+- **默认值:** `{ enabled: false }`
 
 此选项控制 [OpenTelemetry](https://opentelemetry.io/) 支持。如果 `enabled` 设置为 `true`，Vitest 会在主线程中以及每个测试文件之前导入 SDK 文件。
 
@@ -182,7 +182,7 @@ export default defineConfig({
 请在 [GitHub 讨论](https://github.com/vitest-dev/vitest/discussions/9224) 中留下关于此功能的反馈。
 :::
 
-- **Type:**
+- **类型:**
 
 ```ts
 interface ImportDurationsOptions {
@@ -215,7 +215,7 @@ interface ImportDurationsOptions {
 }
 ```
 
-- **Default:** `{ print: false, failOnDanger: false, limit: 0, thresholds: { warn: 100, danger: 500 } }`（如果 `print` 或 UI 启用，`limit` 为 10）
+- **默认值:** `{ print: false, failOnDanger: false, limit: 0, thresholds: { warn: 100, danger: 500 } }`（如果 `print` 或 UI 启用，`limit` 为 10）
 
 配置导入持续时间收集和显示。
 
@@ -231,8 +231,8 @@ interface ImportDurationsOptions {
 
 ### experimental.importDurations.print {#experimental-importdurationsprint}
 
-- **Type:** `boolean | 'on-warn'`
-- **Default:** `false`
+- **类型:** `boolean | 'on-warn'`
+- **默认值:** `false`
 
 控制测试完成后何时将导入细分打印到 CLI 终端。这仅适用于 [`default`](/guide/reporters#default)、[`verbose`](/guide/reporters#verbose) 或 [`tree`](/guide/reporters#tree) 报告器。
 
@@ -242,8 +242,8 @@ interface ImportDurationsOptions {
 
 ### experimental.importDurations.failOnDanger {#experimental-importdurationsfailondanger}
 
-- **Type:** `boolean`
-- **Default:** `false`
+- **类型:** `boolean`
+- **默认值:** `false`
 
 如果任何导入超过 `thresholds.danger` 值，则失败测试运行。当启用且超过阈值时，无论 `print` 设置如何，始终打印细分。
 
@@ -255,15 +255,15 @@ vitest --experimental.importDurations.failOnDanger
 
 ### experimental.importDurations.limit {#experimental-importdurationslimit}
 
-- **Type:** `number`
-- **Default:** `0`（如果 `print`、`failOnDanger` 或 UI 启用，则为 `10`）
+- **类型:** `number`
+- **默认值:** `0`（如果 `print`、`failOnDanger` 或 UI 启用，则为 `10`）
 
 在 CLI 输出、[Vitest UI](/guide/ui#import-breakdown) 和第三方报告器中收集和显示的最大导入数。
 
 ### experimental.importDurations.thresholds {#experimental-importdurationsthresholds}
 
-- **Type:** `{ warn?: number; danger?: number }`
-- **Default:** `{ warn: 100, danger: 500 }`
+- **类型:** `{ warn?: number; danger?: number }`
+- **默认值:** `{ warn: 100, danger: 500 }`
 
 用于着色和警告的持续时间阈值（毫秒）：
 
@@ -280,8 +280,8 @@ vitest --experimental.importDurations.failOnDanger
 请在 [GitHub 讨论](https://github.com/vitest-dev/vitest/discussions/9501) 中留下关于此功能的反馈。
 :::
 
-- **Type:** `boolean`
-- **Default:** `true`
+- **类型:** `boolean`
+- **默认值:** `true`
 
 控制 Vitest 是否使用 Vite 的 [模块运行器](https://vite.dev/guide/api-environment-runtimes#modulerunner) 来运行代码或回退到原生 `import`。
 
@@ -304,7 +304,7 @@ vitest --experimental.importDurations.failOnDanger
 
 ### 模块运行器
 
-默认情况下，Vitest 在由 Vite 的 [环境 API](https://vite.dev/guide/api-environment.html#environment-api) 支持的非常宽松的模块运行器沙箱中运行测试。每个文件被分类为“内联”模块或“外部”模块。
+默认情况下，Vitest 在由 Vite 的 [环境 API](https://vite.dev/guide/api-environment.html#环境-api) 支持的非常宽松的模块运行器沙箱中运行测试。每个文件被分类为“内联”模块或“外部”模块。
 
 模块运行器运行所有“内联”模块。它提供 `import.meta.env`、`require`、`__dirname`、`__filename`、静态 `import`，并拥有自己的模块解析机制。这使得当你不想配置环境且只需要测试你编写的纯 JavaScript 逻辑按预期工作时，运行代码变得非常容易。
 
@@ -478,4 +478,37 @@ export default {
 
 如果模块运行器被禁用，Vitest 会使用原生的 [Node.js 模块加载器](https://nodejs.org/api/module.html#customization-hooks) 来转换文件，以支持 `import.meta.vitest`、`vi.mock` 和 `vi.hoisted`。
 
-如果你不使用这些功能，你可以禁用它以提高性能。
+If you don't use these features, you can disable this to improve performance.
+
+## experimental.preParse <Version type="experimental">4.1.3</Version> {#experimental-preparse}
+
+- **Type:** `boolean`
+- **Default:** `false`
+
+Parses test specifications before running them. This applies the [`.only`](/api/test#test-only) modifier, the [`-t`](/config/testnamepattern) test name pattern, [`--tags-filter`](/guide/test-tags#syntax), [test lines](/api/advanced/test-specification#testlines), and [test IDs](/api/advanced/test-specification#testids) across all files without executing them. For example, if only a single test is marked with `.only`, Vitest will skip all other tests in all files.
+
+::: tip
+This option is recommended when using [`.only`](/api/test#test-only), the [`-t`](/config/testnamepattern) flag, or [`--tags-filter`](/guide/test-tags#syntax).
+
+Enabling it unconditionally may slow down your test runs due to the additional parsing step.
+:::
+
+::: warning
+Pre-parsing uses static analysis (AST parsing) instead of executing your test files. This means that test names, tags, and modifiers (`.only`, `.skip`, `.todo`) must be statically analyzable. Dynamic test names (e.g., names stored in variables or returned from function calls) and non-literal tags will not be resolved correctly.
+
+```ts
+// ✅ works — static string literal
+test('adds numbers', () => {})
+
+// ✅ works — static tags
+test('my test', { tags: ['unit'] }, () => {})
+
+// ❌ won't match correctly — dynamic name
+const name = getName()
+test(name, () => {})
+
+// ❌ won't match correctly — dynamic tags
+const tags = getTags()
+test('my test', { tags }, () => {})
+```
+:::

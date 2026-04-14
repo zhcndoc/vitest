@@ -14,11 +14,15 @@ import FeaturesList from '../.vitepress/components/FeaturesList.vue'
 <div h-2 />
 <CourseLink href="https://vueschool.io/lessons/your-first-test?friend=vueuse">通过视频学习如何编写你的第一个测试</CourseLink>
 
-## 测试、开发和构建之间的共享配置
+::: tip
+此页面是 Vitest 能力的高级别概述。如果你是 Vitest 新手，我们建议先阅读 [入门教程](/guide/learn/writing-tests)。
+:::
+
+## 测试、开发和构建的共享配置
 
 Vite 的配置、转换器、解析器和插件。使用与应用相同的设置来运行测试。
 
-了解更多：[配置 Vitest](/guide/#configuring-vitest)。
+在 [配置 Vitest](/config/) 中了解更多信息。
 
 ## 监听模式
 

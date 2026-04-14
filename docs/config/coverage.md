@@ -133,6 +133,10 @@ npx vitest --coverage.enabled --coverage.provider=istanbul
 
 你可以在 Vitest UI 中查看覆盖率报告：查看 [Vitest UI 覆盖率](/guide/coverage#vitest-ui) 了解更多详情。
 
+::: tip AI coding agents
+When Vitest detects it is running inside an AI coding agent, it automatically adds the `text-summary` reporter and sets `skipFull: true` on the `text` reporter to reduce output and minimize token usage.
+:::
+
 ## coverage.reportOnFailure {#coverage-reportonfailure}
 
 - **类型：** `boolean`
@@ -373,7 +377,7 @@ Vitest 将所有文件（包括被 glob 模式覆盖的文件）计入全局覆�
 ```
 
 - **适用提供者：** `'v8' | 'istanbul'`
-- **CLI：** `--coverage.watermarks.statements=50,80`, `--coverage.watermarks.branches=50,80`
+- **命令行：** `--coverage.watermarks.statements=50,80`, `--coverage.watermarks.branches=50,80`
 
 语句、行、分支和函数的水印值。参见 [istanbul 文档](https://github.com/istanbuljs/nyc#high-and-low-watermarks) 获取更多信息。
 
@@ -382,7 +386,7 @@ Vitest 将所有文件（包括被 glob 模式覆盖的文件）计入全局覆�
 - **类型：** `boolean`
 - **默认值：** `Math.min(20, os.availableParallelism?.() ?? os.cpus().length)`
 - **适用提供者：** `'v8' | 'istanbul'`
-- **CLI：** `--coverage.processingConcurrency=<number>`
+- **命令行：** `--coverage.processingConcurrency=<number>`
 
 处理覆盖率结果时使用的并发限制。
 
@@ -411,6 +415,6 @@ Vitest 将所有文件（包括被 glob 模式覆盖的文件）计入全局覆�
 - **类型：** `boolean | string`
 - **默认值：** `false`（继承自 `test.changed`）
 - **适用提供者：** `'v8' | 'istanbul'`
-- **CLI：** `--coverage.changed`, `--coverage.changed=<commit/branch>`
+- **命令行：** `--coverage.changed`, `--coverage.changed=<commit/branch>`
 
 仅收集自指定提交或分支以来更改文件的覆盖率。当设置为 `true` 时，它使用暂存和未暂存的更改。

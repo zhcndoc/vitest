@@ -5,7 +5,7 @@ outline: deep
 
 # 报告器
 
-Vitest 提供了多种内置报告器以不同格式显示测试输出，同时也支持使用自定义报告器。你可以通过 `--reporter` 命令行选项，或在 [配置文件](/config/reporters) 中包含 `reporters` 属性来选择不同的报告器。如果未指定报告器，Vitest 将使用如下所述的 `default` 报告器。
+Vitest 提供了多种内置报告器，以不同格式显示测试输出，同时也支持使用自定义报告器。你可以通过 `--reporter` 命令行选项，或在 [配置文件](/config/reporters) 中包含 `reporters` 属性来选择不同的报告器。如果未指定报告器，Vitest 将使用如下所述的 `default` 报告器。
 
 通过命令行使用报告器：
 
@@ -417,6 +417,20 @@ JSON 报告示例：
 自 Vitest 3 起，如果启用了覆盖率，JSON 报告器会在 `coverageMap` 中包含覆盖率信息。
 :::
 
+The `meta` field in each assertion result can be filtered via the `filterMeta` reporter option. It receives the key and value of each field and should return a falsy value to exclude the field from the report:
+
+```ts
+export default defineConfig({
+  test: {
+    reporters: [
+      ['json', {
+        filterMeta: (key, value) => key !== 'internalField',
+      }]
+    ]
+  },
+})
+```
+
 ### HTML 报告器
 
 生成一个 HTML 文件，以便通过交互式 [GUI](/guide/ui) 查看测试结果。文件生成后，Vitest 将保持本地开发服务器运行，并提供一个链接以便在浏览器中查看报告。
@@ -683,29 +697,3 @@ Blob 报告器输出不包含基于文件的 [附件](/api/advanced/artifacts.ht
 ::: tip
 `--reporter=blob` 和 `--merge-reports` 都不适用于监听模式。
 :::
-
-## 自定义报告器
-
-你可以通过在 reporters 选项中指定包名，来使用从 NPM 安装的第三方自定义报告器：
-
-:::code-group
-```bash [CLI]
-npx vitest --reporter=some-published-vitest-reporter
-```
-
-```ts [vitest.config.ts]
-export default defineConfig({
-  test: {
-    reporters: ['some-published-vitest-reporter']
-  },
-})
-```
-:::
-
-此外，你可以定义自己的 [自定义报告器](/guide/advanced/reporters)，并通过指定文件路径来使用它们：
-
-```bash
-npx vitest --reporter=./path/to/reporter.ts
-```
-
-自定义报告器应实现 [Reporter 接口](https://github.com/vitest-dev/vitest/blob/main/packages/vitest/src/node/types/reporter.ts)。
