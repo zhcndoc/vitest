@@ -49,9 +49,44 @@ test('拒绝并抛出错误', async () => {
 不要忘记在 `expect` 前加上 `await`。Vitest 会检测到未被等待的断言并在测试结束时打印警告，但最好总是明确地包含 `await`。Vitest 也会在开始下一个测试前等待 `Promise.all` 中的所有挂起 Promise，但依赖这种行为会让测试更难理解。
 :::
 
-## 回调函数（Callbacks）
+## 断言计数
 
-一些旧的 API 使用回调函数而不是 Promise。因为 Vitest 与 Promise 配合工作，最简单的方法是将回调包装在 `Promise` 中：
+使用异步代码时，有一个细微的风险：回调或 `.then()` 链中的断言可能永远不会执行，而测试仍然会通过，因为没有断言失败。[`expect.hasAssertions()`](/api/expect#hasassertions) 通过验证测试期间至少执行了一次断言来防止这种情况：
+
+```js
+test('调用了回调', async () => {
+  expect.hasAssertions()
+
+  const data = await fetchData()
+  data.items.forEach((item) => {
+    expect(item.id).toBeDefined()
+  })
+  // 如果 data.items 为空，测试会失败，而不是悄悄通过
+})
+```
+
+当你确切知道应该执行多少个断言时，[`expect.assertions(n)`](/api/expect#assertions) 更精确：
+
+```js
+test('两个回调都被调用', async () => {
+  expect.assertions(2)
+
+  await Promise.all([
+    fetchUser(1).then(user => expect(user.name).toBe('Alice')),
+    fetchUser(2).then(user => expect(user.name).toBe('Bob')),
+  ])
+})
+```
+
+在大多数情况下，直接断言配合 `async`/`await` 已经足够清晰，你不需要断言计数。它最适用于断言位于回调、循环或条件分支中，并且你希望确保它们确实执行了的场景。
+
+::: tip
+如果你希望项目中的每个测试都至少包含一次断言，可以在配置中启用 [`expect.requireAssertions`](/config/expect#expect-requireassertions)，而不是手动为每个测试添加 `expect.hasAssertions()`。
+:::
+
+## 回调
+
+一些旧的 API 使用回调函数而不是 Promise。由于 Vitest 与 Promise 配合工作，最简单的方法是将回调包装在 `Promise` 中：
 
 ```js
 function fetchData(callback) {
@@ -68,7 +103,11 @@ test('数据是花生酱', async () => {
 
 这种模式适用于任何基于回调的 API。将 `resolve` 作为成功回调传递，测试会等待直到回调被调用。
 
-## 超时（Timeouts）
+::: tip
+大多数现代 Node.js API（例如 `fs/promises` 和 `fetch`）原生支持 Promise，因此你可以直接使用 `async`/`await`。上面的回调包装模式主要适用于尚未采用 Promise 的旧库。
+:::
+
+## 超时时间
 
 默认情况下，每个测试有 5 秒的超时时间。如果测试耗时更长（可能是因为 Promise 永远不解析，或者网络请求挂起），它会因超时错误而失败。这可以防止测试套件无限期卡住。
 
@@ -92,25 +131,7 @@ export default defineConfig({
 })
 ```
 
-## 并发测试（Concurrent Tests）
-
-默认情况下，文件内的测试按顺序运行。这通常是你想要的，特别是当测试共享设置代码时。但如果有许多相互独立的异步测试，每个测试大部分时间都在等待（网络、磁盘、计时器等），使用 [`test.concurrent`](/api/test#concurrent) 并发运行它们可以显著加快速度：
-
-```js
-test.concurrent('第一个异步测试', async () => {
-  const result = await fetchUser(1)
-  expect(result.name).toBe('Alice')
-})
-
-test.concurrent('第二个异步测试', async () => {
-  const result = await fetchUser(2)
-  expect(result.name).toBe('Bob')
-})
-```
-
-请参阅 [并行性（Parallelism）](/guide/parallelism) 指南，了解 Vitest 如何并行运行测试的完整情况，包括跨文件和文件内。
-
-## 未处理的拒绝（Unhandled Rejections）
+## 未处理的拒绝
 
 默认情况下，Vitest 将未处理的 Promise 拒绝报告为测试运行中的错误。如果代码中某处的 Promise 被拒绝且未被捕获，测试运行会失败，即使所有断言都通过了。这是故意设计的：未处理的拒绝通常表示真实的 bug，比如忘记 `await` 或一个“发射后不管”的 Promise 默默失败。
 

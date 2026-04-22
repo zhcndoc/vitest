@@ -10,7 +10,7 @@ next:
 
 # 实践中的测试
 
-之前的页面介绍了 Vitest API：断言、模拟、快照和测试生命周期钩子。本页专注于将这些工具应用于真实代码。它涵盖了如何决定要测试什么、如何有效地构建测试，以及随着项目增长如何组织测试文件。
+前一页介绍了 Vitest API：断言、模拟、快照和测试生命周期钩子。本页专注于将这些工具应用于真实代码。它涵盖了如何决定要测试什么、如何有效地构建测试，以及随着项目增长如何组织测试文件。
 
 ## 要测试什么
 
@@ -38,7 +38,7 @@ test('formats USD prices', () => {
 })
 
 test('formats EUR prices', () => {
-  expect(formatPrice(10, 'EUR')).toMatchInlineSnapshot(`"€10.00"`)
+  expect(formatPrice(10, 'EUR')).toBe('€10.00')
 })
 
 test('handles zero', () => {
@@ -429,6 +429,10 @@ describe('getCompleted', () => {
 
 ::: tip
 注意我们在每个测试中都创建了一个新的 `createTodoList()` 实例。这保持了测试的独立性，意味着它们可以按任意顺序运行而互不影响。如果你发现自己每个测试都重复相同的设置代码，这正是使用 [`beforeEach`](/api/hooks#beforeeach) 或 [`test.extend`](/guide/test-context#extend-test-context) 固定装置的时机。
+:::
+
+::: details What about `nextId`?
+The `nextId` counter at the top of the module is shared across all calls to `createTodoList()`, including across tests. This means IDs aren't predictable: one test might get IDs 1 and 2, while another gets 3 and 4 depending on execution order. This works fine here because the tests only check *relative* uniqueness (`first.id !== second.id`), not specific ID values. If a test asserted `expect(todo.id).toBe(1)`, it would break depending on which tests ran before it. When you have shared module-level state like this, make sure your tests don't depend on its specific value.
 :::
 
 ---

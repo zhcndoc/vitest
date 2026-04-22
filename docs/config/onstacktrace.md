@@ -5,7 +5,7 @@ outline: deep
 
 # onStackTrace <CRoot />
 
-- **类型**: `(error: Error, frame: ParsedStack) => boolean | void`
+- **类型：** `(error: Error, frame: ParsedStack) => boolean | void`
 
 在处理错误时，将过滤函数应用于每个堆栈跟踪的每一帧。这不适用于由 [`printConsoleTrace`](/config/printconsoletrace#printconsoletrace) 打印的堆栈跟踪。第一个参数 `error` 是一个 `TestError`。
 

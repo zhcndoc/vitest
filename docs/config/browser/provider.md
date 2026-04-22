@@ -45,7 +45,7 @@ export default defineConfig({
         { browser: 'chromium' },
         {
           browser: 'firefox',
-          // 仅针对单个实例覆盖选项
+          // 仅为单个实例覆盖选项
           // 这不会与父级选项合并
           provider: playwright({
             launchOptions: {
@@ -61,7 +61,7 @@ export default defineConfig({
 })
 ```
 
-## 自定义 Provider <Badge type="danger">高级</Badge>
+## 自定义 Provider <Badge type="danger">advanced</Badge> {#custom-provider}
 
 ::: danger 高级 API
 自定义 provider API 处于高度实验阶段，可能会在补丁版本之间发生变化。如果你只需要在浏览器中运行测试，请改用 [`browser.instances`](/config/browser/instances) 选项。

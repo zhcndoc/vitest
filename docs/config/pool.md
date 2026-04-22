@@ -13,7 +13,7 @@ outline: deep
 
 ## threads
 
-启用多线程。使用 threads 时，无法使用与进程相关的 API，例如 `process.chdir()`。某些用原生语言编写的库，例如 Prisma、`bcrypt` 和 `canvas`，在多线程运行时会出现问题并导致段错误。在这些情况下，建议改用 `forks` 池。
+启用多线程。使用 threads 时，无法使用与进程相关的 API，例如 `process.chdir()`。一些用原生语言编写的库，例如 `Prisma`、`bcrypt` 和 `canvas`，在多线程环境下运行时会出现问题，并可能导致段错误（segfault）。在这些情况下，建议改用 `forks` 池。
 
 ## forks
 

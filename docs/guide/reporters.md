@@ -99,7 +99,7 @@ export default defineConfig({
 默认情况下（即未指定报告器），Vitest 将在底部显示运行测试的摘要及其状态。一旦套件通过，其状态将报告在摘要的顶部。
 
 ::: tip
-当 Vitest 检测到它在 AI 编程代理内部运行时，将使用 [`agent`](#agent-reporter) 报告器来减少输出并最小化 Token 用量。你可以通过显式配置 [`reporters`](/config/reporters) 选项来覆盖此行为。
+当 Vitest 检测到其运行在 AI 编码代理中时，将改用 [`minimal`](#minimal-reporter) 报告器，以减少输出并尽量降低 token 使用量。你可以通过显式配置 [`reporters`](/config/reporters) 选项来覆盖这一行为。
 :::
 
 你可以通过配置报告器来禁用摘要：
@@ -417,7 +417,7 @@ JSON 报告示例：
 自 Vitest 3 起，如果启用了覆盖率，JSON 报告器会在 `coverageMap` 中包含覆盖率信息。
 :::
 
-The `meta` field in each assertion result can be filtered via the `filterMeta` reporter option. It receives the key and value of each field and should return a falsy value to exclude the field from the report:
+每个断言结果中的 `meta` 字段可以通过 `filterMeta` 报告器选项进行过滤。它接收每个字段的键和值，并应返回一个假值以将该字段从报告中排除：
 
 ```ts
 export default defineConfig({
@@ -655,21 +655,24 @@ export default defineConfig({
 })
 ```
 
-### Agent 报告器
+### Minimal Reporter
 
-输出为 AI 编程助手和基于 LLM 的工作流优化的最小化报告。仅显示失败的测试及其错误消息。来自通过测试的控制台日志和摘要部分被抑制以减少 Token 用量。
+- **别名：** `agent`
 
-当未配置 `reporters` 选项且 Vitest 检测到它在 AI 编程代理内部运行时，此报告器会自动启用。如果你配置了自定义报告器，可以显式添加 `agent`：
+输出一个最小报告，只包含失败的测试及其错误消息。来自通过测试的控制台日志和摘要部分也会被抑制。
+
+::: tip Agent Reporter
+此报告器针对 AI 编码助手和基于 LLM 的工作流进行了良好优化，可减少 token 使用量。当未配置 `reporters` 选项且 Vitest 检测到它运行在 AI 编码代理中时，它会自动启用。如果你配置了自定义报告器，可以显式添加 `minimal` 或 `agent`：
 
 :::code-group
-```bash [命令行]
-npx vitest --reporter=agent
+```bash [CLI]
+npx vitest --reporter=minimal
 ```
 
 ```ts [vitest.config.ts]
 export default defineConfig({
   test: {
-    reporters: ['agent']
+    reporters: ['minimal']
   },
 })
 ```

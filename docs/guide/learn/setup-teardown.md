@@ -121,16 +121,20 @@ describe('字符串运算', () => {
 import { afterAll, afterEach, beforeAll, beforeEach, describe, test } from 'vitest'
 
 beforeAll(() => console.log('1 - beforeAll'))
-afterAll(() => console.log('6 - afterAll'))
+afterAll(() => console.log('8 - afterAll'))
 beforeEach(() => console.log('2 - beforeEach'))
-afterEach(() => console.log('4 - afterEach'))
+afterEach(() => console.log('5 - afterEach'))
 
 describe('测试套件', () => {
   beforeEach(() => console.log('3 - inner beforeEach'))
-  afterEach(() => console.log('3.5 - inner afterEach'))
+  afterEach(() => console.log('4 - inner afterEach'))
 
-  test('示例', () => {
-    console.log('  test')
+  test('first test', () => {
+    console.log('  first test')
+  })
+
+  test('second test', () => {
+    console.log('  second test')
   })
 })
 ```
@@ -141,13 +145,18 @@ describe('测试套件', () => {
 1 - beforeAll
 2 - beforeEach
 3 - inner beforeEach
-  test
-3.5 - inner afterEach
-4 - afterEach
-6 - afterAll
+  first test
+4 - inner afterEach
+5 - afterEach
+2 - beforeEach
+3 - inner beforeEach
+  second test
+4 - inner afterEach
+5 - afterEach
+8 - afterAll
 ```
 
-注意其规律：外部的 `beforeEach` 先执行（设置最广的作用域），然后是内部的 `beforeEach`（进一步缩小作用域）。测试结束后，顺序反转：内部的 `afterEach` 先清理狭窄的作用域，然后外部的 `afterEach` 处理更广范围的清理。
+注意这个模式：`beforeAll` 和 `afterAll` 在整个测试套件中只运行一次，而 `beforeEach` 和 `afterEach` 会为每个测试重复执行。在每个测试内部，外层 `beforeEach` 先运行（设置最宽泛的上下文），然后内层 `beforeEach` 运行（收窄上下文）。在测试之后，顺序会反转：内层 `afterEach` 先清理较窄的上下文，然后外层 `afterEach` 处理更广泛的清理。
 
 ## 使用 `onTestFinished` 进行清理
 

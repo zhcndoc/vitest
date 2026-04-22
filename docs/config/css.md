@@ -5,7 +5,7 @@ outline: deep
 
 # css
 
-- **类型**: `boolean | { include?, exclude?, modules? }`
+- **Type:** `boolean | { include?, exclude?, modules? }`
 
 配置是否处理 CSS。当被排除时，CSS 文件将被替换为空字符串以绕过后续处理。CSS Modules 将返回一个代理以避免影响运行时。
 
@@ -15,8 +15,8 @@ outline: deep
 
 ## css.include
 
-- **类型**: `RegExp | RegExp[]`
-- **默认值**: `[]`
+- **Type:** `RegExp | RegExp[]`
+- **Default:** `[]`
 
 用于匹配应返回实际 CSS 并将由 Vite 管道处理的文件的 RegExp 模式。
 
@@ -26,20 +26,20 @@ outline: deep
 
 ## css.exclude
 
-- **类型**: `RegExp | RegExp[]`
-- **默认值**: `[]`
+- **Type:** `RegExp | RegExp[]`
+- **Default:** `[]`
 
 用于匹配将返回空 CSS 文件的文件的 RegExp 模式。
 
 ## css.modules
 
-- **类型**: `{ classNameStrategy? }`
-- **默认值**: `{}`
+- **Type:** `{ classNameStrategy? }`
+- **Default:** `{}`
 
 ### css.modules.classNameStrategy
 
-- **类型**: `'stable' | 'scoped' | 'non-scoped'`
-- **默认值**: `'stable'`
+- **Type:** `'stable' | 'scoped' | 'non-scoped'`
+- **Default:** `'stable'`
 
 如果你决定处理 CSS 文件，你可以配置 CSS modules 内部的类名是否应该被作用域化。你可以选择以下选项之一：
 

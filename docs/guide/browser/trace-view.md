@@ -65,10 +65,10 @@ export default defineConfig({
 import { page } from 'vitest/browser'
 
 document.body.innerHTML = `
-  <button type="button">Sign in</button>
+  <button type="button">登录</button>
 `
 
-await page.getByRole('button', { name: 'Sign in' }).mark('sign in button rendered')
+await page.getByRole('button', { name: '登录' }).mark('登录按钮已渲染')
 ```
 
 `page.mark(name)` 和 `locator.mark(name)` 均可用。
@@ -76,10 +76,10 @@ await page.getByRole('button', { name: 'Sign in' }).mark('sign in button rendere
 你也可以使用 `page.mark(name, callback)` 将多个操作分组在一个标记下：
 
 ```ts
-await page.mark('sign in flow', async () => {
-  await page.getByRole('textbox', { name: 'Email' }).fill('john@example.com')
-  await page.getByRole('textbox', { name: 'Password' }).fill('secret')
-  await page.getByRole('button', { name: 'Sign in' }).click()
+await page.mark('登录流程', async () => {
+  await page.getByRole('textbox', { name: '电子邮件' }).fill('john@example.com')
+  await page.getByRole('textbox', { name: '密码' }).fill('secret')
+  await page.getByRole('button', { name: '登录' }).click()
 })
 ```
 
@@ -91,7 +91,7 @@ import { page } from 'vitest/browser'
 
 const myRender = vi.defineHelper(async (content: string) => {
   document.body.innerHTML = content
-  await page.elementLocator(document.body).mark('render helper')
+  await page.elementLocator(document.body).mark('渲染辅助函数')
 })
 
 test('renders content', async () => {
@@ -123,6 +123,4 @@ npx playwright show-trace "path-to-trace-file"
 
 在底层，Playwright 仍然像往常一样记录其自己的低级动作事件。Vitest 用源代码位置组包装它们，以便你可以直接从追踪时间线跳转到测试中的相关行。
 
-请记住，像 `expect(value).toBe(...)` 这样的普通断言在 Node 中运行，而不是在浏览器中，所以它们不会显示在追踪中。
-
-对于任何未自动覆盖的内容，你可以使用 `page.mark()` 或 `locator.mark()` 添加自己的追踪组 — 参见上面的 [追踪标记](#trace-markers)。
+对于未自动覆盖的内容，你可以使用 `page.mark()` 或 `locator.mark()` 添加自己的追踪组——参见上面的 [追踪标记](#trace-markers)。

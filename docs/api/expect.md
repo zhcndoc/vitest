@@ -486,7 +486,7 @@ test('have more then 10 apples', () => {
 import { expect, test } from 'vitest'
 import { getApples } from './stocks.js'
 
-test('have 11 apples or more', () => {
+test('有 11 个或更多苹果', () => {
   expect(getApples()).toBeGreaterThanOrEqual(11)
 })
 ```
@@ -501,7 +501,7 @@ test('have 11 apples or more', () => {
 import { expect, test } from 'vitest'
 import { getApples } from './stocks.js'
 
-test('have less then 20 apples', () => {
+test('少于 20 个苹果', () => {
   expect(getApples()).toBeLessThan(20)
 })
 ```
@@ -516,7 +516,7 @@ test('have less then 20 apples', () => {
 import { expect, test } from 'vitest'
 import { getApples } from './stocks.js'
 
-test('have 11 apples or less', () => {
+test('有 11 个或更少苹果', () => {
   expect(getApples()).toBeLessThanOrEqual(11)
 })
 ```
@@ -540,11 +540,11 @@ const stockMary = {
   count: 13,
 }
 
-test('stocks have the same properties', () => {
+test('库存具有相同的属性', () => {
   expect(stockBill).toEqual(stockMary)
 })
 
-test('stocks are not the same', () => {
+test('库存并不相同', () => {
   expect(stockBill).not.toBe(stockMary)
 })
 ```
@@ -584,7 +584,7 @@ class Stock {
   }
 }
 
-test('structurally the same, but semantically different', () => {
+test('结构相同，但语义不同', () => {
   expect(new Stock('apples')).toEqual({ type: 'apples' })
   expect(new Stock('apples')).not.toStrictEqual({ type: 'apples' })
 })
@@ -600,19 +600,19 @@ test('structurally the same, but semantically different', () => {
 import { expect, test } from 'vitest'
 import { getAllFruits } from './stocks.js'
 
-test('the fruit list contains orange', () => {
+test('水果列表包含橙子', () => {
   expect(getAllFruits()).toContain('orange')
 })
 
-test('pineapple contains apple', () => {
+test('pineapple 包含 apple', () => {
   expect('pineapple').toContain('apple')
 })
 
-test('the element contains a class and is contained', () => {
+test('元素包含一个类并且被包含在内', () => {
   const element = document.querySelector('#el')
-  // element has a class
+  // 元素有一个类
   expect(element.classList).toContain('flex')
-  // element is inside another one
+  // 元素位于另一个元素内部
   expect(document.querySelector('#wrapper')).toContain(element)
 })
 ```
@@ -628,7 +628,7 @@ test('the element contains a class and is contained', () => {
 import { expect, test } from 'vitest'
 import { getFruitStock } from './stocks.js'
 
-test('apple available', () => {
+test('苹果可用', () => {
   expect(getFruitStock()).toContainEqual({ fruit: 'apple', count: 5 })
 })
 ```
@@ -683,7 +683,7 @@ const invoice = {
   ],
 }
 
-test('John Doe Invoice', () => {
+test('John Doe 发票', () => {
   expect(invoice).toHaveProperty('isActive') // 断言键存在
   expect(invoice).toHaveProperty('total_amount', 5000) // 断言键存在且值相等
 
@@ -719,7 +719,7 @@ test('John Doe Invoice', () => {
 ```ts
 import { expect, test } from 'vitest'
 
-test('top fruits', () => {
+test('顶部水果', () => {
   expect('top fruits include apple, orange and grape').toMatch(/apple/)
   expect('applefruits').toMatch('fruit') // toMatch 也接受字符串
 })
@@ -764,12 +764,12 @@ const johnDetails = {
   },
 }
 
-test('invoice has john personal details', () => {
+test('发票包含 John 的个人信息', () => {
   expect(johnInvoice).toMatchObject(johnDetails)
 })
 
-test('the number of elements must match exactly', () => {
-  // Assert that an array of object matches
+test('元素数量必须完全匹配', () => {
+  // 断言对象数组匹配
   expect([{ foo: 'bar' }, { baz: 1 }]).toMatchObject([
     { foo: 'bar' },
     { baz: 1 },
@@ -816,7 +816,7 @@ function getFruitStock(type: string) {
   // 做一些其他事情
 }
 
-test('throws on pineapples', () => {
+test('菠萝时抛出错误', () => {
   // 测试错误消息在某处包含 "stock"：这些是等效的
   expect(() => getFruitStock('pineapples')).toThrow(/stock/)
   expect(() => getFruitStock('pineapples')).toThrow('stock')
@@ -843,7 +843,7 @@ function getAsyncFruitStock() {
   return Promise.reject(new Error('empty'))
 }
 
-test('throws on pineapples', async () => {
+test('菠萝时抛出错误', async () => {
   await expect(() => getAsyncFruitStock()).rejects.toThrow('empty')
 })
 ```
@@ -853,7 +853,7 @@ test('throws on pineapples', async () => {
 你也可以测试抛出的非 Error 值：
 
 ```ts
-test('throws non-Error values', () => {
+test('抛出非 Error 值', () => {
   expect(() => { throw 42 }).toThrow(42)
   expect(() => { throw { message: 'error' } }).toThrow({ message: 'error' })
 })
@@ -921,7 +921,7 @@ test('rejects', async () => {
 ```ts
 import { expect, test } from 'vitest'
 
-test('matches snapshot', () => {
+test('匹配快照', () => {
   const data = { foo: new Set(['bar', 'snapshot']) }
   expect(data).toMatchSnapshot()
 })
@@ -932,7 +932,7 @@ test('matches snapshot', () => {
 ```ts
 import { expect, test } from 'vitest'
 
-test('matches snapshot', () => {
+test('匹配快照', () => {
   const data = { foo: new Set(['bar', 'snapshot']) }
   expect(data).toMatchSnapshot({ foo: expect.any(Set) })
 })
@@ -1008,13 +1008,13 @@ it('render basic', async () => {
 
 - **类型:** `(snapshot?: string, hint?: string) => void`
 
-与 [`toMatchInlineSnapshot`](#tomatchinlinesnapshot) 相同，但期望值与 [`toThrow`](#tothrow) 相同。
+与 [`toMatchInlineSnapshot`](#toMatchInlineSnapshot) 相同，但期望值与 [`toThrow`](#tothrow) 相同。
 
 ## toMatchAriaSnapshot <Version type="experimental">4.1.4</Version> <Experimental /> {#tomatcharisnapshot}
 
 - **Type:** `() => void`
 
-Captures the accessibility tree of a DOM element and generate a snapshot file or compares it against a stored snapshot. See the [ARIA Snapshots guide](/guide/browser/aria-snapshots) for more details.
+捕获 DOM 元素的可访问性树，并生成快照文件或将其与已存储的快照进行比较。更多详情请参见 [ARIA Snapshots 指南](/guide/browser/aria-snapshots)。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -1034,7 +1034,7 @@ test('navigation accessibility', () => {
 
 - **Type:** `(snapshot?: string) => void`
 
-Same as [`toMatchAriaSnapshot`](#tomatcharisnapshot), but stores the snapshot inline in the test file. See the [ARIA Snapshots guide](/guide/browser/aria-snapshots) for more details.
+与 [`toMatchAriaSnapshot`](#tomatcharisnapshot) 相同，但会将快照以内联形式存储在测试文件中。更多详情请参见 [ARIA Snapshots 指南](/guide/browser/aria-snapshots)。
 
 ```ts
 import { expect, test } from 'vitest'
@@ -1075,7 +1075,7 @@ test('spy function', () => {
 
 ## toHaveBeenCalledTimes
 
-- **类型**: `(amount: number) => Awaitable<void>`
+- **Type:** `(amount: number) => Awaitable<void>`
 
 此断言检查函数是否被调用了特定次数。需要将间谍函数传递给 `expect`。
 
@@ -1100,7 +1100,7 @@ test('spy function called two times', () => {
 
 ## toHaveBeenCalledWith
 
-- **类型**: `(...args: any[]) => Awaitable<void>`
+- **Type:** `(...args: any[]) => Awaitable<void>`
 
 此断言检查函数是否至少使用特定参数被调用过一次。需要将间谍函数传递给 `expect`。
 
@@ -1126,7 +1126,7 @@ test('spy function', () => {
 
 ## toHaveBeenCalledBefore
 
-- **类型**: `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => Awaitable<void>`
+- **Type:** `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => Awaitable<void>`
 
 此断言检查一个 `Mock` 是否在另一个 `Mock` 之前被调用。
 
@@ -1145,7 +1145,7 @@ test('calls mock1 before mock2', () => {
 
 ## toHaveBeenCalledAfter
 
-- **类型**: `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => Awaitable<void>`
+- **Type:** `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => Awaitable<void>`
 
 此断言检查一个 `Mock` 是否在另一个 `Mock` 之后被调用。
 
@@ -1164,7 +1164,7 @@ test('calls mock1 after mock2', () => {
 
 ## toHaveBeenCalledExactlyOnceWith
 
-- **类型**: `(...args: any[]) => Awaitable<void>`
+- **Type:** `(...args: any[]) => Awaitable<void>`
 
 此断言检查一个函数是否恰好被调用了一次且带有特定参数。需要向 `expect` 传递一个 spy 函数。
 
@@ -1188,7 +1188,7 @@ test('spy function', () => {
 
 ## toHaveBeenLastCalledWith
 
-- **类型**: `(...args: any[]) => Awaitable<void>`
+- **Type:** `(...args: any[]) => Awaitable<void>`
 
 此断言检查一个函数在其最后一次调用时是否带有特定参数。需要向 `expect` 传递一个 spy 函数。
 
@@ -1214,7 +1214,7 @@ test('spy function', () => {
 
 ## toHaveBeenNthCalledWith
 
-- **类型**: `(time: number, ...args: any[]) => Awaitable<void>`
+- **Type:** `(time: number, ...args: any[]) => Awaitable<void>`
 
 此断言检查一个函数在第几次调用时是否带有特定参数。计数从 1 开始。因此，要检查第二次条目，你应该写 `.toHaveBeenNthCalledWith(2, ...)`。
 
@@ -1241,7 +1241,7 @@ test('first call of spy function called with right params', () => {
 
 ## toHaveReturned
 
-- **类型**: `() => Awaitable<void>`
+- **Type:** `() => Awaitable<void>`
 
 此断言检查一个函数是否至少成功返回过一次值（即没有抛出错误）。需要向 `expect` 传递一个 spy 函数。
 
@@ -1265,7 +1265,7 @@ test('spy function returned a value', () => {
 
 ## toHaveReturnedTimes
 
-- **类型**: `(amount: number) => Awaitable<void>`
+- **Type:** `(amount: number) => Awaitable<void>`
 
 此断言检查一个函数是否成功返回了确切次数的值（即没有抛出错误）。需要向 `expect` 传递一个 spy 函数。
 
@@ -1284,7 +1284,7 @@ test('spy function returns a value two times', () => {
 
 ## toHaveReturnedWith
 
-- **类型**: `(returnValue: any) => Awaitable<void>`
+- **Type:** `(returnValue: any) => Awaitable<void>`
 
 你可以调用此断言来检查一个函数是否至少成功返回过一次带有特定参数的值。需要向 `expect` 传递一个 spy 函数。
 
@@ -1302,7 +1302,7 @@ test('spy function returns a product', () => {
 
 ## toHaveLastReturnedWith
 
-- **类型**: `(returnValue: any) => Awaitable<void>`
+- **Type:** `(returnValue: any) => Awaitable<void>`
 
 你可以调用此断言来检查一个函数在最后一次被调用时是否成功返回了特定值。需要向 `expect` 传递一个 spy 函数。
 
@@ -1321,7 +1321,7 @@ test('spy function returns bananas on a last call', () => {
 
 ## toHaveNthReturnedWith
 
-- **类型**: `(time: number, returnValue: any) => Awaitable<void>`
+- **Type:** `(time: number, returnValue: any) => Awaitable<void>`
 
 你可以调用此断言来检查一个函数在某次调用时是否成功返回了带有特定参数的值。需要向 `expect` 传递一个 spy 函数。
 
@@ -1342,7 +1342,7 @@ test('spy function returns bananas on second call', () => {
 
 ## toHaveResolved
 
-- **类型**: `() => Awaitable<void>`
+- **Type:** `() => Awaitable<void>`
 
 此断言检查一个函数是否至少成功解析过一个值（即没有发生拒绝）。需要向 `expect` 传递一个 spy 函数。
 
@@ -1368,7 +1368,7 @@ test('spy function resolved a value', async () => {
 
 ## toHaveResolvedTimes
 
-- **类型**: `(amount: number) => Awaitable<void>`
+- **Type:** `(amount: number) => Awaitable<void>`
 
 此断言检查一个函数是否成功解析了确切次数的值（即没有发生拒绝）。需要向 `expect` 传递一个 spy 函数。
 
@@ -1389,7 +1389,7 @@ test('spy function resolved a value two times', async () => {
 
 ## toHaveResolvedWith
 
-- **类型**: `(returnValue: any) => Awaitable<void>`
+- **Type:** `(returnValue: any) => Awaitable<void>`
 
 你可以调用此断言来检查一个函数是否至少成功解析过某个特定值。需要向 `expect` 传递一个 spy 函数。
 
@@ -1409,7 +1409,7 @@ test('spy function resolved a product', async () => {
 
 ## toHaveLastResolvedWith
 
-- **类型**: `(returnValue: any) => Awaitable<void>`
+- **Type:** `(returnValue: any) => Awaitable<void>`
 
 你可以调用此断言来检查一个函数在最后一次被调用时是否成功解析了某个特定值。需要向 `expect` 传递一个 spy 函数。
 
@@ -1426,11 +1426,10 @@ test('spy function resolves bananas on a last call', async () => {
 
   expect(sell).toHaveLastResolvedWith({ product: 'bananas' })
 })
-```
 
 ## toHaveNthResolvedWith
 
-- **类型**: `(time: number, returnValue: any) => Awaitable<void>`
+- **Type:** `(time: number, returnValue: any) => Awaitable<void>`
 
 你可以调用此断言来检查一个函数在特定调用时是否成功解析了某个特定值。需要向 `expect` 传递一个 spy 函数。
 
@@ -1470,7 +1469,7 @@ test('spy was called', () => {
   spy()
 
   expect(spy).to.have.been.called
-  expect(spy).to.not.have.been.called // negation
+  expect(spy).to.not.have.been.called // 否定
 })
 ```
 
@@ -1516,7 +1515,7 @@ test('spy called with arguments', () => {
 
 ## calledOnce <Version>4.1.0</Version> {#calledonce}
 
-- **Type:** `Assertion` (property, not a method)
+- **Type:** `Assertion`（属性，而非方法）
 
 检查 spy 是否恰好被调用一次的 Chai 风格断言。这等同于 `toHaveBeenCalledOnce()`。
 
@@ -1556,7 +1555,7 @@ test('spy called once with arguments', () => {
 
 ## calledTwice <Version>4.1.0</Version> {#calledtwice}
 
-- **Type:** `Assertion` (property, not a method)
+- **Type:** `Assertion`（属性，而非方法）
 
 检查 spy 是否恰好被调用两次的 Chai 风格断言。这等同于 `toHaveBeenCalledTimes(2)`。
 
@@ -1579,7 +1578,7 @@ test('spy called twice', () => {
 
 ## calledThrice <Version>4.1.0</Version> {#calledthrice}
 
-- **Type:** `Assertion` (property, not a method)
+- **Type:** `Assertion`（属性，而非方法）
 
 检查 spy 是否恰好被调用三次的 Chai 风格断言。这等同于 `toHaveBeenCalledTimes(3)`。
 
@@ -1956,7 +1955,7 @@ import { expect, test } from 'vitest'
 
 async function build(dir) {
   if (dir.includes('no-src')) {
-    throw new Error(`${dir}/src does not exist`)
+    throw new Error(`${dir}/src 不存在`)
   }
 }
 
@@ -1965,10 +1964,10 @@ const errorDirs = [
   // ...
 ]
 
-test.each(errorDirs)('build fails with "%s"', async (dir) => {
+test.each(errorDirs)('build 因 "%s" 失败', async (dir) => {
   try {
     await build(dir)
-    expect.unreachable('Should not pass build')
+    expect.unreachable('不应通过 build')
   }
   catch (err: any) {
     expect(err).toBeInstanceOf(Error)
@@ -1976,11 +1975,11 @@ test.each(errorDirs)('build fails with "%s"', async (dir) => {
 
     switch (dir) {
       case 'no-src-folder':
-        expect(err.message).toBe(`${dir}/src does not exist`)
+        expect(err.message).toBe(`${dir}/src 不存在`)
         break
       default:
         // 穷尽所有错误测试
-        expect.unreachable('All error test must be handled')
+        expect.unreachable('所有错误测试都必须被处理')
         break
     }
   }
@@ -1996,7 +1995,7 @@ test.each(errorDirs)('build fails with "%s"', async (dir) => {
 ```ts
 import { expect, test } from 'vitest'
 
-test('object has "apples" key', () => {
+test('对象有 "apples" 键', () => {
   expect({ apples: 22 }).toEqual({ apples: expect.anything() })
 })
 ```
@@ -2011,7 +2010,7 @@ test('object has "apples" key', () => {
 import { expect, test } from 'vitest'
 import { generateId } from './generators.js'
 
-test('"id" is a number', () => {
+test('"id" 是一个数字', () => {
   expect({ id: generateId() }).toEqual({ id: expect.any(Number) })
 })
 ```
@@ -2027,7 +2026,7 @@ test('"id" is a number', () => {
 例如，此测试在精度为 5 位小数时通过：
 
 ```js
-test('compare float in object properties', () => {
+test('在对象属性中比较浮点数', () => {
   expect({
     title: '0.1 + 0.2',
     sum: 0.1 + 0.2,
@@ -2047,7 +2046,7 @@ test('compare float in object properties', () => {
 ```ts
 import { expect, test } from 'vitest'
 
-test('basket includes fuji', () => {
+test('篮子里包含 fuji', () => {
   const basket = {
     varieties: [
       'Empire',
@@ -2076,7 +2075,7 @@ test('basket includes fuji', () => {
 ```ts
 import { expect, test } from 'vitest'
 
-test('basket has empire apples', () => {
+test('篮子里有 empire 苹果', () => {
   const basket = {
     varieties: [
       {
@@ -2106,7 +2105,7 @@ test('basket has empire apples', () => {
 ```ts
 import { expect, test } from 'vitest'
 
-test('variety has "Emp" in its name', () => {
+test('variety 的名称中包含 "Emp"', () => {
   const variety = {
     name: 'Empire',
     count: 1,
@@ -2131,7 +2130,7 @@ test('variety has "Emp" in its name', () => {
 ```ts
 import { expect, test } from 'vitest'
 
-test('variety ends with "re"', () => {
+test('variety 以 "re" 结尾', () => {
   const variety = {
     name: 'Empire',
     count: 1,
@@ -2162,17 +2161,17 @@ import { type } from 'arktype'
 test('email validation', () => {
   const user = { email: 'john@example.com' }
 
-  // using Zod
+  // 使用 Zod
   expect(user).toEqual({
     email: expect.schemaMatching(z.string().email()),
   })
 
-  // using Valibot
+  // 使用 Valibot
   expect(user).toEqual({
     email: expect.schemaMatching(v.pipe(v.string(), v.email()))
   })
 
-  // using ArkType
+  // 使用 ArkType
   expect(user).toEqual({
     email: expect.schemaMatching(type('string.email')),
   })
@@ -2206,7 +2205,7 @@ test('email validation', () => {
 ```ts
 import { expect, test } from 'vitest'
 
-test('custom matchers', () => {
+test('自定义匹配器', () => {
   expect.extend({
     toBeFoo: (received, expected) => {
       if (received !== 'foo') {
@@ -2298,7 +2297,7 @@ function areAnagramsEqual(a: unknown, b: unknown): boolean | undefined {
 
 expect.addEqualityTesters([areAnagramsEqual])
 
-test('custom equality tester', () => {
+test('自定义相等性测试器', () => {
   expect(new AnagramComparator('listen')).toEqual(new AnagramComparator('silent'))
 })
 ```

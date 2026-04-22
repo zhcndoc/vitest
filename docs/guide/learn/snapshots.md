@@ -53,7 +53,7 @@ exports['generates a greeting 1'] = `
 `
 ```
 
-从现在起，每次运行此测试时，Vitest 都会序列化 `generateGreeting('Alice')` 的输出，并逐字符地与存储的存储快照进行比较。如果输出发生变化（例如有人修改了消息格式或提升了版本号），测试就会失败，并显示清晰的变更差异。
+从现在起，每次运行此测试时，Vitest 都会序列化 `generateGreeting('Alice')` 的输出，并逐字符地与存储的快照进行比较。如果输出发生变化（例如有人修改了消息格式或提升了版本号），测试就会失败，并显示清晰的变更差异。
 
 ::: tip
 提交你的快照文件到版本控制。它们作为预期输出的记录，应该像其他测试断言一样在代码审查中被检查。
@@ -89,7 +89,11 @@ test('generates a greeting', () => {
 
 内联快照非常适合小型、聚焦的值。对于大型输出（如完整的 HTML 页面），外部快照或文件快照更合适。
 
-## 更新快照
+::: tip
+与外部快照不同，内联快照不会创建单独的 `.snap` 文件。预期值会直接作为 `toMatchInlineSnapshot()` 的参数存储在你的测试文件中，因此无需额外提交任何内容。
+:::
+
+## Updating Snapshots
 
 当你有意更改代码的输出时，现有快照会过时，测试会失败。这是设计如此；这正是快照测试的核心目的。但一旦你确认新输出是正确的，就需要更新快照。
 
@@ -135,6 +139,37 @@ test('renders the component', async () => {
 另一方面，快照并不总是最佳工具。如果输出经常变化（例如包含时间戳或随机 ID），你将花费更多时间更新快照，而不是它们为你节省的时间。而且，如果你只关心一两个特定字段，像 `[toMatchObject`](/api/expect#tomatchobject) 或 `[toHaveProperty`](/api/expect#tohaveproperty) 这样的目标断言比捕获所有内容的快照更清晰地表达你的意图。
 
 一般规则是：当你希望保护输出的*任何*变化时使用快照，而当你只关心*特定*属性时使用目标断言。
+
+## 处理动态值
+
+如果你的输出包含每次运行都会变化的值（例如时间戳或 ID），你可以使用属性匹配器来固定结构，同时忽略易变字段。将带有非对称匹配器的对象作为 `toMatchSnapshot()` 或 `toMatchInlineSnapshot()` 的第一个参数传入：
+
+```js
+test('user snapshot with dynamic fields', () => {
+  const user = createUser('Alice')
+
+  expect(user).toMatchSnapshot({
+    id: expect.any(Number),
+    createdAt: expect.any(Date),
+  })
+})
+```
+
+`id` 和 `createdAt` 字段会根据匹配器（任意数字、任意日期）进行检查，而不是与存储的值进行比较。其他所有字段都会像往常一样被保存为快照。
+
+## 错误快照
+
+内联快照的一种常见用法是捕获错误消息。[`toThrowErrorMatchingInlineSnapshot`](/api/expect#tothrowerrormatchinginlinesnapshot) 将 `toThrow` 与 `toMatchInlineSnapshot` 结合起来，因此你可以在不使用单独 `.snap` 文件的情况下对错误消息进行快照：
+
+```js
+test('throws on invalid input', () => {
+  expect(() => parse('')).toThrowErrorMatchingInlineSnapshot(
+    `[Error: Unexpected end of input at position 0]`
+  )
+})
+```
+
+这对于验证错误消息是否清晰且不会被意外更改特别有用。与其他内联快照一样，Vitest 会在第一次运行时填充字符串，并在你按下 `u` 时更新它。
 
 ::: tip
 有关自定义快照序列化程序、匹配器和高级配置，请参见 [快照](/guide/snapshot) 指南。

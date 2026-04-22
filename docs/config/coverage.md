@@ -65,7 +65,7 @@ npx vitest --coverage.enabled --coverage.provider=istanbul
 - **适用提供者：** `'v8' | 'istanbul'`
 - **命令行：** `--coverage.clean`, `--coverage.clean=false`
 
-运行测试前清理覆盖率结果
+在运行测试前清理覆盖率结果。
 
 ## coverage.cleanOnRerun
 
@@ -134,7 +134,7 @@ npx vitest --coverage.enabled --coverage.provider=istanbul
 你可以在 Vitest UI 中查看覆盖率报告：查看 [Vitest UI 覆盖率](/guide/coverage#vitest-ui) 了解更多详情。
 
 ::: tip AI coding agents
-When Vitest detects it is running inside an AI coding agent, it automatically adds the `text-summary` reporter and sets `skipFull: true` on the `text` reporter to reduce output and minimize token usage.
+当 Vitest 检测到它正在 AI 编码代理中运行时，它会自动添加 `text-summary` 报告器，并将 `text` 报告器上的 `skipFull: true` 以减少输出并最小化 token 使用。
 :::
 
 ## coverage.reportOnFailure {#coverage-reportonfailure}
@@ -389,6 +389,46 @@ Vitest 将所有文件（包括被 glob 模式覆盖的文件）计入全局覆�
 - **命令行：** `--coverage.processingConcurrency=<number>`
 
 处理覆盖率结果时使用的并发限制。
+
+## coverage.instrumenter <Version type="experimental">4.1.5</Version> {#coverage-instrumenter}
+
+- **类型：** `(options: InstrumenterOptions) => CoverageInstrumenter`
+- **适用提供者：** `'istanbul'`
+
+用于替代默认 `istanbul-lib-instrument` 的自定义 instrumenter 工厂。Vitest 会在初始化期间调用一次该工厂，并在每个文件中复用返回的 instrumenter。Istanbul 管道的其余部分（收集、合并、报告）保持不变。
+
+该工厂接收一个包含 Vitest 运行时覆盖率设置的 `InstrumenterOptions` 对象，并且必须返回一个实现 `CoverageInstrumenter` 接口的对象。这两个类型都从 `vitest/node` 导出。
+
+<!-- eslint-skip -->
+```ts
+interface InstrumenterOptions {
+  coverageVariable: string
+  coverageGlobalScope: string
+  coverageGlobalScopeFunc: boolean
+  ignoreClassMethods: string[]
+}
+
+interface CoverageInstrumenter {
+  instrumentSync: (code: string, filename: string, inputSourceMap?: any) => string
+  lastSourceMap: () => any
+  lastFileCoverage: () => any
+}
+```
+
+<!-- eslint-skip -->
+```ts
+import { defineConfig } from 'vitest/config'
+import { createInstrumenter } from '@vitest/some-custom-instrumenter'
+
+export default defineConfig({
+  test: {
+    coverage: {
+      provider: 'istanbul',
+      instrumenter: options => createInstrumenter(options),
+    }
+  }
+})
+```
 
 ## coverage.customProviderModule
 

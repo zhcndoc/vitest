@@ -56,16 +56,16 @@ export default {
 
 ## diff.expand
 
-- **类型**: `boolean`
-- **默认值**: `true`
+- **类型:** `boolean`
+- **默认值:** `true`
 - **命令行:** `--diff.expand=false`
 
 展开所有公共行。
 
 ## diff.truncateThreshold
 
-- **类型**: `number`
-- **默认值**: `0`
+- **类型:** `number`
+- **默认值:** `0`
 - **命令行:** `--diff.truncateThreshold=<path>`
 
 要显示的 diff 结果的最大长度。超过此阈值的 diff 将被截断。
@@ -73,29 +73,29 @@ export default {
 
 ## diff.truncateAnnotation
 
-- **类型**: `string`
-- **默认值**: `'... Diff result is truncated'`
+- **类型:** `string`
+- **默认值:** `'... Diff result is truncated'`
 - **命令行:** `--diff.truncateAnnotation=<annotation>`
 
 如果 diff 结果被截断，则在末尾输出的注释。
 
 ## diff.truncateAnnotationColor
 
-- **类型**: `DiffOptionsColor = (arg: string) => string`
-- **默认值**: `noColor = (string: string): string => string`
+- **类型:** `DiffOptionsColor = (arg: string) => string`
+- **默认值:** `noColor = (string: string): string => string`
 
 截断注释的颜色，默认输出不带颜色。
 
 ## diff.printBasicPrototype
 
-- **类型**: `boolean`
-- **默认值**: `false`
+- **类型:** `boolean`
+- **默认值:** `false`
 
-在 diff 输出中打印基本原型 `Object` 和 `Array`
+在 diff 输出中打印基础原型 `Object` 和 `Array`。
 
 ## diff.maxDepth
 
-- **类型**: `number`
-- **默认值**: `20`（比较不同类型时为 `8`）
+- **类型:** `number`
+- **默认值:** `20` (或比较不同类型时为 `8`)
 
-限制打印嵌套对象时的递归深度
+限制打印嵌套对象时递归的深度。

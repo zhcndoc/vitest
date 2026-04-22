@@ -1,15 +1,15 @@
 # @vitest/pretty-format
 
-Vitest's fork of Jest's [`pretty-format`](https://npmx.dev/package/pretty-format), published as an ESM-only package.
+Vitest 对 Jest 的 [`pretty-format`](https://npmx.dev/package/pretty-format) 的分支，作为仅 ESM 包发布。
 
-This package powers several formatting paths in Vitest:
+此包为 Vitest 中的多个格式化路径提供支持：
 
-- snapshot serialization
-- assertion diff rendering
-- matcher and error messages
-- browser `prettyDOM` output
+- 快照序列化
+- 断言差异渲染
+- 匹配器和错误消息
+- 浏览器 `prettyDOM` 输出
 
-## Usage
+## 用法
 
 ```ts
 import { format } from '@vitest/pretty-format'
@@ -33,33 +33,33 @@ Object {
 */
 ```
 
-## Options
+## 选项
 
 | key                   | type             | default     | notes                                                                |
 | :-------------------- | :--------------- | :---------- | :------------------------------------------------------------------- |
-| `callToJSON`          | `boolean`        | `true`      | Call `toJSON` if present                                             |
-| `compareKeys`         | `function\|null` | `undefined` | Compare function for sorting object keys. Use `null` to skip sorting |
-| `escapeRegex`         | `boolean`        | `false`     | Escape special characters in regular expressions                     |
-| `escapeString`        | `boolean`        | `true`      | Escape special characters in strings                                 |
-| `highlight`           | `boolean`        | `false`     | Highlight syntax with terminal colors                                |
-| `indent`              | `number`         | `2`         | Spaces per indentation level                                         |
-| `maxDepth`            | `number`         | `Infinity`  | Maximum depth to print                                               |
-| `maxOutputLength`     | `number`         | `1_000_000` | Approximate per-depth output budget                                  |
-| `maxWidth`            | `number`         | `Infinity`  | Maximum number of items to print in collections                      |
-| `min`                 | `boolean`        | `false`     | Minimize added whitespace                                            |
-| `plugins`             | `array`          | `[]`        | Plugins to serialize application-specific data types                 |
-| `printBasicPrototype` | `boolean`        | `true`      | Print `Object` and `Array` prefixes for plain objects and arrays     |
-| `printFunctionName`   | `boolean`        | `true`      | Include or omit the function name                                    |
-| `printShadowRoot`     | `boolean`        | `true`      | Include shadow-root contents when formatting DOM nodes               |
+| `callToJSON`          | `boolean`        | `true`      | 如果存在则调用 `toJSON`                                             |
+| `compareKeys`         | `function\|null` | `undefined` | 用于排序对象键的比较函数。使用 `null` 可跳过排序                     |
+| `escapeRegex`         | `boolean`        | `false`     | 转义正则表达式中的特殊字符                                           |
+| `escapeString`        | `boolean`        | `true`      | 转义字符串中的特殊字符                                               |
+| `highlight`           | `boolean`        | `false`     | 使用终端颜色高亮语法                                                 |
+| `indent`              | `number`         | `2`         | 每级缩进的空格数                                                     |
+| `maxDepth`            | `number`         | `Infinity`  | 要打印的最大深度                                                     |
+| `maxOutputLength`     | `number`         | `1_000_000` | 每个深度的大致输出预算                                               |
+| `maxWidth`            | `number`         | `Infinity`  | 集合中要打印的最大项数                                               |
+| `min`                 | `boolean`        | `false`     | 尽量减少额外空白                                                     |
+| `plugins`             | `array`          | `[]`        | 用于序列化应用特定数据类型的插件                                     |
+| `printBasicPrototype` | `boolean`        | `true`      | 为普通对象和数组打印 `Object` 和 `Array` 前缀                        |
+| `printFunctionName`   | `boolean`        | `true`      | 包含或省略函数名称                                                   |
+| `printShadowRoot`     | `boolean`        | `true`      | 格式化 DOM 节点时包含 shadow-root 内容                               |
 
-Important:
+重要：
 
-- `plugins: []` means the package does not auto-enable its built-in plugins by default
-- Vitest features opt into their own plugin stacks and option presets
+- `plugins: []` 表示该包默认不会自动启用其内置插件
+- Vitest 功能会自行选择接入各自的插件栈和选项预设
 
-## Built-in Plugins
+## 内置插件
 
-The package exports these built-in plugins:
+该包导出以下内置插件：
 
 - `ReactTestComponent`
 - `ReactElement`
@@ -69,7 +69,7 @@ The package exports these built-in plugins:
 - `AsymmetricMatcher`
 - `Error`
 
-You can use them directly with `format(..., { plugins })`:
+你可以直接在 `format(..., { plugins })` 中使用它们：
 
 ```ts
 import { format, plugins } from '@vitest/pretty-format'
@@ -81,13 +81,13 @@ console.log(
 )
 ```
 
-## Vitest Extensions
+## Vitest 扩展
 
-Besides the inherited `pretty-format` API surface, Vitest currently adds and documents these notable behaviors:
+除继承自 `pretty-format` 的 API 表面外，Vitest 目前还添加并记录了这些值得注意的行为：
 
 ### `printShadowRoot`
 
-Controls whether DOM serialization includes shadow-root contents.
+控制 DOM 序列化是否包含 shadow-root 内容。
 
 ```ts
 format(element, {
@@ -97,9 +97,9 @@ format(element, {
 
 ### `maxOutputLength`
 
-Approximate per-depth output budget used to prevent pathological expansion of large recursive structures.
+用于防止大型递归结构发生病态扩展的每个深度大致输出预算。
 
-This is a heuristic safety valve, not a hard cap on the final string length.
+这是一种启发式安全阀，而不是最终字符串长度的硬性上限。
 
 ```ts
 format(value, {
@@ -107,18 +107,21 @@ format(value, {
 })
 ```
 
-## How Vitest Uses It
+## Vitest 如何使用它
 
-### Snapshots
+### 快照
 
-Snapshots use `@vitest/pretty-format` with snapshot-specific defaults such as:
+快照使用带有快照特定默认值的 `@vitest/pretty-format`，例如：
 
 - `printBasicPrototype: false`
 - `escapeString: false`
 - `escapeRegex: true`
 - `printFunctionName: false`
+- `maxOutputLength: 2 ** 27`
 
-Default snapshot plugin stack:
+快照使用比包默认值更宽松的安全上限。默认的 `maxOutputLength` 针对日志和错误消息等通用格式化进行了调优，而快照用户可能会有意将大型序列化值持久化到专用文件中。用户仍然可以通过 `test.snapshotFormat.maxOutputLength` 选择更小的上限。
+
+默认的快照插件栈：
 
 - `ReactTestComponent`
 - `ReactElement`
@@ -128,13 +131,13 @@ Default snapshot plugin stack:
 - `AsymmetricMatcher`
 - `MockSerializer`
 
-Snapshot formatting is configured through [`test.snapshotFormat`](https://vitest.dev/config/snapshotformat), while serializer registration goes through [`expect.addSnapshotSerializer`](https://vitest.dev/api/expect#expect-addsnapshotserializer) or [`snapshotSerializers`](https://vitest.dev/config/snapshotserializers).
+快照格式化通过 [`test.snapshotFormat`](https://vitest.dev/config/snapshotformat) 配置，而序列化器注册则通过 [`expect.addSnapshotSerializer`](https://vitest.dev/api/expect#expect-addsnapshotserializer) 或 [`snapshotSerializers`](https://vitest.dev/config/snapshotserializers) 完成。
 
-### Diffs
+### Diff
 
-Assertion diffs use a different preset and plugin stack.
+断言差异使用不同的预设和插件栈。
 
-Default diff plugins:
+默认 diff 插件：
 
 - `ReactTestComponent`
 - `ReactElement`
@@ -146,7 +149,7 @@ Default diff plugins:
 
 ### Vitest `stringify`
 
-Matcher and error messages commonly go through Vitest's internal [`stringify`](https://github.com/vitest-dev/vitest/blob/59b0e6411be2b4aa5f2b339d02691aa83d5e403f/packages/utils/src/display.ts#L49) utility, which uses:
+匹配器和错误消息通常会经过 Vitest 内部的 [`stringify`](https://github.com/vitest-dev/vitest/blob/59b0e6411be2b4aa5f2b339d02691aa83d5e403f/packages/utils/src/display.ts#L49) 工具，它使用：
 
 - `ReactTestComponent`
 - `ReactElement`
@@ -155,16 +158,16 @@ Matcher and error messages commonly go through Vitest's internal [`stringify`](h
 - `Immutable`
 - `AsymmetricMatcher`
 
-`stringify` also adds wrapper-level behavior on top of `@vitest/pretty-format`:
+`stringify` 还在 `@vitest/pretty-format` 之上增加了包装层级的行为：
 
-- `maxLength`: if the formatted output grows too large, `stringify` retries with a smaller `maxDepth` to keep the result bounded
-- `filterNode`: swaps the default DOM plugin for a filtered variant so selected nodes are omitted from the output
-- fallback on formatter errors: if formatting throws, `stringify` retries with `callToJSON: false`
+- `maxLength`：如果格式化输出变得过大，`stringify` 会使用更小的 `maxDepth` 重试，以保持结果有界
+- `filterNode`：将默认 DOM 插件替换为过滤版本，使选定节点从输出中省略
+- 格式化错误回退：如果格式化抛出错误，`stringify` 会使用 `callToJSON: false` 重试
 
-### Browser `prettyDOM`
+### 浏览器 `prettyDOM`
 
-Browser `prettyDOM` builds on Vitest's `stringify` path and enables browser-oriented defaults such as:
+浏览器 `prettyDOM` 构建在 Vitest 的 `stringify` 路径之上，并启用面向浏览器的默认值，例如：
 
 - `highlight: true`
 
-It can also replace the default DOM plugin with a filtered variant when `filterNode` is configured.
+当配置了 `filterNode` 时，它还可以将默认 DOM 插件替换为过滤版本。

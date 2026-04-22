@@ -9,4 +9,4 @@ outline: deep
 - **CLI:** `--mode=staging`
 - **默认值:** `'test'`
 
-覆盖 Vite 模式
+覆盖 Vite 模式。

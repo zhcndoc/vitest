@@ -12,7 +12,7 @@ Vitest 从 [`chai`](https://www.chaijs.com/api/assert/) 重新导出 `assert` �
 import { assert, test } from 'vitest'
 
 test('assert', () => {
-  assert('foo' !== 'bar', 'foo should not be equal to bar')
+  assert('foo' !== 'bar', 'foo 不应该等于 bar')
 })
 ```
 
@@ -28,15 +28,15 @@ test('assert', () => {
 import { assert, test } from 'vitest'
 
 test('assert.fail', () => {
-  assert.fail('error message on failure')
-  assert.fail('foo', 'bar', 'foo is not bar', '===')
+  assert.fail('失败时的错误信息')
+  assert.fail('foo', 'bar', 'foo 不是 bar', '===')
 })
 ```
 
 ## isOk
 
-- **类型:** `<T>(value: T, message?: string) => asserts value`
-- **别名** `ok`
+- **Type:** `<T>(value: T, message?: string) => asserts value`
+- **Alias:** `ok`
 
 断言给定的 `value` 为真值。
 
@@ -44,15 +44,15 @@ test('assert.fail', () => {
 import { assert, test } from 'vitest'
 
 test('assert.isOk', () => {
-  assert.isOk('foo', 'every truthy is ok')
-  assert.isOk(false, 'this will fail since false is not truthy')
+  assert.isOk('foo', '任何真值都是 ok')
+  assert.isOk(false, '这会失败，因为 false 不是真值')
 })
 ```
 
 ## isNotOk
 
-- **类型:** `<T>(value: T, message?: string) => void`
-- **别名** `notOk`
+- **Type:** `<T>(value: T, message?: string) => void`
+- **Alias:** `notOk`
 
 断言给定的 `value` 为假值。
 
@@ -60,8 +60,8 @@ test('assert.isOk', () => {
 import { assert, test } from 'vitest'
 
 test('assert.isNotOk', () => {
-  assert.isNotOk('foo', 'this will fail, every truthy is not ok')
-  assert.isNotOk(false, 'this will pass since false is falsy')
+  assert.isNotOk('foo', '这会失败，任何真值都不是 ok')
+  assert.isNotOk(false, '这会通过，因为 false 是假值')
 })
 ```
 
@@ -145,7 +145,7 @@ test('assert.notDeepEqual', () => {
 import { assert, test } from 'vitest'
 
 test('assert.isAbove', () => {
-  assert.isAbove(5, 2, '5 is strictly greater than 2')
+  assert.isAbove(5, 2, '5 严格大于 2')
 })
 ```
 
@@ -159,8 +159,8 @@ test('assert.isAbove', () => {
 import { assert, test } from 'vitest'
 
 test('assert.isAtLeast', () => {
-  assert.isAtLeast(5, 2, '5 is greater or equal to 2')
-  assert.isAtLeast(3, 3, '3 is greater or equal to 3')
+  assert.isAtLeast(5, 2, '5 大于或等于 2')
+  assert.isAtLeast(3, 3, '3 大于或等于 3')
 })
 ```
 
@@ -174,7 +174,7 @@ test('assert.isAtLeast', () => {
 import { assert, test } from 'vitest'
 
 test('assert.isBelow', () => {
-  assert.isBelow(3, 6, '3 is strictly less than 6')
+  assert.isBelow(3, 6, '3 严格小于 6')
 })
 ```
 
@@ -188,8 +188,8 @@ test('assert.isBelow', () => {
 import { assert, test } from 'vitest'
 
 test('assert.isAtMost', () => {
-  assert.isAtMost(3, 6, '3 is less than or equal to 6')
-  assert.isAtMost(4, 4, '4 is less than or equal to 4')
+  assert.isAtMost(3, 6, '3 小于或等于 6')
+  assert.isAtMost(4, 4, '4 小于或等于 4')
 })
 ```
 
@@ -269,7 +269,7 @@ import { assert, test } from 'vitest'
 const error = null
 
 test('assert.isNull', () => {
-  assert.isNull(error, 'error is null')
+  assert.isNull(error, 'error 为空')
 })
 ```
 
@@ -285,7 +285,7 @@ import { assert, test } from 'vitest'
 const error = { message: 'error was occurred' }
 
 test('assert.isNotNull', () => {
-  assert.isNotNull(error, 'error is not null but object')
+  assert.isNotNull(error, 'error 不是 null 而是一个对象')
 })
 ```
 
@@ -301,7 +301,7 @@ import { assert, test } from 'vitest'
 const calculation = 1 * 'vitest'
 
 test('assert.isNaN', () => {
-  assert.isNaN(calculation, '1 * "vitest" is NaN')
+  assert.isNaN(calculation, '1 * "vitest" 是 NaN')
 })
 ```
 
@@ -317,7 +317,7 @@ import { assert, test } from 'vitest'
 const calculation = 1 * 2
 
 test('assert.isNotNaN', () => {
-  assert.isNotNaN(calculation, '1 * 2 is Not NaN but 2')
+  assert.isNotNaN(calculation, '1 * 2 不是 NaN，而是 2')
 })
 ```
 
@@ -333,7 +333,7 @@ import { assert, test } from 'vitest'
 const name = 'foo'
 
 test('assert.exists', () => {
-  assert.exists(name, 'foo is neither null nor undefined')
+  assert.exists(name, 'foo 既不是 null 也不是 undefined')
 })
 ```
 
@@ -350,8 +350,8 @@ const foo = null
 const bar = undefined
 
 test('assert.notExists', () => {
-  assert.notExists(foo, 'foo is null so not exist')
-  assert.notExists(bar, 'bar is undefined so not exist')
+  assert.notExists(foo, 'foo 是 null，所以不存在')
+  assert.notExists(bar, 'bar 是 undefined，所以不存在')
 })
 ```
 
@@ -367,7 +367,7 @@ import { assert, test } from 'vitest'
 const name = undefined
 
 test('assert.isUndefined', () => {
-  assert.isUndefined(name, 'name is undefined')
+  assert.isUndefined(name, 'name 是 undefined')
 })
 ```
 
@@ -383,7 +383,7 @@ import { assert, test } from 'vitest'
 const name = 'foo'
 
 test('assert.isDefined', () => {
-  assert.isDefined(name, 'name is not undefined')
+  assert.isDefined(name, 'name 不是 undefined')
 })
 ```
 
@@ -399,7 +399,7 @@ import { assert, test } from 'vitest'
 function name() { return 'foo' };
 
 test('assert.isFunction', () => {
-  assert.isFunction(name, 'name is function')
+  assert.isFunction(name, 'name 是函数')
 })
 ```
 
@@ -416,7 +416,7 @@ import { assert, test } from 'vitest'
 const name = 'foo'
 
 test('assert.isNotFunction', () => {
-  assert.isNotFunction(name, 'name is not function but string')
+  assert.isNotFunction(name, 'name 不是函数而是字符串')
 })
 ```
 
@@ -432,7 +432,7 @@ import { assert, test } from 'vitest'
 const someThing = { color: 'red', shape: 'circle' }
 
 test('assert.isObject', () => {
-  assert.isObject(someThing, 'someThing is object')
+  assert.isObject(someThing, 'someThing 是对象')
 })
 ```
 
@@ -448,7 +448,7 @@ import { assert, test } from 'vitest'
 const someThing = 'redCircle'
 
 test('assert.isNotObject', () => {
-  assert.isNotObject(someThing, 'someThing is not object but string')
+  assert.isNotObject(someThing, 'someThing 不是对象而是字符串')
 })
 ```
 
@@ -464,7 +464,7 @@ import { assert, test } from 'vitest'
 const color = ['red', 'green', 'yellow']
 
 test('assert.isArray', () => {
-  assert.isArray(color, 'color is array')
+  assert.isArray(color, 'color 是数组')
 })
 ```
 
@@ -480,7 +480,7 @@ import { assert, test } from 'vitest'
 const color = 'red'
 
 test('assert.isNotArray', () => {
-  assert.isNotArray(color, 'color is not array but string')
+  assert.isNotArray(color, 'color 不是数组而是字符串')
 })
 ```
 
@@ -496,7 +496,7 @@ import { assert, test } from 'vitest'
 const color = 'red'
 
 test('assert.isString', () => {
-  assert.isString(color, 'color is string')
+  assert.isString(color, 'color 是字符串')
 })
 ```
 
@@ -512,7 +512,7 @@ import { assert, test } from 'vitest'
 const color = ['red', 'green', 'yellow']
 
 test('assert.isNotString', () => {
-  assert.isNotString(color, 'color is not string but array')
+  assert.isNotString(color, 'color 不是字符串而是数组')
 })
 ```
 
@@ -528,7 +528,7 @@ import { assert, test } from 'vitest'
 const colors = 3
 
 test('assert.isNumber', () => {
-  assert.isNumber(colors, 'colors is number')
+  assert.isNumber(colors, 'colors 是数字')
 })
 ```
 
@@ -544,7 +544,7 @@ import { assert, test } from 'vitest'
 const colors = '3 colors'
 
 test('assert.isNotNumber', () => {
-  assert.isNotNumber(colors, 'colors is not number but strings')
+  assert.isNotNumber(colors, 'colors 不是数字而是字符串')
 })
 ```
 
@@ -560,7 +560,7 @@ import { assert, test } from 'vitest'
 const colors = 3
 
 test('assert.isFinite', () => {
-  assert.isFinite(colors, 'colors is number not NaN or Infinity')
+  assert.isFinite(colors, 'colors 是数字，不是 NaN 或 Infinity')
 })
 ```
 
@@ -576,7 +576,7 @@ import { assert, test } from 'vitest'
 const isReady = true
 
 test('assert.isBoolean', () => {
-  assert.isBoolean(isReady, 'isReady is a boolean')
+  assert.isBoolean(isReady, 'isReady 是一个布尔值')
 })
 ```
 
@@ -592,7 +592,7 @@ import { assert, test } from 'vitest'
 const isReady = 'sure'
 
 test('assert.isBoolean', () => {
-  assert.isBoolean(isReady, 'isReady is not a boolean but string')
+  assert.isBoolean(isReady, 'isReady 不是一个布尔值，而是字符串')
 })
 ```
 
@@ -606,12 +606,12 @@ test('assert.isBoolean', () => {
 import { assert, test } from 'vitest'
 
 test('assert.typeOf', () => {
-  assert.typeOf({ color: 'red' }, 'object', 'we have an object')
-  assert.typeOf(['red', 'green'], 'array', 'we have an array')
-  assert.typeOf('red', 'string', 'we have a string')
-  assert.typeOf(/red/, 'regexp', 'we have a regular expression')
-  assert.typeOf(null, 'null', 'we have a null')
-  assert.typeOf(undefined, 'undefined', 'we have an undefined')
+  assert.typeOf({ color: 'red' }, 'object', '我们有一个对象')
+  assert.typeOf(['red', 'green'], 'array', '我们有一个数组')
+  assert.typeOf('red', 'string', '我们有一个字符串')
+  assert.typeOf(/red/, 'regexp', '我们有一个正则表达式')
+  assert.typeOf(null, 'null', '我们有一个 null')
+  assert.typeOf(undefined, 'undefined', '我们有一个 undefined')
 })
 ```
 
@@ -625,7 +625,7 @@ test('assert.typeOf', () => {
 import { assert, test } from 'vitest'
 
 test('assert.notTypeOf', () => {
-  assert.notTypeOf('red', 'number', '"red" is not a number')
+  assert.notTypeOf('red', 'number', '"red" 不是一个数字')
 })
 ```
 
@@ -649,8 +649,8 @@ class Tea {
 const coffee = new Tea('coffee')
 
 test('assert.instanceOf', () => {
-  assert.instanceOf(foo, Person, 'foo is an instance of Person')
-  assert.instanceOf(coffee, Tea, 'coffee is an instance of Tea')
+  assert.instanceOf(foo, Person, 'foo 是 Person 的实例')
+  assert.instanceOf(coffee, Tea, 'coffee 是 Tea 的实例')
 })
 ```
 
@@ -674,7 +674,7 @@ class Tea {
 const coffee = new Tea('coffee')
 
 test('assert.instanceOf', () => {
-  assert.instanceOf(foo, Tea, 'foo is not an instance of Tea')
+  assert.instanceOf(foo, Tea, 'foo 不是 Tea 的实例')
 })
 ```
 
@@ -692,9 +692,9 @@ test('assert.instanceOf', () => {
 import { assert, test } from 'vitest'
 
 test('assert.include', () => {
-  assert.include([1, 2, 3], 2, 'array contains value')
-  assert.include('foobar', 'foo', 'string contains substring')
-  assert.include({ foo: 'bar', hello: 'universe' }, { foo: 'bar' }, 'object contains property')
+  assert.include([1, 2, 3], 2, '数组包含该值')
+  assert.include('foobar', 'foo', '字符串包含该子串')
+  assert.include({ foo: 'bar', hello: 'universe' }, { foo: 'bar' }, '对象包含该属性')
 })
 ```
 
@@ -712,9 +712,9 @@ test('assert.include', () => {
 import { assert, test } from 'vitest'
 
 test('assert.notInclude', () => {
-  assert.notInclude([1, 2, 3], 4, 'array doesn\'t contain 4')
-  assert.notInclude('foobar', 'baz', 'foobar doesn\'t contain baz')
-  assert.notInclude({ foo: 'bar', hello: 'universe' }, { foo: 'baz' }, 'object doesn\'t contain property')
+  assert.notInclude([1, 2, 3], 4, '数组不包含 4')
+  assert.notInclude('foobar', 'baz', 'foobar 不包含 baz')
+  assert.notInclude({ foo: 'bar', hello: 'universe' }, { foo: 'baz' }, '对象不包含该属性')
 })
 ```
 
@@ -838,7 +838,7 @@ test('assert.ownInclude', () => {
 
 - **类型：** `(haystack: any, needle: any, message?: string) => void`
 
-断言 `haystack` 包含 `needle`。可用于断言对象中不存在某个属性子集，同时忽略继承的属性。
+断言 `haystack` 不包含 `needle`。可用于断言对象中不存在某个属性子集，同时忽略继承的属性。
 
 ```ts
 import { assert, test } from 'vitest'
@@ -893,7 +893,7 @@ test('assert.notDeepOwnInclude', () => {
 import { assert, test } from 'vitest'
 
 test('assert.match', () => {
-  assert.match('foobar', /^foo/, 'regexp matches')
+  assert.match('foobar', /^foo/, '正则表达式匹配')
 })
 ```
 
@@ -907,7 +907,7 @@ test('assert.match', () => {
 import { assert, test } from 'vitest'
 
 test('assert.notMatch', () => {
-  assert.notMatch('foobar', /^foo/, 'regexp does not match')
+  assert.notMatch('foobar', /^foo/, '正则表达式不匹配')
 })
 ```
 
@@ -1817,7 +1817,7 @@ test('assert.decreasesButNotBy', () => {
 import { assert, test } from 'vitest'
 
 test('assert.ifError', () => {
-  const err = new Error('I am a custom error')
+  const err = new Error('我是一个自定义错误')
   assert.ifError(err) // 重新抛出错误！
 })
 ```

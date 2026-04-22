@@ -330,10 +330,11 @@ Vitest 只会在测试文件内部检测 `vi.mock` 和 `vi.hoisted`，它们不�
 
 由于 `viteModuleRunner` 的性质，某些功能将无法工作，包括：
 
-- 无 `import.meta.env`：`import.meta.env` 是 Vite 功能，请使用 `process.env` 代替
-- 无 `plugins`：插件不被应用，因为没有转换阶段，请通过 [`execArgv`](/config/execargv) 使用 [自定义钩子](https://nodejs.org/api/module.html#customization-hooks) 代替
-- 无 `alias`：别名不被应用，因为没有转换阶段
-- `istanbul` 覆盖率提供者不起作用，因为没有转换阶段，请使用 `v8` 代替
+- no `import.meta.env`: `import.meta.env` is a Vite feature, use `process.env` instead
+- no `plugins`: plugins are not applied because there is no transformation phase, use [customization hooks](https://nodejs.org/api/module.html#customization-hooks) via [`execArgv`](/config/execargv) instead
+- no `alias`: aliases are not applied because there is no transformation phase
+- `istanbul` coverage provider doesn't work because there is no transformation phase, use `v8` instead
+- `vi.resetModules()`: there is no API to invalidate ES modules from the module cache
 
 ::: warning 覆盖率支持
 目前 Vitest 支持通过 `v8` 提供者进行覆盖率统计，只要文件可以转换为 JavaScript。为了转换 TypeScript，Vitest 使用 [`module.stripTypeScriptTypes`](https://nodejs.org/api/module.html#modulestriptypescripttypescode-options)，它在 Node.js v22.13 以来可用。如果你使用自定义 [模块加载器](https://nodejs.org/api/module.html#customization-hooks)，Vitest 无法重用它来转换文件进行分析。
@@ -478,36 +479,36 @@ export default {
 
 如果模块运行器被禁用，Vitest 会使用原生的 [Node.js 模块加载器](https://nodejs.org/api/module.html#customization-hooks) 来转换文件，以支持 `import.meta.vitest`、`vi.mock` 和 `vi.hoisted`。
 
-If you don't use these features, you can disable this to improve performance.
+如果你不使用这些功能，可以禁用它以提升性能。
 
 ## experimental.preParse <Version type="experimental">4.1.3</Version> {#experimental-preparse}
 
-- **Type:** `boolean`
-- **Default:** `false`
+- **类型：** `boolean`
+- **默认值：** `false`
 
-Parses test specifications before running them. This applies the [`.only`](/api/test#test-only) modifier, the [`-t`](/config/testnamepattern) test name pattern, [`--tags-filter`](/guide/test-tags#syntax), [test lines](/api/advanced/test-specification#testlines), and [test IDs](/api/advanced/test-specification#testids) across all files without executing them. For example, if only a single test is marked with `.only`, Vitest will skip all other tests in all files.
+在运行之前解析测试规范。这会在不执行文件的情况下，跨所有文件应用 [`.only`](/api/test#test-only) 修饰符、[`-t`](/config/testnamepattern) 测试名称模式、[`--tags-filter`](/guide/test-tags#syntax)、[test lines](/api/advanced/test-specification#testlines) 和 [test IDs](/api/advanced/test-specification#testids)。例如，如果只有一个测试标记了 `.only`，Vitest 将跳过所有文件中的其他所有测试。
 
 ::: tip
-This option is recommended when using [`.only`](/api/test#test-only), the [`-t`](/config/testnamepattern) flag, or [`--tags-filter`](/guide/test-tags#syntax).
+当使用 [`.only`](/api/test#test-only)、[`-t`](/config/testnamepattern) 标志或 [`--tags-filter`](/guide/test-tags#syntax) 时，推荐使用此选项。
 
-Enabling it unconditionally may slow down your test runs due to the additional parsing step.
+无条件启用它可能会因为额外的解析步骤而减慢测试运行速度。
 :::
 
 ::: warning
-Pre-parsing uses static analysis (AST parsing) instead of executing your test files. This means that test names, tags, and modifiers (`.only`, `.skip`, `.todo`) must be statically analyzable. Dynamic test names (e.g., names stored in variables or returned from function calls) and non-literal tags will not be resolved correctly.
+预解析使用静态分析（AST 解析），而不是执行你的测试文件。这意味着测试名称、标签和修饰符（`.only`、`.skip`、`.todo`）必须能够被静态分析。动态测试名称（例如，存储在变量中或从函数调用返回的名称）以及非字面量标签将无法被正确解析。
 
 ```ts
-// ✅ works — static string literal
+// ✅ 可正常工作 — 静态字符串字面量
 test('adds numbers', () => {})
 
-// ✅ works — static tags
+// ✅ 可正常工作 — 静态标签
 test('my test', { tags: ['unit'] }, () => {})
 
-// ❌ won't match correctly — dynamic name
+// ❌ 无法正确匹配 — 动态名称
 const name = getName()
 test(name, () => {})
 
-// ❌ won't match correctly — dynamic tags
+// ❌ 无法正确匹配 — 动态标签
 const tags = getTags()
 test('my test', { tags }, () => {})
 ```

@@ -102,14 +102,14 @@
 - **CLI:** `--reporter <name>`
 - **Config:** [reporters](/config/reporters)
 
-指定报告器（default、agent、blob、verbose、dot、json、tap、tap-flat、junit、tree、hanging-process、github-actions）
+指定报告器（default、agent、minimal、blob、verbose、dot、json、tap、tap-flat、junit、tree、hanging-process、github-actions）
 
 ### outputFile
 
 - **CLI:** `--outputFile <filename/-s>`
 - **Config:** [outputFile](/config/outputfile)
 
-当使用支持 reporter 时将测试结果写入文件，对多个 reporter 的单独输出使用 cac 的点表示法（示例：`--outputFile.tap=./tap.txt`）
+当使用支持的 reporter 时将测试结果写入文件，对多个 reporter 的单独输出使用 cac 的点表示法（示例：`--outputFile.tap=./tap.txt`）
 
 ### coverage.provider
 
@@ -179,7 +179,7 @@
 - **CLI:** `--coverage.allowExternal`
 - **Config:** [coverage.allowExternal](/config/coverage#coverage-allowexternal)
 
-收集项目根目录外的文件的覆盖率（默认：`false`）
+收集项目根目录外文件的覆盖率（默认：`false`）
 
 ### coverage.skipFull
 
@@ -868,38 +868,38 @@ expect.poll() 断言的轮询超时（毫秒）（默认：`1000`）
 
 - **CLI:** `--configLoader <loader>`
 
-使用 `bundle` 将配置与 esbuild 捆绑，或使用 `runner`（实验性）在运行时处理配置。 这仅在 Vite 6.1.0 及更高版本中可用。 （默认：`bundle`）
+使用 `bundle` 将配置与 esbuild 捆绑，或使用 `runner`（实验性）在运行时处理配置。这仅在 Vite 6.1.0 及更高版本中可用。（默认：`bundle`）
 
 ### standalone
 
 - **CLI:** `--standalone`
 
-启动 Vitest 而不运行测试。 仅当检测到更改时才会运行测试。 如果启用了浏览器模式，将自动打开用户界面。 当传递 CLI 文件筛选器时，忽略此选项。 （默认：`false`）
+启动 Vitest 而不运行测试。仅当检测到更改时才会运行测试。如果启用了浏览器模式，将自动打开用户界面。当传递 CLI 文件筛选器时，忽略此选项。（默认：`false`）
 
 ### listTags
 
 - **CLI:** `--listTags [type]`
 
-列出所有可用标签而不是运行测试。 `--list-tags=json` 将以 JSON 格式输出标签（如果没有标签则不输出）。
+列出所有可用标签而不是运行测试。`--list-tags=json` 将以 JSON 格式输出标签（如果没有标签则不输出）。
 
 ### clearCache
 
 - **CLI:** `--clearCache`
 
-删除所有 Vitest 缓存，包括 `experimental.fsModuleCache`，而不运行任何测试。 后续测试运行将降低性能。
+删除所有 Vitest 缓存，包括 `experimental.fsModuleCache`，而不运行任何测试。后续测试运行将降低性能。
 
 ### tagsFilter
 
 - **CLI:** `--tagsFilter <expression>`
 
-仅运行具有指定标签的测试。 可以使用逻辑运算符 `&&`（与）、`||`（或）和 `!`（非）来创建复杂表达式，详见 [Test Tags](/guide/test-tags#syntax)。
+仅运行具有指定标签的测试。可以使用逻辑运算符 `&&`（与）、`||`（或）和 `!`（非）来创建复杂表达式，详见 [Test Tags](/guide/test-tags#syntax)。
 
 ### strictTags
 
 - **CLI:** `--strictTags`
 - **Config:** [strictTags](/config/stricttags)
 
-如果测试具有配置中未定义的标签，Vitest 应抛出错误。 （默认：`true`）
+如果测试具有配置中未定义的标签，Vitest 应抛出错误。（默认：`true`）
 
 ### experimental.fsModuleCache
 
@@ -913,7 +913,7 @@ expect.poll() 断言的轮询超时（毫秒）（默认：`1000`）
 - **CLI:** `--experimental.importDurations.print <boolean|on-warn>`
 - **Config:** [experimental.importDurations.print](/config/experimental#experimental-importdurations-print)
 
-何时将导入分解打印到 CLI 终端。使用 `true` 始终打印，`false` 从不打印，或 `on-warn` 仅在导入超过警告阈值时打印（默认：false）
+何时在 CLI 终端中打印导入分解。使用 `true` 始终打印，`false` 从不打印，或 `on-warn` 仅在导入超过警告阈值时打印（默认：false）
 
 ### experimental.importDurations.limit
 
@@ -948,25 +948,25 @@ expect.poll() 断言的轮询超时（毫秒）（默认：`1000`）
 - **CLI:** `--experimental.viteModuleRunner`
 - **Config:** [experimental.viteModuleRunner](/config/experimental#experimental-vitemodulerunner)
 
-控制 Vitest 是否使用 Vite 的模块运行器来运行代码，或回退到本机 `import`。 （默认：`true`）
+控制 Vitest 是否使用 Vite 的模块运行器来运行代码，或回退到本机 `import`。（默认：`true`）
 
 ### experimental.nodeLoader
 
 - **CLI:** `--experimental.nodeLoader`
 - **Config:** [experimental.nodeLoader](/config/experimental#experimental-nodeloader)
 
-控制 Vitest 是否将使用 Node.js Loader API 来处理源代码或模拟文件。 这在启用 `viteModuleRunner` 时无效。 禁用此选项可以提高性能。 （默认：`true`）
+控制 Vitest 是否将使用 Node.js Loader API 来处理源代码或模拟文件。这在启用 `viteModuleRunner` 时无效。禁用此选项可以提高性能。（默认：`true`）
 
 ### experimental.vcsProvider
 
 - **CLI:** `--experimental.vcsProvider <path>`
 - **Config:** [experimental.vcsProvider](/config/experimental#experimental-vcsprovider)
 
-自定义提供程序，用于检测已更改的文件。 （默认：`git`）
+自定义提供程序，用于检测已更改的文件。（默认：`git`）
 
 ### experimental.preParse
 
 - **CLI:** `--experimental.preParse`
 - **Config:** [experimental.preParse](/config/experimental#experimental-preparse)
 
-在运行测试之前解析测试规范。 这将应用 `.only` 标志和测试名称模式到所有文件，而无需运行它们。 （默认：`false`）
+在运行测试之前解析测试规范。这将应用 `.only` 标志和测试名称模式到所有文件，而无需运行它们。（默认：`false`）

@@ -37,7 +37,7 @@ Vitest 4 添加了几个新 API（它们标有 "4.0.0+" 徽章）并移除了已
 
 ## 配置
 
-根配置（或全局配置）。如果定义了项目，它们会将此引用为 `globalConfig`。
+根配置（或全局配置）。如果定义了项目，它们将会将此引用为 `globalConfig`。
 
 ::: warning
 这是 Vitest 配置，它不扩展 _Vite_ 配置。它只包含来自 `test` 属性的解析值。
@@ -170,7 +170,7 @@ function globTestSpecifications(
 此方法自动缓存所有测试规范。下次调用 [`getModuleSpecifications`](#getmodulespecifications) 时，它将返回相同的规范，除非之前调用了 [`clearSpecificationsCache`](#clearspecificationscache)。
 
 ::: warning
-从 Vitest 3 开始，如果 `poolMatchGlob` 有多个池或启用了 `typecheck`，则可能具有具有相同模块 ID（文件路径）的多个测试规范。此可能性将在 Vitest 4 中移除。
+从 Vitest 3 开始，如果 `poolMatchGlob` 有多个池或启用了 `typecheck`，则可能具有相同模块 ID（文件路径）的多个测试规范。此可能性将在 Vitest 4 中移除。
 :::
 
 ```ts
@@ -233,7 +233,7 @@ function start(filters?: string[]): Promise<TestRunResult>
 初始化报告器、覆盖率提供者并运行测试。此方法接受字符串过滤器来匹配测试文件 - 这些与 [CLI 支持](/guide/filtering#cli) 的过滤器相同。
 
 ::: warning
-如果还调用了 [`vitest.standalone()`](#standalone)，则不应调用此方法。如果你需要在 Vitest 初始化后运行测试，请改用 [`runTestSpecifications`](#runtestspecifications) 或 [`rerunTestSpecifications`](#reruntestspecifications)。
+如果还调用了 [`vitest.standalone()`](#standalone)，则不应调用此方法。如果你需要在 Vitest 初始化后运行测试，请改用 [`runTestSpecifications`](#runtestspecifications) 或 [`rerunTestSpecifications`](#runtestspecifications)。
 :::
 
 如果未设置 `config.mergeReports` 和 `config.standalone`，[`startVitest`](/guide/advanced/tests) 会自动调用此方法。
@@ -244,7 +244,7 @@ function start(filters?: string[]): Promise<TestRunResult>
 function standalone(): Promise<void>
 ```
 
-- **别名**: `init` <Deprecated />
+- **别名:** `init` <Deprecated />
 
 初始化报告器（reporters）和覆盖率提供者（coverage provider）。此方法不运行任何测试。如果提供了 `--watch` 标志，即使未调用此方法，Vitest 仍会运行更改的测试。
 
@@ -290,7 +290,7 @@ function runTestSpecifications(
 此方法根据接收到的 [规范](/api/advanced/test-specification) 运行每个测试。第二个参数 `allTestsRun` 由覆盖率提供者使用，以确定是否需要在报告中包含未覆盖的文件。
 
 ::: warning
-此方法不会触发 `onWatcherRerun`、`onWatcherStart` 和 `onTestsRerun` 回调。如果你是基于文件更改重新运行测试，请考虑使用 [`rerunTestSpecifications`](#reruntestspecifications) 代替。
+此方法不会触发 `onWatcherRerun`、`onWatcherStart` 和 `onTestsRerun` 回调。如果你是基于文件更改重新运行测试，请考虑使用 [`rerunTestSpecifications`](#runtestspecifications) 代替。
 :::
 
 ## rerunTestSpecifications

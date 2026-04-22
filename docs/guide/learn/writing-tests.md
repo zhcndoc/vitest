@@ -86,6 +86,36 @@ src/
 
 如果默认匹配模式不适合你的项目，你可以通过 [`include`](/config/include) 和 [`exclude`](/config/exclude) 配置选项自定义包含哪些文件。
 
+## 测试 TypeScript
+
+由于 Vitest 基于 Vite 运行，TypeScript 可开箱即用。你无需安装额外的编译器，无需配置 `ts-jest`，也无需为测试单独设置构建步骤。只需将测试文件命名为 `.test.ts` 而不是 `.test.js`，然后开始编写：
+
+```ts
+import { expect, test } from 'vitest'
+
+interface User {
+  name: string
+  age: number
+}
+
+function createUser(name: string, age: number): User {
+  return { name, age }
+}
+
+test('creates a user with the correct fields', () => {
+  const user = createUser('Alice', 30)
+
+  expect(user).toEqual({ name: 'Alice', age: 30 })
+  expect(user.name).toBe('Alice')
+})
+```
+
+你可以导入生产环境中的类型，使用泛型，并像在代码库的其他部分一样编写带类型的测试工具。Vite 会即时转换 TypeScript，因此即使在大型项目中，测试启动也很快。
+
+::: tip
+Vitest 会在执行时转换 TypeScript，但在测试运行期间**不会**对测试进行类型检查。这与 Vite 为了速度所做的取舍相同：你可以在终端中快速获得反馈，而需要完整类型检查时，再单独运行 `tsc` 或 `vitest typecheck`。有关更多详细信息，请参阅 [Testing Types](/guide/testing-types) 指南。
+:::
+
 ## 阅读测试输出
 
 当你运行 `vitest` 且只匹配单个测试文件时，输出会以树形结构展开，显示 `describe` 组以及每个测试及其持续时间：
@@ -130,6 +160,54 @@ test.todo('implement validation later')
 
 这些修饰符适合在开发过程中进行快速、局部的更改。如果需要更持久的测试过滤方式（按文件名、行号或标签），请参考 [测试过滤](/guide/filtering) 指南。
 
+## 参数化测试
+
+当你有多个仅在输入和预期输出上不同的测试用例时，为每个用例分别编写一个 `test` 会显得重复。[`test.for`](/api/test#test-for) 允许你将这些用例定义为数据，并对所有用例运行相同的测试逻辑：
+
+```js
+import { expect, test } from 'vitest'
+
+test.for([
+  [1, 1, 2],
+  [1, 2, 3],
+  [2, 1, 3],
+])('add(%i, %i) -> %i', ([a, b, expected]) => {
+  expect(a + b).toBe(expected)
+})
+```
+
+测试名称中的占位符 `%i`、`%s` 和 `%f` 会被每一行中对应的值替换，因此输出会显示 `add(1, 1) -> 2`、`add(1, 2) -> 3` 等。
+
+如果你的用例包含超过两三个值，传入对象会更易读。在名称中使用 `$property` 来插入字段：
+
+```js
+test.for([
+  { a: 1, b: 1, expected: 2 },
+  { a: 1, b: 2, expected: 3 },
+  { a: 2, b: 1, expected: 3 },
+])('add($a, $b) -> $expected', ({ a, b, expected }) => {
+  expect(a + b).toBe(expected)
+})
+```
+
+传递给测试函数的第二个参数是 [Test Context](/guide/test-context)，它让你可以访问 fixtures、每个测试的 `expect` 以及其他工具。这在 [`test.concurrent`](/api/test#concurrent) 中尤其有用，因为并发测试会并行运行，而全局 `expect` 无法可靠地将快照与正确的测试关联起来。上下文作用域中的 `expect` 解决了这个问题：
+
+```js
+test.concurrent.for([
+  [1, 1],
+  [1, 2],
+  [2, 1],
+])('add(%i, %i)', ([a, b], { expect }) => {
+  expect(a + b).toMatchSnapshot()
+})
+```
+
+[`describe.for`](/api/describe#describe-for) 的工作方式相同，但会为每组参数创建一个套件，这在多个测试共享相同参数化设置时非常有用。
+
+::: tip
+Vitest 也提供了 [`test.each`](/api/test#each)，你可能会从 Jest 中认出它。它的工作方式类似，但会展开数组参数而不是将其作为单个值传递，并且不提供对 Test Context 的访问。它主要是为了兼容 Jest 而存在。新代码中建议优先使用 `test.for`。
+:::
+
 ## 使用全局导入
 
 默认情况下，你需要在每个测试文件顶部从 `vitest` 导入 `test`、`expect`、`describe` 和其他函数。如果你更愿意像使用 Jest 一样将它们作为全局变量使用（无需导入），可以在配置中启用 [`globals`](/config/globals) 选项：
@@ -160,16 +238,4 @@ test('no import needed', () => {
 
 Vitest 默认**并行**运行所有测试文件，**使用 [子进程](/config/pool)**。每个测试文件都在其独立的上下文中运行，因此测试文件之间不会共享状态。这可以防止不同文件中的测试意外相互干扰。
 
-默认情况下，**单个文件内的测试**按顺序运行，这通常是期望的行为，因为同一文件中的测试通常会共享设置代码。如果你的测试确实是独立的，你可以通过 [`test.concurrent`](/api/test#concurrent) 选择并发运行它们以加快速度：
-
-```js
-test.concurrent('first concurrent test', async () => {
-  // 与下一个测试并行运行
-})
-
-test.concurrent('second concurrent test', async () => {
-  // 与上一个测试并行运行
-})
-```
-
-有关控制测试执行的并行性的更多详细信息，请参考 [并行性](/guide/parallelism) 指南。
+单个文件**内部**的测试默认按顺序运行，这通常是你想要的，因为同一文件中的测试经常共享设置代码。如果你的测试确实彼此独立，你可以使用 [`test.concurrent`](/api/test#concurrent) 让它们并发运行，以加快速度。有关如何控制测试执行的更多细节，请参阅 [并行性](/guide/parallelism) 指南。

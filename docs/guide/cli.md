@@ -191,8 +191,8 @@ vitest --api=false
 
 ### changed
 
-- **类型**: `boolean | string`
-- **默认值**: false
+- **Type:** `boolean | string`
+- **Default:** false
 
 仅针对更改的文件运行测试。如果未提供值，它将针对未提交的更改运行测试（包括暂存和未暂存的）。
 
@@ -204,8 +204,8 @@ vitest --api=false
 
 ### shard
 
-- **类型**: `string`
-- **默认值**: 禁用
+- **Type:** `string`
+- **Default:** disabled
 
 要执行的测试套件分片，格式为 `<index>`/`<count>`，其中
 

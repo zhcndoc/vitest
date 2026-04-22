@@ -5,8 +5,8 @@ outline: deep
 
 # testNamePattern <CRoot /> {#testnamepattern}
 
-- **类型** `string | RegExp`
-- **命令行:** `-t <pattern>`, `--testNamePattern=<pattern>`, `--test-name-pattern=<pattern>`
+- **Type:** `string | RegExp`
+- **CLI:** `-t <pattern>`, `--testNamePattern=<pattern>`, `--test-name-pattern=<pattern>`
 
 运行全名与模式匹配的测试。
 如果在此属性中添加 `OnlyRunThis`，则测试名称中不包含单词 `OnlyRunThis` 的测试将被跳过。

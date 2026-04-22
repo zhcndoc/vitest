@@ -246,8 +246,8 @@ import { expect, test, Snapshots } from 'vitest'
 const { toMatchFileSnapshot, toMatchInlineSnapshot, toMatchSnapshot } = Snapshots
 
 expect.extend({
-  toMatchTrimmedSnapshot(received: string, length: number) {
-    return toMatchSnapshot.call(this, received.slice(0, length))
+  toMatchTrimmedSnapshot(received: string) {
+    return toMatchSnapshot.call(this, received.slice(0, 10))
   },
   toMatchTrimmedInlineSnapshot(received: string, inlineSnapshot?: string) {
     return toMatchInlineSnapshot.call(this, received.slice(0, 10), inlineSnapshot)
@@ -258,15 +258,19 @@ expect.extend({
 })
 
 test('file snapshot', () => {
+  // 创建 __snapshots__/demo.test.ts，内容为
+  // > exports[`file snapshot 1`] = `"extra long"`
   expect('extra long string oh my gerd').toMatchTrimmedSnapshot(10)
 })
 
 test('inline snapshot', () => {
-  expect('extra long string oh my gerd').toMatchTrimmedInlineSnapshot()
+  expect('super long string oh my gerd').toMatchTrimmedInlineSnapshot(`"super long"`)
 })
 
 test('raw file snapshot', async () => {
-  await expect('extra long string oh my gerd').toMatchTrimmedFileSnapshot('./raw-file.txt')
+  // 创建 raw-file.txt，内容为：
+  // > crazy long
+  await expect('crazy long string oh my gerd').toMatchTrimmedFileSnapshot('./raw-file.txt')
 })
 ```
 
@@ -303,7 +307,7 @@ const { toMatchInlineSnapshot } = Snapshots
 
 expect.extend({
   async toMatchTransformedInlineSnapshot(received: string, inlineSnapshot?: string) {
-    // capture call site synchronously at the top of matcher implementation
+    // 在匹配器实现的顶部同步捕获调用位置
     chai.util.flag(this.assertion, 'error', new Error())
     const transformed = await transform(received)
     return toMatchInlineSnapshot.call(this, transformed, inlineSnapshot)
@@ -461,7 +465,7 @@ export const kvAdapter: DomainSnapshotAdapter<KVCaptured, KVExpected> = {
     for (const [key, actualValue] of Object.entries(captured)) {
       const expectedValue = expected[key]
 
-      // 未断言键跳过（作为子集匹配）
+      // 未断言的键跳过（作为子集匹配）
       if (typeof expectedValue === 'undefined') {
         continue
       }
@@ -478,7 +482,7 @@ export const kvAdapter: DomainSnapshotAdapter<KVCaptured, KVExpected> = {
 
     return {
       pass,
-      message: pass ? undefined : 'KV entries do not match',
+      message: pass ? undefined : 'KV 条目不匹配',
       resolved: `\n${resolvedLines.join('\n')}\n`,
       expected: `\n${renderKV(expected)}\n`,
     }

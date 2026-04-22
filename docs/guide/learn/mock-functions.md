@@ -114,6 +114,10 @@ test('inspecting mock calls', () => {
   expect(greet).toHaveBeenCalledWith('Alice')
   expect(greet).toHaveBeenCalledWith('Bob', 'Charlie')
 
+  // 按位置检查特定调用的参数
+  expect(greet).toHaveBeenNthCalledWith(1, 'Alice')
+  expect(greet).toHaveBeenLastCalledWith('Bob', 'Charlie')
+
   // 访问原始调用数据
   expect(greet.mock.calls).toEqual([
     ['Alice'],
@@ -267,8 +271,8 @@ test('mock a module', () => {
 [`vi.mock`](/api/vi#vi-mock) 的调用会被提升到文件顶部。它们在导入之前运行。这意味着模拟版本在测试代码执行时已经就位。
 :::
 
-::: tip
-请注意，我们传递的是 `import('./db.js')` 而不是一个简单的字符串 `'./db.js'`。当你使用 `import()` 时，TypeScript 可以推断模块的类型，因此工厂函数的返回值会进行类型检查，并且 `importOriginal` 会返回正确类型的模块。作为额外好处，如果你在 IDE 中重命名或移动文件，导入路径会自动更新。如果使用字符串，你将同时失去类型安全和自动重构功能。
+::: warning
+始终传递 `import('./db.js')`，而不是普通字符串 `'./db.js'`。当你使用 `import()` 时，TypeScript 可以推断模块的类型，因此工厂函数的返回值会进行类型检查，而且 `importOriginal` 会返回正确类型的模块。额外好处是，如果你在 IDE 中重命名或移动该文件，导入路径会自动更新。如果使用字符串，你将同时失去类型安全和自动重构能力。
 :::
 
 Vitest 提供了针对特定模拟场景的完整指南：

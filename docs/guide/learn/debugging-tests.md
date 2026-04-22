@@ -53,7 +53,13 @@ test.only('sets the default role', () => {
 })
 ```
 
-如果测试单独运行时通过，但在与其他测试一起运行时失败，说明存在测试隔离问题（下面会详细介绍）。如果单独运行也失败，则问题出在测试本身或它所测试的代码中。
+如果你有很多失败项，并且想先关注第一个，可以使用 [`--bail`](/config/bail) 在达到指定失败次数后停止：
+
+```bash
+vitest --bail 1
+```
+
+如果测试单独运行时通过，但与其他测试一起运行时失败，那么你遇到了测试隔离问题（下文会进一步说明）。如果它在单独运行时也失败，那么问题出在测试本身或它所测试的代码中。
 
 ## 失败的常见原因
 
@@ -188,7 +194,13 @@ vitest --reporter=verbose
 
 ### 附加调试器
 
-对于需要逐行调试代码的更复杂问题，你可以附加调试器。有关 VS Code、IntelliJ 和 Chrome DevTools 的设置说明，请参阅 [调试](/guide/debugging) 指南。
+对于更复杂的问题，如果你需要逐行调试代码，可以使用 `--inspect-brk` 标志运行 Vitest 并附加调试器。`--no-file-parallelism` 标志可确保测试在主线程中运行，以便断点可靠生效：
+
+```bash
+vitest --inspect-brk --no-file-parallelism
+```
+
+然后从 VS Code、IntelliJ 或 Chrome DevTools（`chrome://inspect`）中附加。有关每个编辑器的详细设置说明，请参阅 [调试](/guide/debugging) 指南。
 
 ## 获取帮助
 

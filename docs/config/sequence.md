@@ -5,7 +5,7 @@ outline: deep
 
 # sequence
 
-- **类型**: `{ sequencer?, shuffle?, seed?, hooks?, setupFiles?, groupOrder }`
+- **Type:** `{ sequencer?, shuffle?, seed?, hooks?, setupFiles?, groupOrder }`
 
 测试排序方式的选项。
 
@@ -17,8 +17,8 @@ npx vitest --sequence.shuffle --sequence.seed=1000
 
 ## sequence.sequencer <CRoot />
 
-- **类型**: `TestSequencerConstructor`
-- **默认值**: `BaseSequencer`
+- **Type:** `TestSequencerConstructor`
+- **Default:** `BaseSequencer`
 
 一个自定义类，用于定义分片和排序的方法。如果你只需要重新定义 `sort` 和 `shard` 方法中的一个，可以从 `vitest/node` 扩展 `BaseSequencer`，但两者都必须存在。
 
@@ -91,9 +91,9 @@ export default defineConfig({
 
 ## sequence.shuffle
 
-- **类型**: `boolean | { files?, tests? }`
-- **默认值**: `false`
-- **CLI**: `--sequence.shuffle`, `--sequence.shuffle=false`
+- **Type:** `boolean | { files?, tests? }`
+- **Default:** `false`
+- **CLI:** `--sequence.shuffle`, `--sequence.shuffle=false`
 
 如果你希望文件和测试随机运行，可以通过此选项或 CLI 参数 [`--sequence.shuffle`](/guide/cli) 启用它。
 
@@ -101,25 +101,25 @@ Vitest 通常使用缓存来排序测试，因此运行时间较长的测试会�
 
 ### sequence.shuffle.files {#sequence-shuffle-files}
 
-- **类型**: `boolean`
-- **默认值**: `false`
-- **CLI**: `--sequence.shuffle.files`, `--sequence.shuffle.files=false`
+- **Type:** `boolean`
+- **Default:** `false`
+- **CLI:** `--sequence.shuffle.files`, `--sequence.shuffle.files=false`
 
 是否随机化文件，请注意，如果启用此选项，运行时间较长的测试将不会更早开始。
 
 ### sequence.shuffle.tests {#sequence-shuffle-tests}
 
-- **类型**: `boolean`
-- **默认值**: `false`
-- **CLI**: `--sequence.shuffle.tests`, `--sequence.shuffle.tests=false`
+- **Type:** `boolean`
+- **Default:** `false`
+- **CLI:** `--sequence.shuffle.tests`, `--sequence.shuffle.tests=false`
 
 是否随机化测试。
 
 ## sequence.concurrent {#sequence-concurrent}
 
-- **类型**: `boolean`
-- **默认值**: `false`
-- **CLI**: `--sequence.concurrent`, `--sequence.concurrent=false`
+- **Type:** `boolean`
+- **Default:** `false`
+- **CLI:** `--sequence.concurrent`, `--sequence.concurrent=false`
 
 如果你希望测试并行运行，可以通过此选项或 CLI 参数 [`--sequence.concurrent`](/guide/cli) 启用它。
 
@@ -129,17 +129,17 @@ Vitest 通常使用缓存来排序测试，因此运行时间较长的测试会�
 
 ## sequence.seed <CRoot />
 
-- **类型**: `number`
-- **默认值**: `Date.now()`
-- **CLI**: `--sequence.seed=1000`
+- **Type:** `number`
+- **Default:** `Date.now()`
+- **CLI:** `--sequence.seed=1000`
 
 设置随机化种子，如果测试按随机顺序运行。
 
 ## sequence.hooks
 
-- **类型**: `'stack' | 'list' | 'parallel'`
-- **默认值**: `'stack'`
-- **CLI**: `--sequence.hooks=<value>`
+- **Type:** `'stack' | 'list' | 'parallel'`
+- **Default:** `'stack'`
+- **CLI:** `--sequence.hooks=<value>`
 
 更改钩子执行的顺序。
 
@@ -153,9 +153,9 @@ Vitest 通常使用缓存来排序测试，因此运行时间较长的测试会�
 
 ## sequence.setupFiles {#sequence-setupfiles}
 
-- **类型**: `'list' | 'parallel'`
-- **默认值**: `'parallel'`
-- **CLI**: `--sequence.setupFiles=<value>`
+- **Type:** `'list' | 'parallel'`
+- **Default:** `'parallel'`
+- **CLI:** `--sequence.setupFiles=<value>`
 
 更改 setup 文件执行的顺序。
 

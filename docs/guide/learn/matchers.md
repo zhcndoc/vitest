@@ -50,8 +50,29 @@ test('toBe vs toEqual', () => {
 })
 ```
 
+还有 [`toStrictEqual`](/api/expect#tostrictequal)，它比 `toEqual` 更严格，体现在三个方面：它会检查 `undefined` 属性，区分稀疏数组和 `undefined` 值，并验证对象具有相同的类型（而不只是相同的结构）：
+
+```js
+test('toEqual vs toStrictEqual', () => {
+  // toEqual 会忽略 undefined 属性
+  expect({ a: 1 }).toEqual({ a: 1, b: undefined })
+
+  // toStrictEqual 会检查它们
+  expect({ a: 1 }).not.toStrictEqual({ a: 1, b: undefined })
+
+  // toEqual 不检查对象类型
+  class User {
+    constructor(name) {
+      this.name = name
+    }
+  }
+  expect(new User('Alice')).toEqual({ name: 'Alice' })
+  expect(new User('Alice')).not.toStrictEqual({ name: 'Alice' })
+})
+```
+
 ::: tip
-经验法则：使用 `toBe` 比较原始类型（数字、字符串、布尔值），使用 `toEqual` 比较对象和数组。
+一个实用的经验法则是：原始类型（数字、字符串、布尔值）用 `toBe`，比较结构用 `toEqual`，当你还关心类型和显式的 `undefined` 值时，用 `toStrictEqual`。
 :::
 
 你也可以通过在前面加上 `.not` 来否定任何匹配器。这在需要验证某件事**不成立**时很有用：
@@ -192,6 +213,31 @@ test('object has property', () => {
   expect(user).toHaveProperty('address.zip')
 })
 ```
+
+## 非对称匹配器
+
+有时你不知道确切的值，但你知道它的类型或结构。非对称匹配器可以让你描述一个值应该“看起来像什么”，而不必锁定具体内容。它们可以在任何进行深度比较的匹配器中使用，比如 `toEqual` 或 `toMatchObject`：
+
+```js
+test('user has the right shape', () => {
+  const user = createUser('Alice')
+
+  expect(user).toEqual({
+    id: expect.any(Number),
+    name: 'Alice',
+    email: expect.stringContaining('@'),
+    roles: expect.arrayContaining(['viewer']),
+  })
+})
+```
+
+最常见的非对称匹配器有：
+
+- [`expect.any(Constructor)`](/api/expect#expect-any) 匹配使用给定构造函数创建的任何值（例如 `Number`、`String`、`Array`）
+- [`expect.stringContaining(str)`](/api/expect#expect-stringcontaining) 匹配包含给定子字符串的字符串
+- [`expect.stringMatching(regex)`](/api/expect#expect-stringmatching) 将字符串与正则表达式进行匹配
+- [`expect.arrayContaining(arr)`](/api/expect#expect-arraycontaining) 匹配包含预期数组中所有项的数组（顺序无关，允许额外项）
+- [`expect.objectContaining(obj)`](/api/expect#expect-objectcontaining) 匹配至少包含指定属性的对象
 
 ## 异常
 
