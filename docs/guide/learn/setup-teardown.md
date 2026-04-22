@@ -84,7 +84,7 @@ describe('数学运算', () => {
   let value
 
   beforeEach(() => {
-  value = 0
+    value = 0
   })
 
   test('可以相加', () => {

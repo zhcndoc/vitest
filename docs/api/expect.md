@@ -1426,6 +1426,7 @@ test('spy function resolves bananas on a last call', async () => {
 
   expect(sell).toHaveLastResolvedWith({ product: 'bananas' })
 })
+```
 
 ## toHaveNthResolvedWith
 
@@ -1900,7 +1901,7 @@ test('all assertions are called', async () => {
 })
 ```
 ::: warning
-当在异步并发测试中使用 `assertions` 时，必须使用本地 [测试上下文](/api/test-context) 中的 `expect` 以确保检测到正确的测试。
+当在异步并发测试中使用 `assertions` 时，必须使用本地 [测试上下文](/guide/test-context) 中的 `expect` 以确保检测到正确的测试。
 :::
 
 ## expect.hasAssertions
