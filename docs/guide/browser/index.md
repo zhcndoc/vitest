@@ -330,7 +330,9 @@ npx vitest --browser.headless
 
 默认情况下，Vitest 将自动打开浏览器 UI 进行开发。你的测试将在中心的 iframe 内运行。你可以通过选择首选尺寸、在测试中调用 `page.viewport` 或在 [配置](/config/browser/viewport) 中设置默认值来配置视口。
 
-## 无头模式
+For an alternative debugging model that captures DOM snapshots for every test instead of showing a live iframe, see [Trace View](/guide/browser/trace-view).
+
+## Headless
 
 无头模式是浏览器模式中的另一个可用选项。在无头模式下，浏览器在没有用户界面的情况下在后台运行，这使得它对于运行自动化测试非常有用。Vitest 中的 headless 选项可以设置为布尔值以启用或禁用无头模式。
 
@@ -590,7 +592,7 @@ test('renders a message', async () => {
 
 使用 Vitest 浏览器模式时，重要的是要注意像 `alert` 或 `confirm` 这样的线程阻塞对话框不能原生使用。这是因为它们会阻塞网页，这意味着 Vitest 无法继续与页面通信，导致执行挂起。
 
-在这种情况下，Vitest 为这些 API 提供了带有默认返回值的默认 mocks。这确保了即使用户不小心使用了同步弹出网页 API，执行也不会挂起。然而，仍然建议用户模拟这些网页 API 以获得更好的体验。请在 [模拟](/guide/mocking) 阅读更多内容。
+在这种情况下，Vitest 为这些 API 提供了带有默认返回值的默认模拟。这确保了即使用户不小心使用了同步弹出网页 API，执行也不会挂起。然而，仍然建议用户模拟这些网页 API 以获得更好的体验。请在 [模拟](/guide/mocking) 阅读更多内容。
 
 ### 监听模块导出
 
@@ -625,7 +627,7 @@ export function changeMode(newMode) {
   MODE = newMode
 }
 ```
-```js [module.test.ts]
+```ts [module.test.ts]
 import { expect } from 'vitest'
 import { changeMode, MODE } from './module.js'
 

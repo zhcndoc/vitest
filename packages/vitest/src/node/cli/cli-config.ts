@@ -326,6 +326,9 @@ export const cliOptionsConfig: VitestCLIOptions = {
         description: 'Directory of HTML coverage output to be served in UI mode and HTML reporter.',
         argument: '<path>',
       },
+      autoAttachSubprocess: {
+        description: 'Track coverage of the `node:child_process` and `node:worker_threads` spawned during test run. Supported only by `v8` provider. (default: false)',
+      },
     },
   },
   mode: {
@@ -411,6 +414,22 @@ export const cliOptionsConfig: VitestCLIOptions = {
         subcommands: null, // don't support subcommands
         transform(value) {
           return { mode: value }
+        },
+      },
+      traceView: {
+        description: 'Enable Vitest trace-view collection for browser tests (default: `false`)',
+        argument: '',
+        transform: transformNestedBoolean,
+        subcommands: {
+          enabled: {
+            description: 'Enable Vitest trace-view collection for browser tests (default: `false`)',
+          },
+          recordCanvas: {
+            description: 'Capture canvas pixels in trace-view snapshots (default: `false`)',
+          },
+          inlineImages: {
+            description: 'Inline loaded image pixels in trace-view snapshots (default: `false`)',
+          },
         },
       },
       orchestratorScripts: null,
@@ -805,7 +824,7 @@ export const cliOptionsConfig: VitestCLIOptions = {
     description: 'Collect test and suite locations in the `location` property',
   },
   attachmentsDir: {
-    description: 'The directory where attachments from `context.annotate` are stored in (default: `.vitest-attachments`)',
+    description: 'The directory where attachments from `context.annotate` are stored in (default: `.vitest/attachments`)',
     argument: '<dir>',
   },
 
@@ -963,6 +982,7 @@ export const cliOptionsConfig: VitestCLIOptions = {
   projects: null,
   watchTriggerPatterns: null,
   tags: null,
+  taskTitleValueFormatTruncate: null,
 }
 
 export const benchCliOptionsConfig: Pick<

@@ -269,6 +269,17 @@ export const utils: {
    * 创建 "Cannot find element" 错误。对自定义定位器有用。
    */
   getElementError(selector: string, container?: Element): Error
+  /**
+   * 用于生成和处理 ARIA 树及模板的实用工具。
+   * @experimental
+   */
+  aria: {
+    generateAriaTree(rootElement: Element): AriaNode
+    renderAriaTree(root: AriaNode): string
+    renderAriaTemplate(template: AriaTemplateNode): string
+    parseAriaTemplate(text: string): AriaTemplateNode
+    matchAriaTree(root: AriaNode, template: AriaTemplateNode): { pass: boolean; resolved: string }
+  }
 }
 ```
 
@@ -339,3 +350,22 @@ utils.configurePrettyDOM({
 ::: tip
 此功能灵感来自 Testing Library 的 [`defaultIgnore`](https://testing-library.com/docs/dom-testing-library/api-configuration/#defaultignore) 配置。
 :::
+
+### aria <Version type="experimental">5.0.0</Version> {#aria}
+
+`aria` 命名空间暴露了 Vitest 的 ARIA 快照匹配器所使用的底层工具。
+
+```ts
+import { utils } from 'vitest/browser'
+
+document.body.innerHTML = `
+  <h1>Hello, World!</h1>
+  <button aria-hidden="true">Hidden</button>
+  <button>Visible</button>
+`
+const tree = utils.aria.generateAriaTree(document.body)
+const yaml = utils.aria.renderAriaNode(tree)
+console.log(yaml)
+// - heading "Hello, World!" [level=1]
+// - button "Visible""
+```

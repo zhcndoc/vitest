@@ -1,6 +1,7 @@
 import type { SerializedConfig } from '../../runtime/config'
 import type { TestProject } from '../project'
 import type { ApiConfig } from '../types/config'
+import { resolve } from 'node:path'
 import { configDefaults } from '../../defaults'
 import { isAgent } from '../../utils/env'
 
@@ -21,6 +22,7 @@ export function serializeConfig(project: TestProject): SerializedConfig {
     bail: config.bail,
     defines: config.defines,
     chaiConfig: config.chaiConfig,
+    taskTitleValueFormatTruncate: config.taskTitleValueFormatTruncate,
     setupFiles: config.setupFiles,
     allowOnly: config.allowOnly,
     testTimeout: config.testTimeout,
@@ -53,13 +55,14 @@ export function serializeConfig(project: TestProject): SerializedConfig {
     passWithNoTests: config.passWithNoTests,
     coverage: ((coverage) => {
       return {
-        reportsDirectory: coverage.reportsDirectory,
+        reportsDirectory: resolve(globalConfig.root, coverage.reportsDirectory),
         provider: coverage.provider,
         enabled: coverage.enabled,
         customProviderModule: 'customProviderModule' in coverage
           ? coverage.customProviderModule
           : undefined,
         htmlDir: coverage.htmlDir,
+        autoAttachSubprocess: coverage.autoAttachSubprocess ?? false,
       }
     })(config.coverage),
     fakeTimers: config.fakeTimers,
@@ -124,6 +127,7 @@ export function serializeConfig(project: TestProject): SerializedConfig {
           : {},
         trackUnhandledErrors: browser.trackUnhandledErrors ?? true,
         trace: browser.trace.mode,
+        traceView: browser.traceView,
       }
     })(config.browser),
     standalone: config.standalone,

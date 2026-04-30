@@ -141,7 +141,7 @@ export default class Runner {
 :::
 
 ::: tip
-快照支持和一些其他功能依赖于运行器。如果你不想失去它，你可以从 `vitest/runners` 导入的 `VitestTestRunner` 扩展你的运行器。如果你想扩展基准测试功能，它还暴露了 `NodeBenchmarkRunner`。
+快照支持和其他一些功能依赖于运行器。如果你不想失去它，可以从 `vitest` 中导入的 `TestRunner` 扩展你的运行器。如果你想扩展基准测试功能，它还暴露了 `NodeBenchmarkRunner`。
 :::
 
 ## 任务
@@ -197,7 +197,7 @@ interface Suite extends TaskBase {
 }
 ```
 
-每个任务都有一个 `suite` 属性，引用它所在的套件。如果 `test` 或 `describe` 在顶层启动，它们将不会有 `suite` 属性（它**不**等于 `file`！）。`File` 也永远没有 `suite` 属性。这对于从下到上遍历任务很有用。
+每个任务都有一个 `suite` 属性，引用它所在的套件。如果 `test` 或 `describe` 在顶层启动，它们将不会有 `suite` 属性（它**不**等于 `file`！）。`File` 也永远没有 `suite` 属性。这对于从上到下遍历任务很有用。
 
 ```ts
 interface Test<ExtraContext = object> extends TaskBase {

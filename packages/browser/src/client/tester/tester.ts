@@ -10,8 +10,8 @@ import {
   startCoverageInsideWorker,
   startTests,
   stopCoverageInsideWorker,
-  Traces,
 } from 'vitest/internal/browser'
+import { Traces } from 'vitest/internal/traces'
 import { getBrowserState, getConfig, getWorkerState, moduleRunner } from '../utils'
 import { setupDialogsSpy } from './dialog'
 import { setupConsoleLogSpy } from './logger'
@@ -109,6 +109,7 @@ const iframeId = url.searchParams.get('iframeId')!
 const commands = new CommandsManager()
 getBrowserState().commands = commands
 getBrowserState().activeTraceTaskIds = new Set()
+getBrowserState().browserTraceAttempts = new Map()
 getBrowserState().iframeId = iframeId
 
 let contextSwitched = false

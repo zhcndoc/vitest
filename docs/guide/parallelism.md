@@ -80,7 +80,20 @@ describe.concurrent('user API', () => {
 
 如果你希望项目中的所有测试默认并发运行，可以在配置中将 [`sequence.concurrent`](/config/sequence#sequence-concurrent) 设为 `true`。
 
-### 并发测试下的生命周期钩子
+你可以通过 `concurrent: false` 将单个测试或测试套件从继承的并发设置中排除：
+
+```ts
+test('uses a shared resource', { concurrent: false }, async () => {
+  // ...
+})
+
+describe('shared resource suite', { concurrent: false }, () => {
+  test('step 1', async () => { /* ... */ })
+  test('step 2', async () => { /* ... */ })
+})
+```
+
+### 并发测试中的钩子
 
 当测试并发运行时，生命周期钩子的行为会发生变化。`beforeAll` 和 `afterAll` 仍对测试组只运行一次，但 `beforeEach` 和 `afterEach` 会为每个测试执行——并且由于测试可能重叠，它们可能会同时执行。
 

@@ -208,7 +208,20 @@ describe.concurrent('suite', () => {
 })
 ```
 
-`.skip`、`.only` 和 `.todo` 可与并发套件一起使用。以下所有组合均有效：
+将 `concurrent` 设为 `false` 可取消从父套件或 [`sequence.concurrent`](/config/sequence#sequence-concurrent) 继承的并发：
+
+```ts
+describe.concurrent('suite', () => {
+  test('concurrent test', async () => { /* ... */ })
+
+  describe('sequential suite', { concurrent: false }, () => {
+    test('sequential test 1', async () => { /* ... */ })
+    test('sequential test 2', async () => { /* ... */ })
+  })
+})
+```
+
+`.skip`、`.only` 和 `.todo` 可与并发套件一起使用。以下组合都是有效的：
 
 ```ts
 describe.concurrent(/* ... */)
@@ -226,26 +239,6 @@ describe.concurrent('suite', () => {
   })
   test('concurrent test 2', async ({ expect }) => {
     expect(foo).toMatchSnapshot()
-  })
-})
-```
-
-## describe.sequential
-
-- **别名：**`suite.sequential`
-
-套件中的 `describe.sequential` 将每个测试标记为顺序执行。如果你想在 `describe.concurrent` 内或使用 `--sequence.concurrent` 命令选项顺序运行测试，这很有用。
-
-```ts
-import { describe, test } from 'vitest'
-
-describe.concurrent('suite', () => {
-  test('concurrent test 1', async () => { /* ... */ })
-  test('concurrent test 2', async () => { /* ... */ })
-
-  describe.sequential('', () => {
-    test('sequential test 1', async () => { /* ... */ })
-    test('sequential test 2', async () => { /* ... */ })
   })
 })
 ```

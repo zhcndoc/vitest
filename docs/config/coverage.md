@@ -50,7 +50,7 @@ npx vitest --coverage.enabled --coverage.provider=istanbul
 ## coverage.exclude
 
 - **类型：** `string[]`
-- **默认值：** : `[]`
+- **默认值：** `[]`
 - **适用提供者：** `'v8' | 'istanbul'`
 - **命令行：** `--coverage.exclude=<path>`, `--coverage.exclude=<path1> --coverage.exclude=<path2>`
 
@@ -457,4 +457,15 @@ export default defineConfig({
 - **适用提供者：** `'v8' | 'istanbul'`
 - **命令行：** `--coverage.changed`, `--coverage.changed=<commit/branch>`
 
-仅收集自指定提交或分支以来更改文件的覆盖率。当设置为 `true` 时，它使用暂存和未暂存的更改。
+仅为自指定提交或分支以来发生更改的文件收集覆盖率。当设置为 `true` 时，它会使用已暂存和未暂存的更改。
+
+## coverage.autoAttachSubprocess <Version>5.0.0</Version> {#coverage-autoattachsubprocess}
+
+- **类型：** `boolean`
+- **默认值：** `false`
+- **适用提供者：** `'v8'`
+- **命令行：** `--coverage.autoAttachSubprocess`
+
+跟踪测试运行期间生成的 `node:child_process` 和 `node:worker_threads` 的覆盖率。
+
+请注意，此选项会带来一定的性能开销，因为它内部使用了 [`NODE_V8_COVERAGE`](https://nodejs.org/api/cli.html#node-v8-coveragedir)。这会导致 Node 在文件系统上写入大量不必要的文件。

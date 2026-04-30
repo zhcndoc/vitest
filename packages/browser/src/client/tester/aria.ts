@@ -1,17 +1,25 @@
-import type { MatchersObject } from '@vitest/expect'
-import type { DomainMatchResult, DomainSnapshotAdapter } from '@vitest/snapshot'
 import type {
   AriaNode,
   AriaTemplateNode,
 } from 'ivya/aria'
-import {
+import type {
+  DomainMatchResult,
+  DomainSnapshotAdapter,
+  MatchersObject,
+} from 'vitest'
+import * as aria from 'ivya/aria'
+import { Snapshots } from 'vitest'
+import { getBrowserState } from '../utils'
+
+getBrowserState().aria = aria
+
+const {
   generateAriaTree,
   matchAriaTree,
   parseAriaTemplate,
   renderAriaTemplate,
   renderAriaTree,
-} from 'ivya/aria'
-import { Snapshots } from 'vitest'
+} = aria
 
 const ariaSnapshotAdapter: DomainSnapshotAdapter<AriaNode, AriaTemplateNode> = {
   name: 'aria',

@@ -7,6 +7,68 @@ outline: deep
 
 [迁移到 Vitest 3.0](https://v3.vitest.dev/guide/migration) | [迁移到 Vitest 2.0](https://v2.vitest.dev/guide/migration)
 
+## 迁移到 Vitest 5.0 {#vitest-5}
+
+::: warning 正在进行中
+Vitest 5.0 目前处于 beta 版。本节会跟踪合并中的破坏性变更，并且在稳定版发布前可能仍会更改。
+:::
+
+### 已移除 `test.sequential`、`describe.sequential` 和 `sequential` 选项
+
+Vitest 5.0 移除了已弃用的 `test.sequential`、`describe.sequential` 和 `sequential` 测试选项。在需要测试或测试套件退出继承的或全局配置的并发时，请使用 `concurrent: false`。
+
+```ts
+test.sequential('example', async () => { /* ... */ }) // [!code --]
+test('example', { concurrent: false }, async () => { /* ... */ }) // [!code ++]
+```
+
+```ts
+describe.sequential('suite', () => { /* ... */ }) // [!code --]
+describe('suite', { concurrent: false }, () => { /* ... */ }) // [!code ++]
+```
+
+同样的替换也适用于选项对象：
+
+```ts
+test('example', { sequential: true }, async () => { /* ... */ }) // [!code --]
+test('example', { concurrent: false }, async () => { /* ... */ }) // [!code ++]
+```
+
+### 命令中的定位器会被序列化为对象
+
+传递给 [browser commands](/api/browser/commands) 的定位器现在会被序列化为 `SerializedLocator` 对象，而不是裸选择器字符串。该对象暴露两个字段：
+
+- `selector`：特定提供者的选择器字符串（与命令之前接收的值相同）。
+- `locator`：定位器的人类可读表示（例如 `getByRole('button')`），用于错误消息和追踪。
+
+更新任何接受定位器的自定义命令，从新的对象中解构出 `selector`：
+
+```ts
+import type { SerializedLocator } from '@vitest/browser'
+import type { BrowserCommandContext } from 'vitest/node'
+
+export async function customClick(
+  context: BrowserCommandContext,
+  selector: string, // [!code --]
+  { selector }: SerializedLocator, // [!code ++]
+) {
+  await context.page.locator(selector).click()
+}
+```
+
+### 已移除已弃用的入口点
+
+Vitest 4.1 中有多个入口点被标记为已弃用。此版本将它们完全移除。
+
+- `vitest/coverage`：请改用 `vitest/node`
+- `vitest/reporters`：请改用 `vitest/node`
+- `vitest/environments`：请改用 `vitest/runtime`
+- `vitest/snapshot`：请改用 `vitest/runtime`
+- `vitest/runners`：请改用 `vitest` 中的 `TestRunner`
+- `vitest/suite`：请改用 vitest 中 `TestRunner` 的静态方法（例如 `TestRunner.getCurrentTest()`）
+- `vitest/mocker` 已被完全移除，请直接使用 `@vitest/mocker` 包（它曾一度被意外发布，且从未移除）
+- `vitest/internal/module-runner` 已被移除
+
 ## 迁移到 Vitest 4.0 {#vitest-4}
 
 ::: warning 前提条件
@@ -508,7 +570,7 @@ Vitest 的设计采用了与 Jest 兼容的 API，以使从 Jest 迁移尽可能
 
 ### 默认全局变量
 
-Jest 默认启用了他们的 [globals API](https://jestjs.io/docs/api)。Vitest 没有。您可以通过 [`globals` 配置设置](/config/globals) 启用全局变量，或者更新代码以使用从 `vitest` 模块导入 instead。
+Jest 默认启用了他们的 [全局 API](https://jestjs.io/docs/api)。Vitest 没有。您可以通过 [`globals` 配置设置](/config/globals) 启用全局变量，或者更新代码以使用从 `vitest` 模块导入的内容。
 
 如果您决定保持全局变量禁用，请注意像 [`testing-library`](https://testing-library.com/) 这样的常用库将不会运行自动 DOM [清理](https://testing-library.com/docs/svelte-testing-library/api/#cleanup)。
 

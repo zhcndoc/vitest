@@ -11,6 +11,8 @@ outline: deep
 
 捕获浏览器测试运行的轨迹。您可以使用 [Playwright Trace Viewer](https://trace.playwright.dev/) 预览轨迹。
 
+有关完整工作流程，请参阅 [Playwright Traces](/guide/browser/playwright-traces)。
+
 此选项支持以下值：
 
 - `'on'` - 捕获所有测试的轨迹。（不推荐，因为性能开销大）

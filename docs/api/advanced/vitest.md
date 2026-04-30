@@ -1,14 +1,14 @@
 ---
 outline: deep
-title: Vitest 接口
+title: Vitest API
 ---
 
 # Vitest
 
 Vitest 实例需要当前的测试模式。它可以是：
 
-- 运行运行时测试时为 `test`
-- 运行基准测试时为 `benchmark` <Badge type="warning">实验性</Badge>
+- 在运行时测试时为 `test`
+- 在运行基准测试时为 `benchmark` <Badge type="warning">实验性</Badge>
 
 ::: details Vitest 4 新增
 Vitest 4 添加了几个新 API（它们标有 "4.0.0+" 徽章）并移除了已弃用的 API：
@@ -685,3 +685,122 @@ export interface SourceModuleDiagnostic {
 ::: warning
 目前，不支持 [浏览器](/guide/browser/) 模块。
 :::
+
+## createReport <Version>5.0.0</Version> {#createreport}
+
+```ts
+function createReport(scope: string): Report
+```
+
+创建一个仅限于给定作用域的报告。`Report` 遵循 Vitest 关于 [将工件存储在文件系统上](/guide/advanced/reporters.html#storing-artifacts-on-file-system) 的规则。
+
+`Report` 提供了一组用于在文件系统上写入测试结果、临时文件和其他工件的实用工具。它尤其适用于自定义报告器之类的第三方集成。
+
+`Report` 的所有操作都仅限于给定的 `scope`。单个报告不能干扰其他报告。在内部，Vitest 会创建 `.vitest` 目录，其中每个 `scope` 都会创建自己的目录。这种 `.vitest` 目录约定减少了最终用户需要在 `.gitignore` 中指定的条目数量。
+
+```ts
+import type { Report } from 'vitest/node'
+
+const scope = 'example-yaml-reporter'
+
+// 如果目录尚不存在，则自动创建 `<project-root>/.vitest/example-yaml-reporter/`
+// 目录
+const report: Report = vitest.createReport(scope)
+```
+
+### Report.root
+
+```ts
+const root: string
+```
+
+此作用域的根目录。
+
+```ts
+const report = vitest.createReport('my-json-reporter')
+
+// 是 <project-root>/.vitest/my-json-reporter
+const root = report.root
+```
+
+
+### Report.clean
+
+```ts
+function clean(): Promise<void>
+```
+
+清理此作用域的报告目录。
+
+```ts
+const report = vitest.createReport('my-json-reporter')
+
+// 删除 <project-root>/.vitest/my-json-reporter/ 内的所有内容
+await report.clean()
+```
+
+### Report.writeFile
+
+```ts
+function writeFile(
+  filename: string,
+  content: string | Uint8Array,
+  encoding?: BufferEncoding
+): Promise<void>
+```
+
+将文件写入此作用域的报告目录。默认情况下，文件将使用 UTF-8 编码写入。文件名相对于作用域目录。
+
+```ts
+const report = vitest.createReport('my-json-reporter')
+
+// 将文件写入 .vitest/my-json-reporter/test-report.json
+await report.writeFile('test-report.json', JSON.stringify(results))
+```
+
+### Report.readFile
+
+```ts
+function readFile(filename: string, encoding?: BufferEncoding): Promise<string>
+```
+
+从此作用域的报告目录中读取文件。
+
+```ts
+const report = vitest.createReport('my-json-reporter')
+
+// 从 .vitest/my-json-reporter/test-report.json 读取文件
+const content: string = await report.readFile('test-report.json')
+```
+
+### Report.readdir
+
+```ts
+function readdir(): Promise<string[]>
+```
+
+读取此作用域的报告目录内容。
+
+```ts
+const report = vitest.createReport('my-json-reporter')
+
+// 读取 .vitest/my-json-reporter 中的内容
+const filenames: string[] = await report.readdir()
+```
+
+### Report.delete
+
+<!-- eslint-skip -->
+```ts
+function delete(filename: string): Promise<void>
+```
+
+从此作用域的报告目录中删除文件。
+
+```ts
+const report = vitest.createReport('my-json-reporter')
+
+// 删除 .vitest/my-json-reporter/test-report.json 中的文件
+await report.delete('test-report.json')
+```
+

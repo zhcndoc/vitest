@@ -1,7 +1,7 @@
 # 扩展报告器 <Badge type="danger">高级</Badge> {#extending-reporters}
 
 ::: warning
-这是一个高级 API。如果你只是想配置内置报告器，请阅读 ["Reporters"](/guide/reporters) 指南。
+这是一个高级 API。如果你只是想配置内置报告器，请阅读 ["报告器"](/guide/reporters) 指南。
 :::
 
 你可以从 `vitest/node` 导入报告器并扩展它们以创建自定义报告器。
@@ -31,7 +31,7 @@ import type { Reporter } from 'vitest/node'
 
 export default class CustomReporter implements Reporter {
   onTestModuleCollected(testModule) {
-    console.log(testModule.moduleId, 'is finished')
+    console.log(testModule.moduleId, '已完成')
 
     for (const test of testModule.children.allTests()) {
       console.log(test.name, test.result().state)
@@ -65,16 +65,43 @@ class MyReporter implements Reporter {
     for (const testModule of testModules) {
       for (const task of testModule.children) {
         //                          ^?
-        console.log('test run end', task.type, task.fullName)
+        console.log('测试运行结束', task.type, task.fullName)
       }
     }
   }
 }
 ```
 
+## 在文件系统中存储工件
+
+::: tip
+Vitest 提供了 [`vitest.createReport`](/api/advanced/vitest.html#createreport)，它提供了一组便于在文件系统中写入工件的工具。
+:::
+
+如果你的自定义报告器需要在文件系统中存储任何工件，它应该将它们放在 `.vitest` 目录中。这个目录是 Vitest 报告器和第三方集成可以使用的一种约定，用于将它们的结果放在同一个目录中。这样，你的自定义报告器用户就不需要在他们的 `.gitignore` 中添加多个排除项。只需要 `.vitest` 即可。
+
+报告器和其他集成应遵守围绕 `.vitest` 目录的以下规则：
+
+- `.vitest` 目录位于[项目的 `root`](/config/root)
+- 如果 `.vitest` 目录不存在，报告器可以创建它
+- 报告器绝不应删除 `.vitest` 目录
+- 报告器应在 `.vitest` 内创建自己的目录，例如 `.vitest/yaml-reporter/`
+- 报告器可以删除 `.vitest` 内自己特定的目录，例如 `.vitest/yaml-reporter/`
+
+```ansi
+.vitest
+│
+├── yaml-reporter
+│   ├── results.yaml
+│   └── summary.yaml
+│
+└── junit-reporter
+    └── report.xml
+```
+
 ## 导出的报告器
 
-`vitest` 自带了一些你可以开箱即用的 [内置报告器](/guide/reporters)。
+`vitest` 自带了一些你可以开箱即用的[内置报告器](/guide/reporters)。
 
 ### 内置报告器：
 

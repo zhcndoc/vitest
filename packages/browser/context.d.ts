@@ -2,6 +2,7 @@ import { SerializedConfig } from 'vitest'
 import { StringifyOptions, CDPSession, BrowserCommands } from 'vitest/internal/browser'
 import { ARIARole } from './aria-role.js'
 import {} from './matchers.js'
+import { __ivyaAriaTypes } from '@vitest/browser/internal/vendor-types'
 
 export type BufferEncoding =
   | 'ascii'
@@ -538,6 +539,11 @@ export interface LocatorSelectors {
 
 export interface FrameLocator extends LocatorSelectors {}
 
+export interface SerializedLocator {
+  selector: string
+  locator: string
+}
+
 export interface SelectorOptions {
   /**
    * How long to wait until a single element is found. By default, this has the same timeout as the test.
@@ -578,6 +584,32 @@ export interface Locator extends LocatorSelectors {
    */
   readonly length: number
 
+  /**
+   * Returns a JSON-serializable representation of the locator with two fields:
+   * - `selector`: the provider-specific selector string used to query the element at runtime.
+   * - `locator`: a human-readable description of the locator (e.g. `getByRole('button')`),
+   *   used for error messages and tracing.
+   *
+   * Use this to forward a locator to a [browser command](https://vitest.dev/api/browser/commands),
+   * which runs in Node and cannot receive a live `Locator` instance. Vitest also auto-serializes
+   * any `Locator` argument passed to a command, so calling `serialize()` explicitly is rarely necessary.
+   *
+   * @see {@link https://vitest.dev/api/browser/locators#serialize}
+   */
+  serialize(): SerializedLocator
+  /**
+   * Alias of {@link serialize}. Defined so that `JSON.stringify(locator)` and
+   * structured-clone-based transports return a {@link SerializedLocator} object.
+   *
+   * @see {@link https://vitest.dev/api/browser/locators#tojson}
+   */
+  toJSON(): SerializedLocator
+  /**
+   * A human-readable description of the locator (e.g. `getByRole('button')`).
+   *
+   * @see {@link https://vitest.dev/api/browser/locators#aslocator}
+   */
+  asLocator(): string
   /**
    * Click on an element. You can use the options to set the cursor position.
    * @see {@link https://vitest.dev/api/browser/interactivity#userevent-click}
@@ -933,7 +965,24 @@ export const utils: {
   /**
    * Creates "Cannot find element" error. Useful for custom locators.
    */
-  getElementError(selector: string, container?: Element): Error
+  getElementError(selector: string | Locator, container?: Element): Error
+
+  /**
+   * Utilities for generating and working with ARIA trees and templates.
+   * @experimental
+   */
+  aria: {
+    /** Captures the ARIA tree for a DOM subtree. */
+    generateAriaTree: typeof __ivyaAriaTypes.generateAriaTree
+    /** Renders a captured ARIA tree to the textual snapshot format. */
+    renderAriaTree: typeof __ivyaAriaTypes.renderAriaTree
+    /** Renders an ARIA template back to text. */
+    renderAriaTemplate: typeof __ivyaAriaTypes.renderAriaTemplate
+    /** Parses textual ARIA snapshot syntax into a template tree. */
+    parseAriaTemplate: typeof __ivyaAriaTypes.parseAriaTemplate
+    /** Matches a captured ARIA tree against a parsed template. */
+    matchAriaTree: typeof __ivyaAriaTypes.matchAriaTree
+  }
 }
 
 export const locators: BrowserLocators

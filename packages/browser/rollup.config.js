@@ -12,7 +12,9 @@ const pkg = require('./package.json')
 const external = [
   ...Object.keys(pkg.dependencies),
   ...Object.keys(pkg.peerDependencies || {}),
-  /^@?vitest(\/|$)/,
+  /^vitest(\/|$)/,
+  /^@vitest\/utils\//,
+  /^@vitest\/mocker\//,
   '@vitest/browser/utils',
   '@vitest/browser/context',
   '@vitest/browser/client',
@@ -33,6 +35,7 @@ const dtsUtilsClient = createDtsUtils({
 const plugins = [
   resolve({
     preferBuiltins: true,
+    exportConditions: ['__vitest_source__'],
   }),
   json(),
   commonjs(),
@@ -73,9 +76,10 @@ export default () =>
         ...plugins,
       ],
     },
+    // ivya chunk
     {
       input: {
-        'locators': './src/client/tester/locators/index.ts',
+        'locators': './src/client/tester/locators.ts',
         'expect-element': './src/client/tester/expect-element.ts',
       },
       output: {
@@ -156,5 +160,37 @@ export default () =>
       watch: false,
       external,
       plugins: dtsUtilsClient.dts(),
+    },
+    {
+      input: {
+        'vendor-types': './src/vendor-types.ts',
+      },
+      output: {
+        dir: 'dist',
+        entryFileNames: '[name].ts',
+        format: 'esm',
+      },
+      external,
+      plugins: [
+        ...dtsUtils.isolatedDecl(),
+        ...plugins,
+      ],
+    },
+    {
+      input: {
+        'vendor-types': './dist/.types/vendor-types.d.ts',
+      },
+      output: {
+        dir: 'dist',
+        entryFileNames: '[name].d.ts',
+        format: 'esm',
+      },
+      external,
+      plugins: [
+        resolve({
+          preferBuiltins: true,
+        }),
+        dtsUtils.dts(),
+      ],
     },
   ])

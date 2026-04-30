@@ -105,7 +105,11 @@ export default defineConfig({
 
   提供给 [`attachmentsDir`](/config/attachmentsdir) 的值，如果未提供，则为其默认值。
 
-例如，按浏览器对截图进行分组：
+- `project: TestProject` <Version type="experimental">4.1.6</Version> <Experimental />
+
+  该测试所属的 [`TestProject`](/api/advanced/test-project)。
+
+例如，按浏览器对截图分组：
 
 ```ts
 resolveScreenshotPath: ({ arg, browserName, ext, root, testFileName }) =>

@@ -40,7 +40,7 @@ export default defineConfig({
 你可以在 Vitest UI 中查看覆盖率报告：详见 [Vitest UI 覆盖率](/guide/coverage#vitest-ui)。
 
 ::: warning
-如果你仍然想在终端中实时查看测试运行情况，别忘了将 `default` 报告器添加到 `reporters` 选项中：`['default', 'html']`。
+如果你仍然希望在终端中实时查看测试运行情况，请将 `configDefaults.reporters` 添加到 `reporters` 选项中：`['html', ...configDefaults.reporters]`。
 :::
 
 ::: tip
@@ -64,7 +64,7 @@ npx vite preview --outDir ./html
     path: html/
 
 - name: Viewer link in summary
-  run: echo "[View HTML report](https://viewer.vitest.dev/?url=${{ steps.upload-report.outputs.artifact-url }})" >> $GITHUB_STEP_SUMMARY
+  run: echo "[查看 HTML 报告](https://viewer.vitest.dev/?url=${{ steps.upload-report.outputs.artifact-url }})" >> $GITHUB_STEP_SUMMARY
 ```
 
 这会在作业摘要中添加一个链接。点击它直接在浏览器中的 [Vitest Viewer](https://viewer.vitest.dev/) 打开报告。你也可以手动下载工件并解压，然后像上面那样在本地运行 `vite preview`。
@@ -81,20 +81,20 @@ npx vite preview --outDir ./html
 <img alt="模块图视图" img-light src="/ui/light-module-graph.png">
 <img alt="模块图视图" img-dark src="/ui/dark-module-graph.png">
 
-如果模块超过 50 个，模块图仅显示图的前两级以减少视觉混乱。你可以随时点击 "Show Full Graph" 图标来预览完整图。
+如果模块超过 50 个，模块图仅显示图的前两级以减少视觉混乱。你可以随时点击 "显示完整图" 图标来预览完整图。
 
 <center>
-  <img alt="位于图例附近的 'Show Full Graph' 按钮" img-light src="/ui/light-ui-show-graph.png">
-  <img alt="位于图例附近的 'Show Full Graph' 按钮" img-dark src="/ui/dark-ui-show-graph.png">
+  <img alt="位于图例附近的 '显示完整图' 按钮" img-light src="/ui/light-ui-show-graph.png">
+  <img alt="位于图例附近的 '显示完整图' 按钮" img-dark src="/ui/dark-ui-show-graph.png">
 </center>
 
 ::: warning
 请注意，如果你的图太大，节点位置稳定下来可能需要一些时间。
 :::
 
-你可以随时通过点击 "Reset" 恢复入口模块图。要展开模块图，右键单击或按住 <kbd>Shift</kbd> 同时点击你感兴趣的节点。它将显示与所选节点相关的所有节点。
+你可以随时通过点击 "重置" 恢复入口模块图。要展开模块图，右键单击或按住 <kbd>Shift</kbd> 同时点击你感兴趣的节点。它将显示与所选节点相关的所有节点。
 
-默认情况下，Vitest 不显示来自 `node_modules` 的模块。通常，这些模块是被外部化的。你可以通过取消选中 "Hide node_modules" 来启用它们。
+默认情况下，Vitest 不显示来自 `node_modules` 的模块。通常，这些模块是被外部化的。你可以通过取消选中 "隐藏 node_modules" 来启用它们。
 
 ### 模块信息
 

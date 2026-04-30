@@ -568,7 +568,7 @@ export function resolveConfig(
 
   resolved.attachmentsDir = resolve(
     resolved.root,
-    resolved.attachmentsDir ?? '.vitest-attachments',
+    resolved.attachmentsDir ?? '.vitest/attachments',
   )
 
   if (resolved.snapshotEnvironment) {
@@ -692,22 +692,23 @@ export function resolveConfig(
    * { reporter: [[ 'json' ], 'html'] }
    * { reporter: [[ 'json', { outputFile: 'test.json' } ], 'html'] }
    */
-  if (options.reporters) {
-    if (!Array.isArray(options.reporters)) {
+  if (resolved.reporters) {
+    if (!Array.isArray(resolved.reporters)) {
       // Reporter name, e.g. { reporters: 'json' }
-      if (typeof options.reporters === 'string') {
-        resolved.reporters = [[options.reporters, {}]]
+      if (typeof resolved.reporters === 'string') {
+        resolved.reporters = [[resolved.reporters, {}]]
       }
       // Inline reporter e.g. { reporters: { onFinish() { method() } } }
       else {
-        resolved.reporters = [options.reporters]
+        resolved.reporters = [resolved.reporters]
       }
     }
     // It's an array of reporters
     else {
+      const reporters = resolved.reporters
       resolved.reporters = []
 
-      for (const reporter of options.reporters) {
+      for (const reporter of reporters) {
         if (Array.isArray(reporter)) {
           // Reporter with options, e.g. { reporters: [ [ 'json', { outputFile: 'test.json' } ] ] }
           resolved.reporters.push([reporter[0], reporter[1] as Record<string, unknown> || {}])
@@ -756,15 +757,6 @@ export function resolveConfig(
       resolved.reporters = Array.from(new Set(toArray(cliReporters)))
         .filter(Boolean)
         .map(reporter => [reporter, configReportersMap.get(reporter) || {}])
-    }
-  }
-
-  if (!resolved.reporters.length) {
-    resolved.reporters.push([isAgent ? 'agent' : 'default', {}])
-
-    // also enable github-actions reporter as a default
-    if (process.env.GITHUB_ACTIONS === 'true') {
-      resolved.reporters.push(['github-actions', {}])
     }
   }
 
@@ -911,6 +903,22 @@ export function resolveConfig(
   if (typeof resolved.browser.trace === 'string' || !resolved.browser.trace) {
     resolved.browser.trace = { mode: resolved.browser.trace || 'off' }
   }
+
+  const traceView = resolved.browser.traceView
+  resolved.browser.traceView = typeof traceView === 'object'
+    ? {
+        enabled: traceView.enabled ?? false,
+        recordCanvas: traceView.recordCanvas ?? false,
+        inlineImages: traceView.inlineImages ?? false,
+      }
+    : {
+        enabled: traceView ?? false,
+        recordCanvas: false,
+        inlineImages: false,
+      }
+  if (resolved.browser.enabled && resolved.browser.traceView.enabled) {
+    resolved.browser.detailsPanelPosition = 'bottom'
+  }
   if (resolved.browser.trace.tracesDir != null) {
     resolved.browser.trace.tracesDir = resolvePath(
       resolved.browser.trace.tracesDir,
@@ -928,6 +936,17 @@ export function resolveConfig(
 
   if (htmlReporter) {
     resolved.includeTaskLocation ??= true
+  }
+  else if (resolved.browser.enabled && resolved.browser.traceView.enabled && !resolved.watch) {
+    logger.console.warn(
+      c.yellow(
+        withLabel(
+          'yellow',
+          'Vitest',
+          '--browser.traceView is enabled without the HTML reporter.',
+        ),
+      ),
+    )
   }
 
   resolved.server ??= {}

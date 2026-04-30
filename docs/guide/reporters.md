@@ -5,7 +5,7 @@ outline: deep
 
 # 报告器
 
-Vitest 提供了多种内置报告器，以不同格式显示测试输出，同时也支持使用自定义报告器。你可以通过 `--reporter` 命令行选项，或在 [配置文件](/config/reporters) 中包含 `reporters` 属性来选择不同的报告器。如果未指定报告器，Vitest 将使用如下所述的 `default` 报告器。
+Vitest 提供了多种内置报告器，用于以不同格式显示测试输出，同时也支持使用自定义报告器。你可以通过 `--reporter` 命令行选项来选择不同的报告器，或者在你的[配置文件](/config/reporters)中添加 `reporters` 属性。如果未指定报告器，Vitest 会根据环境[自动选择报告器](#default-configuration)。
 
 通过命令行使用报告器：
 
@@ -38,6 +38,26 @@ export default defineConfig({
 })
 ```
 
+## 默认配置
+
+当未配置 `reporters` 时，Vitest 会使用以下报告器：
+
+- 在普通终端运行中使用 [`default`](#default-reporter)
+- 当 Vitest 检测到 AI 编码代理时使用 [`minimal`](#minimal-reporter)
+- 当 `process.env.GITHUB_ACTIONS === 'true'` 时会添加 [`github-actions`](#github-actions-reporter)
+
+如果你配置了自己的报告器，配置列表将替代默认列表。若想在保留 Vitest 默认值的同时添加一个报告器，请扩展 `configDefaults.reporters`：
+
+```ts
+import { configDefaults, defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    reporters: ['json', ...configDefaults.reporters],
+  },
+})
+```
+
 ## 报告器输出
 
 默认情况下，Vitest 的报告器会将输出打印到终端。当使用 `json`、`html` 或 `junit` 报告器时，你可以通过在 Vite 配置文件或命令行中包含 `outputFile` [配置选项](/config/outputfile)，将测试输出写入文件。
@@ -66,9 +86,11 @@ npx vitest --reporter=json --reporter=default
 ```
 
 ```ts
+import { configDefaults, defineConfig } from 'vitest/config'
+
 export default defineConfig({
   test: {
-    reporters: ['json', 'default'],
+    reporters: ['json', ...configDefaults.reporters],
     outputFile: './test-output.json'
   },
 })
@@ -96,11 +118,7 @@ export default defineConfig({
 
 ### 默认报告器
 
-默认情况下（即未指定报告器），Vitest 将在底部显示运行测试的摘要及其状态。一旦套件通过，其状态将报告在摘要的顶部。
-
-::: tip
-当 Vitest 检测到其运行在 AI 编码代理中时，将改用 [`minimal`](#minimal-reporter) 报告器，以减少输出并尽量降低 token 使用量。你可以通过显式配置 [`reporters`](/config/reporters) 选项来覆盖这一行为。
-:::
+`default` 报告器会在底部显示正在运行的测试摘要及其状态。一旦某个套件通过，其状态将显示在摘要上方。
 
 你可以通过配置报告器来禁用摘要：
 
@@ -331,17 +349,70 @@ AssertionError: expected 5 to be 4 // Object.is equality
 </testsuites>
 ```
 
-输出的 XML 包含嵌套的 `testsuites` 和 `testcase` 标签。这些也可以通过报告器选项 `suiteName` 和 `classnameTemplate` 进行自定义。`classnameTemplate` 可以是模板字符串或函数。
+输出的 XML 包含嵌套的 `testsuites` → `testsuite` → `testcase` 标签。你可以使用以下选项自定义报告器行为：
 
-`classnameTemplate` 选项支持的占位符有：
-- filename
-- filepath
+| Option | Description | Default |
+|---|---|---|
+| `suiteName` | `<testsuites>` 的 `name` 属性 | `"vitest tests"` |
+| `suiteNameTemplate` | `<testsuite>` 的 `name` 属性模板。接受带占位符的字符串或函数。 | 相对文件路径 |
+| `classnameTemplate` | `<testcase>` 的 `classname` 属性模板。接受带占位符的字符串或函数。 | 相对文件路径 |
+| `titleTemplate` | `<testcase>` 的 `name` 属性模板。接受带占位符的字符串或函数。 | 带祖先层级的完整测试标题 |
+| `ancestorSeparator` | 在 `{classname}` 占位符以及默认测试标题中，连接祖先 describe 块名称时使用的分隔符。 | `" > "` |
+| `addFileAttribute` | 为每个 `<testcase>` 添加 `file` 属性。 | `false` |
+| `includeConsoleOutput` | 包含 `<system-out>` / `<system-err>` 控制台输出。 | `true` |
+| `stackTrace` | 在 `<failure>` 元素中包含堆栈跟踪。 | `true` |
+
+以下占位符可用于 `suiteNameTemplate`：
+- `{title}` – 第一个顶层 `describe` 块的名称；如果没有顶层 `describe`，则回退为文件基本名
+- `{filename}` – 相对于根目录的文件路径（例如 `src/foo.test.ts`）
+- `{filepath}` – 绝对文件路径
+- `{basename}` – 不含目录的文件名（例如 `foo.test.ts`）
+- `{displayName}` – Vitest 项目名称
+
+以下占位符可用于 `classnameTemplate` 和 `titleTemplate`：
+- `{classname}` – 使用 `ancestorSeparator` 连接的祖先 `describe` 块名称（例如 `outer > inner`）
+- `{title}` – 叶子测试标题（传递给 `it`/`test` 的字符串）
+- `{suitename}` – 顶层 `describe` 块名称；当测试没有外层 `describe` 时为空字符串
+- `{filename}` – 相对于根目录的文件路径
+- `{filepath}` – 绝对文件路径
+- `{basename}` – 不含目录的文件名
+- `{displayName}` – Vitest 项目名称
+
+::: tip
+`{filename}` 遵循 Vitest 的约定，解析为相对于项目根目录的**相对路径**（例如 `src/foo.test.ts`）。这与 jest-junit 不同，后者中的 `{filename}` 是纯文件名。若只想获取文件名，请使用 `{basename}`。
+:::
 
 ```ts
 export default defineConfig({
   test: {
     reporters: [
-      ['junit', { suiteName: 'custom suite name', classnameTemplate: 'filename:{filename} - filepath:{filepath}' }]
+      ['junit', {
+        suiteName: 'My Test Suite',
+        // 使用第一个顶层 describe 块名称作为 testsuite 名称
+        suiteNameTemplate: '{title}',
+        // classname = 祖先 describe 链
+        classnameTemplate: '{classname}',
+        // name = 仅叶子测试标题（兼容 jest-junit）
+        titleTemplate: '{title}',
+        ancestorSeparator: ' > ',
+      }]
+    ]
+  },
+})
+```
+
+基于函数的模板会接收所有可用变量并可返回任意字符串：
+
+```ts
+export default defineConfig({
+  test: {
+    reporters: [
+      ['junit', {
+        classnameTemplate: ({ classname, filename }) =>
+          classname ? `${filename}::${classname}` : filename,
+        titleTemplate: ({ suitename, title }) =>
+          suitename ? `[${suitename}] ${title}` : title,
+      }]
     ]
   },
 })
@@ -531,7 +602,7 @@ ok 2 - __tests__/test-file-1.test.ts > first test file > 4 - 2 should equal 2 # 
 
 ### 挂起进程报告器
 
-显示挂起进程的列表（如果有进程阻止 Vitest 安全退出）。`hanging-process` 报告器本身不显示测试结果，但可以与另一个报告器结合使用，以在测试运行时监控进程。使用此报告器可能会消耗大量资源，因此通常应保留用于调试目的，适用于 Vitest  consistently 无法退出进程的情况。
+显示挂起进程的列表（如果有进程阻止 Vitest 安全退出）。`hanging-process` 报告器本身不显示测试结果，但可以与另一个报告器结合使用，以在测试运行时监控进程。使用此报告器可能会消耗大量资源，因此通常应保留用于调试目的，适用于 Vitest 一直无法退出进程的情况。
 
 :::code-group
 ```bash [命令行]
@@ -549,23 +620,12 @@ export default defineConfig({
 
 ### GitHub Actions 报告器 {#github-actions-reporter}
 
-输出 [工作流命令](https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-error-message)
-以为测试失败提供注解。当未配置 `reporters` 选项且 `process.env.GITHUB_ACTIONS === 'true'`（在 GitHub Actions 环境中）时，此报告器会自动启用。
+输出 [工作流命令](https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-error-message)，为测试失败提供注解。此报告器在 `process.env.GITHUB_ACTIONS === 'true'` 时（在 GitHub Actions 环境中）会[自动启用](#default-configuration)。
 
 <img alt="GitHub Actions" img-dark src="https://github.com/vitest-dev/vitest/assets/4232207/336cddc2-df6b-4b8a-8e72-4d00010e37f5">
 <img alt="GitHub Actions" img-light src="https://github.com/vitest-dev/vitest/assets/4232207/ce8447c1-0eab-4fe1-abef-d0d322290dca">
 
-如果你配置了报告器，则需要显式添加 `github-actions`。
-
-```ts
-export default defineConfig({
-  test: {
-    reporters: process.env.GITHUB_ACTIONS === 'true' ? ['dot', 'github-actions'] : ['dot'],
-  },
-})
-```
-
-你可以使用 `onWritePath` 选项自定义以 [GitHub 的注解命令格式](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/workflow-commands-for-github-actions) 打印的文件路径。这在容器化环境（如 Docker）中运行 Vitest 时很有用，因为文件路径可能与 GitHub Actions 环境中的路径不匹配。
+你可以通过使用 `onWritePath` 选项来自定义在 [GitHub 注解命令格式](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/workflow-commands-for-github-actions) 中打印的文件路径。当在容器化环境中运行 Vitest（例如 Docker）时，这很有用，因为文件路径可能与 GitHub Actions 环境中的路径不匹配。
 
 ```ts
 export default defineConfig({
@@ -655,14 +715,14 @@ export default defineConfig({
 })
 ```
 
-### Minimal Reporter
+### 最小报告器
 
 - **别名：** `agent`
 
 输出一个最小报告，只包含失败的测试及其错误消息。来自通过测试的控制台日志和摘要部分也会被抑制。
 
 ::: tip Agent Reporter
-此报告器针对 AI 编码助手和基于 LLM 的工作流进行了良好优化，可减少 token 使用量。当未配置 `reporters` 选项且 Vitest 检测到它运行在 AI 编码代理中时，它会自动启用。如果你配置了自定义报告器，可以显式添加 `minimal` 或 `agent`：
+此报告器非常适合 AI 编码助手和基于 LLM 的工作流，可减少 token 使用量。当 Vitest 检测到正在 AI 编码代理中运行时，它会[自动启用](#default-configuration)。
 
 :::code-group
 ```bash [CLI]
@@ -695,7 +755,7 @@ npx vitest --merge-reports=reports --reporter=json --reporter=default
 ```
 
 Blob 报告器输出不包含基于文件的 [附件](/api/advanced/artifacts.html#testattachment)。
-使用此功能时，确保在 CI 上与 blob 报告 separately 合并 [`attachmentsDir`](/config/attachmentsdir)。
+使用此功能时，确保在 CI 上与 blob 报告分别合并 [`attachmentsDir`](/config/attachmentsdir)。
 
 ::: tip
 `--reporter=blob` 和 `--merge-reports` 都不适用于监听模式。

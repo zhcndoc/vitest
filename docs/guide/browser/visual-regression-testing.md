@@ -263,11 +263,11 @@ expect(element).toMatchScreenshot()
 参考截图：
   tests/__screenshots__/button.test.ts/button-chromium-darwin.png
 
-实际截图：
-  tests/.vitest-attachments/button.test.ts/button-chromium-darwin-actual.png
+Actual screenshot:
+  tests/.vitest/attachments/button.test.ts/button-chromium-darwin-actual.png
 
-差异图像：
-  tests/.vitest-attachments/button.test.ts/button-chromium-darwin-diff.png
+Diff image:
+  tests/.vitest/attachments/button.test.ts/button-chromium-darwin-diff.png
 ```
 
 ### 理解差异图像

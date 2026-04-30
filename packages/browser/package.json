@@ -1,7 +1,7 @@
 {
   "name": "@vitest/browser",
   "type": "module",
-  "version": "4.1.5",
+  "version": "5.0.0-beta.1",
   "description": "Browser running for Vitest",
   "license": "MIT",
   "funding": "https://opencollective.com/vitest",
@@ -31,6 +31,7 @@
       "default": "./context.js"
     },
     "./client": {
+      "__vitest_source__": "./src/client/client.ts",
       "default": "./dist/client.js"
     },
     "./matchers": {
@@ -38,10 +39,15 @@
       "default": "./dummy.js"
     },
     "./locators": {
+      "__vitest_source__": "./src/client/tester/locators.ts",
       "types": "./dist/locators.d.ts",
       "default": "./dist/locators.js"
     },
     "./utils": {
+      "default": "./dummy.js"
+    },
+    "./internal/vendor-types": {
+      "types": "./dist/vendor-types.d.ts",
       "default": "./dummy.js"
     },
     "./package.json": "./package.json"
@@ -82,14 +88,16 @@
   "devDependencies": {
     "@opentelemetry/api": "^1.9.0",
     "@testing-library/user-event": "^14.6.1",
+    "@types/node": "catalog:",
     "@types/pngjs": "^6.0.5",
     "@types/ws": "catalog:",
     "@vitest/runner": "workspace:*",
     "birpc": "catalog:",
     "flatted": "catalog:",
-    "ivya": "^1.8.0",
+    "ivya": "^1.8.1",
     "mime": "^4.1.0",
     "pathe": "catalog:",
+    "rrweb-snapshot": "2.0.0-alpha.20",
     "vitest": "workspace:*"
   }
 }

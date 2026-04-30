@@ -21,7 +21,7 @@ const value = {
 
 console.log(format(value))
 /*
--- output --
+-- 输出 --
 Object {
   "items": Array [
     1,
@@ -38,24 +38,29 @@ Object {
 | key                   | type             | default     | notes                                                                |
 | :-------------------- | :--------------- | :---------- | :------------------------------------------------------------------- |
 | `callToJSON`          | `boolean`        | `true`      | 如果存在则调用 `toJSON`                                             |
-| `compareKeys`         | `function\|null` | `undefined` | 用于排序对象键的比较函数。使用 `null` 可跳过排序                     |
+| `compareKeys`         | `function\|null` | `undefined` | 用于对对象键排序的比较函数。使用 `null` 跳过排序                      |
 | `escapeRegex`         | `boolean`        | `false`     | 转义正则表达式中的特殊字符                                           |
 | `escapeString`        | `boolean`        | `true`      | 转义字符串中的特殊字符                                               |
-| `highlight`           | `boolean`        | `false`     | 使用终端颜色高亮语法                                                 |
-| `indent`              | `number`         | `2`         | 每级缩进的空格数                                                     |
+| `highlight`           | `boolean`        | `false`     | 使用终端颜色高亮语法                                                |
+| `indent`              | `number`         | `2`         | 每个缩进级别的空格数                                                 |
 | `maxDepth`            | `number`         | `Infinity`  | 要打印的最大深度                                                     |
 | `maxOutputLength`     | `number`         | `1_000_000` | 每个深度的大致输出预算                                               |
 | `maxWidth`            | `number`         | `Infinity`  | 集合中要打印的最大项数                                               |
-| `min`                 | `boolean`        | `false`     | 尽量减少额外空白                                                     |
+| `min`                 | `boolean`        | `false`     | 最小化添加的空白                                                     |
 | `plugins`             | `array`          | `[]`        | 用于序列化应用特定数据类型的插件                                     |
-| `printBasicPrototype` | `boolean`        | `true`      | 为普通对象和数组打印 `Object` 和 `Array` 前缀                        |
-| `printFunctionName`   | `boolean`        | `true`      | 包含或省略函数名称                                                   |
-| `printShadowRoot`     | `boolean`        | `true`      | 格式化 DOM 节点时包含 shadow-root 内容                               |
+| `printBasicPrototype` | `boolean`        | `true`      | 为普通对象和数组打印 `Object` 和 `Array` 前缀                         |
+| `printFunctionName`   | `boolean`        | `true`      | 包含或省略函数名                                                     |
+| `printShadowRoot`     | `boolean`        | `true`      | 格式化 DOM 节点时包含 shadow-root 内容                                |
+| `quoteKeys`           | `boolean`        | `true`      | 始终为对象属性键加引号                                               |
+| `singleQuote`         | `boolean`        | `false`     | 使用单引号而不是双引号打印字符串                                     |
+| `spacingInner`        | `string`         | `\n`        | 项或条目之间逗号后的空白                                             |
+| `spacingOuter`        | `string`         | `\n`        | `[]` / `{}` 定界符内侧的空白                                         |
 
 重要：
 
 - `plugins: []` 表示该包默认不会自动启用其内置插件
-- Vitest 功能会自行选择接入各自的插件栈和选项预设
+- Vitest 功能会选择加入各自的插件栈和选项预设
+- `min: true` 也会更改其他选项的默认值为 `spacingInner: ' '`, `spacingOuter: ''`, 和 `printBasicPrototype: false`
 
 ## 内置插件
 

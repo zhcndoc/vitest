@@ -1,9 +1,9 @@
 ---
-title: ARIA Snapshots | 指南
+title: ARIA 快照 | 指南
 outline: deep
 ---
 
-# ARIA Snapshots <Badge type="warning">实验性</Badge> <Version>4.1.4</Version>
+# ARIA 快照 <Badge type="warning">实验性</Badge> <Version>4.1.4</Version>
 
 ARIA 快照允许你测试页面的可访问性结构。你不需要断言原始 HTML 或视觉输出，而是断言**可访问性树**——即屏幕阅读器和其他辅助技术所使用的同一结构。
 
@@ -30,7 +30,9 @@ await expect.element(page.getByRole('navigation')).toMatchAriaInlineSnapshot(`
 
 这可以捕获可访问性回归问题：缺少标签、错误的角色、不正确的标题层级等——这些都是 DOM 快照无法检测到的。即使底层 HTML 结构发生变化，只要语义内容匹配，断言也不会失败。
 
-## 快照流程
+对于高级场景，你还可以通过 `vitest/browser` 中的 `utils.aria` 生成并检查 ARIA 树。详情请参阅 [Context API](/api/browser/context#aria)。
+
+## 快照工作流
 
 ARIA 快照使用与其它快照断言相同的 Vitest 快照流程。文件快照、内联快照、`--update` / `-u`、监视模式更新以及 CI 快照行为都一致工作。
 
@@ -63,7 +65,7 @@ test('登录表单', async () => {
 首次运行时，Vitest 会生成一个快照文件条目：
 
 ```js [__snapshots__/basic.test.ts.snap]
-// Vitest Snapshot ...
+// Vitest 快照 ...
 
 exports[`登录表单 1`] = `
 - form "登录":

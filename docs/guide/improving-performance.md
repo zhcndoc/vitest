@@ -35,14 +35,14 @@ export default defineConfig({
     projects: [
       {
         test: {
-          name: 'Isolated',
+          name: '隔离',
           isolate: true, // (默认值)
           exclude: ['**.non-isolated.test.ts'],
         },
       },
       {
         test: {
-          name: 'Non-isolated',
+          name: '非隔离',
           isolate: false,
           include: ['**.non-isolated.test.ts'],
         },
@@ -178,7 +178,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: blob-attachments-${{ matrix.shardIndex }}
-          path: .vitest-attachments/**
+          path: .vitest/**
           include-hidden-files: true
           retention-days: 1
 
@@ -209,7 +209,7 @@ jobs:
       - name: Download attachments from GitHub Actions Artifacts
         uses: actions/download-artifact@v4
         with:
-          path: .vitest-attachments
+          path: .vitest
           pattern: blob-attachments-*
           merge-multiple: true
 

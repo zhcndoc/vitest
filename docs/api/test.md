@@ -217,13 +217,13 @@ describe(
 
 此测试是否与套件中的其他并发测试并发运行。
 
-### sequential
+将 `concurrent` 设置为 `false` 可退出从 [`describe.concurrent`](/api/describe#describe-concurrent) 或 [`sequence.concurrent`](/config/sequence#sequence-concurrent) 继承的并发执行：
 
-- **类型:** `boolean`
-- **默认值:** `true`
-- **别名:** [`test.sequential`](#test-sequential)
-
-测试是否顺序运行。当同时指定 `concurrent` 和 `sequential` 时，`concurrent` 优先。
+```ts
+test('runs sequentially', { concurrent: false }, async () => {
+  // ...
+})
+```
 
 ### skip
 
@@ -453,32 +453,6 @@ test.concurrent('test 2', async ({ expect }) => {
 
 请注意，如果测试是同步的，Vitest 仍将按顺序运行它们。
 
-## test.sequential
-
-- **别名：** `it.sequential`
-
-`test.sequential` 将测试标记为顺序。如果你想在 `describe.concurrent` 内或使用 `--sequence.concurrent` 命令选项按顺序运行测试，这很有用。
-
-```ts
-import { describe, test } from 'vitest'
-
-// 使用配置选项 { sequence: { concurrent: true } }
-test('concurrent test 1', async () => { /* ... */ })
-test('concurrent test 2', async () => { /* ... */ })
-
-test.sequential('sequential test 1', async () => { /* ... */ })
-test.sequential('sequential test 2', async () => { /* ... */ })
-
-// 在并发套件内
-describe.concurrent('suite', () => {
-  test('concurrent test 1', async () => { /* ... */ })
-  test('concurrent test 2', async () => { /* ... */ })
-
-  test.sequential('sequential test 1', async () => { /* ... */ })
-  test.sequential('sequential test 2', async () => { /* ... */ })
-})
-```
-
 ## test.todo
 
 - **别名：** `it.todo`
@@ -618,7 +592,7 @@ test.each`
 ```
 
 ::: tip
-Vitest 使用 Chai `format` 方法处理 `$values`。如果值被截断过多，你可以在配置文件中增加 [chaiConfig.truncateThreshold](/config/chaiconfig#chaiconfig-truncatethreshold)。
+Vitest 使用其显示格式化器来格式化插值标题值。如果该值被截断得过短，你可以在配置文件中增加 [taskTitleValueFormatTruncate](/config/tasktitlevalueformattruncate)。
 :::
 
 ## test.for

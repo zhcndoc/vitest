@@ -298,7 +298,7 @@ expect.extend({
 :::
 
 ::: warning
-When custom inline snapshot matcher is aynchronous, Vitest cannot automatically infer the call location for inline snapshot rewriting. You must capture the call site by setting the `'error'` flag on the chai assertion object:
+当自定义内联快照匹配器是异步时，Vitest 无法自动推断内联快照重写的调用位置。你必须通过在 chai 断言对象上设置 `'error'` 标志来捕获调用点：
 
 ```ts
 import { expect, chai, Snapshots } from 'vitest'
@@ -344,7 +344,7 @@ declare module 'vitest' {
 域适配器实现四个方法，并带有两个类型泛型 — `Captured`（值的实际类型）和 `Expected`（存储快照解析成的类型）：
 
 ```ts
-import type { DomainMatchResult, DomainSnapshotAdapter } from '@vitest/snapshot'
+import type { DomainMatchResult, DomainSnapshotAdapter } from 'vitest'
 
 const myAdapter: DomainSnapshotAdapter<Captured, Expected> = {
   name: 'my-domain',
@@ -420,7 +420,7 @@ expect(value).toMatchMyDomainInlineSnapshot(`key=value`)
 一个最小的适配器，将对象存储为 `key=value` 行，并支持正则模式和子集键匹配（[完整源码](https://github.com/vitest-dev/vitest/blob/main/test/snapshots/test/fixtures/domain/basic.ts)）：
 
 ```ts [kv-adapter.ts]
-import type { DomainMatchResult, DomainSnapshotAdapter } from '@vitest/snapshot'
+import type { DomainMatchResult, DomainSnapshotAdapter } from 'vitest'
 
 type KVCaptured = Record<string, string>
 type KVExpected = Record<string, string | RegExp>

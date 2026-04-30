@@ -54,30 +54,30 @@ function getByRole(
 考虑以下 DOM 结构。
 
 ```html
-<h3>Sign up</h3>
+<h3>注册</h3>
 <label>
-  Login
+  登录
   <input type="text" />
 </label>
 <label>
-  Password
+  密码
   <input type="password" />
 </label>
 <br/>
-<button>Submit</button>
+<button>提交</button>
 ```
 
 你可以通过其隐式角色定位每个元素：
 
 ```ts
 await expect.element(
-  page.getByRole('heading', { name: 'Sign up' })
+  page.getByRole('heading', { name: '注册' })
 ).toBeVisible()
 
-await page.getByRole('textbox', { name: 'Login' }).fill('admin')
-await page.getByRole('textbox', { name: 'Password' }).fill('admin')
+await page.getByRole('textbox', { name: '登录' }).fill('admin')
+await page.getByRole('textbox', { name: '密码' }).fill('admin')
 
-await page.getByRole('button', { name: /submit/i }).click()
+await page.getByRole('button', { name: /提交/i }).click()
 ```
 
 ::: warning
@@ -138,7 +138,7 @@ await page.getByRole('button', { name: /submit/i }).click()
   参见 [`aria-expanded`](https://www.w3.org/TR/wai-aria-1.2/#aria-expanded) 获取更多信息
 
   ```tsx
-  <a aria-expanded="true" href="example.com">Link</a>
+  <a aria-expanded="true" href="example.com">链接</a>
 
   page.getByRole('link', { expanded: true }) // ✅
   page.getByRole('link', { expanded: false }) // ❌
@@ -166,8 +166,8 @@ await page.getByRole('button', { name: /submit/i }).click()
 
   ```tsx
   <>
-    <h1>Heading Level One</h1>
-    <div role="heading" aria-level="1">Second Heading Level One</div>
+    <h1>标题级别一</h1>
+    <div role="heading" aria-level="1">第二个标题级别一</div>
   </>
 
   page.getByRole('heading', { level: 1 }) // ✅
@@ -179,11 +179,11 @@ await page.getByRole('button', { name: /submit/i }).click()
   [可访问名称](https://developer.mozilla.org/en-US/docs/Glossary/Accessible_name)。默认情况下，匹配不区分大小写并搜索子字符串。使用 `exact` 选项来控制此行为。
 
   ```tsx
-  <button>Click Me!</button>
+  <button>点击我！</button>
 
-  page.getByRole('button', { name: 'Click Me!' }) // ✅
-  page.getByRole('button', { name: 'click me!' }) // ✅
-  page.getByRole('button', { name: 'Click Me?' }) // ❌
+  page.getByRole('button', { name: '点击我！' }) // ✅
+  page.getByRole('button', { name: '点击我！' }) // ✅
+  page.getByRole('button', { name: '点击我？' }) // ❌
   ```
 
 - `pressed: boolean`
@@ -261,19 +261,19 @@ function getByLabelText(
 
 ```html
 // label 和表单元素 id 之间的 for/htmlFor 关系
-<label for="username-input">Username</label>
+<label for="username-input">用户名</label>
 <input id="username-input" />
 
 // 带有表单元素的 aria-labelledby 属性
-<label id="username-label">Username</label>
+<label id="username-label">用户名</label>
 <input aria-labelledby="username-label" />
 
 // 包装标签
-<label>Username <input /></label>
+<label>用户名 <input /></label>
 
 // 标签文本在另一个子元素中的包装标签
 <label>
-  <span>Username</span>
+  <span>用户名</span>
   <input />
 </label>
 
@@ -337,7 +337,7 @@ function getByText(
 创建一个能够查找包含指定文本的元素的定位器。文本将与 TextNode 的 [`nodeValue`](https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeValue) 匹配，如果类型是 `button` 或 `reset`，则与 input 的 value 匹配。文本匹配总是会规范化空白字符，即使是精确匹配。例如，它将多个空格变为一个，将换行符变为空格，并忽略前导和尾随空白。
 
 ```tsx
-<a href="/about">About ℹ️</a>
+<a href="/about">关于 ℹ️</a>
 
 page.getByText(/about/i) // ✅
 page.getByText('about', { exact: true }) // ❌
@@ -821,7 +821,7 @@ function screenshot(options?: LocatorScreenshotOptions & { base64?: false }): Pr
 
 你可以使用 `path` 选项指定截图的保存位置，该位置相对于当前测试文件。如果未设置 `path` 选项，Vitest 将默认使用 [`browser.screenshotDirectory`](/config/browser/screenshotdirectory)（默认为 `__screenshot__`），以及文件和测试的名称来确定截图的文件路径。
 
-如果你还需要截图的内容，可以指定 `base64: true` 以 alongside 返回截图保存的文件路径。
+如果你还需要截图的内容，可以指定 `base64: true` 以同时返回截图保存的文件路径。
 
 ```ts
 import { page } from 'vitest/browser'
@@ -835,7 +835,7 @@ const { path, base64 } = await button.screenshot({
   base64: true, // 同时返回 base64 字符串
 })
 // path - 截图的完整路径
-// bas64 - 截图的 base64 编码字符串
+// base64 - 截图的 base64 编码字符串
 ```
 
 ::: warning 警告 <Version>3.2.0</Version>
@@ -1051,20 +1051,71 @@ function all(): Locator[]
 
 - [查看 `locator.elements()`](#elements)
 
+### serialize
+
+```ts
+function serialize(): SerializedLocator
+```
+
+返回定位器的 JSON 可序列化表示。返回的对象有两个字段：
+
+- [`selector`](#selector)：运行时用于查询元素的提供者特定选择器字符串。
+- `locator`：用于错误消息和追踪的人类可读定位器描述（例如 `getByRole('button')`）。等同于调用 [`asLocator()`](#aslocator)。
+
+这主要用于将定位器转发给 [browser command](/api/browser/commands)，该命令在 Node 中运行，无法接收活动的 `Locator` 实例：
+
+```ts
+import { commands, page } from 'vitest/browser'
+
+await commands.myCommand(page.getByRole('button').serialize())
+```
+
+::: tip
+Vitest 会自动序列化传递给命令的任何 `Locator` 参数，因此通常无需显式调用 `serialize()`。你也可以使用 `JSON.stringify(locator)`（它会在内部调用 [`toJSON`](#tojson)），效果相同。
+:::
+
+### toJSON
+
+```ts
+function toJSON(): SerializedLocator
+```
+
+[`serialize`](#serialize) 的别名。定义它是为了让 `JSON.stringify(locator)` 和基于结构化克隆的传输返回一个 `SerializedLocator` 对象。
+
+### asLocator
+
+```ts
+function asLocator(): string
+```
+
+使用 JavaScript 定位器语法返回定位器的人类可读描述（例如 `getByRole('button', { name: 'Submit' })`）。这与 [`serialize()`](#serialize) 的 `locator` 字段所暴露的字符串相同，并用于错误消息和追踪。
+
+```ts
+import { page } from 'vitest/browser'
+
+const button = page.getByRole('button', { name: 'Submit' })
+button.asLocator() // "getByRole('button', { name: 'Submit' })"
+```
+
+::: tip
+当你需要传递给 [browser command](/api/browser/commands) 的提供者特定字符串时，请使用 [`selector`](#selector)。仅将 `asLocator()` 用于诊断输出。返回的字符串不应被重新用于查询元素。
+:::
+
 ## 属性
 
 ### selector
 
-`selector` 是一个字符串，将被浏览器提供者用于定位元素。Playwright 将使用 `playwright` 定位器语法，而 `preview` 和 `webdriverio` 将使用 CSS。
+`selector` 是一个字符串，浏览器提供程序将使用它来定位元素。Playwright 将使用 `playwright` 定位器语法，而 `preview` 和 `webdriverio` 将使用 CSS。
 
 ::: danger
 你不应该在测试代码中使用这个字符串。`selector` 字符串仅在使用 Commands API 时使用：
 
 ```ts [commands.ts]
 import type { BrowserCommand } from 'vitest/node'
+import type { SerializedLocator } from '@vitest/browser'
 
-const test: BrowserCommand<string> = function test(context, selector) {
-  // 适用于 playwright
+const test: BrowserCommand<SerializedLocator> = function test(context, { selector }) {
+  // playwright
   await context.iframe.locator(selector).click()
   // 适用于 webdriverio
   await context.browser.$(selector).click()
@@ -1076,8 +1127,8 @@ import { test } from 'vitest'
 import { commands, page } from 'vitest/browser'
 
 test('works correctly', async () => {
-  await commands.test(page.getByText('Hello').selector) // ✅
-  // vitest 会自动将其解包为字符串
+  await commands.test(page.getByText('Hello').serialize()) // ✅
+  // vitest 将自动将其展开为 SerializedLocator
   await commands.test(page.getByText('Hello')) // ✅
 })
 ```
@@ -1090,15 +1141,15 @@ test('works correctly', async () => {
 考虑以下 DOM 结构：
 
 ```html
-<button>Click Me!</button>
-<button>Don't click me!</button>
+<button>点击我！</button>
+<button>不要点击我！</button>
 ```
 
 此属性将始终成功：
 
 ```ts
 page.getByRole('button').length // ✅ 2
-page.getByRole('button', { title: 'Click Me!' }).length // ✅ 1
+page.getByRole('button', { title: '点击我！' }).length // ✅ 1
 page.getByRole('alert').length // ✅ 0
 ```
 
