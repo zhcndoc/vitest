@@ -177,8 +177,22 @@ await frame.getByText('Hello World').click() // ✅
 await frame.click() // ❌ 不可用
 ```
 
-::: danger 重要
-目前，`frameLocator` 方法仅由 `playwright` 提供者支持。
+::: danger IMPORTANT
+默认情况下，`frameLocator` 不支持在跨源 iframe 中使用 `expect.element()` 查询元素。像 `.click()` 这样的交互方法可以正常工作。这与 Playwright 的行为不同。
+
+```ts
+const frame = page.frameLocator(page.getByTestId('cross-origin-iframe'))
+const button = frame.getByRole('button', { name: 'Submit' })
+
+await button.click() // 交互方法可以正常工作 ✅
+await expect.element(button).toBeVisible() // 查询元素无法工作 ❌
+```
+
+如果你需要处理跨源 iframe，需要在 [`launchOptions`](/config/browser/playwright.html#launchoptions) 中传递 `args: ["--disable-web-security"]`。或者，你也可以创建一个自定义 [浏览器命令](/api/browser/commands.html#custom-commands)，在服务器端访问该 iframe，因为它在那里是可用的。
+:::
+
+::: danger IMPORTANT
+目前，`frameLocator` 方法仅受 `playwright` 提供者支持。
 
 交互方法（如 `click` 或 `fill`）在 iframe 内的元素上始终可用，但带有 `expect.element` 的断言要求 iframe 具有 [同源策略](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy)。
 :::
@@ -366,6 +380,6 @@ document.body.innerHTML = `
 const tree = utils.aria.generateAriaTree(document.body)
 const yaml = utils.aria.renderAriaNode(tree)
 console.log(yaml)
-// - heading "Hello, World!" [level=1]
-// - button "Visible""
+// - 标题 "你好，世界！" [level=1]
+// - 按钮 "可见"
 ```

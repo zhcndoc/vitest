@@ -1,4 +1,4 @@
-# TestCase
+# 测试用例
 
 `TestCase` 类代表单个测试。此类仅在主线程中可用。如果你正在处理运行时任务，请参阅 ["Runner API"](/api/advanced/runner#tasks)。
 
@@ -6,7 +6,7 @@
 
 ```ts
 if (task.type === 'test') {
-  task // TestCase
+  task // 测试用例
 }
 ```
 
@@ -115,7 +115,7 @@ interface TaskOptions {
 
 ## tags <Version>4.1.0</Version> {#tags}
 
-隐式或显式分配给测试的 [Tags](/guide/test-tags)。
+隐式或显式分配给测试的 [标签](/guide/test-tags)。
 
 ## ok
 
@@ -131,7 +131,7 @@ function ok(): boolean
 function meta(): TaskMeta
 ```
 
-测试执行期间附加到测试的自定义 [metadata](/api/advanced/metadata)。可以通过在测试运行期间将属性赋值给 `ctx.task.meta` 对象来附加元数据：
+测试执行期间附加到测试的自定义 [元数据](/api/advanced/metadata)。可以通过在测试运行期间将属性赋值给 `ctx.task.meta` 对象来附加元数据：
 
 ```ts {3,6}
 import { test } from 'vitest'
@@ -283,7 +283,7 @@ interface TestDiagnostic {
 function annotations(): ReadonlyArray<TestAnnotation>
 ```
 
-测试执行期间通过 [`task.annotate`](/guide/test-context#annotate) API 添加的 [Test annotations](/guide/test-annotations)。
+测试执行期间通过 [`task.annotate`](/guide/test-context#annotate) API 添加的 [测试注解](/guide/test-annotations)。
 
 ## artifacts <Version type="experimental">4.0.11</Version> <Experimental /> {#artifacts}
 
@@ -291,7 +291,7 @@ function annotations(): ReadonlyArray<TestAnnotation>
 function artifacts(): ReadonlyArray<TestArtifact>
 ```
 
-测试执行期间通过 `recordArtifact` API 记录的 [Test artifacts](/api/advanced/artifacts)。
+测试执行期间通过 `recordArtifact` API 记录的 [测试产物](/api/advanced/artifacts)。
 
 ## toTestSpecification <Version>4.1.0</Version> {#totestspecification}
 
@@ -299,4 +299,12 @@ function artifacts(): ReadonlyArray<TestArtifact>
 function toTestSpecification(): TestSpecification
 ```
 
-返回一个新的 [test specification](/api/advanced/test-specification)，可用于过滤或运行此特定测试用例。
+返回一个新的 [测试规范](/api/advanced/test-specification)，可用于筛选或运行此特定测试用例。
+
+## logs <Version>5.0.0</Version> {#logs}
+
+```ts
+function logs(): ReadonlyArray<UserConsoleLog>
+```
+
+测试执行期间记录的控制台日志。

@@ -126,14 +126,20 @@ vitest run --reporter=blob --shard=3/3 # 第 3 台机器
 
 > Vitest 将你的 _测试文件_ 而不是测试用例拆分为分片。如果你有 1000 个测试文件，`--shard=1/4` 选项将运行 250 个测试文件，无论单个文件有多少个测试用例。
 
-从每台机器收集存储在 `.vitest-reports` 目录中的结果，并使用 [`--merge-reports`](/guide/cli#merge-reports) 选项合并它们：
+从每台机器收集存储在 `.vitest/blob/` 目录中的结果，并使用 [`--merge-reports`](/guide/cli#merge-reports) 选项将它们合并：
 
 ```sh
 vitest run --merge-reports
 ```
 
+当在多个环境中运行相同的分片时，请设置 `VITEST_BLOB_LABEL` 环境变量，以便合并后的报告可以分别显示它们：
+
+```sh
+VITEST_BLOB_LABEL=linux vitest run --reporter=blob --shard=1/3
+```
+
 ::: details GitHub Actions 示例
-此设置也用于 https://github.com/vitest-tests/test-sharding。
+此配置也用于 https://github.com/vitest-tests/test-sharding。
 
 ```yaml
 # 灵感来自 https://playwright.dev/docs/test-sharding
@@ -144,9 +150,10 @@ on:
       - main
 jobs:
   tests:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: [ubuntu-latest, macos-latest]
         shardIndex: [1, 2, 3, 4]
         shardTotal: [4]
     steps:
@@ -163,22 +170,15 @@ jobs:
 
       - name: Run tests
         run: pnpm run test --reporter=blob --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+        env:
+          VITEST_BLOB_LABEL: ${{ matrix.os }}
 
-      - name: Upload blob report to GitHub Actions Artifacts
+      - name: Upload Vitest results GitHub Actions Artifacts
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: blob-report-${{ matrix.shardIndex }}
-          path: .vitest-reports/*
-          include-hidden-files: true
-          retention-days: 1
-
-      - name: Upload attachments to GitHub Actions Artifacts
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: blob-attachments-${{ matrix.shardIndex }}
-          path: .vitest/**
+          name: vitest-results-${{ matrix.os }}-${{ matrix.shardIndex }}
+          path: .vitest
           include-hidden-files: true
           retention-days: 1
 
@@ -199,18 +199,10 @@ jobs:
       - name: Install dependencies
         run: pnpm i
 
-      - name: Download blob reports from GitHub Actions Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: .vitest-reports
-          pattern: blob-report-*
-          merge-multiple: true
-
-      - name: Download attachments from GitHub Actions Artifacts
+      - name: Download Vitest results from GitHub Actions Artifacts
         uses: actions/download-artifact@v4
         with:
           path: .vitest
-          pattern: blob-attachments-*
           merge-multiple: true
 
       - name: Merge reports

@@ -105,11 +105,13 @@ test('expect.soft test', () => {
 
 ```ts
 interface ExpectPoll extends ExpectStatic {
-  (actual: () => T, options?: { interval?: number; timeout?: number; message?: string }): Promise<Assertions<T>>
+  (actual: (options: { signal: AbortSignal }) => T, options?: { interval?: number; timeout?: number; message?: string }): Promise<Assertions<Awaited<T>>>
 }
 ```
 
-`expect.poll` 会重新运行 _断言_ 直到成功。你可以通过设置 `interval` 和 `timeout` 选项来配置 Vitest 应该重新运行 `expect.poll` 回调多少次。
+`expect.poll` 会重复运行 _断言_，直到它成功。你可以通过设置 `interval` 和 `timeout` 选项来配置 Vitest 重试的频率以及等待的时长。`timeout` 适用于整个轮询操作，包括待处理的回调以及异步匹配器的执行。
+
+回调会接收一个 `AbortSignal`，当轮询超时时该信号会被中止。
 
 如果在 `expect.poll` 回调内部抛出错误，Vitest 将重试直到超时。
 
@@ -124,11 +126,11 @@ test('element exists', async () => {
 ```
 
 ::: warning
-`expect.poll` 使每个断言都变为异步，所以你需要 await 它。自 Vitest 3 起，如果你忘记 await 它，测试将失败并发出警告。
+`expect.poll` 会使每个断言都变为异步，所以你需要 await 它。自 Vitest 3 起，如果你忘记 await 它，测试将失败并发出警告。
 
 `expect.poll` 不适用于几个匹配器：
 
-- 快照匹配器不受支持，因为它们总是会成功。如果你的条件不稳定，考虑使用 [`vi.waitFor`](/api/vi#vi-waitfor) 来先解决它：
+- 不支持快照匹配器，因为它们总是会成功。如果你的条件不稳定，考虑使用 [`vi.waitFor`](/api/vi#vi-waitfor) 来先解决它：
 
 ```ts
 import { expect, vi } from 'vitest'
@@ -137,8 +139,8 @@ const flakyValue = await vi.waitFor(() => getFlakyValue())
 expect(flakyValue).toMatchSnapshot()
 ```
 
-- `.resolves` 和 `.rejects` 不受支持。`expect.poll` 如果条件是异步的，已经会 await 它。
-- `toThrow` 及其别名不受支持，因为 `expect.poll` 条件总是在匹配器获取值之前解析
+- 不支持 `.resolves` 和 `.rejects`。如果条件是异步的，`expect.poll` 已经会 await 它。
+- 不支持 `toThrow` 及其别名，因为 `expect.poll` 的条件总是在匹配器获取值之前解析
 :::
 
 ## not
@@ -910,7 +912,7 @@ test('rejects', async () => {
 
 - **类型:** `<T>(shape?: Partial<T> | string, hint?: string) => void`
 
-这确保值匹配最近的快照。
+这确保值与最近的快照匹配。
 
 你可以提供一个可选的 `hint` 字符串参数，它会附加到测试名称后面。虽然 Vitest 总是在快照名称末尾附加一个数字，但简短的描述性提示可能比数字更有用，以便在单个 it 或 test 块中区分多个快照。Vitest 在相应的 `.snap` 文件中按名称对快照进行排序。
 
@@ -1002,7 +1004,7 @@ it('render basic', async () => {
 
 - **类型:** `(hint?: string) => void`
 
-与 [`toMatchSnapshot`](#tomatchsnapshot) 相同，但期望值与 [`toThrow`](#tothrow) 相同。
+与 [`toMatchSnapshot`](#toMatchSnapshot) 相同，但期望值与 [`toThrow`](#tothrow) 相同。
 
 ## toThrowErrorMatchingInlineSnapshot
 
@@ -1012,7 +1014,7 @@ it('render basic', async () => {
 
 ## toMatchAriaSnapshot <Version type="experimental">4.1.4</Version> <Experimental /> {#tomatcharisnapshot}
 
-- **Type:** `() => void`
+- **类型:** `() => void`
 
 捕获 DOM 元素的可访问性树，并生成快照文件或将其与已存储的快照进行比较。更多详情请参见 [ARIA Snapshots 指南](/guide/browser/aria-snapshots)。
 
@@ -1032,7 +1034,7 @@ test('navigation accessibility', () => {
 
 ## toMatchAriaInlineSnapshot <Version type="experimental">4.1.4</Version> <Experimental /> {#tomatchariainlinesnapshot}
 
-- **Type:** `(snapshot?: string) => void`
+- **类型:** `(snapshot?: string) => void`
 
 与 [`toMatchAriaSnapshot`](#tomatcharisnapshot) 相同，但会将快照以内联形式存储在测试文件中。更多详情请参见 [ARIA Snapshots 指南](/guide/browser/aria-snapshots)。
 
@@ -1075,7 +1077,7 @@ test('spy function', () => {
 
 ## toHaveBeenCalledTimes
 
-- **Type:** `(amount: number) => Awaitable<void>`
+- **类型:** `(amount: number) => Awaitable<void>`
 
 此断言检查函数是否被调用了特定次数。需要将间谍函数传递给 `expect`。
 
@@ -1100,7 +1102,7 @@ test('spy function called two times', () => {
 
 ## toHaveBeenCalledWith
 
-- **Type:** `(...args: any[]) => Awaitable<void>`
+- **类型:** `(...args: any[]) => Awaitable<void>`
 
 此断言检查函数是否至少使用特定参数被调用过一次。需要将间谍函数传递给 `expect`。
 
@@ -1126,7 +1128,7 @@ test('spy function', () => {
 
 ## toHaveBeenCalledBefore
 
-- **Type:** `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => Awaitable<void>`
+- **类型:** `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => Awaitable<void>`
 
 此断言检查一个 `Mock` 是否在另一个 `Mock` 之前被调用。
 
@@ -1145,7 +1147,7 @@ test('calls mock1 before mock2', () => {
 
 ## toHaveBeenCalledAfter
 
-- **Type:** `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => Awaitable<void>`
+- **类型:** `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => Awaitable<void>`
 
 此断言检查一个 `Mock` 是否在另一个 `Mock` 之后被调用。
 
@@ -1164,7 +1166,7 @@ test('calls mock1 after mock2', () => {
 
 ## toHaveBeenCalledExactlyOnceWith
 
-- **Type:** `(...args: any[]) => Awaitable<void>`
+- **类型:** `(...args: any[]) => Awaitable<void>`
 
 此断言检查一个函数是否恰好被调用了一次且带有特定参数。需要向 `expect` 传递一个 spy 函数。
 
@@ -1188,7 +1190,7 @@ test('spy function', () => {
 
 ## toHaveBeenLastCalledWith
 
-- **Type:** `(...args: any[]) => Awaitable<void>`
+- **类型:** `(...args: any[]) => Awaitable<void>`
 
 此断言检查一个函数在其最后一次调用时是否带有特定参数。需要向 `expect` 传递一个 spy 函数。
 
@@ -1214,7 +1216,7 @@ test('spy function', () => {
 
 ## toHaveBeenNthCalledWith
 
-- **Type:** `(time: number, ...args: any[]) => Awaitable<void>`
+- **类型:** `(time: number, ...args: any[]) => Awaitable<void>`
 
 此断言检查一个函数在第几次调用时是否带有特定参数。计数从 1 开始。因此，要检查第二次条目，你应该写 `.toHaveBeenNthCalledWith(2, ...)`。
 
@@ -1241,7 +1243,7 @@ test('first call of spy function called with right params', () => {
 
 ## toHaveReturned
 
-- **Type:** `() => Awaitable<void>`
+- **类型:** `() => Awaitable<void>`
 
 此断言检查一个函数是否至少成功返回过一次值（即没有抛出错误）。需要向 `expect` 传递一个 spy 函数。
 
@@ -1265,7 +1267,7 @@ test('spy function returned a value', () => {
 
 ## toHaveReturnedTimes
 
-- **Type:** `(amount: number) => Awaitable<void>`
+- **类型:** `(amount: number) => Awaitable<void>`
 
 此断言检查一个函数是否成功返回了确切次数的值（即没有抛出错误）。需要向 `expect` 传递一个 spy 函数。
 
@@ -1284,7 +1286,7 @@ test('spy function returns a value two times', () => {
 
 ## toHaveReturnedWith
 
-- **Type:** `(returnValue: any) => Awaitable<void>`
+- **类型:** `(returnValue: any) => Awaitable<void>`
 
 你可以调用此断言来检查一个函数是否至少成功返回过一次带有特定参数的值。需要向 `expect` 传递一个 spy 函数。
 
@@ -1302,7 +1304,7 @@ test('spy function returns a product', () => {
 
 ## toHaveLastReturnedWith
 
-- **Type:** `(returnValue: any) => Awaitable<void>`
+- **类型:** `(returnValue: any) => Awaitable<void>`
 
 你可以调用此断言来检查一个函数在最后一次被调用时是否成功返回了特定值。需要向 `expect` 传递一个 spy 函数。
 
@@ -1321,7 +1323,7 @@ test('spy function returns bananas on a last call', () => {
 
 ## toHaveNthReturnedWith
 
-- **Type:** `(time: number, returnValue: any) => Awaitable<void>`
+- **类型:** `(time: number, returnValue: any) => Awaitable<void>`
 
 你可以调用此断言来检查一个函数在某次调用时是否成功返回了带有特定参数的值。需要向 `expect` 传递一个 spy 函数。
 
@@ -1342,7 +1344,7 @@ test('spy function returns bananas on second call', () => {
 
 ## toHaveResolved
 
-- **Type:** `() => Awaitable<void>`
+- **类型:** `() => Awaitable<void>`
 
 此断言检查一个函数是否至少成功解析过一个值（即没有发生拒绝）。需要向 `expect` 传递一个 spy 函数。
 
@@ -1368,7 +1370,7 @@ test('spy function resolved a value', async () => {
 
 ## toHaveResolvedTimes
 
-- **Type:** `(amount: number) => Awaitable<void>`
+- **类型:** `(amount: number) => Awaitable<void>`
 
 此断言检查一个函数是否成功解析了确切次数的值（即没有发生拒绝）。需要向 `expect` 传递一个 spy 函数。
 
@@ -1389,7 +1391,7 @@ test('spy function resolved a value two times', async () => {
 
 ## toHaveResolvedWith
 
-- **Type:** `(returnValue: any) => Awaitable<void>`
+- **类型:** `(returnValue: any) => Awaitable<void>`
 
 你可以调用此断言来检查一个函数是否至少成功解析过某个特定值。需要向 `expect` 传递一个 spy 函数。
 
@@ -1409,7 +1411,7 @@ test('spy function resolved a product', async () => {
 
 ## toHaveLastResolvedWith
 
-- **Type:** `(returnValue: any) => Awaitable<void>`
+- **类型:** `(returnValue: any) => Awaitable<void>`
 
 你可以调用此断言来检查一个函数在最后一次被调用时是否成功解析了某个特定值。需要向 `expect` 传递一个 spy 函数。
 
@@ -1430,13 +1432,13 @@ test('spy function resolves bananas on a last call', async () => {
 
 ## toHaveNthResolvedWith
 
-- **Type:** `(time: number, returnValue: any) => Awaitable<void>`
+- **类型:** `(time: number, returnValue: any) => Awaitable<void>`
 
 你可以调用此断言来检查一个函数在特定调用时是否成功解析了某个特定值。需要向 `expect` 传递一个 spy 函数。
 
 如果函数返回了一个 promise，但尚未解析，这将失败。
 
-计数从 1 开始。因此，要检查第二次条目，你应该写 `.toHaveNthResolvedWith(2, ...)`。
+计数从 1 开始。因此，要检查第二次调用，你应该写 `.toHaveNthResolvedWith(2, ...)`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1516,7 +1518,7 @@ test('spy called with arguments', () => {
 
 ## calledOnce <Version>4.1.0</Version> {#calledonce}
 
-- **Type:** `Assertion`（属性，而非方法）
+- **类型:** `Assertion`（属性，而非方法）
 
 检查 spy 是否恰好被调用一次的 Chai 风格断言。这等同于 `toHaveBeenCalledOnce()`。
 
@@ -1538,7 +1540,7 @@ test('spy called once', () => {
 
 ## calledOnceWith <Version>4.1.0</Version> {#calledoncewith}
 
-- **Type:** `(...args: any[]) => void`
+- **类型:** `(...args: any[]) => void`
 
 检查 spy 是否恰好使用特定参数被调用一次的 Chai 风格断言。这等同于 `toHaveBeenCalledExactlyOnceWith(...args)`。
 
@@ -1556,7 +1558,7 @@ test('spy called once with arguments', () => {
 
 ## calledTwice <Version>4.1.0</Version> {#calledtwice}
 
-- **Type:** `Assertion`（属性，而非方法）
+- **类型:** `Assertion`（属性，而非方法）
 
 检查 spy 是否恰好被调用两次的 Chai 风格断言。这等同于 `toHaveBeenCalledTimes(2)`。
 
@@ -1579,7 +1581,7 @@ test('spy called twice', () => {
 
 ## calledThrice <Version>4.1.0</Version> {#calledthrice}
 
-- **Type:** `Assertion`（属性，而非方法）
+- **类型:** `Assertion`（属性，而非方法）
 
 检查 spy 是否恰好被调用三次的 Chai 风格断言。这等同于 `toHaveBeenCalledTimes(3)`。
 
@@ -1603,7 +1605,7 @@ test('spy called thrice', () => {
 
 ## lastCalledWith
 
-- **Type:** `(...args: any[]) => void`
+- **类型:** `(...args: any[]) => void`
 
 检查对 spy 的最后一次调用是否使用特定参数的 Chai 风格断言。这等同于 `toHaveBeenLastCalledWith(...args)`。
 
@@ -1622,7 +1624,7 @@ test('spy last called with', () => {
 
 ## nthCalledWith
 
-- **Type:** `(n: number, ...args: any[]) => void`
+- **类型:** `(n: number, ...args: any[]) => void`
 
 检查对 spy 的第 n 次调用是否使用特定参数的 Chai 风格断言。这等同于 `toHaveBeenNthCalledWith(n, ...args)`。
 
@@ -1642,7 +1644,7 @@ test('spy nth called with', () => {
 
 ## returned <Version>4.1.0</Version> {#returned}
 
-- **Type:** `(value: any) => void`
+- **类型:** `(value: any) => void`
 
 检查 spy 是否至少一次返回了特定值的 Chai 风格断言。这等同于 `toHaveReturnedWith(value)`。
 
@@ -1660,7 +1662,7 @@ test('spy returned', () => {
 
 ## returnedWith <Version>4.1.0</Version> {#returnedwith}
 
-- **Type:** `(value: any) => void`
+- **类型:** `(value: any) => void`
 
 检查 spy 是否至少一次返回了特定值的 Chai 风格断言。这等同于 `toHaveReturnedWith(value)`。
 
@@ -1682,7 +1684,7 @@ test('spy returned with value', () => {
 
 ## returnedTimes <Version>4.1.0</Version> {#returnedtimes}
 
-- **Type:** `(count: number) => void`
+- **类型:** `(count: number) => void`
 
 检查 spy 是否成功返回了特定次数的 Chai 风格断言。这等同于 `toHaveReturnedTimes(count)`。
 
@@ -1702,7 +1704,7 @@ test('spy returned times', () => {
 
 ## lastReturnedWith
 
-- **Type:** `(value: any) => void`
+- **类型:** `(value: any) => void`
 
 检查 spy 的最后一次返回值是否与预期值匹配的 Chai 风格断言。这等同于 `toHaveLastReturnedWith(value)`。
 
@@ -1723,7 +1725,7 @@ test('spy last returned with', () => {
 
 ## nthReturnedWith
 
-- **Type:** `(n: number, value: any) => void`
+- **类型:** `(n: number, value: any) => void`
 
 检查 spy 的第 n 次返回值是否与预期值匹配的 Chai 风格断言。这等同于 `toHaveNthReturnedWith(n, value)`。
 
@@ -1746,7 +1748,7 @@ test('spy nth returned with', () => {
 
 ## calledBefore <Version>4.1.0</Version> {#calledbefore}
 
-- **Type:** `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => void`
+- **类型:** `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => void`
 
 检查一个 spy 是否在另一个 spy 之前被调用的 Chai 风格断言。这等同于 `toHaveBeenCalledBefore(mock, failIfNoFirstInvocation)`。
 
@@ -1766,7 +1768,7 @@ test('spy called before another', () => {
 
 ## calledAfter <Version>4.1.0</Version> {#calledafter}
 
-- **Type:** `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => void`
+- **类型:** `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => void`
 
 检查一个 spy 是否在另一个 spy 之后被调用的 Chai 风格断言。这等同于 `toHaveBeenCalledAfter(mock, failIfNoFirstInvocation)`。
 
@@ -1790,7 +1792,7 @@ test('spy called after another', () => {
 
 ## toSatisfy
 
-- **Type:** `(predicate: (value: any) => boolean) => Awaitable<void>`
+- **类型:** `(predicate: (value: any) => boolean) => Awaitable<void>`
 
 此断言检查值是否满足特定谓词。
 
@@ -1812,7 +1814,7 @@ describe('toSatisfy()', () => {
 
 ## resolves
 
-- **Type:** `Promisify<Assertions>`
+- **类型:** `Promisify<Assertions>`
 
 `resolves` 旨在减少断言异步代码时的样板代码。使用它从待处理的 promise 中解包值，并使用常规断言对其值进行断言。如果 promise 拒绝，断言将失败。
 
@@ -1842,7 +1844,7 @@ test('buyApples returns new stock id', async () => {
 
 ## rejects
 
-- **Type:** `Promisify<Assertions>`
+- **类型:** `Promisify<Assertions>`
 
 `rejects` 旨在减少断言异步代码时的样板代码。使用它解包 promise 被拒绝的原因，并使用常规断言对其值进行断言。如果 promise 成功解决，断言将失败。
 
@@ -1873,7 +1875,7 @@ test('buyApples throws an error when no id provided', async () => {
 
 ## expect.assertions
 
-- **Type:** `(count: number) => void`
+- **类型:** `(count: number) => void`
 
 在测试通过或失败后，验证测试期间是否调用了特定数量的断言。一个有用的用例是检查异步代码是否被调用。
 
@@ -1906,7 +1908,7 @@ test('all assertions are called', async () => {
 
 ## expect.hasAssertions
 
-- **类型：** `() => void`
+- **类型:** `() => void`
 
 在测试通过或失败后，验证测试期间是否至少调用了一次断言。一个有用的用例是检查是否调用了异步代码。
 
@@ -1922,7 +1924,7 @@ function onSelect(cb) {
   cbs.push(cb)
 }
 
-// 从数据库选择后，我们调用所有回调
+// 从数据库中选择后，我们调用所有回调
 function select(id) {
   return db.select({ id }).then((data) => {
     return Promise.all(

@@ -721,11 +721,11 @@ export default defineConfig({
 
 输出一个最小报告，只包含失败的测试及其错误消息。来自通过测试的控制台日志和摘要部分也会被抑制。
 
-::: tip Agent Reporter
+::: tip 代理报告器
 此报告器非常适合 AI 编码助手和基于 LLM 的工作流，可减少 token 使用量。当 Vitest 检测到正在 AI 编码代理中运行时，它会[自动启用](#default-configuration)。
 
 :::code-group
-```bash [CLI]
+```bash [命令行]
 npx vitest --reporter=minimal
 ```
 
@@ -740,22 +740,40 @@ export default defineConfig({
 
 ### Blob 报告器
 
-将测试结果存储在机器上，以便以后可以使用 [`--merge-reports`](/guide/cli#merge-reports) 命令合并。
-默认情况下，将所有结果存储在 `.vitest-reports` 文件夹中，但可以使用 `--outputFile` 或 `--outputFile.blob` 标志覆盖。
+将测试结果存储在本机上，以便之后使用 [`--merge-reports`](/guide/cli#merge-reports) 命令进行合并。默认情况下，所有结果都会存储在 `.vitest/blob/` 文件夹中，但可以使用 `--outputFile` 或 `--outputFile.blob` 标志覆盖。
 
 ```bash
 npx vitest --reporter=blob --outputFile=reports/blob-1.json
 ```
 
-如果你使用 [`--shard`](/guide/cli#shard) 标志在不同机器上运行 Vitest，我们建议使用此报告器。
-所有 blob 报告都可以在 CI 流水线结束时使用 `--merge-reports` 命令合并到任何报告中：
+如果你在不同机器上使用 [`--shard`](/guide/cli#shard) 标志运行 Vitest，或者跨多个环境（例如 linux/macos/windows）运行，我们建议使用此报告器。所有 blob 报告都可以在 CI 流水线末尾通过 `--merge-reports` 命令合并为任意一种报告：
 
 ```bash
 npx vitest --merge-reports=reports --reporter=json --reporter=default
 ```
 
+当在多个环境中运行相同测试时，请使用 `VITEST_BLOB_LABEL` 环境变量来区分各个环境的 blob。Vitest 会在合并时读取这些标签，并分别显示结果：
+
+```bash
+VITEST_BLOB_LABEL=linux vitest run --reporter=blob
+```
+
+你也可以通过 blob 报告器选项提供标签。其优先级高于 `VITEST_BLOB_LABEL`。
+
+```ts [vitest.config.ts]
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    reporters: [
+      ['blob', { label: 'linux' }],
+    ],
+  },
+})
+```
+
 Blob 报告器输出不包含基于文件的 [附件](/api/advanced/artifacts.html#testattachment)。
-使用此功能时，确保在 CI 上与 blob 报告分别合并 [`attachmentsDir`](/config/attachmentsdir)。
+使用此功能时，请务必在 CI 中将 [`attachmentsDir`](/config/attachmentsdir) 与 blob 报告一起单独合并。
 
 ::: tip
 `--reporter=blob` 和 `--merge-reports` 都不适用于监听模式。

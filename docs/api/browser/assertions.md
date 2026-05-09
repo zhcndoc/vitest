@@ -53,7 +53,7 @@ interface ExpectPollOptions {
 ```
 
 ::: tip
-`expect.element` 是 `expect.poll(() => element)` 的简写，工作方式完全相同。
+与 [`expect.poll`](/api/expect#poll) 类似，`expect.element` 会重试 DOM 断言，直到它们通过或达到超时时间。当它接收到一个定位器时，Vitest 会在执行 DOM 断言之前，先使用 [`locator.findElement()`](/api/browser/locators#findelement) 解析它。`timeout` 选项适用于整个重试操作。`interval` 选项控制失败的 DOM 断言多久重试一次，但定位器解析使用的是 `findElement` 自身逐渐增加的重试间隔。
 
 `toHaveTextContent` 和所有其他断言仍然可以在常规的 `expect` 上使用，但没有内置的重试机制：
 
@@ -365,11 +365,11 @@ await expect.element(getByTestId('parent')).toContainHTML('</span>')
 ```
 
 ::: warning
- chances are you probably do not need to use this matcher. We encourage testing from the perspective of how the user perceives the app in a browser. That's why testing against a specific DOM structure is not advised.
+你大概率不需要使用这个匹配器。我们鼓励从用户在浏览器中感知应用程序的角度进行测试。这就是为什么不建议针对特定的 DOM 结构进行测试。
 
-It could be useful in situations where the code being tested renders html that was obtained from an external source, and you want to validate that html code was used as intended.
+当被测试的代码渲染了从外部来源获取的 html，并且你想验证该 html 代码是否按预期使用时，它可能会很有用。
 
-It should not be used to check DOM structure that you control. Please, use [`toContainElement`](#tocontainelement) instead.
+它不应用于检查你控制的 DOM 结构。请使用 [`toContainElement`](#tocontainelement) 代替。
 :::
 
 ::: warning
@@ -389,46 +389,46 @@ function toHaveAccessibleDescription(description?: string | RegExp): Promise<voi
 这允许你断言元素具有预期的
 [可访问描述](https://w3c.github.io/accname/)。
 
-你可以传递预期的可访问描述的确切字符串，或者你可以通过传递正则表达式，或使用
+你可以传递预期的可访问描述的确切字符串，或者你也可以通过传递正则表达式，或使用
 [`expect.stringContaining`](/api/expect#expect-stringcontaining) 或 [`expect.stringMatching`](/api/expect#expect-stringmatching) 进行部分匹配。
 
 ```html
 <a
   data-testid="link"
   href="/"
-  aria-label="Home page"
-  title="A link to start over"
-  >Start</a
+  aria-label="主页"
+  title="返回起点的链接"
+  >开始</a
 >
-<a data-testid="extra-link" href="/about" aria-label="About page">About</a>
-<img src="avatar.jpg" data-testid="avatar" alt="User profile pic" />
+<a data-testid="extra-link" href="/about" aria-label="关于页面">关于</a>
+<img src="avatar.jpg" data-testid="avatar" alt="用户头像" />
 <img
   src="logo.jpg"
   data-testid="logo"
-  alt="Company logo"
+  alt="公司标志"
   aria-describedby="t1"
 />
-<span id="t1" role="presentation">The logo of Our Company</span>
+<span id="t1" role="presentation">我们公司的标志</span>
 <img
   src="logo.jpg"
   data-testid="logo2"
-  alt="Company logo"
-  aria-description="The logo of Our Company"
+  alt="公司标志"
+  aria-description="我们公司的标志"
 />
 ```
 
 ```ts
 await expect.element(getByTestId('link')).toHaveAccessibleDescription()
-await expect.element(getByTestId('link')).toHaveAccessibleDescription('A link to start over')
-await expect.element(getByTestId('link')).not.toHaveAccessibleDescription('Home page')
+await expect.element(getByTestId('link')).toHaveAccessibleDescription('返回起点的链接')
+await expect.element(getByTestId('link')).not.toHaveAccessibleDescription('主页')
 await expect.element(getByTestId('extra-link')).not.toHaveAccessibleDescription()
 await expect.element(getByTestId('avatar')).not.toHaveAccessibleDescription()
-await expect.element(getByTestId('logo')).not.toHaveAccessibleDescription('Company logo')
+await expect.element(getByTestId('logo')).not.toHaveAccessibleDescription('公司标志')
 await expect.element(getByTestId('logo')).toHaveAccessibleDescription(
-  'The logo of Our Company',
+  '我们公司的标志',
 )
 await expect.element(getByTestId('logo2')).toHaveAccessibleDescription(
-  'The logo of Our Company',
+  '我们公司的标志',
 )
 ```
 
@@ -448,15 +448,15 @@ function toHaveAccessibleErrorMessage(message?: string | RegExp): Promise<void>
 
 ```html
 <input
-  aria-label="Has Error"
+  aria-label="有错误"
   aria-invalid="true"
   aria-errormessage="error-message"
 />
-<div id="error-message" role="alert">This field is invalid</div>
+<div id="error-message" role="alert">此字段无效</div>
 
-<input aria-label="No Error Attributes" />
+<input aria-label="没有错误属性" />
 <input
-  aria-label="Not Invalid"
+  aria-label="未失效"
   aria-invalid="false"
   aria-errormessage="error-message"
 />
@@ -464,24 +464,24 @@ function toHaveAccessibleErrorMessage(message?: string | RegExp): Promise<void>
 
 ```ts
 // 带有有效错误消息的输入框
-await expect.element(getByRole('textbox', { name: 'Has Error' })).toHaveAccessibleErrorMessage()
-await expect.element(getByRole('textbox', { name: 'Has Error' })).toHaveAccessibleErrorMessage(
-  'This field is invalid',
+await expect.element(getByRole('textbox', { name: '有错误' })).toHaveAccessibleErrorMessage()
+await expect.element(getByRole('textbox', { name: '有错误' })).toHaveAccessibleErrorMessage(
+  '此字段无效',
 )
-await expect.element(getByRole('textbox', { name: 'Has Error' })).toHaveAccessibleErrorMessage(
+await expect.element(getByRole('textbox', { name: '有错误' })).toHaveAccessibleErrorMessage(
   /invalid/i,
 )
 await expect.element(
-  getByRole('textbox', { name: 'Has Error' }),
+  getByRole('textbox', { name: '有错误' }),
 ).not.toHaveAccessibleErrorMessage('This field is absolutely correct!')
 
 // 没有有效错误消息的输入框
 await expect.element(
-  getByRole('textbox', { name: 'No Error Attributes' }),
+  getByRole('textbox', { name: '没有错误属性' }),
 ).not.toHaveAccessibleErrorMessage()
 
 await expect.element(
-  getByRole('textbox', { name: 'Not Invalid' }),
+  getByRole('textbox', { name: '未失效' }),
 ).not.toHaveAccessibleErrorMessage()
 ```
 
@@ -498,20 +498,20 @@ function toHaveAccessibleName(name?: string | RegExp): Promise<void>
 [`expect.stringContaining`](/api/expect#expect-stringcontaining) 或 [`expect.stringMatching`](/api/expect#expect-stringmatching) 进行部分匹配。
 
 ```html
-<img data-testid="img-alt" src="" alt="Test alt" />
+<img data-testid="img-alt" src="" alt="测试替代文本" />
 <img data-testid="img-empty-alt" src="" alt="" />
-<svg data-testid="svg-title"><title>Test title</title></svg>
-<button data-testid="button-img-alt"><img src="" alt="Test" /></button>
-<p><img data-testid="img-paragraph" src="" alt="" /> Test content</p>
-<button data-testid="svg-button"><svg><title>Test</title></svg></p>
+<svg data-testid="svg-title"><title>测试标题</title></svg>
+<button data-testid="button-img-alt"><img src="" alt="测试" /></button>
+<p><img data-testid="img-paragraph" src="" alt="" /> 测试内容</p>
+<button data-testid="svg-button"><svg><title>测试</title></svg></p>
 <div><svg data-testid="svg-without-title"></svg></div>
-<input data-testid="input-title" title="test" />
+<input data-testid="input-title" title="测试" />
 ```
 
 ```javascript
-await expect.element(getByTestId('img-alt')).toHaveAccessibleName('Test alt')
+await expect.element(getByTestId('img-alt')).toHaveAccessibleName('测试替代文本')
 await expect.element(getByTestId('img-empty-alt')).not.toHaveAccessibleName()
-await expect.element(getByTestId('svg-title')).toHaveAccessibleName('Test title')
+await expect.element(getByTestId('svg-title')).toHaveAccessibleName('测试标题')
 await expect.element(getByTestId('button-img-alt')).toHaveAccessibleName()
 await expect.element(getByTestId('img-paragraph')).not.toHaveAccessibleName()
 await expect.element(getByTestId('svg-button')).toHaveAccessibleName()
@@ -528,7 +528,7 @@ function toHaveAttribute(attribute: string, value?: unknown): Promise<void>
 这允许你检查给定元素是否具有属性。你也可以选择检查属性是否具有特定的预期值或使用 [`expect.stringContaining`](/api/expect#expect-stringcontaining) 或 [`expect.stringMatching`](/api/expect#expect-stringmatching) 进行部分匹配。
 
 ```html
-<button data-testid="ok-button" type="submit" disabled>ok</button>
+<button data-testid="ok-button" type="submit" disabled>确定</button>
 ```
 
 ```ts
@@ -565,9 +565,9 @@ function toHaveClass(...classNames: (string | RegExp)[]): Promise<void>
 
 ```html
 <button data-testid="delete-button" class="btn extra btn-danger">
-  Delete item
+  删除项目
 </button>
-<button data-testid="no-classes">No Classes</button>
+<button data-testid="no-classes">没有类</button>
 ```
 
 ```ts
@@ -651,7 +651,7 @@ function toHaveFormValues(expectedValues: Record<string, unknown>): Promise<void
   <input type="text" name="username" value="jane.doe" />
   <input type="password" name="password" value="12345678" />
   <input type="checkbox" name="rememberMe" checked />
-  <button type="submit">Sign in</button>
+  <button type="submit">登录</button>
 </form>
 ```
 
@@ -675,7 +675,7 @@ function toHaveStyle(css: string | Partial<CSSStyleDeclaration>): Promise<void>
   data-testid="delete-button"
   style="display: none; background-color: red"
 >
-  Delete item
+  删除项目
 </button>
 ```
 
@@ -722,13 +722,13 @@ function toHaveTextContent(
 如果你想匹配全部内容，可以使用 `RegExp` 来实现。
 
 ```html
-<span data-testid="text-content">Text Content</span>
+<span data-testid="text-content">文本内容</span>
 ```
 
 ```ts
 const element = getByTestId('text-content')
 
-await expect.element(element).toHaveTextContent('Content')
+await expect.element(element).toHaveTextContent('内容')
 // 匹配全部内容
 await expect.element(element).toHaveTextContent(/^Text Content$/)
 // 使用不区分大小写的匹配
@@ -742,7 +742,7 @@ await expect.element(element).not.toHaveTextContent('content')
 function toHaveValue(value: string | string[] | number | null): Promise<void>
 ```
 
-这允许你检查给定表单元素是否具有指定的值。它接受 `<input>`、`<select>` 和 `<textarea>` 元素，`<input type="checkbox">` 和 `<input type="radio">` 除外，它们只能使用 [`toBeChecked`](#tobechecked) 或 [`toHaveFormValues`](#tohaveformvalues) 进行有意义的匹配。
+这允许你检查给定表单元素是否具有指定的值。它接受 `<input>`、`<select>` 和 `<textarea>` 元素，但不包括 `<input type="checkbox">` 和 `<input type="radio">`，因为它们只能使用 [`toBeChecked`](#tobechecked) 或 [`toHaveFormValues`](#tohaveformvalues) 进行有意义的匹配。
 
 它还接受具有 `meter`、`progressbar`、`slider` 或 `spinbutton` 角色的元素，并检查它们的 `aria-valuenow` 属性（作为数字）。
 
@@ -779,7 +779,7 @@ function toHaveDisplayValue(
 ): Promise<void>
 ```
 
-这允许你检查给定表单元素是否具有指定的显示值（最终用户将看到的值）。它接受 `<input>`、`<select>` 和 `<textarea>` 元素，`<input type="checkbox">` 和 `<input type="radio">` 除外，它们只能使用 [`toBeChecked`](#tobechecked) 或 [`toHaveFormValues`](#tohaveformvalues) 进行有意义的匹配。
+这允许你检查给定表单元素是否具有指定的显示值（最终用户将看到的值）。它接受 `<input>`、`<select>` 和 `<textarea>` 元素，但不包括 `<input type="checkbox">` 和 `<input type="radio">`，因为它们只能使用 [`toBeChecked`](#tobechecked) 或 [`toHaveFormValues`](#tohaveformvalues) 进行有意义的匹配。
 
 ```html
 <label for="input-example">First name</label>
@@ -924,7 +924,7 @@ function toHaveRole(role: ARIARole): Promise<void>
 
 ```html
 <button data-testid="button">Continue</button>
-<div role="button" data-testid="button-explicit">Continue</button>
+<div role="button" data-testid="button-explicit">Continue</div>
 <button role="switch button" data-testid="button-explicit-multiple">Continue</button>
 <a href="/about" data-testid="link">About</a>
 <a data-testid="link-invalid">Invalid link<a/>
@@ -992,12 +992,12 @@ selection.removeAllRanges()
 selection.empty()
 selection.addRange(range)
 
-// selection of child applies to the parent as well
+// 子元素的选中内容也会应用到父元素上
 range.selectNodeContents(getByTestId('child').element())
 await expect.element(getByTestId('child')).toHaveSelection('selected')
 await expect.element(getByTestId('parent')).toHaveSelection('selected')
 
-// selection that applies from prev all, parent text before child, and part child.
+// 选中内容从 prev 全部、父元素中 child 之前的文本以及 child 的一部分开始生效
 range.setStart(getByTestId('prev').element(), 0)
 range.setEnd(getByTestId('child').element().childNodes[0], 3)
 await expect.element(queryByTestId('prev')).toHaveSelection('prev')
@@ -1005,7 +1005,7 @@ await expect.element(queryByTestId('child')).toHaveSelection('sel')
 await expect.element(queryByTestId('parent')).toHaveSelection('text sel')
 await expect.element(queryByTestId('next')).not.toHaveSelection()
 
-// selection that applies from part child, parent text after child and part next.
+// 选中内容从 child 的一部分、父元素中 child 之后的文本以及 next 的一部分开始生效
 range.setStart(getByTestId('child').element().childNodes[0], 3)
 range.setEnd(getByTestId('next').element().childNodes[0], 2)
 await expect.element(queryByTestId('child')).toHaveSelection('ected')
@@ -1057,17 +1057,17 @@ function toMatchScreenshot(
 :::
 
 ```html
-<button data-testid="button">Fancy Button</button>
+<button data-testid="button">精美按钮</button>
 ```
 
 ```ts
-// basic usage, auto-generates screenshot name
+// 基本用法，自动生成截图名称
 await expect.element(getByTestId('button')).toMatchScreenshot()
 
-// with custom name
+// 使用自定义名称
 await expect.element(getByTestId('button')).toMatchScreenshot('fancy-button')
 
-// with options
+// 使用选项
 await expect.element(getByTestId('button')).toMatchScreenshot({
   comparatorName: 'pixelmatch',
   comparatorOptions: {
@@ -1075,7 +1075,7 @@ await expect.element(getByTestId('button')).toMatchScreenshot({
   },
 })
 
-// with both name and options
+// 同时使用名称和选项
 await expect.element(getByTestId('button')).toMatchScreenshot('fancy-button', {
   comparatorName: 'pixelmatch',
   comparatorOptions: {
@@ -1109,7 +1109,7 @@ await expect.element(getByTestId('button')).toMatchScreenshot('fancy-button', {
   // ❌ TypeScript 无法推断正确的选项
   await expect.element(button).toMatchScreenshot({
     comparatorOptions: {
-      // might error when new comparators are added
+      // 当添加新的比较器时，这里可能会报错
       allowedMismatchedPixelRatio: 0.01,
     },
   })

@@ -6,7 +6,7 @@ outline: deep
 # 测试运行生命周期
 
 ::: tip
-正在寻找 `beforeEach`、`afterEach` 和其他钩子的实用入门介绍？请参阅 [Setup and Teardown](/guide/learn/setup-teardown) 教程。
+正在寻找 `beforeEach`、`afterEach` 和其他钩子的实用入门介绍？请参阅 [设置与清理](/guide/learn/setup-teardown) 教程。
 :::
 
 理解测试运行生命周期对于编写有效的测试、调试问题以及优化测试套件至关重要。本指南介绍了 Vitest 中不同生命周期阶段何时以及以何种顺序发生，从初始化到清理。
@@ -75,9 +75,9 @@ export function teardown() {
 全局设置完成后，Vitest 根据你的 [池配置](/config/pool) 创建测试 worker。
 
 **发生什么：**
-- 根据 `browser.enabled` 或 `pool` 设置生成 Worker（`threads`、`forks`、`vmThreads` 或 `vmForks`）
-- 每个 Worker 都有自己的隔离环境（除非禁用 [隔离](/config/isolate)）
-- 默认情况下，为了提供隔离，Worker 不会被复用。只有在以下情况下才会复用 Worker：
+- 根据 `browser.enabled` 或 `pool` 设置生成工作线程（`threads`、`forks`、`vmThreads` 或 `vmForks`）
+- 每个工作线程都有自己的隔离环境（除非禁用 [隔离](/config/isolate)）
+- 默认情况下，为了提供隔离，工作线程不会被复用。只有在以下情况下才会复用工作线程：
   - 禁用 [隔离](/config/isolate)
   - 或者池是 `vmThreads` 或 `vmForks`，因为 [VM](https://nodejs.org/api/vm.html) 提供了足够的隔离
 
@@ -128,19 +128,21 @@ afterEach(() => {
 
 执行遵循以下顺序：
 
-1. **文件级代码：** 所有 `describe` 块之外的代码立即运行
-2. **测试收集：** 处理 `describe` 块，测试作为导入测试文件的副作用被注册
+1. **文件级代码：** `describe` 块之外的所有代码都会立即运行
+2. **测试收集：** `describe` 块会被处理，测试会作为导入测试文件的副作用而注册
 3. **[`aroundAll`](/api/hooks#aroundall) 钩子：** 包裹套件中的所有测试（必须调用 `runSuite()`）
 4. **[`beforeAll`](/api/hooks#beforeall) 钩子：** 在套件中的任何测试之前运行一次
 5. **对于每个测试：**
    - [`aroundEach`](/api/hooks#aroundeach) 钩子包裹测试（必须调用 `runTest()`）
    - `beforeEach` 钩子执行（按定义顺序，或基于 [`sequence.hooks`](/config/sequence#sequence-hooks)）
    - 测试函数执行
-   - `afterEach` 钩子执行（默认逆序，使用 `sequence.hooks: 'stack'`）
-   - [`onTestFinished`](/api/hooks#ontestfinished) 回调运行（始终逆序）
+   - `afterEach` 钩子执行（默认情况下在 `sequence.hooks: 'stack'` 时按逆序）
+   - `beforeEach` 钩子返回的清理函数执行（默认情况下在 `sequence.hooks: 'stack'` 时按逆序）
+   - [`onTestFinished`](/api/hooks#ontestfinished) 回调运行（始终按逆序）
    - 如果测试失败：[`onTestFailed`](/api/hooks#ontestfailed) 回调运行
-   - 注意：如果设置了 `repeats` 或 `retry`，所有这些步骤将再次执行
+   - 注意：如果设置了 `repeats` 或 `retry`，则所有这些步骤都会再次执行
 6. **[`afterAll`](/api/hooks#afterall) 钩子：** 在套件中的所有测试完成后运行一次
+7. **`beforeAll` 钩子返回的清理函数：** 在套件中的所有测试完成后运行一次
 
 **示例执行流程：**
 
@@ -162,6 +164,11 @@ describe('User API', () => {
   beforeAll(() => {
     // 在此套件中的所有测试之前运行一次
     console.log('beforeAll')
+
+    return function beforeAllCleanup() {
+      // 在 afterAll 钩子运行完成后运行一次
+      console.log('beforeAllCleanup')
+    }
   })
 
   aroundEach(async (runTest) => {
@@ -174,6 +181,11 @@ describe('User API', () => {
   beforeEach(() => {
     // 在每个测试之前运行
     console.log('beforeEach')
+
+    return function beforeEachCleanup() {
+      // 在 afterEach 钩子运行完成后运行
+      console.log('beforeEachCleanup')
+    }
   })
 
   test('creates user', () => {
@@ -198,22 +210,25 @@ describe('User API', () => {
 })
 
 // 输出：
-// File loaded
-// Suite defined
-// aroundAll before
+// 文件已加载
+// 套件已定义
+// aroundAll 之前
 //   beforeAll
-//   aroundEach before
+//   aroundEach 之前
 //     beforeEach
-//       test 1
+//       测试 1
 //     afterEach
-//   aroundEach after
-//   aroundEach before
+//     beforeEachCleanup
+//   aroundEach 之后
+//   aroundEach 之前
 //     beforeEach
-//       test 2
+//       测试 2
 //     afterEach
-//   aroundEach after
+//     beforeEachCleanup
+//   aroundEach 之后
 //   afterAll
-// aroundAll after
+//   beforeAllCleanup
+// aroundAll 之后
 ```
 
 #### 嵌套套件
@@ -268,28 +283,28 @@ describe('outer', () => {
 })
 
 // 输出：
-// outer aroundAll before
+// 外层 aroundAll 之前
 //   outer beforeAll
-//   outer aroundEach before
+//   outer aroundEach 之前
 //     outer beforeEach
 //       outer test
 //     outer afterEach
-//   outer aroundEach after
-//   inner aroundAll before
+//   outer aroundEach 之后
+//   inner aroundAll 之前
 //     inner beforeAll
-//     outer aroundEach before
-//       inner aroundEach before
+//     outer aroundEach 之前
+//       inner aroundEach 之前
 //         outer beforeEach
 //           inner beforeEach
 //             inner test
 //           inner afterEach
 //         outer afterEach
-//       inner aroundEach after
-//     outer aroundEach after
+//       inner aroundEach 之后
+//     outer aroundEach 之后
 //     inner afterAll
-//   inner aroundAll after
+//   inner aroundAll 之后
 //   outer afterAll
-// outer aroundAll after
+// outer aroundAll 之后
 ```
 
 #### 并发测试

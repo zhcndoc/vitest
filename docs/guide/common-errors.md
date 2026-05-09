@@ -132,7 +132,7 @@ vitest --pool=forks
 async function fetchUser(id) {
   const res = await fetch(`/api/users/${id}`)
   if (!res.ok) {
-    throw new Error(`User ${id} not found`) // [!code highlight]
+    throw new Error(`用户 ${id} 未找到`) // [!code highlight]
   }
   return res.json()
 }
@@ -145,7 +145,7 @@ test('fetches user', async () => {
 因为 `fetchUser()` 没有被 `await`，它的拒绝没有处理程序，Vitest 报告：
 
 ```
-Unhandled Rejection: Error: User 123 not found
+Unhandled Rejection: Error: 用户 123 未找到
 ```
 
 ### 修复
@@ -163,5 +163,57 @@ test('fetches user', async () => {
 ```ts
 test('rejects for missing user', async () => {
   await expect(fetchUser(123)).rejects.toThrow('User 123 not found')
+})
+```
+
+## 包在 Vitest 中加载失败，但在你的应用中可以正常工作
+
+有些包在应用构建中可以正常工作，但在 Vitest 中会失败，因为它们只有在打包器重写或解析之后才是有效的。当 Vitest 将依赖外部化时，Node.js 会直接加载它，因此会应用 Node 的 ESM 和 package 规则。有关精确规则，请参阅 Node.js 文档中关于 [ECMAScript 模块](https://nodejs.org/docs/latest/api/esm.html) 和 [packages](https://nodejs.org/docs/latest/api/packages.html) 的说明。
+
+常见示例包括以下包：
+
+- 在 `.js` 文件中提供 ESM 语法，但没有 `"type": "module"`
+- 在 ESM 文件中使用不带扩展名的相对导入
+- `exports`、`imports`、`main` 或 `module` 条目不正确
+- 以只有在打包后才可工作的方式混用 CommonJS 和 ESM 入口点
+- 导入 CSS 或其他非 JavaScript 文件，而这些文件本应由打包器处理
+
+你可能会看到如下错误：
+
+- `Cannot find module './relative-path' imported from ...`
+- `Unexpected token 'export'`
+- `Cannot use import statement outside a module`
+- `Module ... seems to be an ES Module but shipped in a CommonJS package.`
+- `Unknown file extension ".css"`
+
+在可能的情况下，修复该包，使 Node.js 能够直接加载它：为 ESM `.js` 文件添加 `"type": "module"`，使用 `.mjs`，在 ESM 导入中包含显式文件扩展名，并确保 `exports` 指向 Node.js 可以加载的文件。
+
+如果你无法修复包本身，可以将其内联，这样 Vite 就会处理它，而不是将其作为外部依赖传递给 Node.js。将导致无效包的整条依赖链都内联。如果你的源码导入了 `wrapper-package`，而 `wrapper-package` 又导入了 `broken-package`，则两个包都需要内联：
+
+```ts [vitest.config.js]
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    server: {
+      deps: {
+        inline: ['wrapper-package', 'broken-package'],
+      },
+    },
+  },
+})
+```
+
+你也可以使用 Vite 的 [`ssr.resolve.noExternal`](https://vite.dev/config/ssr-options#ssr-resolve-noexternal) 达到同样的目的。Vitest 会将 `ssr.resolve.noExternal` 合并到 [`server.deps.inline`](/config/server#server-deps-inline) 中，因此当该依赖还需要在 SSR 构建中由 Vite 打包时，这很有用：
+
+```ts [vitest.config.js]
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  ssr: {
+    resolve: {
+      noExternal: ['wrapper-package', 'broken-package'],
+    },
+  },
 })
 ```

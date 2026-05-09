@@ -88,7 +88,7 @@ Vitest 将确保此数组中始终至少有一个项目。如果用户指定了�
 function getRootProject(): TestProject
 ```
 
-这返回根测试项目。根项目通常不运行任何测试，也不包含在 `vitest.projects` 中，除非用户在其配置中显式包含根配置，或者根本未定义项目。
+这会返回根测试项目。根项目通常不会运行任何测试，也不会包含在 `vitest.projects` 中，除非用户在配置中显式包含根配置，或者根本没有定义任何项目。
 
 根项目的主要目标是设置全局配置。实际上，`rootProject.config` 直接引用 `rootProject.globalConfig` 和 `vitest.config`：
 
@@ -132,7 +132,7 @@ declare module 'vitest' {
 ```
 
 ::: warning
-技术上，`provide` 是 [`TestProject`](/api/advanced/test-project) 的方法，因此它仅限于特定项目。但是，所有项目都继承根项目的值，这使得 `vitest.provide` 成为将值传递给测试的通用方式。
+严格来说，`provide` 是 [`TestProject`](/api/advanced/test-project) 的方法，因此它仅限于特定项目。但是，所有项目都会继承根项目的值，这使得 `vitest.provide` 成为向测试传递值的通用方式。
 :::
 
 ## getProvidedContext
@@ -141,7 +141,7 @@ declare module 'vitest' {
 function getProvidedContext(): ProvidedContext
 ```
 
-这返回根上下文对象。这是 `vitest.getRootProject().getProvidedContext` 的简写。
+这会返回根上下文对象。这是 `vitest.getRootProject().getProvidedContext` 的简写。
 
 ## getProjectByName
 
@@ -149,10 +149,10 @@ function getProvidedContext(): ProvidedContext
 function getProjectByName(name: string): TestProject
 ```
 
-此方法按其名称返回项目。类似于调用 `vitest.projects.find`。
+此方法按名称返回项目。类似于调用 `vitest.projects.find`。
 
 ::: warning
-如果项目不存在，此方法将返回根项目 - 如果返回的项目是你正在查找的项目，请再次检查名称。
+如果项目不存在，此方法将返回根项目——如果返回的项目是你正在查找的项目，请再次检查名称。
 
 如果用户未自定义名称，Vitest 将分配一个空字符串作为名称。
 :::
@@ -165,12 +165,12 @@ function globTestSpecifications(
 ): Promise<TestSpecification[]>
 ```
 
-此方法通过 [`project.globTestFiles`](/api/advanced/test-project#globtestfiles) 收集所有项目中的每个测试来构建新的 [测试规范](/api/advanced/test-specification)。它接受字符串过滤器来匹配测试文件 - 这些与 [CLI 支持](/guide/filtering#cli) 的过滤器相同。
+此方法通过 [`project.globTestFiles`](/api/advanced/test-project#globtestfiles) 收集所有项目中的每个测试来构建新的 [测试规范](/api/advanced/test-specification)。它接受字符串过滤器来匹配测试文件——这些与 [CLI 支持](/guide/filtering#cli) 的过滤器相同。
 
-此方法自动缓存所有测试规范。下次调用 [`getModuleSpecifications`](#getmodulespecifications) 时，它将返回相同的规范，除非之前调用了 [`clearSpecificationsCache`](#clearspecificationscache)。
+此方法会自动缓存所有测试规范。下次调用 [`getModuleSpecifications`](#getmodulespecifications) 时，除非之前调用了 [`clearSpecificationsCache`](#clearspecificationscache)，否则它将返回相同的规范。
 
 ::: warning
-从 Vitest 3 开始，如果 `poolMatchGlob` 有多个池或启用了 `typecheck`，则可能具有相同模块 ID（文件路径）的多个测试规范。此可能性将在 Vitest 4 中移除。
+从 Vitest 3 开始，如果 `poolMatchGlob` 有多个池或启用了 `typecheck`，则可能存在具有相同模块 ID（文件路径）的多个测试规范。此可能性将在 Vitest 4 中移除。
 :::
 
 ```ts
@@ -187,10 +187,10 @@ function getRelevantTestSpecifications(
 ): Promise<TestSpecification[]>
 ```
 
-此方法通过调用 [`project.globTestFiles`](/api/advanced/test-project#globtestfiles) 解析每个测试规范。它接受字符串过滤器来匹配测试文件 - 这些与 [CLI 支持](/guide/filtering#cli) 的过滤器相同。如果指定了 `--changed` 标志，列表将被过滤为仅包含已更改的文件。`getRelevantTestSpecifications` 不运行任何测试文件。
+此方法通过调用 [`project.globTestFiles`](/api/advanced/test-project#globtestfiles) 解析每个测试规范。它接受字符串过滤器来匹配测试文件——这些与 [CLI 支持](/guide/filtering#cli) 的过滤器相同。如果指定了 `--changed` 标志，列表将被过滤为仅包含已更改的文件。`getRelevantTestSpecifications` 不会运行任何测试文件。
 
 ::: warning
-此方法可能很慢，因为它需要过滤 `--changed` 标志。如果你只需要测试文件列表，请不要使用它。
+此方法可能很慢，因为它需要根据 `--changed` 标志进行过滤。如果你只需要测试文件列表，请不要使用它。
 
 - 如果你需要获取已知测试文件的规范列表，请改用 [`getModuleSpecifications`](#getmodulespecifications)。
 - 如果你需要获取所有可能测试文件的列表，请使用 [`globTestSpecifications`](#globtestspecifications)。
@@ -202,7 +202,7 @@ function getRelevantTestSpecifications(
 function mergeReports(directory?: string): Promise<TestRunResult>
 ```
 
-合并位于指定目录中的多次运行的报告（如果未指定，则为 `--merge-reports` 的值）。此值也可以在 `config.mergeReports` 上设置（默认情况下，它将读取 `.vitest-reports` 文件夹）。
+合并位于指定目录中的多个运行报告（如果未指定，则使用 `--merge-reports` 的值）。此值也可以设置在 `config.mergeReports` 上（默认会读取 `.vitest/blob/` 文件夹）。
 
 请注意，`directory` 将始终相对于工作目录解析。
 
@@ -214,14 +214,14 @@ function mergeReports(directory?: string): Promise<TestRunResult>
 function collect(filters?: string[]): Promise<TestRunResult>
 ```
 
-执行测试文件而不运行测试回调。`collect` 返回未处理的错误和 [测试模块](/api/advanced/test-module) 数组。它接受字符串过滤器来匹配测试文件 - 这些与 [CLI 支持](/guide/filtering#cli) 的过滤器相同。
+执行测试文件而不运行测试回调。`collect` 返回未处理的错误和 [测试模块](/api/advanced/test-module) 数组。它接受字符串过滤器来匹配测试文件——这些与 [CLI 支持](/guide/filtering#cli) 的过滤器相同。
 
-此方法根据配置 `include`、`exclude` 和 `includeSource` 值解析测试规范。在 [`project.globTestFiles`](/api/advanced/test-project#globtestfiles) 阅读更多。如果指定了 `--changed` 标志，列表将被过滤为仅包含已更改的文件。
+此方法根据配置中的 `include`、`exclude` 和 `includeSource` 值解析测试规范。更多信息请参阅 [`project.globTestFiles`](/api/advanced/test-project#globtestfiles)。如果指定了 `--changed` 标志，列表将被过滤为仅包含已更改的文件。
 
 ::: warning
-请注意，Vitest 不使用静态分析来收集测试。Vitest 将隔离运行每个测试文件，就像它运行常规测试一样。
+请注意，Vitest 不使用静态分析来收集测试。Vitest 将像运行常规测试一样，隔离执行每个测试文件。
 
-这使得此方法非常慢，除非你在收集测试之前禁用隔离。
+这使得此方法非常慢，除非你在收集测试之前禁用了隔离。
 :::
 
 ## start
@@ -230,7 +230,7 @@ function collect(filters?: string[]): Promise<TestRunResult>
 function start(filters?: string[]): Promise<TestRunResult>
 ```
 
-初始化报告器、覆盖率提供者并运行测试。此方法接受字符串过滤器来匹配测试文件 - 这些与 [CLI 支持](/guide/filtering#cli) 的过滤器相同。
+初始化报告器、覆盖率提供者并运行测试。此方法接受字符串过滤器来匹配测试文件——这些与 [CLI 支持](/guide/filtering#cli) 的过滤器相同。
 
 ::: warning
 如果还调用了 [`vitest.standalone()`](#standalone)，则不应调用此方法。如果你需要在 Vitest 初始化后运行测试，请改用 [`runTestSpecifications`](#runtestspecifications) 或 [`rerunTestSpecifications`](#runtestspecifications)。
@@ -246,9 +246,9 @@ function standalone(): Promise<void>
 
 - **别名:** `init` <Deprecated />
 
-初始化报告器（reporters）和覆盖率提供者（coverage provider）。此方法不运行任何测试。如果提供了 `--watch` 标志，即使未调用此方法，Vitest 仍会运行更改的测试。
+初始化报告器和覆盖率提供者。此方法不会运行任何测试。如果提供了 `--watch` 标志，即使未调用此方法，Vitest 仍会运行已更改的测试。
 
-内部而言，仅当启用 [`--standalone`](/guide/cli#standalone) 标志时才会调用此方法。
+从内部实现来看，仅当启用 [`--standalone`](/guide/cli#standalone) 标志时才会调用此方法。
 
 ::: warning
 如果同时调用了 [`vitest.start()`](#start)，则不应调用此方法。
@@ -262,7 +262,7 @@ function standalone(): Promise<void>
 function getModuleSpecifications(moduleId: string): TestSpecification[]
 ```
 
-返回与模块 ID 相关的测试规范（test specifications）列表。ID 应该已经解析为绝对文件路径。如果 ID 不匹配 `include` 或 `includeSource` 模式，返回的数组将为空。
+返回与模块 ID 相关的测试规范列表。ID 应该已经解析为绝对文件路径。如果 ID 不匹配 `include` 或 `includeSource` 模式，返回的数组将为空。
 
 此方法可以根据 `moduleId` 和 `pool` 返回已缓存的规范。但请注意，[`project.createSpecification`](/api/advanced/test-project#createspecification) 始终返回一个新实例，并且不会自动缓存。然而，当调用 [`runTestSpecifications`](#runtestspecifications) 时，规范会自动缓存。
 
@@ -302,7 +302,7 @@ function rerunTestSpecifications(
 ): Promise<TestRunResult>
 ```
 
-此方法发出 `reporter.onWatcherRerun` 和 `onTestsRerun` 事件，然后使用 [`runTestSpecifications`](#runtestspecifications) 运行测试。如果主进程中没有错误，它将发出 `reporter.onWatcherStart` 事件。
+此方法会发出 `reporter.onWatcherRerun` 和 `onTestsRerun` 事件，然后使用 [`runTestSpecifications`](#runtestspecifications) 运行测试。如果主进程中没有错误，它将发出 `reporter.onWatcherStart` 事件。
 
 ## runTestFiles <Version>4.1.0</Version> {#runtestfiles}
 
@@ -315,7 +315,7 @@ function runTestFiles(
 
 这会自动基于文件路径过滤器创建要运行的规范。
 
-这与 [`start`](#start) 不同，因为它不会创建覆盖率提供者，不会触发 `onInit` 和 `onWatcherStart` 事件，也不会在没有文件可运行时抛出错误（在这种情况下，函数将返回空数组而不触发测试运行）。
+这与 [`start`](#start) 不同，因为它不会创建覆盖率提供者，不会触发 `onInit` 和 `onWatcherStart` 事件，也不会在没有可运行文件时抛出错误（在这种情况下，函数将返回空数组而不触发测试运行）。
 
 此函数接受与 [`start`](#start) 和 CLI 相同的过滤器。
 
@@ -337,10 +337,10 @@ function collectTests(
 
 执行测试文件而不运行测试回调。`collectTests` 返回未处理的错误和 [测试模块](/api/advanced/test-module) 数组。
 
-此方法的工作原理与 [`collect`](#collect) 完全相同，但你需要自己提供测试规范。
+此方法的工作方式与 [`collect`](#collect) 完全相同，但你需要自己提供测试规范。
 
 ::: warning
-请注意，Vitest 不使用静态分析来收集测试。Vitest 将隔离运行每个测试文件，就像运行常规测试一样。这使得此方法非常慢，除非你在收集测试之前禁用隔离。
+请注意，Vitest 不使用静态分析来收集测试。Vitest 将像运行常规测试一样，隔离执行每个测试文件。这使得此方法非常慢，除非你在收集测试之前禁用了隔离。
 :::
 
 ## cancelCurrentRun
@@ -349,7 +349,7 @@ function collectTests(
 function cancelCurrentRun(reason: CancelReason): Promise<void>
 ```
 
-此方法将优雅地取消所有正在进行的测试。它将停止正在进行的测试，并且不会运行已计划但尚未开始的测试。
+此方法会优雅地取消所有正在进行的测试。它将停止当前正在运行的测试，并且不会运行已经计划但尚未开始的测试。
 
 ## setGlobalTestNamePattern
 
@@ -383,7 +383,7 @@ function resetGlobalTestNamePattern(): void
 此方法不会开始运行任何测试。要不带模式运行测试，请调用 [`runTestSpecifications`](#runtestspecifications)。
 :::
 
-## enableSnapshotUpdate
+## 启用快照更新
 
 ```ts
 function enableSnapshotUpdate(): void
@@ -395,7 +395,7 @@ function enableSnapshotUpdate(): void
 此方法不会开始运行任何测试。要更新快照，请使用 [`runTestSpecifications`](#runtestspecifications) 运行测试。
 :::
 
-## resetSnapshotUpdate
+## 重置快照更新
 
 ```ts
 function resetSnapshotUpdate(): void
@@ -403,7 +403,7 @@ function resetSnapshotUpdate(): void
 
 禁用允许在运行测试时更新快照的模式。此方法不会开始运行任何测试。
 
-## invalidateFile
+## 使文件失效
 
 ```ts
 function invalidateFile(filepath: string): void
@@ -415,7 +415,7 @@ function invalidateFile(filepath: string): void
 如果你禁用了 Vitest 的监视器但保持 Vitest 运行，重要的是使用此方法手动清除缓存，因为无法禁用缓存。此方法还将使文件的导入者（importers）失效。
 :::
 
-## import
+## 导入
 
 <!--@include: ./import-example.md-->
 
@@ -436,7 +436,7 @@ dynamicExample !== staticExample // ✅
 内部而言，Vitest 使用此方法导入全局设置、自定义覆盖率提供者和自定义报告器，这意味着只要它们属于同一个 Vite 服务器，它们都共享相同的模块图。
 :::
 
-## close
+## 关闭
 
 ```ts
 function close(): Promise<void>
@@ -444,7 +444,7 @@ function close(): Promise<void>
 
 关闭所有项目及其关联资源。这只能调用一次；关闭承诺（promise）会被缓存直到服务器重启。
 
-## exit
+## 退出
 
 ```ts
 function exit(force = false): Promise<void>
@@ -454,7 +454,7 @@ function exit(force = false): Promise<void>
 
 此方法还将强制调用 `process.exit()`，如果进程在 [`config.teardownTimeout`](/config/teardowntimeout) 毫秒后仍然处于活动状态。
 
-## shouldKeepServer
+## 是否保持服务器运行
 
 ```ts
 function shouldKeepServer(): boolean
@@ -462,7 +462,7 @@ function shouldKeepServer(): boolean
 
 如果测试完成后应保持服务器运行，此方法将返回 `true`。这通常意味着启用了 `watch` 模式。
 
-## onServerRestart
+## 服务器重启时的回调
 
 ```ts
 function onServerRestart(fn: OnServerRestartHandler): void
@@ -470,7 +470,7 @@ function onServerRestart(fn: OnServerRestartHandler): void
 
 注册一个处理程序，当服务器因配置更改而重启时将调用该处理程序。
 
-## onCancel
+## 取消时的回调
 
 ```ts
 function onCancel(fn: (reason: CancelReason) => Awaitable<void>): () => void
@@ -480,7 +480,7 @@ function onCancel(fn: (reason: CancelReason) => Awaitable<void>): () => void
 
 自 4.0.10 起，`onCancel` 实验性地返回一个清理函数，该函数将移除监听器。自 4.1.0 起，此行为被视为稳定。
 
-## onClose
+## 关闭时的回调
 
 ```ts
 function onClose(fn: () => Awaitable<void>): void
@@ -488,7 +488,7 @@ function onClose(fn: () => Awaitable<void>): void
 
 注册一个处理程序，当服务器关闭时将调用该处理程序。
 
-## onTestsRerun
+## 测试重新运行时的回调
 
 ```ts
 function onTestsRerun(fn: OnTestsRerunHandler): void
@@ -496,7 +496,7 @@ function onTestsRerun(fn: OnTestsRerunHandler): void
 
 注册一个处理程序，当测试重新运行时将调用该处理程序。当手动调用 [`rerunTestSpecifications`](#reruntestspecifications) 或文件更改且内置监视器计划重新运行时，测试可能会重新运行。
 
-## onFilterWatchedSpecification
+## 过滤被监视规范时的回调
 
 ```ts
 function onFilterWatchedSpecification(
@@ -521,7 +521,7 @@ vitest.onFilterWatchedSpecification(specification =>
 
 Vitest 可以根据 `pool` 或 `locations` 选项为同一文件创建不同的规范，因此不要依赖引用。Vitest 还可以从 [`vitest.getModuleSpecifications`](#getmodulespecifications) 返回缓存的规范 - 缓存基于 `moduleId` 和 `pool`。请注意，[`project.createSpecification`](/api/advanced/test-project#createspecification) 始终返回一个新实例。
 
-## matchesProjectFilter <Version>3.1.0</Version> {#matchesprojectfilter}
+## 匹配项目过滤器 <Version>3.1.0</Version> {#matchesprojectfilter}
 
 ```ts
 function matchesProjectFilter(name: string): boolean
@@ -531,7 +531,7 @@ function matchesProjectFilter(name: string): boolean
 
 无法以编程方式更改 `--project` CLI 选项。
 
-## waitForTestRunEnd <Version>4.0.0</Version> {#waitfortestrunend}
+## 等待测试运行结束 <Version>4.0.0</Version> {#waitfortestrunend}
 
 ```ts
 function waitForTestRunEnd(): Promise<void>
@@ -539,7 +539,7 @@ function waitForTestRunEnd(): Promise<void>
 
 如果正在发生测试运行，返回一个将在测试运行完成时 resolve 的 Promise。
 
-## createCoverageProvider <Version>4.0.0</Version> {#createcoverageprovider}
+## 创建覆盖率提供者 <Version>4.0.0</Version> {#createcoverageprovider}
 
 ```ts
 function createCoverageProvider(): Promise<CoverageProvider | null>
@@ -551,7 +551,7 @@ function createCoverageProvider(): Promise<CoverageProvider | null>
 如果 [`coverage.clean`](/config/coverage#coverage-clean) 未设置为 `false`，此方法还将清除所有之前的报告。
 :::
 
-## enableCoverage <Version>4.0.0</Version> {#enablecoverage}
+## 启用覆盖率 <Version>4.0.0</Version> {#enablecoverage}
 
 ```ts
 function enableCoverage(): Promise<void>
@@ -561,7 +561,7 @@ function enableCoverage(): Promise<void>
 
 如果尚不存在覆盖率提供者，它会创建一个新的。
 
-## disableCoverage <Version>4.0.0</Version> {#disablecoverage}
+## 禁用覆盖率 <Version>4.0.0</Version> {#disablecoverage}
 
 ```ts
 function disableCoverage(): void
@@ -569,7 +569,7 @@ function disableCoverage(): void
 
 此方法禁用之后运行的测试的覆盖率收集。
 
-## getSeed <Version>4.0.0</Version> {#getseed}
+## 获取种子 <Version>4.0.0</Version> {#getseed}
 
 ```ts
 function getSeed(): number | null
@@ -686,7 +686,7 @@ export interface SourceModuleDiagnostic {
 目前，不支持 [浏览器](/guide/browser/) 模块。
 :::
 
-## createReport <Version>5.0.0</Version> {#createreport}
+## 创建报告 <Version>5.0.0</Version> {#createreport}
 
 ```ts
 function createReport(scope: string): Report

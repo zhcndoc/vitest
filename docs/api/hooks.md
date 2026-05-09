@@ -34,7 +34,7 @@ beforeEach(async () => {
 
 这里，`beforeEach` 确保为每个测试添加用户。
 
-`beforeEach` 还可以返回一个可选的清理函数（等同于 [`afterEach`](#aftereach)）：
+`beforeEach` 也可以返回一个可选的清理函数。它与 [`afterEach`](#aftereach) 类似。唯一的区别是，它会在所有其他 `afterEach` 钩子执行之后再执行：
 
 ```ts
 import { beforeEach } from 'vitest'
@@ -43,7 +43,7 @@ beforeEach(async () => {
   // 在每次测试运行前调用一次
   await prepareSomething()
 
-  // 清理函数，在每次测试运行后调用一次
+  // 清理函数，在每次测试运行后调用一次，且在 afterEach 钩子之后执行
   return async () => {
     await resetSomething()
   }
@@ -102,7 +102,7 @@ beforeAll(async () => {
 
 这里，`beforeAll` 确保在测试运行前设置好模拟数据。
 
-`beforeAll` 还可以返回一个可选的清理函数（等同于 [`afterAll`](#afterall)）：
+`beforeAll` 也可以返回一个可选的清理函数。它与 [`afterAll`](#afterall) 类似。唯一的区别是，它会在所有其他 `afterAll` 钩子执行之后再执行：
 
 ```ts
 import { beforeAll } from 'vitest'
@@ -111,7 +111,7 @@ beforeAll(async () => {
   // 在所有测试运行前调用一次
   await startMocking()
 
-  // 清理函数，在所有测试运行后调用一次
+  // 清理函数，在所有测试运行后调用一次，且在 afterAll 钩子之后执行
   return async () => {
     await stopMocking()
   }
@@ -212,11 +212,11 @@ aroundEach(async (runTest) => {
 })
 
 // 输出顺序：
-//  outer before
-//    inner before
-//      test
-//    inner after
-//  outer after
+//  外层之前
+//    内层之前
+//      测试
+//    内层之后
+//  外层之后
 ```
 
 ### 上下文和测试夹具
@@ -324,7 +324,7 @@ aroundAll(async (runSuite) => {
   console.log('inner after')
 })
 
-// 输出顺序：outer before → inner before → tests → inner after → outer after
+// 输出顺序：外层之前 → 内层之前 → 测试 → 内层之后 → 外层之后
 ```
 
 每个套件都有自己独立的 `aroundAll` 钩子。父套件的 `aroundAll` 会包裹子套件的执行：
@@ -394,7 +394,7 @@ test.concurrent('performs a query', ({ onTestFinished }) => {
 这个钩子在创建可复用逻辑时特别有用：
 
 ```ts
-// 这可以在一个单独的文件中
+// 这可以放在单独的文件中
 function getTestDb() {
   const db = connectMockedDb()
   onTestFinished(() => db.close())
@@ -416,7 +416,7 @@ test('performs an organization query', async () => {
 })
 ```
 
-在每个测试后清理你的 spies 也是一个好习惯，这样它们就不会泄漏到其他测试中。你可以通过全局启用 [`restoreMocks`](/config/restoremocks) 配置，或者在 `onTestFinished` 内部恢复 spy 来实现（如果你试图在测试结束时恢复 mock，如果其中一个断言失败，它将不会被恢复 - 使用 `onTestFinished` 确保代码始终运行）：
+在每个测试后清理你的 spy 也是一个好习惯，这样它们就不会泄漏到其他测试中。你可以通过全局启用 [`restoreMocks`](/config/restoremocks) 配置，或者在 `onTestFinished` 内部恢复 spy 来实现（如果你试图在测试结束时恢复 mock，而其中一个断言失败，它将不会被恢复——使用 `onTestFinished` 可以确保代码始终运行）：
 
 ```ts
 import { onTestFinished, test } from 'vitest'

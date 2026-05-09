@@ -119,6 +119,7 @@ export function serializeConfig(project: TestProject): SerializedConfig {
         locators: {
           testIdAttribute: browser.locators.testIdAttribute,
           exact: browser.locators.exact,
+          errorFormat: browser.locators.errorFormat,
         },
         providerOptions: provider?.name === 'playwright'
           ? {
@@ -150,6 +151,7 @@ export function serializeConfig(project: TestProject): SerializedConfig {
     tags: config.tags || [],
     tagsFilter: config.tagsFilter,
     strictTags: config.strictTags ?? true,
+    mergeReportsLabel: config.mergeReportsLabel,
     slowTestThreshold:
       config.slowTestThreshold
       ?? globalConfig.slowTestThreshold

@@ -221,6 +221,28 @@ describe('the validation works correctly', { meta: { decorated: true } }, () => 
 如果元数据是在收集期间附加的（在 `test` 函数之外），那么它将在自定义报告器中的 [`onTestModuleCollected`](./reporters#ontestmodulecollected) 钩子中可用。
 :::
 
+## logs <Version>5.0.0</Version> {#logs}
+
+```ts
+function logs(): ReadonlyArray<UserConsoleLog>
+```
+
+在此套件的测试收集期间记录的控制台日志。例如：
+
+```ts
+describe('suite', () => {
+  console.log('included') // [!code highlight]
+
+  beforeAll(() => {
+    console.log('included') // [!code highlight]
+  })
+
+  test('test', () => {
+    console.log('not included') // [!code error]
+  })
+})
+```
+
 ## toTestSpecification <Version>4.1.0</Version> {#totestspecification}
 
 ```ts

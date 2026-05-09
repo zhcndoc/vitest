@@ -191,8 +191,8 @@ vitest --api=false
 
 ### changed
 
-- **Type:** `boolean | string`
-- **Default:** false
+- **类型:** `boolean | string`
+- **默认值:** false
 
 仅针对更改的文件运行测试。如果未提供值，它将针对未提交的更改运行测试（包括暂存和未暂存的）。
 
@@ -204,8 +204,8 @@ vitest --api=false
 
 ### shard
 
-- **Type:** `string`
-- **Default:** disabled
+- **类型:** `string`
+- **默认值:** disabled
 
 要执行的测试套件分片，格式为 `<index>`/`<count>`，其中
 
@@ -225,14 +225,14 @@ vitest run --shard=3/3
 :::
 
 ::: tip
-如果 `--reporter=blob` 在没有输出文件的情况下使用，默认路径将包含当前的分片配置，以避免与其他 Vitest 进程冲突。
+如果在未指定输出文件的情况下使用 `--reporter=blob`，默认路径将包含当前分片配置以及来自 `VITEST_BLOB_LABEL` 的 blob 标签，或来自 blob reporter 的 `label` 选项，以避免与其他 Vitest 进程发生冲突。
 :::
 
 ### merge-reports
 
 - **类型:** `boolean | string`
 
-合并位于指定文件夹（默认为 `.vitest-reports`）中的每个 blob 报告。你可以将此命令与任何报告器一起使用（[`blob`](/guide/reporters#blob-reporter) 除外）：
+合并指定文件夹中的所有 blob 报告（默认情况下为 `.vitest/blob/`）。你可以在此命令中使用任意 reporter（除了 [`blob`](/guide/reporters#blob-reporter)）：
 
 ```sh
 vitest --merge-reports --reporter=junit

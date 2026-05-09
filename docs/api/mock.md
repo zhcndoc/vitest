@@ -413,7 +413,7 @@ const myMockFn = vi
   .mockReturnValueOnce('first call')
   .mockReturnValueOnce('second call')
 
-// '第一次调用', '第二次调用', 'default', 'default'
+// '第一次调用', '第二次调用', '默认', '默认'
 console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn())
 ```
 
@@ -508,7 +508,7 @@ expect(calledArguments[0]).toEqual({ value: 0 })
 const lastCall: Parameters<T> | undefined
 ```
 
-这包含最后一次调用的参数。如果未调用模拟，它将返回 `undefined`。
+这包含最后一次调用的参数。如果模拟未被调用，它将返回 `undefined`。
 
 ## mock.results
 
@@ -543,13 +543,13 @@ type MockResult<T>
 const results: MockResult<ReturnType<T>>[]
 ```
 
-这是一个数组，包含所有从函数 `返回` 的值。数组的一项是一个具有 `type` 和 `value` 属性的对象。可用类型有：
+这是一个数组，包含函数返回的所有值。数组中的每一项都是一个具有 `type` 和 `value` 属性的对象。可用的类型有：
 
 - `'return'` - 函数返回而未抛出。
 - `'throw'` - 函数抛出了一个值。
 - `'incomplete'` - 函数尚未运行完毕。
 
-`value` 属性包含返回值或抛出的错误。如果函数返回了一个 `Promise`，那么 `result` 将始终为 `'return'`，即使 Promise 被拒绝。
+`value` 属性包含返回值或抛出的错误。如果函数返回了一个 `Promise`，那么 `result` 将始终为 `'return'`，即使 `Promise` 被拒绝。
 
 ```js
 const fn = vi.fn()
@@ -603,7 +603,7 @@ export type MockSettledResult<T>
 const settledResults: MockSettledResult<Awaited<ReturnType<T>>>[]
 ```
 
-一个数组，包含所有被函数解析或拒绝的值。
+一个数组，包含函数被解析或拒绝的所有值。
 
 如果函数返回非 Promise 值，`value` 将保持不变，但 `type` 仍会显示为 `fulfilled` 或 `rejected`。
 
@@ -637,7 +637,7 @@ fn.mock.settledResults === [
 const invocationCallOrder: number[]
 ```
 
-此属性返回模拟函数的执行顺序。它是一个在所有定义的模拟之间共享的数字数组。
+此属性返回模拟函数的执行顺序。它是一个在所有已定义模拟之间共享的数字数组。
 
 ```js
 const fn1 = vi.fn()
@@ -676,10 +676,10 @@ fn.mock.contexts[1] === context
 const instances: ReturnType<T>[]
 ```
 
-此属性是一个数组，包含使用 `new` 关键字调用模拟时创建的所有实例。注意，这是函数的实际上下文（`this`），而不是返回值。
+此属性是一个数组，包含使用 `new` 关键字调用模拟时创建的所有实例。注意，这里是函数的实际上下文（`this`），而不是返回值。
 
 ::: warning
-如果模拟是使用 `new MyClass()` 实例化的，那么 `mock.instances` 将是一个包含一个值的数组：
+如果使用 `new MyClass()` 实例化模拟，那么 `mock.instances` 将是一个只包含一个值的数组：
 
 ```js
 const MyClass = vi.fn()
@@ -688,10 +688,12 @@ const a = new MyClass()
 MyClass.mock.instances[0] === a
 ```
 
-如果你从构造函数返回一个值，它将不在 `instances` 数组中，而是在 `results` 中：
+如果你从构造函数返回一个值，它不会出现在 `instances` 数组中，而是会出现在 `results` 中：
 
 ```js
-const Spy = vi.fn(() => ({ method: vi.fn() }))
+const Spy = vi.fn(function () {
+  return { method: vi.fn() }
+})
 const a = new Spy()
 
 Spy.mock.instances[0] !== a

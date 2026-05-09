@@ -27,3 +27,52 @@ outline: deep
 const locator = page.getByText('Hello, World', { exact: true })
 await locator.click()
 ```
+
+## browser.locators.errorFormat <Version>5.0.0</Version> {#browser-locators-errorformat}
+
+- **Type:** `'html' | 'aria' | 'all'`
+- **Default:** `'all'`
+
+控制当定位器无法找到元素时 Vitest 打印的内容。Vitest 会打印定位器搜索运行所在的 DOM 子树的信息，或者在页面级定位器中打印 `document.body`。
+
+- `'html'` 使用 [`utils.prettyDOM`](/api/browser/context#prettydom) 将该 DOM 子树以 HTML 形式打印出来。
+- `'aria'` 将该 DOM 子树作为 [ARIA 快照](/guide/browser/aria-snapshots) 打印出来，重点关注可访问的角色、名称和状态。
+- `'all'` 先打印 ARIA 快照，然后输出 HTML。
+
+```ts
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    browser: {
+      enabled: true,
+      locators: {
+        errorFormat: 'aria',
+      },
+    },
+  },
+})
+```
+
+例如，`all` 会显示如下错误：
+
+```html
+VitestBrowserElementError: Cannot find element with locator: getByRole('button', { name: 'Save' })
+
+ARIA tree:
+- main:
+  - heading "Settings" [level=1]
+  - button "Cancel"
+
+HTML:
+<body>
+  <main>
+    <h1>
+      Settings
+    </h1>
+    <button>
+      Cancel
+    </button>
+  </main>
+</body>
+```
