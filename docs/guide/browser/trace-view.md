@@ -102,7 +102,7 @@ TODO: The browser UI / Vitest UI / browser driver combinations are not specific 
 
 每个条目都会捕获该时刻的 DOM 状态，以及时间信息、选择器和触发它的源位置。
 
-元素高亮是尽力而为的。有些特定 provider 的选择器、shadow DOM 选择器，或不在捕获快照中的元素，可能不会被高亮。
+In Vitest UI, trace entries are streamed as the test runs, so you can inspect recorded steps before the test finishes. Long-running actions, `expect.element(...)` assertions, and callback `page.mark()` entries appear as in-progress steps first, then update with their final status and duration.
 
 ## 自定义 Trace 条目
 
@@ -134,7 +134,7 @@ import { page } from 'vitest/browser'
 
 const renderContent = vi.defineHelper(async (html: string) => {
   document.body.innerHTML = html
-  await page.elementLocator(document.body).mark('render')
+  await page.elementLocator(document.body).mark('渲染')
 })
 
 test('显示按钮', async () => {

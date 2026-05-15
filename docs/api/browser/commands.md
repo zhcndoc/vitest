@@ -26,7 +26,7 @@ import { server } from 'vitest/browser'
 
 const { readFile, writeFile, removeFile } = server.commands
 
-it('handles files', async () => {
+it('处理文件', async () => {
   const file = './test.txt'
 
   await writeFile(file, 'hello world')
@@ -58,7 +58,7 @@ expect(input).toHaveValue('a')
 ```
 
 ::: warning
-CDP 会话仅适用于 `playwright` 提供者，且仅在使用 `chromium` 浏览器时有效。你可以在 playwright 的 [`CDPSession`](https://playwright.dev/docs/api/class-cdpsession) 文档中阅读更多关于它的信息。
+CDP 会话仅适用于 `playwright` 提供者，且仅在使用 `chromium` 浏览器时有效。你可以在 playwright 的 [`CDPSession`](https://playwright.dev/docs/api/class-cdpession) 文档中阅读更多关于它的信息。
 :::
 
 ## 自定义命令
@@ -105,7 +105,7 @@ export default function BrowserCommands(): Plugin {
 import { commands } from 'vitest/browser'
 import { expect, test } from 'vitest'
 
-test('custom command works correctly', async () => {
+test('自定义命令正常工作', async () => {
   const result = await commands.myCustomCommand('test1', 'test2')
   expect(result).toEqual({ someValue: true })
 })
@@ -123,6 +123,25 @@ declare module 'vitest/browser' {
 ::: warning
 如果自定义函数与内置函数同名，它们将覆盖内置函数。
 :::
+
+### 录制 trace 标记
+
+自定义命令可以通过 `context.mark` 为触发它们的测试记录 [trace 标记](/api/browser/context#mark)。这相当于服务端的 `page.mark`，并有助于在 [trace 视图](/guide/browser/trace-view) 中标注命令内部执行的自定义操作。
+
+```ts
+import type { BrowserCommand } from 'vitest/node'
+
+export const uploadFixture: BrowserCommand<[name: string]> = async (
+  context,
+  name,
+) => {
+  await context.mark(`上传开始：${name}`, { kind: 'action' })
+  // ... 执行服务端工作
+  await context.mark(`上传完成：${name}`, { kind: 'action' })
+}
+```
+
+当未启用浏览器追踪或当前会话中没有正在运行的测试时，`context.mark` 不会执行任何操作。与 `page.mark` 不同，它不接受回调形式。
 
 ### 自定义 `playwright` 命令
 

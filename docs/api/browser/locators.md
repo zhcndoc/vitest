@@ -503,7 +503,7 @@ function or(locator: Locator): Locator
 ```tsx
 <>
   <button>Click me</button>
-  <a href="https://vitest.dev">Error happened!</a>
+  <a href="https://vitest.dev">发生错误！</a>
 </>
 
 page.getByRole('button')
@@ -846,12 +846,14 @@ const { path, base64 } = await button.screenshot({
 ### mark
 
 ```ts
-function mark(name: string, options?: { stack?: string }): Promise<void>
+function mark(name: string, options?: { stack?: string; kind?: BrowserTraceEntryKind }): Promise<void>
 ```
 
 在跟踪时间线上添加一个命名标记，并使用当前定位器作为标记上下文。
 
 传递 `options.stack` 以覆盖跟踪元数据中的调用站点位置。这对于需要保留最终用户源代码位置的包装库很有用。
+
+传递 `options.kind` 以将标记归类为特定类型，例如 `'action'`。
 
 ```ts
 import { page } from 'vitest/browser'

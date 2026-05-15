@@ -286,10 +286,11 @@ export default defineConfig({
 ::: danger 不支持的选项
 某些配置选项不允许在项目配置中使用。最值得注意的是：
 
-- `coverage`：覆盖率是针对整个进程进行的
-- `reporters`：仅支持根级报告器
-- `resolveSnapshotPath`：仅遵循根级解析器
-- 所有其他不影响测试运行器的选项
+- `coverage`: 覆盖率在整个进程中计算
+- `reporters`: 仅支持根级报告器
+- `resolveSnapshotPath`: 仅支持根级解析器
+- `attachmentsDir`: 附件存储在一个由所有项目共享的根级目录中
+- all other options that don't affect test runners
 
 所有在项目配置中不受支持的配置选项都在其名称旁边标记有 <CRoot /> 图标。它们只能在根配置文件中定义一次。
 :::

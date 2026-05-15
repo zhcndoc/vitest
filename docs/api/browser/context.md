@@ -82,11 +82,11 @@ export const page: {
   /**
    * 当启用浏览器追踪时，添加追踪标记。
    */
-  mark(name: string, options?: { stack?: string }): Promise<void>
+  mark(name: string, options?: { stack?: string; kind?: BrowserTraceEntryKind }): Promise<void>
   /**
    * 当启用浏览器追踪时，在追踪标记下分组多个操作。
    */
-  mark<T>(name: string, body: () => T | Promise<T>, options?: { stack?: string }): Promise<T>
+  mark<T>(name: string, body: () => T | Promise<T>, options?: { stack?: string; kind?: BrowserTraceEntryKind }): Promise<T>
   /**
    * 使用自定义方法扩展默认 `page` 对象。
    */
@@ -127,11 +127,11 @@ export const page: {
 ### mark
 
 ```ts
-function mark(name: string, options?: { stack?: string }): Promise<void>
+function mark(name: string, options?: { stack?: string; kind?: BrowserTraceEntryKind }): Promise<void>
 function mark<T>(
   name: string,
   body: () => T | Promise<T>,
-  options?: { stack?: string },
+  options?: { stack?: string; kind?: BrowserTraceEntryKind },
 ): Promise<T>
 ```
 
@@ -139,7 +139,9 @@ function mark<T>(
 
 传递 `options.stack` 以覆盖追踪元数据中的调用站点位置。这对于需要保留最终用户源代码位置的包装库很有用。
 
-如果传递回调，Vitest 会创建一个具有此名称的追踪组，运行回调，并自动关闭该组。
+传递 `options.kind` 可将你的标记分类为特定类型，例如 `'action'`。
+
+如果你传递一个回调，Vitest 会创建一个以此命名的追踪分组，运行该回调，并自动关闭该分组。
 
 ```ts
 import { page } from 'vitest/browser'
@@ -151,11 +153,13 @@ await page.mark('after submit')
 await page.mark('submit flow', async () => {
   await page.getByRole('textbox', { name: 'Email' }).fill('john@example.com')
   await page.getByRole('button', { name: 'Submit' }).click()
-})
+}, { kind: 'action' })
 ```
 
 ::: tip
-此方法仅在 [`browser.trace`](/config/browser/trace) 启用时有用。
+这种方法仅在启用 [`browser.trace`](/config/browser/trace) 时有用。
+
+[`BrowserCommandContext`](/api/browser/commands#recording-trace-markers) 上提供了服务器端等效方法，因此 [自定义命令](/api/browser/commands#custom-commands) 也可以记录归因于触发它们的测试的标记。
 :::
 
 ### frameLocator
@@ -269,7 +273,7 @@ export const utils: {
   /**
    * 返回元素的美化 HTML。
    */
-  prettyDOM(
+   prettyDOM(
     dom?: Element | Locator | undefined | null,
     maxLength?: number,
     prettyFormatOptions?: PrettyDOMOptions,
