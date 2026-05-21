@@ -60,5 +60,21 @@ export default defineConfig({
 ::: tip
 最有用的选项位于 `capabilities` 对象上。WebdriverIO 允许嵌套能力，但 Vitest 将忽略这些选项，因为我们依赖不同的机制来启动多个浏览器。
 
-请注意，Vitest 将忽略 `capabilities.browserName` — 请改用 [`test.browser.instances.browser`](/config/browser/instances#browser)。
+请注意，Vitest 会忽略 `capabilities.browserName`；请改用 [`test.browser.instances.browser`](/config/browser/instances#browser)。
 :::
+
+## CI 中的有界面 Chrome
+
+Vitest 会在 CI 中自动启用 [`browser.headless`](/config/browser/headless)。
+如果您在 Linux CI 运行器上显式将 Chrome 的 `headless` 设置为 `false`，Chrome
+仍然需要显示服务器。若没有显示服务器，WebDriverIO 或 ChromeDriver 可能会报出误导性的错误，例如 `session not created: probably user data
+directory is already in use`。
+
+当您需要在 GitHub
+Actions 或其他 Linux CI 环境中使用有界面 Chrome 时，请通过 `xvfb-run` 运行测试命令：
+
+```bash
+xvfb-run npm test
+```
+
+或者，在 CI 中保持启用 `browser.headless`，仅在本地调试时使用有界面模式。

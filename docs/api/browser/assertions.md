@@ -126,7 +126,7 @@ function toBeEmptyDOMElement(): Promise<void>
 ```html
 <span data-testid="not-empty"><span data-testid="empty"></span></span>
 <span data-testid="with-whitespace"> </span>
-<span data-testid="with-comment"><!-- comment --></span>
+<span data-testid="with-comment"><!-- 注释 --></span>
 ```
 
 ```ts
@@ -494,7 +494,7 @@ function toHaveAccessibleName(name?: string | RegExp): Promise<void>
 这允许你断言元素具有预期的
 [可访问名称](https://w3c.github.io/accname/)。例如，这对于断言表单元素和按钮是否有适当的标签很有用。
 
-你可以传递预期的可访问名称的确切字符串，或者你可以通过传递正则表达式，或使用
+你可以传递预期的可访问名称的确切字符串，或者你也可以通过传递正则表达式，或使用
 [`expect.stringContaining`](/api/expect#expect-stringcontaining) 或 [`expect.stringMatching`](/api/expect#expect-stringmatching) 进行部分匹配。
 
 ```html
@@ -753,9 +753,9 @@ function toHaveValue(value: string | string[] | number | null): Promise<void>
 <input type="number" value="5" data-testid="input-number" />
 <input type="text" data-testid="input-empty" />
 <select multiple data-testid="select-number">
-  <option value="first">First Value</option>
-  <option value="second" selected>Second Value</option>
-  <option value="third" selected>Third Value</option>
+  <option value="first">第一个值</option>
+  <option value="second" selected>第二个值</option>
+  <option value="third" selected>第三个值</option>
 </select>
 ```
 
@@ -782,26 +782,26 @@ function toHaveDisplayValue(
 这允许你检查给定表单元素是否具有指定的显示值（最终用户将看到的值）。它接受 `<input>`、`<select>` 和 `<textarea>` 元素，但不包括 `<input type="checkbox">` 和 `<input type="radio">`，因为它们只能使用 [`toBeChecked`](#tobechecked) 或 [`toHaveFormValues`](#tohaveformvalues) 进行有意义的匹配。
 
 ```html
-<label for="input-example">First name</label>
+<label for="input-example">名字</label>
 <input type="text" id="input-example" value="Luca" />
 
-<label for="textarea-example">Description</label>
-<textarea id="textarea-example">An example description here.</textarea>
+<label for="textarea-example">描述</label>
+<textarea id="textarea-example">这里是一个示例描述。</textarea>
 
-<label for="single-select-example">Fruit</label>
+<label for="single-select-example">水果</label>
 <select id="single-select-example">
-  <option value="">Select a fruit...</option>
-  <option value="banana">Banana</option>
-  <option value="ananas">Ananas</option>
-  <option value="avocado">Avocado</option>
+  <option value="">请选择一种水果...</option>
+  <option value="banana">香蕉</option>
+  <option value="ananas">菠萝</option>
+  <option value="avocado">牛油果</option>
 </select>
 
-<label for="multiple-select-example">Fruits</label>
+<label for="multiple-select-example">水果</label>
 <select id="multiple-select-example" multiple>
-  <option value="">Select a fruit...</option>
-  <option value="banana" selected>Banana</option>
-  <option value="ananas">Ananas</option>
-  <option value="avocado" selected>Avocado</option>
+  <option value="">请选择一种水果...</option>
+  <option value="banana" selected>香蕉</option>
+  <option value="ananas">菠萝</option>
+  <option value="avocado" selected>牛油果</option>
 </select>
 ```
 
@@ -923,11 +923,11 @@ function toHaveRole(role: ARIARole): Promise<void>
 角色可以匹配显式角色（通过 `role` 属性），或通过 [隐式 ARIA 语义](https://www.w3.org/TR/html-aria/#docconformance) 匹配的隐式角色。
 
 ```html
-<button data-testid="button">Continue</button>
-<div role="button" data-testid="button-explicit">Continue</div>
-<button role="switch button" data-testid="button-explicit-multiple">Continue</button>
-<a href="/about" data-testid="link">About</a>
-<a data-testid="link-invalid">Invalid link<a/>
+<button data-testid="button">继续</button>
+<div role="button" data-testid="button-explicit">继续</div>
+<button role="switch button" data-testid="button-explicit-multiple">继续</button>
+<a href="/about" data-testid="link">关于</a>
+<a data-testid="link-invalid">无效链接<a/>
 ```
 
 ```ts
@@ -971,11 +971,11 @@ function toHaveSelection(selection?: string): Promise<void>
 <div>
   <input type="text" value="text selected text" data-testid="text" />
   <textarea data-testid="textarea">text selected text</textarea>
-  <p data-testid="prev">prev</p>
+  <p data-testid="prev">前一段</p>
   <p data-testid="parent">
-    text <span data-testid="child">selected</span> text
+    文本 <span data-testid="child">已选中</span> 文本
   </p>
-  <p data-testid="next">next</p>
+  <p data-testid="next">下一段</p>
 </div>
 ```
 
@@ -1001,20 +1001,20 @@ await expect.element(getByTestId('parent')).toHaveSelection('selected')
 range.setStart(getByTestId('prev').element(), 0)
 range.setEnd(getByTestId('child').element().childNodes[0], 3)
 await expect.element(queryByTestId('prev')).toHaveSelection('prev')
-await expect.element(queryByTestId('child')).toHaveSelection('sel')
-await expect.element(queryByTestId('parent')).toHaveSelection('text sel')
-await expect.element(queryByTestId('next')).not.toHaveSelection()
+await expect.element(getByTestId('child')).toHaveSelection('sel')
+await expect.element(getByTestId('parent')).toHaveSelection('text sel')
+await expect.element(getByTestId('next')).not.toHaveSelection()
 
 // 选中内容从 child 的一部分、父元素中 child 之后的文本以及 next 的一部分开始生效
 range.setStart(getByTestId('child').element().childNodes[0], 3)
 range.setEnd(getByTestId('next').element().childNodes[0], 2)
 await expect.element(queryByTestId('child')).toHaveSelection('ected')
-await expect.element(queryByTestId('parent')).toHaveSelection('ected text')
+await expect.element(getByTestId('parent')).toHaveSelection('ected text')
 await expect.element(queryByTestId('prev')).not.toHaveSelection()
 await expect.element(queryByTestId('next')).toHaveSelection('ne')
 ```
 
-## toMatchScreenshot <Badge type="warning">实验性</Badge> {#tomatchscreenshot}
+## toMatchScreenshot <Experimental /> {#tomatchscreenshot}
 
 ```ts
 function toMatchScreenshot(

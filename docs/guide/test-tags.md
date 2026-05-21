@@ -7,9 +7,28 @@ outline: deep
 
 [`标签`](/config/tags) 允许你为测试添加标记，以便你可以过滤运行的内容并在需要时覆盖它们的选项。
 
+## 为什么使用标签
+
+当一个测试套件中存在一组共享运行器选项的测试时，标签就会变得非常有用，例如数据库查询需要更长的超时时间，或者 CI 上的集成测试需要重试。手动在每个相关测试上重复这些选项既脆弱又麻烦，而且这些分类通常也未必能和文件路径对应起来，所以按文件拆分并不是一个可行的方案。尤其是易失败测试，它们往往会在 bug 出现的任何地方积累下来，而不是集中在某个 `flaky/` 文件夹里。
+
+标签可以表达这种类别：定义中保存共享选项，而任何标记了该标签的测试都会继承这些选项。这些标签名也可以组合成表达式：`--tags-filter='db && !flaky'` 会运行未标记为 flaky 的数据库测试。[`TestRunner.matchesTags`](#checking-tags-filter-at-runtime) 在运行时提供了相同的表达式，在 `globalSetup` 需要执行昂贵工作、且当没有任何带标签的测试被安排执行时可以跳过它的场景中非常有用。
+
+## 什么时候该使用标签
+
+| 如果你想要…… | 使用 |
+| --- | --- |
+| 将超时/重试应用到一类测试上 | **标签** |
+| 标记分散在多个文件中的横切类别（`flaky`、`slow`、`frontend`） | **标签** |
+| 根据过滤结果有条件地运行昂贵的初始化流程 | **标签** + [`matchesTags`](#checking-tags-filter-at-runtime) |
+| 按测试名称匹配运行一个子集 | [`-t` / `testNamePattern`](/config/testnamepattern) |
+| 按文件路径运行一个子集 | `--include` / `--exclude` |
+| 以不同的 *运行器设置*（隔离、池、环境）运行不同文件 | [测试项目](/guide/projects) |
+
+你可以将项目和标签组合使用。位于 `Sequential` 项目中的测试也可以带有 `flaky` 标签，Vitest 会同时应用二者。
+
 ## 定义标签
 
-标签必须在配置文件中定义 —— Vitest 不提供任何内置标签。如果测试使用了配置中未定义的标签，测试运行器将抛出错误。这可以防止因标签名称拼写错误而导致意外行为。你可以使用 [`strictTags`](/config/stricttags) 选项禁用此检查。
+标签必须在你的配置文件中定义。默认情况下，Vitest 不提供任何内置标签。如果测试使用了配置中未定义的标签，测试运行器将抛出错误。这可以防止由于标签名拼写错误而导致的意外行为。你可以使用 [`strictTags`](/config/stricttags) 选项禁用此检查。
 
 你必须定义标签的 `name`，并且可以定义将应用于标记了该标签的每个测试的附加选项，例如 `timeout` 或 `retry`。有关可用选项的完整列表，请参阅 [`tags`](/config/tags)。
 
@@ -21,20 +40,20 @@ export default defineConfig({
     tags: [
       {
         name: 'frontend',
-        description: 'Tests written for frontend.',
+        description: '面向前端编写的测试。',
       },
       {
         name: 'backend',
-        description: 'Tests written for backend.',
+        description: '面向后端编写的测试。',
       },
       {
         name: 'db',
-        description: 'Tests for database queries.',
+        description: '数据库查询测试。',
         timeout: 60_000,
       },
       {
         name: 'flaky',
-        description: 'Flaky CI tests.',
+        description: '不稳定的 CI 测试。',
         retry: process.env.CI ? 3 : 0,
         timeout: 30_000,
         priority: 1,
@@ -44,25 +63,7 @@ export default defineConfig({
 })
 ```
 
-::: warning
-如果多个标签具有相同的选项并用于同一个测试，它们将按照指定的顺序解析，或者先按优先级排序（数字越小，优先级越高）。没有定义优先级的标签会先合并，并将被更高优先级的标签覆盖：
-
-```ts
-test('flaky database test', { tags: ['flaky', 'db'] })
-// { timeout: 30_000, retry: 3 }
-```
-
-请注意，`timeout` 是 30 秒（而不是 60 秒），因为 `flaky` 标签的优先级为 `1`，而 `db`（定义了 60 秒超时）没有优先级。
-
-如果测试定义了自己的选项，它们将具有最高优先级：
-
-```ts
-test('flaky database test', { tags: ['flaky', 'db'], timeout: 120_000 })
-// { timeout: 120_000, retry: 3 }
-```
-:::
-
-如果你使用的是 TypeScript，可以通过使用包含字符串联合的属性增强 `TestTags` 类型来强制使用可用的标签（确保此文件包含在你的 `tsconfig` 中）：
+如果你正在使用 TypeScript，可以通过为 `TestTags` 类型添加一个包含字符串联合类型的属性来强制限定可用标签（确保此文件已被你的 `tsconfig` 包含）：
 
 ```ts [vitest.shims.ts]
 import 'vitest'
@@ -83,10 +84,10 @@ declare module 'vitest' {
 ```shell
 vitest --list-tags
 
-frontend: Tests written for frontend.
-backend: Tests written for backend.
-db: Tests for database queries.
-flaky: Flaky CI tests.
+frontend: 面向前端编写的测试。
+backend: 面向后端编写的测试。
+db: 数据库查询测试。
+flaky: 不稳定的 CI 测试。
 ```
 
 要以 JSON 格式打印，传递 `--list-tags=json`：
@@ -117,6 +118,24 @@ flaky: Flaky CI tests.
   ],
   "projects": []
 }
+```
+
+### 解决选项冲突
+
+如果多个标签定义了相同的选项并应用于同一个测试，它们会先按 `priority` 解决（数字越小优先级越高），然后按它们在测试 `tags` 数组中出现的顺序解决。不带 `priority` 的标签会先合并，并被更高优先级的标签覆盖：
+
+```ts
+test('flaky database test', { tags: ['flaky', 'db'] })
+// { timeout: 30_000, retry: 3 }
+```
+
+`timeout` 为 30 秒（而不是 60 秒），因为 `flaky` 的优先级是 `1`，而 `db` 没有优先级。
+
+在测试自身上定义的选项始终优先生效：
+
+```ts
+test('flaky database test', { tags: ['flaky', 'db'], timeout: 120_000 })
+// { timeout: 120_000, retry: 3 }
 ```
 
 ## 在测试中使用标签
@@ -303,7 +322,7 @@ vitest --tags-filter="unit || e2e" --tags-filter="!slow"
 
 ### 在运行时检查标签过滤器
 
-你可以使用 `TestRunner.matchesTags`（自 Vitest 4.1.1 起）来检查当前标签过滤器是否匹配一组标签。这对于仅在包含相关测试时条件性地运行昂贵的设置逻辑非常有用：
+你可以使用 `TestRunner.matchesTags` 来检查当前的标签过滤器是否匹配一组标签。这在只想在包含相关测试时才运行昂贵的初始化逻辑时非常有用：
 
 ```ts
 import { beforeAll, TestRunner } from 'vitest'
@@ -316,4 +335,10 @@ beforeAll(async () => {
 })
 ```
 
-该方法接受一个标签数组，如果当前 `--tags-filter` 将包含具有这些标签的测试，则返回 `true`。如果没有激活标签过滤器，它始终返回 `true`。
+该方法接受一个标签数组，如果当前的 `--tags-filter` 会包含带有这些标签的测试，则返回 `true`。如果没有启用标签过滤器，它始终返回 `true`。
+
+## 另请参阅
+
+- [按文件隔离设置](/guide/recipes/disable-isolation) 和 [并行与顺序测试文件](/guide/recipes/parallel-sequential) 使用项目按文件划分测试。当类别需要不同的运行器设置，而不是不同的超时时间或重试次数时，请考虑使用项目。
+- [测试过滤](/guide/filtering) 涵盖 `-t`、`--include` 以及其余 CLI 过滤器。
+- [`tags`](/config/tags) 和 [`strictTags`](/config/stricttags) 配置参考。

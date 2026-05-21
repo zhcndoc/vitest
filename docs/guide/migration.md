@@ -128,7 +128,7 @@ export default defineConfig({
 export default defineConfig({
   test: {
     coverage: {
-      // 未设置 Include，仅包含测试运行期间加载的文件
+      // 未设置 include，仅包含测试运行期间加载的文件
       include: undefined, // [!code ++]
 
       // 匹配此模式的加载文件将被排除：
@@ -325,7 +325,7 @@ export default defineWorkspace([ // [!code --]
 ```
 :::
 
-### Browser Provider 重构
+### 浏览器提供者重构
 
 在 Vitest 4.0 中，browser provider 现在接受对象而不是字符串（`'playwright'`、`'webdriverio'`）。`preview` 不再是默认值。这使得使用自定义选项更简单，并且不再需要添加 `/// <reference` 注释。
 
@@ -381,7 +381,7 @@ const { getElementError } = utils // [!code ++]
 `@vitest/browser/context` 和 `@vitest/browser/utils` 在过渡期间在运行时都有效，但它们将在未来的版本中被移除。
 :::
 
-### Pool 重构
+### 池重构
 
 Vitest 一直使用 [`tinypool`](https://github.com/tinylibs/tinypool) 来协调测试文件在测试运行器 worker 中的运行方式。Tinypool 内部控制了并行、隔离和 IPC 通信等复杂任务的工作方式。然而我们发现 Tinypool 有一些缺陷阻碍了 Vitest 的开发。在 Vitest v4 中，我们完全移除了 Tinypool 并在没有新依赖的情况下重写了 pool 的工作方式。阅读更多关于理由的信息 [feat!: rewrite pools without tinypool #8705](https://github.com/vitest-dev/vitest/pull/8705)。
 
@@ -478,7 +478,7 @@ export default defineConfig({
 ```
 :::
 
-参见 [食谱](/guide/recipes) 获取更多示例。
+另请参见 [按文件隔离设置](/guide/recipes/disable-isolation) 和 [并行与串行测试文件](/guide/recipes/parallel-sequential) 获取更多示例。
 
 ### 报告器更新
 
@@ -570,15 +570,15 @@ Vitest 的设计采用了与 Jest 兼容的 API，以使从 Jest 迁移尽可能
 
 ### 默认全局变量
 
-Jest 默认启用了他们的 [全局 API](https://jestjs.io/docs/api)。Vitest 没有。您可以通过 [`globals` 配置设置](/config/globals) 启用全局变量，或者更新代码以使用从 `vitest` 模块导入的内容。
+Jest 默认启用了它们的 [全局 API](https://jestjs.io/docs/api)。Vitest 没有。您可以通过 [`globals` 配置设置](/config/globals) 启用全局变量，或者更新代码以使用从 `vitest` 模块导入的内容。
 
 如果您决定保持全局变量禁用，请注意像 [`testing-library`](https://testing-library.com/) 这样的常用库将不会运行自动 DOM [清理](https://testing-library.com/docs/svelte-testing-library/api/#cleanup)。
 
 ### `mock.mockReset`
 
-Jest 的 [`mockReset`](https://jestjs.io/docs/mock-function-api#mockfnmockreset) 将 mock 实现替换为一个返回 `undefined` 的空函数。
+Jest 的 [`mockReset`](https://jestjs.io/docs/mock-function-api#mockfnmockreset) 会将 mock 实现替换为一个返回 `undefined` 的空函数。
 
-Vitest 的 [`mockReset`](/api/mock#mockreset) 将 mock 实现重置为其原始状态。
+Vitest 的 [`mockReset`](/api/mock#mockreset) 会将 mock 实现重置为其原始状态。
 也就是说，重置由 `vi.fn(impl)` 创建的 mock 会将 mock 实现重置为 `impl`。
 
 ### `mock.mock` 是持久的
@@ -621,7 +621,7 @@ const { cloneDeep } = await vi.importActual('lodash/cloneDeep') // [!code ++]
 
 ### 将 Mock 扩展到外部库
 
-Jest 默认这样做，当 Mock 一个模块并希望此 Mock 扩展到其他使用相同模块的外部库时，您应该明确告诉要 Mock 哪个第三方库，以便外部库成为源代码的一部分，通过使用 [server.deps.inline](/config/server#inline)。
+Jest 默认会这样做：当 Mock 一个模块并希望此 Mock 扩展到其他使用相同模块的外部库时，您应该明确告诉要 Mock 哪个第三方库，以便外部库成为源代码的一部分，可通过使用 [server.deps.inline](/config/server#inline)。
 
 ```
 server.deps.inline: ["lib-name"]
@@ -642,11 +642,11 @@ Vitest 的 `test` 名称用 `>` 符号连接，以便更容易区分测试和套
 
 ### 替换属性
 
-如果您想修改对象，您在 Jest 中将使用 [replaceProperty API](https://jestjs.io/docs/jest-object#jestreplacepropertyobject-propertykey-value)，您可以在 Vitest 中使用 [`vi.stubEnv`](/api/vi#vi-stubenv) 或 [`vi.spyOn`](/api/vi#vi-spyon) 来做同样的事情。
+如果您想修改对象，在 Jest 中会使用 [replaceProperty API](https://jestjs.io/docs/jest-object#jestreplacepropertyobject-propertykey-value)，您可以在 Vitest 中使用 [`vi.stubEnv`](/api/vi#vi-stubenv) 或 [`vi.spyOn`](/api/vi#vi-spyon) 来做同样的事情。
 
 ### Done 回调
 
-Vitest 不支持声明测试的回调风格。您可以重写它们以使用 `async`/`await` 函数，或使用 Promise 来模拟回调风格。
+Vitest 不支持以回调风格声明测试。您可以重写它们以使用 `async`/`await` 函数，或使用 Promise 来模拟回调风格。
 
 <!--@include: ./examples/promise-done.md-->
 
@@ -659,7 +659,7 @@ beforeEach(() => setActivePinia(createTestingPinia())) // [!code --]
 beforeEach(() => { setActivePinia(createTestingPinia()) }) // [!code ++]
 ```
 
-在 Jest 中钩子是顺序调用的（一个接一个）。默认情况下，Vitest 以栈方式运行钩子。要使用 Jest 的行为，更新 [`sequence.hooks`](/config/sequence#sequence-hooks) 选项：
+在 Jest 中，钩子是顺序调用的（一个接一个）。默认情况下，Vitest 以栈方式运行钩子。要使用 Jest 的行为，请更新 [`sequence.hooks`](/config/sequence#sequence-hooks) 选项：
 
 ```ts
 export default defineConfig({
@@ -683,7 +683,7 @@ let fn: Mock<(name: string) => number> // [!code ++]
 
 ### 计时器
 
-Vitest 不支持 Jest 的遗留计时器。
+Vitest 不支持 Jest 的旧版计时器。
 
 ### 超时
 
@@ -710,9 +710,9 @@ export default defineConfig({
 
 否则您的快照将会有很多转义的 `"` 字符。
 
-### 自定义快照匹配器 <Badge type="warning">实验性</Badge> <Version>4.1.3</Version>
+### 自定义快照匹配器 <Experimental /> <Version>4.1.3</Version> {#custom-snapshot-matcher}
 
-Jest 从 `jest-snapshot` 导入快照组合器。在 Vitest 中，改用 `vitest` 中的 `Snapshots`：
+Jest 从 `jest-snapshot` 导入快照组合器。在 Vitest 中，请改用 `vitest` 中的 `Snapshots`：
 
 ```ts
 const { toMatchSnapshot } = require('jest-snapshot') // [!code --]

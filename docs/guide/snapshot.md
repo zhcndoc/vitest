@@ -124,7 +124,7 @@ test('button looks correct', async () => {
 
 这会捕获截图并将其与参考图像进行比较以检测意外的视觉更改。在 [视觉回归测试指南](/guide/browser/visual-regression-testing) 中了解更多。
 
-## ARIA 快照 <Badge type="warning">实验性</Badge> <Version>4.1.4</Version>
+## ARIA 快照 <Experimental /> <Version>4.1.4</Version> {#aria-snapshots}
 
 ARIA 快照捕获 DOM 元素的可访问性树，并将其与存储的模板进行比较。基于 [Playwright 的 ARIA 快照](https://playwright.dev/docs/aria-snapshots)，它们提供了一种语义化的替代方案，用于视觉回归测试——断言结构和语义而非像素。
 
@@ -236,7 +236,7 @@ Pretty foo: Object {
 }
 ```
 
-## 自定义快照匹配器 <Badge type="warning">实验性</Badge> <Version>4.1.3</Version> {#custom-snapshot-matchers}
+## 自定义快照匹配器 <Experimental /> <Version>4.1.3</Version> {#custom-snapshot-matchers}
 
 你可以使用 `vitest` 中 `Snapshots` 暴露的组合函数构建自定义快照匹配器。这允许你在快照之前转换值，同时保留完整的快照生命周期支持（创建、更新、内联重写）。
 
@@ -335,7 +335,7 @@ declare module 'vitest' {
 有关 `expect.extend` 和自定义匹配器约定的更多信息，请参阅 [扩展匹配器](/guide/extending-matchers)。
 :::
 
-## 自定义快照域 <Badge type="warning">实验性</Badge> <Version>4.1.4</Version> {#custom-snapshot-domain}
+## 自定义快照域 <Experimental /> <Version>4.1.4</Version> {#custom-snapshot-domain}
 
 自定义序列化器控制值如何 _呈现_ 为快照字符串，但比较仍然是字符串相等性。**域快照适配器** 更进一步：它拥有整个比较管道，用于自定义匹配器，包括如何捕获值、呈现它、解析存储的快照以及语义匹配它们。
 
@@ -349,16 +349,16 @@ import type { DomainMatchResult, DomainSnapshotAdapter } from 'vitest'
 const myAdapter: DomainSnapshotAdapter<Captured, Expected> = {
   name: 'my-domain',
 
-  // 从接收到的值提取结构化数据
+  // 从接收到的值中提取结构化数据
   capture(received: unknown): Captured { /* ... */ },
 
   // 将捕获的数据呈现为快照字符串（存储的内容）
   render(captured: Captured): string { /* ... */ },
 
-  // 解析存储的快照字符串为结构化的预期值
+  // 将存储的快照字符串解析为结构化的预期值
   parseExpected(input: string): Expected { /* ... */ },
 
-  // 比较捕获的值与预期，返回通过/失败和解析后的输出
+  // 比较捕获的值与预期值，返回通过/失败以及解析后的输出
   match(captured: Captured, expected: Expected): DomainMatchResult { /* ... */ },
 }
 ```
@@ -465,12 +465,12 @@ export const kvAdapter: DomainSnapshotAdapter<KVCaptured, KVExpected> = {
     for (const [key, actualValue] of Object.entries(captured)) {
       const expectedValue = expected[key]
 
-      // 未断言的键跳过（作为子集匹配）
+      // 跳过未断言的键（作为子集匹配）
       if (typeof expectedValue === 'undefined') {
         continue
       }
 
-      // 保留匹配的通配符以便规范化差异和部分更新
+      // 保留匹配到的通配符，以便规范化差异和部分更新
       if (expectedValue instanceof RegExp && expectedValue.test(actualValue)) {
         resolvedLines.push(`${key}=/${expectedValue.source}/`)
         continue

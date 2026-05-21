@@ -5,8 +5,8 @@
 默认情况下，Vitest 基于 [pool](/config/pool) 在隔离环境中运行每个测试文件：
 
 - `threads` 池在单独的 [`Worker`](https://nodejs.org/api/worker_threads.html#class-worker) 中运行每个测试文件
-- `forks` 池在单独的 [forked child process](https://nodejs.org/api/child_process.html#child_processforkmodulepath-args-options) 中运行每个测试文件
-- `vmThreads` 池在单独的 [VM context](https://nodejs.org/api/vm.html#vmcreatecontextcontextobject-options) 中运行每个测试文件，但它使用 worker 来实现并行
+- `forks` 池在单独的 [fork 出的子进程](https://nodejs.org/api/child_process.html#child_processforkmodulepath-args-options) 中运行每个测试文件
+- `vmThreads` 池在单独的 [VM 上下文](https://nodejs.org/api/vm.html#vmcreatecontextcontextobject-options) 中运行每个测试文件，但它使用 worker 来实现并行
 
 这会大大增加测试时间，对于不依赖副作用并正确清理状态的项目来说，这可能不是理想的（对于 `node` 环境的项目通常是这样）。在这种情况下，禁用隔离将提高测试速度。为此，你可以向 CLI 提供 `--no-isolate` 标志，或在配置中将 [`test.isolate`](/config/isolate) 属性设置为 `false`。
 
@@ -160,7 +160,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Install pnpm
         uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
@@ -191,7 +191,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Install pnpm
         uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0

@@ -18,9 +18,9 @@ export default defineConfig({
   test: {
     watchTriggerPatterns: [
       {
-        pattern: /^src\/(mailers|templates)\/(.*)\.(ts|html|txt)$/,
+        pattern: /src\/(mailers|templates)\/(.*)\.(ts|html|txt)$/,
         testsToRun: (id, match) => {
-          // 相对于 root 值
+          // 相对于 root 的值
           return `./api/tests/mailers/${match[2]}.test.ts`
         },
       },

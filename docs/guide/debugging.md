@@ -14,7 +14,9 @@ title: 调试 | 指南
 
 ## VS Code
 
-在 VS Code 中调试测试的快速方法是通过 `JavaScript Debug Terminal`。打开一个新的 `JavaScript Debug Terminal` 并直接运行 `npm run test` 或 `vitest`。*这适用于任何在 Node 中运行的代码，因此适用于大多数 JS 测试框架*
+[官方 VS Code](https://vitest.dev/vscode) 扩展支持通过“Debug Tests”按钮调试测试。不过，Vitest 也提供了用于定义自定义配置的工具。
+
+在 VS Code 中调试测试的最快方式是使用 `JavaScript Debug Terminal`。打开一个新的 `JavaScript Debug Terminal`，然后直接运行 `npm run test` 或 `vitest`。*这适用于在 Node 中运行的任何代码，因此也适用于大多数 JS 测试框架*
 
 ![image](https://user-images.githubusercontent.com/5594348/212169143-72bf39ce-f763-48f5-822a-0c8b2e6a8484.png)
 
@@ -44,7 +46,9 @@ title: 调试 | 指南
 
 ### 浏览器模式
 
-要调试 [Vitest 浏览器模式](/guide/browser/index.md)，在 CLI 中传递 `--inspect` 或 `--inspect-brk`，或者在 Vitest 配置中定义它：
+调试浏览器测试的最简单方式是使用[官方 VS Code](https://vitest.dev/vscode) 扩展。
+
+不过，你也可以在 CLI 中传入 `--inspect` 或 `--inspect-brk`，或者在 Vitest 配置中定义它：
 
 ::: code-group
 ```bash [CLI]
@@ -67,7 +71,7 @@ export default defineConfig({
 ```
 :::
 
-默认情况下 Vitest 会使用端口 `9229` 作为调试端口。你可以通过在 `--inspect-brk` 中传递值来覆盖它：
+默认情况下，Vitest 会使用端口 `9229` 作为调试端口。你可以通过在 `--inspect-brk` 中传递值来覆盖它：
 
 ```bash
 vitest --inspect-brk=127.0.0.1:3000 --browser --no-file-parallelism
@@ -114,7 +118,7 @@ vitest --inspect-brk=127.0.0.1:3000 --browser --no-file-parallelism
 
 然后以调试模式运行此配置。IDE 将在编辑器中设置的 JS/TS 断点处停止。
 
-## Node Inspector，例如 Chrome DevTools
+## Node 检查器，例如 Chrome DevTools
 
 Vitest 也支持在没有 IDE 的情况下调试测试。但这要求测试不能并行运行。使用以下命令之一启动 Vitest。
 

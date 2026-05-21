@@ -36,7 +36,7 @@ $ vitest
 
 使用 `--standalone` 标志启动 Vitest 以使其在后台运行。直到测试发生变化之前，它不会运行任何测试。如果源代码发生变化，直到导入该源代码的测试被运行之前，Vitest 都不会运行测试。
 
-## 开箱即用的常见 Web 习惯
+## 开箱即用的常见 Web 约定
 
 开箱即用的 ES Module / TypeScript / JSX 支持 / PostCSS
 
@@ -194,7 +194,7 @@ if (import.meta.vitest) {
 
 了解更多：[源内测试](/guide/in-source)。
 
-## 基准测试 <Badge type="warning">实验性</Badge> {#benchmarking}
+## 基准测试 <Experimental /> {#benchmarking}
 
 你可以通过 [Tinybench](https://github.com/tinylibs/tinybench) 使用 [`bench`](/api/test#bench) 函数运行基准测试以比较性能结果。
 
@@ -221,7 +221,7 @@ describe('sort', () => {
 <img alt="基准测试报告" img-dark src="https://github.com/vitest-dev/vitest/assets/4232207/6f0383ea-38ba-4f14-8a05-ab243afea01d">
 <img alt="基准测试报告" img-light src="https://github.com/vitest-dev/vitest/assets/4232207/efbcb427-ecf1-4882-88de-210cd73415f6">
 
-## 类型测试 <Badge type="warning">实验性</Badge> {#type-testing}
+## 类型测试 <Experimental /> {#type-testing}
 
 你可以 [编写测试](/guide/testing-types) 来捕获类型回归。Vitest 附带 [`expect-type`](https://github.com/mmkal/expect-type) 包，为你提供类似且易于理解的 API。
 

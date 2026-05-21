@@ -1,51 +1,51 @@
-### root
+### 根路径
 
 - **CLI:** `-r, --root <path>`
 - **Config:** [root](/config/root)
 
 根路径
 
-### config
+### 配置
 
 - **CLI:** `-c, --config <path>`
 
 配置文件的路径
 
-### update
+### 更新
 
 - **CLI:** `-u, --update [type]`
 - **Config:** [update](/config/update)
 
 更新快照（接受 boolean、"new"、"all" 或 "none"）
 
-### watch
+### 监听
 
 - **CLI:** `-w, --watch`
 - **Config:** [watch](/config/watch)
 
 启用监听模式
 
-### testNamePattern
+### 测试名称模式
 
 - **CLI:** `-t, --testNamePattern <pattern>`
 - **Config:** [testNamePattern](/config/testnamepattern)
 
 运行完整名称匹配指定正则表达式模式的测试
 
-### dir
+### 目录
 
 - **CLI:** `--dir <path>`
 - **Config:** [dir](/config/dir)
 
 扫描测试文件的基础目录
 
-### ui
+### UI
 
 - **CLI:** `--ui`
 
 启用 UI
 
-### open
+### 打开
 
 - **CLI:** `--open`
 - **Config:** [open](/config/open)
@@ -84,27 +84,27 @@
 
 允许 API 编辑文件。（在不受信任的环境中启用此选项时请谨慎）
 
-### silent
+### 静默
 
 - **CLI:** `--silent [value]`
 - **Config:** [silent](/config/silent)
 
 静默输出测试日志。使用 `'passed-only'` 仅查看失败测试的日志。
 
-### hideSkippedTests
+### 隐藏跳过的测试
 
 - **CLI:** `--hideSkippedTests`
 
 隐藏被跳过测试的日志
 
-### reporters
+### 报告器
 
 - **CLI:** `--reporter <name>`
 - **Config:** [reporters](/config/reporters)
 
 指定报告器（default、agent、minimal、blob、verbose、dot、json、tap、tap-flat、junit、tree、hanging-process、github-actions）
 
-### outputFile
+### 输出文件
 
 - **CLI:** `--outputFile <filename/-s>`
 - **Config:** [outputFile](/config/outputfile)
@@ -252,7 +252,7 @@
 - **CLI:** `--coverage.customProviderModule <path>`
 - **Config:** [coverage.customProviderModule](/config/coverage#coverage-customprovidermodule)
 
-指定自定义覆盖率 provider 模块的模块名或路径。更多信息请访问 [Custom Coverage Provider](/guide/coverage#custom-coverage-provider)。此选项仅适用于自定义 provider
+指定自定义覆盖率 provider 模块的模块名或路径。更多信息请访问 [自定义覆盖率 provider](/guide/coverage#custom-coverage-provider)。此选项仅适用于自定义 provider
 
 ### coverage.watermarks.statements
 
@@ -306,24 +306,23 @@
 
 跟踪测试运行期间启动的 `node:child_process` 和 `node:worker_threads` 的覆盖率。仅受 `v8` provider 支持。（默认：`false`）
 
-### mode
+### 模式
 
 - **CLI:** `--mode <name>`
 - **Config:** [mode](/config/mode)
 
 覆盖 Vite 模式（默认：`test` 或 `benchmark`）
 
-### isolate
+### 隔离
 
 - **CLI:** `--isolate`
 - **Config:** [isolate](/config/isolate)
 
 隔离运行每个测试文件。要禁用隔离，请使用 `--no-isolate`（默认：`true`）
 
-### globals
+### 全局变量
 
 - **CLI:** `--globals`
-- **Config:** [globals](/config/globals)
 
 全局注入 API
 
@@ -464,7 +463,7 @@
 
 定位器默认是否应精确匹配文本（默认：`false`）
 
-### pool
+### 池
 
 - **CLI:** `--pool <pool>`
 - **Config:** [pool](/config/pool)
@@ -499,42 +498,42 @@ VM 池的内存限制。如果你看到内存泄漏，可以尝试调整此值�
 
 运行测试的 worker 最大数量或百分比
 
-### environment
+### 环境
 
 - **CLI:** `--environment <name>`
 - **Config:** [environment](/config/environment)
 
 指定运行器环境，如果不是在浏览器中运行（默认：`node`）
 
-### passWithNoTests
+### 未找到测试时通过
 
 - **CLI:** `--passWithNoTests`
 - **Config:** [passWithNoTests](/config/passwithnotests)
 
 当未找到测试时通过
 
-### logHeapUsage
+### 显示堆内存使用情况
 
 - **CLI:** `--logHeapUsage`
 - **Config:** [logHeapUsage](/config/logheapusage)
 
 在 node 中运行时显示每个测试的堆内存大小
 
-### detectAsyncLeaks
+### 检测异步泄漏
 
 - **CLI:** `--detectAsyncLeaks`
 - **Config:** [detectAsyncLeaks](/config/detectasyncleaks)
 
 检测测试文件中泄漏的异步资源（默认：`false`）
 
-### allowOnly
+### 允许 only
 
 - **CLI:** `--allowOnly`
 - **Config:** [allowOnly](/config/allowonly)
 
 允许标记为 only 的测试和测试套件（默认：`!process.env.CI`）
 
-### dangerouslyIgnoreUnhandledErrors
+### 危险地忽略未处理错误
 
 - **CLI:** `--dangerouslyIgnoreUnhandledErrors`
 - **Config:** [dangerouslyIgnoreUnhandledErrors](/config/dangerouslyignoreunhandlederrors)
@@ -735,21 +734,21 @@ hook 的默认超时时间（毫秒）（默认：`10000`）。使用 `0` 可完
 
 截断行的注释（默认：`... Diff result is truncated`）
 
-### exclude
+### 排除
 
 - **CLI:** `--exclude <glob>`
 - **Config:** [exclude](/config/exclude)
 
 要从测试中排除的额外文件 glob
 
-### expandSnapshotDiff
+### 展开快照差异
 
 - **CLI:** `--expandSnapshotDiff`
 - **Config:** [expandSnapshotDiff](/config/expandsnapshotdiff)
 
 当快照失败时显示完整 diff
 
-### disableConsoleIntercept
+### 禁用控制台拦截
 
 - **CLI:** `--disableConsoleIntercept`
 - **Config:** [disableConsoleIntercept](/config/disableconsoleintercept)
@@ -791,6 +790,13 @@ hook 的默认超时时间（毫秒）（默认：`10000`）。使用 `0` 可完
 
 忽略源文件中的类型错误
 
+### typecheck.build
+
+- **CLI:** `--typecheck.build`
+- **Config:** [typecheck.build](/config/typecheck#typecheck-build)
+
+使用 TypeScript 构建模式
+
 ### typecheck.tsconfig
 
 - **CLI:** `--typecheck.tsconfig <path>`
@@ -805,13 +811,13 @@ hook 的默认超时时间（毫秒）（默认：`10000`）。使用 `0` 可完
 
 启动类型检查器所需的最短时间（毫秒）
 
-### project
+### 项目
 
 - **CLI:** `--project <name>`
 
 如果你使用 Vitest workspace 功能，这是要运行的项目名称。可以重复指定多个项目：`--project=1 --project=2`。你也可以使用通配符过滤项目，如 `--project=packages*`，并通过 `--project=!pattern` 排除项目。
 
-### slowTestThreshold
+### 慢测试阈值
 
 - **CLI:** `--slowTestThreshold <threshold>`
 - **Config:** [slowTestThreshold](/config/slowtestthreshold)
@@ -874,19 +880,19 @@ teardown 函数的默认超时时间（毫秒）（默认：`10000`）
 
 存储 `context.annotate` 附件的目录（默认：`.vitest/attachments`）
 
-### run
+### 运行
 
 - **CLI:** `--run`
 
 禁用监听模式
 
-### color
+### 颜色
 
 - **CLI:** `--no-color`
 
 移除控制台输出中的颜色
 
-### clearScreen
+### 清空屏幕
 
 - **CLI:** `--clearScreen`
 
@@ -898,31 +904,31 @@ teardown 函数的默认超时时间（毫秒）（默认：`10000`）
 
 使用 `bundle` 通过 esbuild 打包配置，或使用 `runner`（实验性）即时处理配置。此功能仅在 vite 6.1.0 及以上版本可用。（默认：`bundle`）
 
-### standalone
+### 独立运行
 
 - **CLI:** `--standalone`
 
 启动 Vitest 而不运行测试。测试将仅在变更时运行。如果启用了浏览器模式，UI 将自动打开。传入 CLI 文件过滤器时，此选项会被忽略。（默认：`false`）
 
-### listTags
+### 列出标签
 
 - **CLI:** `--listTags [type]`
 
 列出所有可用标签，而不是运行测试。`--list-tags=json` 将以 JSON 格式输出标签，除非没有标签。
 
-### clearCache
+### 清除缓存
 
 - **CLI:** `--clearCache`
 
 删除所有 Vitest 缓存，包括 `experimental.fsModuleCache`，而不运行任何测试。这将降低后续测试运行的性能。
 
-### tagsFilter
+### 标签过滤器
 
 - **CLI:** `--tagsFilter <expression>`
 
-仅运行具有指定标签的测试。你可以使用逻辑运算符 `&&`（与）、`||`（或）和 `!`（非）创建复杂表达式，更多信息请参见 [Test Tags](/guide/test-tags#syntax)。
+仅运行具有指定标签的测试。你可以使用逻辑运算符 `&&`（与）、`||`（或）和 `!`（非）创建复杂表达式，更多信息请参见 [测试标签](/guide/test-tags#syntax)。
 
-### strictTags
+### 严格标签
 
 - **CLI:** `--strictTags`
 - **Config:** [strictTags](/config/stricttags)

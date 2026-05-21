@@ -7,8 +7,8 @@ title: Vitest API
 
 Vitest 实例需要当前的测试模式。它可以是：
 
-- 在运行时测试时为 `test`
-- 在运行基准测试时为 `benchmark` <Badge type="warning">实验性</Badge>
+- `test`：运行运行时测试时
+- `benchmark`：运行基准测试时 <Experimental />
 
 ::: details Vitest 4 新增
 Vitest 4 添加了几个新 API（它们标有 "4.0.0+" 徽章）并移除了已弃用的 API：
@@ -31,7 +31,7 @@ Vitest 4 添加了几个新 API（它们标有 "4.0.0+" 徽章）并移除了已
 
 测试模式只会调用 `test` 或 `it` 内部的函数，当遇到 `bench` 时抛出错误。此模式使用配置中的 `include` 和 `exclude` 选项来查找测试文件。
 
-### 基准测试 <Badge type="warning">实验性</Badge>
+### benchmark <Experimental /> {#benchmark}
 
 基准测试模式调用 `bench` 函数，当遇到 `test` 或 `it` 时抛出错误。此模式使用配置中的 `benchmark.include` 和 `benchmark.exclude` 选项来查找基准测试文件。
 
@@ -47,7 +47,7 @@ Vitest 4 添加了几个新 API（它们标有 "4.0.0+" 徽章）并移除了已
 
 这是一个全局 [`ViteDevServer`](https://vite.dev/guide/api-javascript#vitedevserver)。
 
-## 状态 <Badge type="warning">实验性</Badge>
+## state <Experimental /> {#state}
 
 ::: warning
 公共 `state` 是一个实验性 API（`vitest.state.getReportedEntity` 除外）。破坏性变更可能不遵循 SemVer，请在使用时固定 Vitest 的版本。
@@ -409,10 +409,10 @@ function resetSnapshotUpdate(): void
 function invalidateFile(filepath: string): void
 ```
 
-此方法使每个项目缓存中的文件失效。如果你依赖自己的监视器（watcher），因为 Vite 的缓存持久存在于内存中，所以此方法最有用。
+此方法使每个项目缓存中的文件失效。如果你依赖自己的监视器（watcher），因为 Vite 的缓存会持续保留在内存中，所以此方法最有用。
 
 ::: danger
-如果你禁用了 Vitest 的监视器但保持 Vitest 运行，重要的是使用此方法手动清除缓存，因为无法禁用缓存。此方法还将使文件的导入者（importers）失效。
+如果你禁用了 Vitest 的监视器但仍让 Vitest 保持运行，重要的是使用此方法手动清除缓存，因为无法禁用缓存。此方法还会使该文件的导入者（importers）失效。
 :::
 
 ## 导入
@@ -422,7 +422,7 @@ function invalidateFile(filepath: string): void
 使用 Vite 模块运行器导入文件。该文件将由 Vite 使用全局配置进行转换，并在单独的上下文中执行。请注意，`moduleId` 将相对于 `config.root`。
 
 ::: danger
-`project.import` 复用 Vite 的模块图，因此使用常规导入导入相同的模块将返回不同的模块：
+`project.import` 会复用 Vite 的模块图，因此使用常规导入导入相同模块将返回不同的模块：
 
 ```ts
 import * as staticExample from './example.js'
@@ -433,7 +433,7 @@ dynamicExample !== staticExample // ✅
 :::
 
 ::: info
-内部而言，Vitest 使用此方法导入全局设置、自定义覆盖率提供者和自定义报告器，这意味着只要它们属于同一个 Vite 服务器，它们都共享相同的模块图。
+从内部来看，Vitest 使用此方法导入全局设置、自定义覆盖率提供者和自定义报告器，这意味着只要它们属于同一个 Vite 服务器，它们就会共享相同的模块图。
 :::
 
 ## 关闭
@@ -442,7 +442,7 @@ dynamicExample !== staticExample // ✅
 function close(): Promise<void>
 ```
 
-关闭所有项目及其关联资源。这只能调用一次；关闭承诺（promise）会被缓存直到服务器重启。
+关闭所有项目及其关联资源。这只能调用一次；关闭承诺（promise）会被缓存，直到服务器重启。
 
 ## 退出
 
@@ -452,7 +452,7 @@ function exit(force = false): Promise<void>
 
 关闭所有项目并退出进程。如果 `force` 设置为 `true`，进程将在关闭项目后立即退出。
 
-此方法还将强制调用 `process.exit()`，如果进程在 [`config.teardownTimeout`](/config/teardowntimeout) 毫秒后仍然处于活动状态。
+此方法还会强制调用 `process.exit()`，如果进程在 [`config.teardownTimeout`](/config/teardowntimeout) 毫秒后仍然处于活动状态。
 
 ## 是否保持服务器运行
 
@@ -478,7 +478,7 @@ function onCancel(fn: (reason: CancelReason) => Awaitable<void>): () => void
 
 注册一个处理程序，当使用 [`vitest.cancelCurrentRun`](#cancelcurrentrun) 取消测试运行时将调用该处理程序。
 
-自 4.0.10 起，`onCancel` 实验性地返回一个清理函数，该函数将移除监听器。自 4.1.0 起，此行为被视为稳定。
+自 4.0.10 起，`onCancel` 会试验性地返回一个清理函数，该函数将移除监听器。自 4.1.0 起，此行为被视为稳定。
 
 ## 关闭时的回调
 
@@ -494,7 +494,7 @@ function onClose(fn: () => Awaitable<void>): void
 function onTestsRerun(fn: OnTestsRerunHandler): void
 ```
 
-注册一个处理程序，当测试重新运行时将调用该处理程序。当手动调用 [`rerunTestSpecifications`](#reruntestspecifications) 或文件更改且内置监视器计划重新运行时，测试可能会重新运行。
+注册一个处理程序，当测试重新运行时将调用该处理程序。当手动调用 [`rerunTestSpecifications`](#reruntestspecifications) 或文件更改且内置监视器安排重新运行时，测试可能会重新运行。
 
 ## 过滤被监视规范时的回调
 
@@ -503,9 +503,9 @@ function onFilterWatchedSpecification(
   fn: (specification: TestSpecification) => boolean
 ): void
 ```
-注册一个处理程序，当文件更改时将调用该处理程序。此回调应返回 `true` 或 `false`，指示是否需要重新运行测试文件。
+注册一个处理程序，当文件更改时将调用该处理程序。此回调应返回 `true` 或 `false`，表示是否需要重新运行测试文件。
 
-使用此方法，你可以挂钩到默认监视器逻辑中，以延迟或丢弃用户当前不想跟踪的测试：
+使用此方法，你可以接入默认监视器逻辑，以延迟或丢弃用户当前不想跟踪的测试：
 
 ```ts
 const continuesTests: string[] = []
@@ -519,7 +519,7 @@ vitest.onFilterWatchedSpecification(specification =>
 )
 ```
 
-Vitest 可以根据 `pool` 或 `locations` 选项为同一文件创建不同的规范，因此不要依赖引用。Vitest 还可以从 [`vitest.getModuleSpecifications`](#getmodulespecifications) 返回缓存的规范 - 缓存基于 `moduleId` 和 `pool`。请注意，[`project.createSpecification`](/api/advanced/test-project#createspecification) 始终返回一个新实例。
+Vitest 可以根据 `pool` 或 `locations` 选项为同一文件创建不同的规范，因此不要依赖引用。Vitest 还可以从 [`vitest.getModuleSpecifications`](#getmodulespecifications) 返回缓存的规范 - 该缓存基于 `moduleId` 和 `pool`。请注意，[`project.createSpecification`](/api/advanced/test-project#createspecification) 始终返回一个新实例。
 
 ## 匹配项目过滤器 <Version>3.1.0</Version> {#matchesprojectfilter}
 
@@ -537,7 +537,7 @@ function matchesProjectFilter(name: string): boolean
 function waitForTestRunEnd(): Promise<void>
 ```
 
-如果正在发生测试运行，返回一个将在测试运行完成时 resolve 的 Promise。
+如果正在进行测试运行，返回一个会在测试运行完成时 resolve 的 Promise。
 
 ## 创建覆盖率提供者 <Version>4.0.0</Version> {#createcoverageprovider}
 
@@ -545,10 +545,10 @@ function waitForTestRunEnd(): Promise<void>
 function createCoverageProvider(): Promise<CoverageProvider | null>
 ```
 
-如果配置中启用了 `coverage`，则创建一个覆盖率提供者。如果你使用 [`start`](#start) 或 [`standalone`](#standalone) 方法运行测试，这将自动完成。
+如果配置中启用了 `coverage`，则创建一个覆盖率提供者。如果你使用 [`start`](#start) 或 [`standalone`](#standalone) 方法运行测试，这会自动完成。
 
 ::: warning
-如果 [`coverage.clean`](/config/coverage#coverage-clean) 未设置为 `false`，此方法还将清除所有之前的报告。
+如果 [`coverage.clean`](/config/coverage#coverage-clean) 未设置为 `false`，此方法还会清除所有先前的报告。
 :::
 
 ## 启用覆盖率 <Version>4.0.0</Version> {#enablecoverage}
@@ -557,7 +557,7 @@ function createCoverageProvider(): Promise<CoverageProvider | null>
 function enableCoverage(): Promise<void>
 ```
 
-此方法为此调用之后运行的测试启用覆盖率。`enableCoverage` 不运行任何测试；它仅设置 Vitest 以收集覆盖率。
+此方法为在此调用之后运行的测试启用覆盖率。`enableCoverage` 不会运行任何测试；它只会设置 Vitest 以收集覆盖率。
 
 如果尚不存在覆盖率提供者，它会创建一个新的。
 
@@ -567,7 +567,7 @@ function enableCoverage(): Promise<void>
 function disableCoverage(): void
 ```
 
-此方法禁用之后运行的测试的覆盖率收集。
+此方法禁用在此之后运行的测试的覆盖率收集。
 
 ## 获取种子 <Version>4.0.0</Version> {#getseed}
 
@@ -585,14 +585,14 @@ function experimental_parseSpecification(
 ): Promise<TestModule>
 ```
 
-此函数将收集文件内的所有测试而不运行它。它在 Vite 的 `ssrTransform` 之上使用 rollup 的 `parseAst` 函数来静态分析文件并收集所有能收集到的测试。
+此函数会收集文件内的所有测试而不运行它。它在 Vite 的 `ssrTransform` 之上使用 rollup 的 `parseAst` 函数来静态分析文件并收集所有能收集到的测试。
 
 ::: warning
-如果 Vitest 无法分析测试名称，它将向测试或套件注入一个 `dynamic: true` 属性。`id` 还将带有 `-dynamic` 后缀，以免破坏正确收集的测试。
+如果 Vitest 无法分析测试名称，它会向测试或套件注入一个 `dynamic: true` 属性。`id` 也会带有 `-dynamic` 后缀，以免破坏正确收集的测试。
 
-Vitest 总是在带有 `for` 或 `each` 修饰器的测试或具有动态名称的测试（例如，`hello ${property}` 或 `'hello' + ${property}`）中注入此属性。Vitest 仍会为测试分配一个名称，但不能用于过滤测试。
+Vitest 总是会在带有 `for` 或 `each` 修饰器的测试，或具有动态名称的测试（例如，`hello ${property}` 或 `'hello' + ${property}`）中注入此属性。Vitest 仍会为测试分配一个名称，但该名称不能用于过滤测试。
 
-Vitest 无法做到使过滤动态测试成为可能，但你可以使用 `escapeTestName` 函数将带有 `for` 或 `each` 修饰器的测试转换为名称模式：
+Vitest 无法让动态测试支持过滤，但你可以使用 `escapeTestName` 函数将带有 `for` 或 `each` 修饰器的测试转换为名称模式：
 
 ```ts
 import { escapeTestName } from 'vitest/node'
@@ -603,9 +603,9 @@ const escapedPattern = new RegExp(escapeTestName('hello, %s', true))
 :::
 
 ::: warning
-Vitest 仅收集文件中定义的测试。它永远不会跟踪导入到其他文件。
+Vitest 只会收集文件中定义的测试。它永远不会跟踪导入到其他文件中的内容。
 
-Vitest 收集所有 `it`、`test`、`suite` 和 `describe` 定义，即使它们不是从 `vitest` 入口点导入的。
+Vitest 会收集所有 `it`、`test`、`suite` 和 `describe` 定义，即使它们不是从 `vitest` 入口点导入的。
 :::
 
 ## experimental_parseSpecifications <Version type="experimental">4.0.0</Version> <Experimental /> {#parsespecifications}
@@ -619,7 +619,7 @@ function experimental_parseSpecifications(
 ): Promise<TestModule[]>
 ```
 
-此方法将从规范数组中 [收集测试](#parsespecification)。默认情况下，Vitest 一次仅运行 `os.availableParallelism()` 数量的规范，以减少潜在的性能下降。你可以在第二个参数中指定不同的数字。
+此方法会从规范数组中 [收集测试](#parsespecification)。默认情况下，Vitest 一次只运行 `os.availableParallelism()` 数量的规范，以减少潜在的性能下降。你可以在第二个参数中指定不同的数字。
 
 ## experimental_clearCache <Version type="experimental">4.0.11</Version> <Experimental /> {#clearcache}
 
@@ -683,7 +683,7 @@ export interface SourceModuleDiagnostic {
 返回模块的诊断信息。如果未提供 [`testModule`](/api/advanced/test-module)，`selfTime` 和 `totalTime` 将在上次运行的所有测试中聚合。如果模块未转换或执行，诊断信息将为空。
 
 ::: warning
-目前，不支持 [浏览器](/guide/browser/) 模块。
+目前不支持 [浏览器](/guide/browser/) 模块。
 :::
 
 ## 创建报告 <Version>5.0.0</Version> {#createreport}

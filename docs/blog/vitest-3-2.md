@@ -31,13 +31,13 @@ _2025 年 6 月 2 日_
 
 ![Vitest 3.2 发布封面图](/og-vitest-3-2.png)
 
-Vitest 3.2 专注于改进浏览器模式和 TypeScript 支持。此版本还包括一些新的有用方法、配置选项，并弃用了 `workspace` 配置，推荐使用 `projects`。
+Vitest 3.2 专注于改进浏览器模式和 TypeScript 支持。此版本还包括一些新的实用方法、配置选项，并弃用了 `workspace` 配置，推荐使用 `projects`。
 
 ## `workspace` 已弃用
 
 为了简化配置，团队决定弃用单独的 `vitest.workspace` 文件，并建议仅在根配置中使用 `projects` 选项。这也简化了全局选项的配置方式（因为当你没有根配置时，不需要猜测如何添加报告器）。
 
-我们还决定弃用 `workspace` 名称，因为它与其他通过此选项提供 monorepo 支持的工具（如 PNPM）冲突。Vitest 不会使用独立的 `CWD` 运行这些项目，而是将它们视为子 Vitest 实例。这也为我们提供了更多空间来为 monorepo 想出更好的解决方案，而不破坏其他工具。
+我们还决定弃用 `workspace` 这个名称，因为它与其他通过此选项提供 monorepo 支持的工具（如 PNPM）发生冲突。Vitest 不会使用独立的 `CWD` 运行这些项目，而是将它们视为子 Vitest 实例。这也为我们提供了更多空间来为 monorepo 想出更好的解决方案，而不会破坏其他工具。
 
 此选项将在未来的主版本中完全移除，由 `projects` 取代。在此之前，如果使用 workspace 功能，Vitest 将打印警告。
 
@@ -45,7 +45,7 @@ Vitest 3.2 专注于改进浏览器模式和 TypeScript 支持。此版本还包
 
 ## 注解 API
 
-新的 [注解 API](/guide/test-annotations) 允许你用自定义消息和附件注解任何测试。这些注解在 UI、HTML、junit、tap 和 GitHub Actions 报告器中可见。如果测试失败，Vitest 还将在 CLI 中打印相关的注解。
+新的 [注解 API](/guide/test-annotations) 允许你用自定义消息和附件注解任何测试。这些注解在 UI、HTML、junit、tap 和 GitHub Actions 报告器中可见。如果测试失败，Vitest 还将在 CLI 中打印相关注解。
 
 <img src="/annotation-api-cute-puppy-example.png" alt="一个带有可爱小狗的注解示例" />
 
@@ -66,7 +66,7 @@ const test = baseTest.extend({
 })
 ```
 
-文件夹具类似于在文件顶层使用 `beforeAll` 和 `afterAll》，但如果任何测试中未使用该夹具，则不会被调用。
+文件夹具类似于在文件顶层使用 `beforeAll` 和 `afterAll`，但如果任何测试中未使用该夹具，则不会被调用。
 
 `worker` 夹具每个 worker 初始化一次，但请注意，默认情况下 Vitest 为每个测试创建一个 worker，因此你需要禁用 [隔离](/config/isolate) 才能从中受益。
 
@@ -110,7 +110,7 @@ export default defineConfig({
 
 ## 自定义浏览器定位器 API
 
-内置定位器可能不足以表达你的应用程序需求。与其回退到 CSS 并失去 Vitest 通过其定位器 API 提供的重试能力保护，我们现在推荐使用新的 [`locators.extend` API](/api/browser/locators#custom-locators) 扩展定位器。
+内置定位器可能不足以表达你的应用需求。与其回退到 CSS 并失去 Vitest 通过其定位器 API 提供的重试能力保护，我们现在推荐使用新的 [`locators.extend` API](/api/browser/locators#custom-locators) 扩展定位器。
 
 ```ts
 import { locators } from '@vitest/browser/context'
@@ -210,7 +210,7 @@ Vitest 现在使用由 Vitest 维护者之一 [AriPerkkio](https://github.com/Ar
 
 ## `watchTriggerPatterns` 选项
 
-当你编辑文件时，Vitest 足够智能，只会重新运行导入此文件的测试。不幸的是，Vitest 静态分析仅尊重静态和动态 `import` 语句。如果你正在读取文件或启动单独的进程，Vitest 将忽略相关文件的变化。
+当你编辑文件时，Vitest 足够智能，只会重新运行导入此文件的测试。不幸的是，Vitest 的静态分析只会尊重静态和动态 `import` 语句。如果你正在读取文件或启动单独的进程，Vitest 将忽略相关文件的变化。
 
 使用 `watchTriggerPatterns` 选项，你可以根据更改的文件配置要重新运行哪些测试。例如，要在模板更改时始终重新运行 `mailers` 测试，请添加触发模式：
 
@@ -219,7 +219,7 @@ export default defineConfig({
   test: {
     watchTriggerPatterns: [
       {
-        pattern: /^src\/templates\/(.*)\.(ts|html|txt)$/,
+        pattern: /src\/templates\/(.*)\.(ts|html|txt)$/,
         testsToRun: (file, match) => {
           return `api/tests/mailers/${match[2]}.test.ts`
         },
@@ -231,7 +231,7 @@ export default defineConfig({
 
 ## 新的多用途 `Matchers` 类型
 
-Vitest 现在有一个 `Matchers` 类型，你可以扩展它以便在一个地方为所有自定义匹配器添加类型支持。此类型影响以下所有用例：
+Vitest 现在有一个 `Matchers` 类型，你可以扩展它，以便在一个地方为所有自定义匹配器添加类型支持。此类型影响以下所有用例：
 
 - `expect().to*`
 - `expect.to*`

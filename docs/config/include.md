@@ -25,7 +25,7 @@ export default defineConfig({
   test: {
     include: [
       './test',
-      './**/*.{test,spec}.tsx?',
+      './**/*.{test,spec}.ts(x)?',
     ],
   },
 })
@@ -57,7 +57,7 @@ export default defineConfig({
 ```
 
 ::: warning
-此选项将覆盖 Vitest 默认值。如果你只是想扩展它们，请使用 `vitest/config` 中的 `configDefaults`：
+此选项将覆盖 Vitest 的默认值。如果你只是想扩展它们，请使用 `vitest/config` 中的 `configDefaults`：
 
 ```js{6}
 import { configDefaults, defineConfig } from 'vitest/config'
@@ -67,7 +67,7 @@ export default defineConfig({
     include: [
       ...configDefaults.include,
       './test',
-      './**/*.{test,spec}.tsx?',
+      './**/*.{test,spec}.ts(x)?',
     ],
   },
 })

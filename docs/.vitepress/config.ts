@@ -714,62 +714,62 @@ export default ({ mode }: { mode: string }) => {
             ],
           },
           {
-            text: 'Learn',
+            text: '学习',
             collapsed: false,
             items: [
               {
-                text: 'Writing Tests',
+                text: '编写测试',
                 link: '/guide/learn/writing-tests',
-                docFooterText: 'Writing Tests | Learn',
+                docFooterText: '编写测试 | 学习',
               },
               {
-                text: 'Using Matchers',
+                text: '使用匹配器',
                 link: '/guide/learn/matchers',
-                docFooterText: 'Using Matchers | Learn',
+                docFooterText: '使用匹配器 | 学习',
               },
               {
-                text: 'Testing Async Code',
+                text: '测试异步代码',
                 link: '/guide/learn/async',
-                docFooterText: 'Testing Async Code | Learn',
+                docFooterText: '测试异步代码 | 学习',
               },
               {
-                text: 'Setup and Teardown',
+                text: '初始化与清理',
                 link: '/guide/learn/setup-teardown',
-                docFooterText: 'Setup and Teardown | Learn',
+                docFooterText: '初始化与清理 | 学习',
               },
               {
-                text: 'Mock Functions',
+                text: 'Mock 函数',
                 link: '/guide/learn/mock-functions',
-                docFooterText: 'Mock Functions | Learn',
+                docFooterText: 'Mock 函数 | 学习',
               },
               {
-                text: 'Snapshot Testing',
+                text: '快照测试',
                 link: '/guide/learn/snapshots',
-                docFooterText: 'Snapshot Testing | Learn',
+                docFooterText: '快照测试 | 学习',
               },
               {
-                text: 'Testing in Practice',
+                text: '实战测试',
                 link: '/guide/learn/testing-in-practice',
-                docFooterText: 'Testing in Practice | Learn',
+                docFooterText: '实战测试 | 学习',
               },
               {
-                text: 'Debugging Tests',
+                text: '调试测试',
                 link: '/guide/learn/debugging-tests',
-                docFooterText: 'Debugging Tests | Learn',
+                docFooterText: '调试测试 | 学习',
               },
               {
-                text: 'Writing Tests with AI',
+                text: '借助 AI 编写测试',
                 link: '/guide/learn/writing-tests-with-ai',
-                docFooterText: 'Writing Tests with AI | Learn',
+                docFooterText: '借助 AI 编写测试 | 学习',
               },
             ],
           },
           {
-            text: 'Browser Mode',
+            text: '浏览器模式',
             collapsed: false,
             items: [
               {
-                text: 'Why Browser Mode',
+                text: '为什么使用浏览器模式',
                 link: '/guide/browser/why',
                 docFooterText: '为什么使用浏览器模式 | 浏览器模式',
               },
@@ -799,40 +799,29 @@ export default ({ mode }: { mode: string }) => {
                 docFooterText: 'Trace View | Browser Mode',
               },
               {
-                text: 'Playwright Traces',
+                text: 'Playwright 轨迹',
                 link: '/guide/browser/playwright-traces',
-                docFooterText: 'Playwright Traces | Browser Mode',
+                docFooterText: 'Playwright 轨迹 | 浏览器模式',
               },
               {
-                text: 'ARIA Snapshots',
+                text: 'ARIA 快照',
                 link: '/guide/browser/aria-snapshots',
-                docFooterText: 'ARIA Snapshots | Browser Mode',
+                docFooterText: 'ARIA 快照 | 浏览器模式',
               },
             ],
           },
+          // Authoring — how to express a test in code: constructing it,
+          // asserting, mocking dependencies, attaching metadata. The page is
+          // about *test content*, not the runner. Discriminator: "How do I
+          // write X in a test?" If yes, it belongs here. Mocking sub-pages
+          // live nested because they're a multi-page subtopic.
           {
-            text: '使用指南',
+            text: '编写测试',
             collapsed: false,
             items: [
               {
-                text: 'CLI',
-                link: '/guide/cli',
-              },
-              {
-                text: '测试筛选',
-                link: '/guide/filtering',
-              },
-              {
-                text: '测试标签',
-                link: '/guide/test-tags',
-              },
-              {
                 text: '测试上下文',
                 link: '/guide/test-context',
-              },
-              {
-                text: '测试环境',
-                link: '/guide/environment',
               },
               {
                 text: '测试运行生命周期',
@@ -843,71 +832,47 @@ export default ({ mode }: { mode: string }) => {
                 link: '/guide/snapshot',
               },
               {
-                text: 'Mock',
+                text: '模拟',
                 link: '/guide/mocking',
                 collapsed: true,
                 items: [
                   {
-                    text: 'Dates',
+                    text: '日期',
                     link: '/guide/mocking/dates',
                   },
                   {
-                    text: 'Functions',
+                    text: '函数',
                     link: '/guide/mocking/functions',
                   },
                   {
-                    text: 'Globals',
+                    text: '全局对象',
                     link: '/guide/mocking/globals',
                   },
                   {
-                    text: 'Modules',
+                    text: '模块',
                     link: '/guide/mocking/modules',
                   },
                   {
-                    text: 'File System',
+                    text: '文件系统',
                     link: '/guide/mocking/file-system',
                   },
                   {
-                    text: 'Requests',
+                    text: '请求',
                     link: '/guide/mocking/requests',
                   },
                   {
-                    text: 'Timers',
+                    text: '定时器',
                     link: '/guide/mocking/timers',
                   },
                   {
-                    text: 'Classes',
+                    text: '类',
                     link: '/guide/mocking/classes',
                   },
                 ],
               },
               {
-                text: '并行',
-                link: '/guide/parallelism',
-              },
-              {
-                text: '测试项目',
-                link: '/guide/projects',
-              },
-              {
-                text: '报告器',
-                link: '/guide/reporters',
-              },
-              {
-                text: '覆盖率',
-                link: '/guide/coverage',
-              },
-              {
-                text: '测试类型',
-                link: '/guide/testing-types',
-              },
-              {
-                text: 'Vitest UI',
-                link: '/guide/ui',
-              },
-              {
-                text: '源码内测试',
-                link: '/guide/in-source',
+                text: '测试标签',
+                link: '/guide/test-tags',
               },
               {
                 text: '测试注解',
@@ -918,8 +883,72 @@ export default ({ mode }: { mode: string }) => {
                 link: '/guide/extending-matchers',
               },
               {
+                text: '测试类型',
+                link: '/guide/testing-types',
+              },
+              {
+                text: '源码内测试',
+                link: '/guide/in-source',
+              },
+            ],
+          },
+          // Workflow — how to invoke, select, and orchestrate test runs
+          // across files/projects/processes. The page is about the *runner
+          // and tooling around it*, not what's inside a test. Discriminator:
+          // "How do I run / filter / parallelize / integrate Vitest?" If a
+          // page is about the runtime environment of the tests themselves
+          // (jsdom, node), it still belongs here — that's a workflow choice.
+          {
+            text: '工作流',
+            collapsed: false,
+            items: [
+              {
+                text: 'CLI',
+                link: '/guide/cli',
+              },
+              {
+                text: '测试过滤',
+                link: '/guide/filtering',
+              },
+              {
+                text: '测试项目',
+                link: '/guide/projects',
+              },
+              {
+                text: '测试环境',
+                link: '/guide/environment',
+              },
+              {
+                text: '并行执行',
+                link: '/guide/parallelism',
+              },
+              {
+                text: '报告器',
+                link: '/guide/reporters',
+              },
+              {
+                text: 'Vitest 界面',
+                link: '/guide/ui',
+              },
+              {
                 text: 'IDE 集成',
                 link: '/guide/ide',
+              },
+            ],
+          },
+          // Quality & Debugging — how to verify the test run is healthy and
+          // diagnose it when it isn't. Coverage, perf, leak detection, error
+          // triage, observability. Discriminator: "Is my suite good?" or
+          // "Why did this fail / leak / slow down?" If a page primarily
+          // measures or fixes the suite (rather than authoring or running
+          // it), put it here.
+          {
+            text: '质量与调试',
+            collapsed: false,
+            items: [
+              {
+                text: '覆盖率',
+                link: '/guide/coverage',
               },
               {
                 text: '调试',
@@ -928,25 +957,6 @@ export default ({ mode }: { mode: string }) => {
               {
                 text: '常见错误',
                 link: '/guide/common-errors',
-              },
-              {
-                text: '迁移指南',
-                link: '/guide/migration',
-                collapsed: false,
-                items: [
-                  {
-                    text: '迁移到 Vitest 4.0',
-                    link: '/guide/migration#vitest-4',
-                  },
-                  {
-                    text: '从 Jest 迁移',
-                    link: '/guide/migration#jest',
-                  },
-                  {
-                    text: '从 Mocha + Chai + Sinon 迁移',
-                    link: '/guide/migration#mocha-chai-sinon',
-                  },
-                ],
               },
               {
                 text: '性能',
@@ -968,12 +978,68 @@ export default ({ mode }: { mode: string }) => {
               },
             ],
           },
+          // Recipes — end-to-end patterns that solve a concrete problem by
+          // combining multiple features. Each entry is titled by the problem
+          // ("Database Transaction per Test"), not the feature. Add a recipe
+          // when a single feature page would over-explain, when the value
+          // comes from composition, or when users would search by intent
+          // rather than by API name.
+          {
+            text: '实践方案',
+            collapsed: false,
+            items: [
+              {
+                text: '每个测试一个数据库事务',
+                link: '/guide/recipes/db-transaction',
+              },
+              {
+                text: '优雅取消长时间运行的操作',
+                link: '/guide/recipes/cancellable',
+              },
+              {
+                text: '等待异步条件',
+                link: '/guide/recipes/wait-for',
+              },
+              {
+                text: '测试中的类型收窄',
+                link: '/guide/recipes/type-narrowing',
+              },
+              {
+                text: '自定义断言辅助函数',
+                link: '/guide/recipes/custom-assertions',
+              },
+              {
+                text: '监听未导入的文件',
+                link: '/guide/recipes/watch-templates',
+              },
+              {
+                text: '扩展浏览器定位器',
+                link: '/guide/recipes/browser-locators',
+              },
+              {
+                text: '基于 Schema 的断言',
+                link: '/guide/recipes/schema-matching',
+              },
+              {
+                text: '使用 `using` 自动清理',
+                link: '/guide/recipes/explicit-resources',
+              },
+              {
+                text: '按文件隔离设置',
+                link: '/guide/recipes/disable-isolation',
+              },
+              {
+                text: '并行与顺序测试文件',
+                link: '/guide/recipes/parallel-sequential',
+              },
+            ],
+          },
           {
             text: '高级',
             collapsed: false,
             items: [
               {
-                text: '开始使用',
+                text: '入门',
                 link: '/guide/advanced/',
               },
               {
@@ -990,12 +1056,31 @@ export default ({ mode }: { mode: string }) => {
               },
             ],
           },
+          // Migration — one-time transitional content: cross-version
+          // upgrades and porting from other test runners (Jest, Mocha).
+          // Sits near the bottom because it's not daily-use and would push
+          // active-use guides further from the user's first scroll.
           {
+            text: '迁移',
+            link: '/guide/migration',
+            collapsed: false,
             items: [
               {
-                text: '实践方案',
-                link: '/guide/recipes',
+                text: '迁移到 Vitest 4.0',
+                link: '/guide/migration#vitest-4',
               },
+              {
+                text: '从 Jest 迁移',
+                link: '/guide/migration#jest',
+              },
+              {
+                text: '从 Mocha + Chai + Sinon 迁移',
+                link: '/guide/migration#mocha-chai-sinon',
+              },
+            ],
+          },
+          {
+            items: [
               {
                 text: '对比',
                 link: '/guide/comparisons',
@@ -1008,21 +1093,21 @@ export default ({ mode }: { mode: string }) => {
             text: '测试 API 参考',
             items: [
               {
-                text: 'Test',
+                text: '测试',
                 link: '/api/test',
               },
               {
-                text: 'Describe',
+                text: '描述',
                 link: '/api/describe',
               },
               {
-                text: 'Hooks',
+                text: '钩子',
                 link: '/api/hooks',
               },
             ],
           },
           {
-            text: 'Mock',
+            text: '模拟',
             link: '/api/mock',
           },
           {
@@ -1030,19 +1115,19 @@ export default ({ mode }: { mode: string }) => {
             link: '/api/vi',
           },
           {
-            text: 'Expect',
+                text: '断言',
             link: '/api/expect',
           },
           {
-            text: 'ExpectTypeOf',
+                text: 'ExpectTypeOf',
             link: '/api/expect-typeof',
           },
           {
-            text: 'Assert',
+                text: '断言',
             link: '/api/assert',
           },
           {
-            text: 'AssertType',
+                text: '断言类型',
             link: '/api/assert-type',
           },
           {
@@ -1053,15 +1138,15 @@ export default ({ mode }: { mode: string }) => {
                 collapsed: false,
                 items: [
                   {
-                    text: 'react',
+                    text: 'React',
                     link: '/api/browser/react',
                   },
                   {
-                    text: 'vue',
+                    text: 'Vue',
                     link: '/api/browser/vue',
                   },
                   {
-                    text: 'svelte',
+                    text: 'Svelte',
                     link: '/api/browser/svelte',
                   },
                   // {

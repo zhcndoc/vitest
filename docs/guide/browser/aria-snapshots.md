@@ -3,14 +3,14 @@ title: ARIA 快照 | 指南
 outline: deep
 ---
 
-# ARIA 快照 <Badge type="warning">实验性</Badge> <Version>4.1.4</Version>
+# ARIA 快照 <Experimental /> <Version>4.1.4</Version> {#aria-snapshots}
 
 ARIA 快照允许你测试页面的可访问性结构。你不需要断言原始 HTML 或视觉输出，而是断言**可访问性树**——即屏幕阅读器和其他辅助技术所使用的同一结构。
 
 给定以下 HTML：
 
 ```html
-<nav aria-label="Main">
+<nav aria-label="主导航">
   <a href="/">首页</a>
   <a href="/about">关于</a>
 </nav>
@@ -20,7 +20,7 @@ ARIA 快照允许你测试页面的可访问性结构。你不需要断言原始
 
 ```ts
 await expect.element(page.getByRole('navigation')).toMatchAriaInlineSnapshot(`
-  - navigation "Main":
+  - navigation "主导航":
     - link "首页":
       - /url: /
     - link "关于":
@@ -281,7 +281,7 @@ ARIA 状态和属性以方括号显示：
 | `<h2>标题</h2>`                                                       | `- heading "标题" [level=2]`          |
 | `<button aria-pressed="true">粗体</button>`                            | `- button "粗体" [pressed]`           |
 | `<button aria-pressed="mixed">粗体</button>`                           | `- button "粗体" [pressed=mixed]`     |
-| `<option selected>English</option>`                                    | `- option "English" [selected]`       |
+| `<option selected>英语</option>`                                    | `- option "英语" [selected]`       |
 
 仅当属性处于活动状态时才会显示。未被禁用的按钮不会显示 `[disabled]` 属性——没有 `[disabled=false]`。
 
