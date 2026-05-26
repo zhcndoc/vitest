@@ -14,24 +14,24 @@ outline: deep
 
 用于通过 `getByTestId` 定位器查找元素的属性。
 
-## browser.locators.exact <Version type="experimental">4.1.3</Version> {#browser-locators-exact}
+## browser.locators.exact
 
 - **类型：** `boolean`
-- **默认值：** `false`
+- **默认值：** `true`
 
-当设置为 `true` 时，[定位器](/api/browser/locators) 默认将精确匹配文本，需要完全且区分大小写的匹配。单个定位器调用可以通过其自身的 `exact` 选项覆盖此默认值。
+当设置为 `true` 时，[定位器](/api/browser/locators) 默认会精确匹配文本，要求完整且区分大小写的匹配。单独的定位器调用可以通过各自的 `exact` 选项覆盖此默认值。
 
 ```ts
-// 当 exact: false（默认）时，这将匹配 "Hello, World!"、"Say Hello, World" 等。
-// 当 exact: true 时，这仅精确匹配字符串 "Hello, World"。
+// 当 exact: true（默认）时，这只会精确匹配字符串 "Hello, World"。
+// 当 exact: false 时，这会匹配 "Hello, World!"、"Say Hello, World" 等。
 const locator = page.getByText('Hello, World', { exact: true })
 await locator.click()
 ```
 
 ## browser.locators.errorFormat <Version>5.0.0</Version> {#browser-locators-errorformat}
 
-- **Type:** `'html' | 'aria' | 'all'`
-- **Default:** `'all'`
+- **类型：** `'html' | 'aria' | 'all'`
+- **默认值：** `'all'`
 
 控制当定位器无法找到元素时 Vitest 打印的内容。Vitest 会打印定位器搜索运行所在的 DOM 子树的信息，或者在页面级定位器中打印 `document.body`。
 

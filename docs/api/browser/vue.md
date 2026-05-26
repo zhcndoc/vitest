@@ -11,7 +11,7 @@ import { render } from 'vitest-browser-vue'
 import { expect, test } from 'vitest'
 import Component from './Component.vue'
 
-test('counter button increments the count', async () => {
+test('计数器按钮会增加计数', async () => {
   const screen = await render(Component, {
     props: {
       initialCount: 1,
@@ -40,21 +40,12 @@ test('counter button increments the count', async () => {
 export function render(
   component: Component,
   options?: ComponentRenderOptions,
-): RenderResult & PromiseLike<RenderResult>
+): Promise<RenderResult>
 ```
 
 `render` 函数会记录一个 `vue.render` 追踪标记，可在 [追踪视图](/guide/browser/trace-view) 中看到。
 
-::: warning
-`render` 的同步用法已弃用，并将在下一个主要版本中移除。请始终 `await` 结果：
-
-```ts
-const screen = render(Component) // [!code --]
-const screen = await render(Component) // [!code ++]
-```
-:::
-
-### 选项
+### Options
 
 `render` 函数支持来自 `@vue/test-utils` 的所有 [`mount` 选项](https://test-utils.vuejs.org/api/#mount)（除了 `attachTo` - 请使用 `container` 代替）。除此之外，还有 `container` 和 `baseElement`。
 
@@ -85,7 +76,7 @@ const { container } = await render(TableBody, {
 ```ts
 const screen = await render(TableBody, { props })
 
-await screen.getByRole('link', { name: 'Expand' }).click()
+await screen.getByRole('link', { name: '展开' }).click()
 ```
 
 #### container
@@ -136,16 +127,12 @@ function debug(
 #### rerender
 
 ```ts
-function rerender(props: Partial<Props>): void & PromiseLike<void>
+function rerender(props: Partial<Props>): Promise<void>
 ```
 
 同样会在 [追踪视图](/guide/browser/trace-view) 中记录一个 `vue.rerender` 追踪标记。
 
 最好测试正在执行属性更新的组件，以确保属性被正确更新，从而避免在测试中依赖实现细节。也就是说，如果你更喜欢在测试中更新已渲染组件的属性，此函数可用于更新已渲染组件的属性。
-
-::: warning
-`rerender` 的同步用法已弃用，并将在下一个主要版本中移除。请始终 `await` 结果。
-:::
 
 ```js
 import { render } from 'vitest-browser-vue'
@@ -159,14 +146,10 @@ await rerender({ number: 2 })
 #### unmount
 
 ```ts
-function unmount(): void & PromiseLike<void>
+function unmount(): Promise<void>
 ```
 
 这将导致渲染的组件被卸载。同样会在 [追踪视图](/guide/browser/trace-view) 中记录一个 `vue.unmount` 追踪标记。这对于测试当你的组件从页面移除时会发生什么很有用（例如测试你是否留下了导致内存泄漏的事件处理程序）。
-
-::: warning
-`unmount` 的同步用法已弃用，并将在下一个主要版本中移除。请始终 `await` 结果。
-:::
 
 #### emitted
 

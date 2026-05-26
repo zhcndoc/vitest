@@ -461,7 +461,7 @@
 - **CLI:** `--browser.locators.exact`
 - **Config:** [browser.locators.exact](/config/browser/locators#locators-exact)
 
-定位器默认是否应精确匹配文本（默认：`false`）
+定位器默认是否应精确匹配文本（默认：`true`）
 
 ### 池
 

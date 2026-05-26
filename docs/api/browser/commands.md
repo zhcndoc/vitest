@@ -16,9 +16,9 @@ outline: deep
 默认情况下，Vitest 使用 `utf-8` 编码，但你可以通过选项覆盖它。
 
 ::: tip
-出于安全原因，此 API 遵循 [`server.fs`](https://vitejs.dev/config/server-options.html#server-fs-allow) 限制。
+内置文件命令出于安全原因遵循 Vite 的 [`server.fs`](https://vitejs.dev/config/server-options.html#server-fs-allow) 限制。
 
-如果 [`browser.api.allowWrite`](/config/browser/api) 或 [`api.allowWrite`](/config/api#api-allowwrite) 被禁用，`writeFile` 和 `removeFile` 函数将不会执行任何操作。
+`writeFile` 和 `removeFile` 还需要通过 [`browser.api.allowWrite`](/config/browser/api) 和 [`api.allowWrite`](/config/api#api-allowwrite) 获得写入权限。
 :::
 
 ```ts
@@ -124,7 +124,55 @@ declare module 'vitest/browser' {
 如果自定义函数与内置函数同名，它们将覆盖内置函数。
 :::
 
-### 录制 trace 标记
+::: warning Security
+自定义命令在 Vitest Node 进程中运行，并可通过 Vitest 的 browser RPC 连接从浏览器测试代码中调用。它们可以访问本地文件、环境变量、网络服务、数据库、shell 命令以及其他 Node API。
+
+Vitest 的内置文件命令会根据 Vite 的 [`server.fs`](https://vite.dev/config/server-options#server-fs-allow) 限制验证路径，并单独检查是否允许写入。自定义命令不会自动继承这些保护。如果某个自定义命令接受浏览器提供的输入并使用它来读取、写入、删除、执行或暴露本地资源，那么在使用之前必须先验证该输入。
+
+对于文件读取或 fixture 加载，请使用 `vitest/node` 中的 `isFileLoadingAllowed` 或显式的 allowlist。对于写入和删除，还应要求显式的变更策略，例如 [`browser.api.allowWrite`](/config/browser/api#api-allowwrite)、[`api.allowWrite`](/config/api#api-allowwrite) 以及某个命令特定的允许目录。对于执行代码、shell 命令或项目脚本的命令，还应检查 [`browser.api.allowExec`](/config/browser/api#api-allowexec) 和 [`api.allowExec`](/config/api#api-allowexec)。
+
+例如，如果你创建自己的文件写入命令而不是使用 Vitest 内置的 `writeFile`，请应用相同的检查：
+
+```ts
+import { mkdir, writeFile } from 'node:fs/promises'
+import { dirname, resolve } from 'node:path'
+import { normalizePath } from 'vite'
+import { isFileLoadingAllowed } from 'vitest/node'
+import type { BrowserCommand } from 'vitest/node'
+
+function assertFileAccess(path: string, project: any) {
+  if (
+    !isFileLoadingAllowed(project.vite.config, path)
+    && !isFileLoadingAllowed(project.vitest.vite.config, path)
+  ) {
+    throw new Error(`Access denied to "${path}".`)
+  }
+}
+
+function assertWrite(project: any) {
+  if (!project.config.browser.api.allowWrite || !project.vitest.config.api.allowWrite) {
+    throw new Error('Writing files is disabled.')
+  }
+}
+
+export const myWriteFileCommand: BrowserCommand<[path: string, content: string]> = async (
+  { project },
+  path,
+  content,
+) => {
+  assertWrite(project)
+
+  const file = resolve(project.config.root, path)
+  assertFileAccess(normalizePath(file), project)
+
+  await mkdir(dirname(file), { recursive: true })
+  await writeFile(file, content)
+}
+```
+
+:::
+
+### Recording trace markers
 
 自定义命令可以通过 `context.mark` 为触发它们的测试记录 [trace 标记](/api/browser/context#mark)。这相当于服务端的 `page.mark`，并有助于在 [trace 视图](/guide/browser/trace-view) 中标注命令内部执行的自定义操作。
 

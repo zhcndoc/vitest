@@ -78,7 +78,7 @@ export interface TestArtifactBase {
 export interface TestAttachment {
   /** 附件的 MIME 类型（例如，'image/png', 'text/plain'） */
   contentType?: string
-  /** 附件的文件系统路径 */
+  /** 本地文件路径或指向附件的外部 HTTP(S) URL。相对路径从项目根目录解析。 */
   path?: string
   /** 内联附件内容，作为字符串或原始二进制数据 */
   body?: string | Uint8Array
@@ -94,7 +94,9 @@ export interface TestAttachment {
 
 `TestAttachment` 接口表示与测试工件关联的文件或数据附件。
 
-附件可以是基于文件的（通过 `path`）或内联内容（通过 `body`）。`contentType` 帮助使用者理解如何解释附件数据。
+附件可以基于路径（通过 `path`）或内联内容（通过 `body`）。`contentType` 有助于使用者理解如何解释附件数据。
+
+附件 `path` 可以指向本地文件或外部 `http`/`https` URL。相对本地路径从项目根目录解析。本地文件会在报告器接收之前复制到 Vitest 的附件目录中。外部 URL 会按原样保留。
 
 如果你传递一个字符串 `body`，Vitest 假设它已经是 base64 编码的，除非你设置 `bodyEncoding: 'utf-8'`。当你传递 `body` 为 `Uint8Array` 时，Vitest 自动将其编码为 base64。`bodyEncoding` 选项仅适用于内联 `body` 附件，不适用于 `path` 附件。
 

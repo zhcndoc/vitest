@@ -5,7 +5,7 @@ outline: deep
 
 # 迁移指南
 
-[迁移到 Vitest 3.0](https://v3.vitest.dev/guide/migration) | [迁移到 Vitest 2.0](https://v2.vitest.dev/guide/migration)
+[Migrating to Vitest 4.0](https://v4.vitest.dev/guide/migration) | [Migrating to Vitest 3.0](https://v3.vitest.dev/guide/migration)
 
 ## 迁移到 Vitest 5.0 {#vitest-5}
 
@@ -54,6 +54,17 @@ export async function customClick(
 ) {
   await context.page.locator(selector).click()
 }
+```
+
+### Locators 默认是严格匹配
+
+现在浏览器定位器默认会精确匹配文本，要求完整且区分大小写的匹配。要保留之前的行为，你可以将 [`browser.locators.exact`](/config/browser/locators#browser-locators-exact) 设置为 `false`。
+
+```ts
+// exact: true（默认）时，这里只会精确匹配字符串 "Hello, World"。
+// exact: false 时，这里会匹配 "Hello, World!"、"Say Hello, World" 等。
+const locator = page.getByText('Hello, World', { exact: true })
+await locator.click()
 ```
 
 ### 已移除已弃用的入口点

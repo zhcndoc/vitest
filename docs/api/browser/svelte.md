@@ -39,19 +39,10 @@ export function render<C extends Component>(
   Component: ComponentImport<C>,
   options?: ComponentOptions<C>,
   renderOptions?: SetupOptions
-): RenderResult<C> & PromiseLike<RenderResult<C>>
+): Promise<RenderResult<C>>
 ```
 
 `render` 函数记录一个 `svelte.render` 追踪标记，可在 [追踪视图](/guide/browser/trace-view) 中看到。
-
-::: warning
-`render` 的同步用法已弃用，并将在下一个主要版本中移除。请始终 `await` 结果：
-
-```ts
-const screen = render(Component) // [!code --]
-const screen = await render(Component) // [!code ++]
-```
-:::
 
 ### 选项
 
@@ -173,10 +164,6 @@ function unmount(): Promise<void>
 ```
 
 卸载并销毁 Svelte 组件。还会在 [追踪视图](/guide/browser/trace-view) 中记录一个 `svelte.unmount` 追踪标记。这对于测试当你的组件从页面移除时会发生什么很有用（例如测试你是否没有留下导致内存泄漏的事件处理程序）。
-
-::: warning
-`unmount` 的同步用法已弃用，并将在下一个主要版本中移除。请始终 `await` 结果。
-:::
 
 ```ts
 import { render } from 'vitest-browser-svelte'

@@ -522,6 +522,29 @@ export default defineConfig({
 ```
 :::
 
+设置 `singleFile` 以生成一个自包含的 HTML 报告：
+
+```ts [vitest.config.ts]
+export default defineConfig({
+  test: {
+    reporters: [
+      ['html', { singleFile: true }],
+    ],
+  },
+})
+```
+
+当启用 `singleFile` 时，Vitest 会将 UI 资源、元数据和测试附件内联到单个自包含的 `index.html` 中。这使得报告更易于作为一个工件进行分享、上传或下载，而无需保留整个 `html` 输出目录。
+
+::: warning
+`singleFile` 有两个注意事项：
+
+- 由于所有内容都以内联方式嵌入，文件可能会变得非常大——打开速度慢、占用内存高，并且可能超过工件查看器或静态主机的大小限制。
+- 覆盖率 HTML 报告目前尚未内联，仍会作为单独文件保留。
+
+当套件包含许多或较大的附件，或者你需要将覆盖率包含在包中时，优先使用默认的多文件报告。
+:::
+
 ::: tip
 此报告器需要安装 [`@vitest/ui`](/guide/ui) 包。
 :::
