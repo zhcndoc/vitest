@@ -210,7 +210,9 @@ function cdp(): CDPSession
 `cdp` 导出返回当前的 Chrome DevTools Protocol 会话。它对库作者在此基础上构建工具最有用。
 
 ::: warning
-CDP 会话仅与 `playwright` 提供者配合使用，且仅在使用 `chromium` 浏览器时有效。你可以在 playwright 的 [`CDPSession`](https://playwright.dev/docs/api/class-cdpsession) 文档中阅读更多相关内容。
+CDP 会话仅适用于 `playwright` 提供者，并且仅在使用 `chromium` 浏览器时可用。你可以在 playwright 的 [`CDPSession`](https://playwright.dev/docs/api/class-cdpsession) 文档中了解更多。
+
+CDP 是一种特权调试 API。仅当通过 [`browser.api.allowWrite`](/config/browser/api#api-allowwrite)、[`browser.api.allowExec`](/config/browser/api#api-allowexec)、[`api.allowWrite`](/config/api#api-allowwrite) 和 [`api.allowExec`](/config/api#api-allowexec) 启用了浏览器 API 写入和执行操作时，它才可用。
 :::
 
 ```ts

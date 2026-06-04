@@ -23,9 +23,9 @@ outline: deep
 
 使用 Vitest 浏览器模式时，重要的是要考虑以下缺点：
 
-### 早期开发阶段
+### 不能直接替代
 
-Vitest 的浏览器模式功能仍处于早期开发阶段。因此，它可能尚未完全优化，并且可能存在一些尚未解决的 bug 或问题。建议用户使用独立的浏览器端测试运行器（如 WebdriverIO、Cypress 或 Playwright）来补充他们的 Vitest 浏览器模式体验。
+Vitest 的浏览器模式功能并不能完全替代独立的端到端测试运行器。建议用户将 Vitest 的浏览器体验与 WebdriverIO、Cypress 或 Playwright 这类独立的浏览器端测试运行器结合使用。
 
 ### 初始化时间较长
 

@@ -1,10 +1,10 @@
 # 运行器 API <Badge type="danger">高级</Badge>
 
 ::: warning
-这是高级 API。如果你只是想 [运行测试](/guide/)，可能不需要这个。它主要由库作者使用。
+这是一个高级 API。如果你只是想 [运行测试](/guide/)，可能不需要它。它主要由库作者使用。
 :::
 
-你可以在配置文件中通过 `runner` 选项指定测试运行器的路径。该文件应该默认导出一个类构造函数，实现以下方法：
+你可以在配置文件中通过 `runner` 选项指定测试运行器的路径。该文件应当默认导出一个类构造函数，并实现以下方法：
 
 ```ts
 export interface VitestRunner {
@@ -18,17 +18,17 @@ export interface VitestRunner {
   onCollected?: (files: File[]) => unknown
 
   /**
-   * 当测试运行器应该取消下一次测试运行时调用。
-   * 运行器应该监听此方法，并在调用时在 "onBeforeRunSuite" 和 "onBeforeRunTask" 中将测试和套件标记为跳过。
+   * 当测试运行器应当取消下一次测试运行时调用。
+   * 运行器应监听此方法，并在调用时在 "onBeforeRunSuite" 和 "onBeforeRunTask" 中将测试和套件标记为跳过。
    */
   onCancel?: (reason: CancelReason) => unknown
 
   /**
-   * 在运行单个测试之前调用。还没有 "result"。
+   * 在运行单个测试之前调用。此时还没有 "result"。
    */
   onBeforeRunTask?: (test: Test) => unknown
   /**
-   * 在实际运行测试函数之前调用。已经有了包含 "state" 和 "startTime" 的 "result"。
+   * 在实际运行测试函数之前调用。此时已经有包含 "state" 和 "startTime" 的 "result"。
    */
   onBeforeTryTask?: (test: Test, options: { retry: number; repeats: number }) => unknown
   /**
@@ -36,37 +36,37 @@ export interface VitestRunner {
    */
   onAfterRunTask?: (test: Test) => unknown
   /**
-   * 就在运行测试函数之后调用。还没有新状态。如果测试函数抛出错误，则不会被调用。
+   * 就在运行测试函数之后调用。此时还没有新状态。如果测试函数抛出错误，则不会被调用。
    */
   onAfterTryTask?: (test: Test, options: { retry: number; repeats: number }) => unknown
   /**
-   * 在重试解析发生后调用。与 `onAfterTryTask` 不同，测试现在有了新状态。
-   * 此时所有的 `after` 钩子也被调用了。
+   * 在重试解析发生后调用。与 `onAfterTryTask` 不同，此时测试现在有了新状态。
+   * 此时所有的 `after` 钩子也都已经被调用了。
    */
   onAfterRetryTask?: (test: Test, options: { retry: number; repeats: number }) => unknown
 
   /**
-   * 在运行单个套件之前调用。还没有 "result"。
+   * 在运行单个套件之前调用。此时还没有 "result"。
    */
   onBeforeRunSuite?: (suite: Suite) => unknown
   /**
-   * 在运行单个套件之后调用。拥有状态和结果。
+   * 在运行单个套件之后调用。此时拥有状态和结果。
    */
   onAfterRunSuite?: (suite: Suite) => unknown
 
   /**
-   * 如果定义，将代替通常的 Vitest 套件分区和处理被调用。
+   * 如果定义了此方法，将代替通常的 Vitest 套件分区和处理被调用。
    * "before" 和 "after" 钩子不会被忽略。
    */
   runSuite?: (suite: Suite) => Promise<void>
   /**
-   * 如果定义，将代替通常的 Vitest 处理被调用。如果你有自己的自定义测试函数，这很有用。
+   * 如果定义了此方法，将代替通常的 Vitest 处理被调用。如果你有自己的自定义测试函数，这很有用。
    * "before" 和 "after" 钩子不会被忽略。
    */
   runTask?: (test: TaskPopulated) => Promise<void>
 
   /**
-   * 当任务更新时调用。与报告器中的 "onTaskUpdate" 相同，但这是在與测试相同的线程中运行。
+   * 当任务更新时调用。与报告器中的 "onTaskUpdate" 相同，但这是在与测试相同的线程中运行。
    */
   onTaskUpdate?: (task: [string, TaskResult | undefined, TaskMeta | undefined][]) => Promise<void>
 
@@ -80,7 +80,7 @@ export interface VitestRunner {
   onAfterRunFiles?: (files: File[]) => unknown
   /**
    * 当为测试定义新上下文时调用。如果你想向上下文添加自定义属性，这很有用。
-   * 如果你只想用运行器定义自定义上下文，考虑改用 "setupFiles" 中的 "beforeAll"。
+   * 如果你只是想用运行器定义自定义上下文，考虑改用 "setupFiles" 中的 "beforeAll"。
    */
   extendTaskContext?: (context: TestContext) => TestContext
   /**
@@ -88,21 +88,21 @@ export interface VitestRunner {
    */
   importFile: (filepath: string, source: VitestRunnerImportSource) => unknown
   /**
-   * 当运行器尝试在 `test.extend` 与 `{ injected: true }` 一起使用时获取值时调用的函数
+   * 当运行器尝试在 `test.extend` 中使用 `{ injected: true }` 获取值时调用的函数
    */
   injectValue?: (key: string) => unknown
   /**
    * 公开可用的配置。
    */
-  config: VitestRunnerConfig
+  config: SerializedConfig
   /**
-   * 当前池的名称。可能会影响服务器端堆栈跟踪的推断方式。
+   * 当前池的名称。它可能会影响服务器端堆栈跟踪的推断方式。
    */
   pool?: string
 }
 ```
 
-当初始化这个类时，Vitest 会传入 Vitest 配置，- 你应该将其作为 `config` 属性暴露：
+当初始化这个类时，Vitest 会传入 Vitest 配置，你应该将其作为 `config` 属性暴露：
 
 ```ts [runner.ts]
 import type { RunnerTestFile, SerializedConfig, TestRunner, VitestTestRunner } from 'vitest'
@@ -125,7 +125,7 @@ export default CustomRunner
 ::: warning
 Vitest 还会从 `vite/module-runner` 注入一个 `ModuleRunner` 实例作为 `moduleRunner` 属性。你可以在 `importFile` 方法中使用它来处理文件（这是 `TestRunner` 和 `BenchmarkRunner` 的默认行为）。
 
-`ModuleRunner` 暴露了 `import` 方法，用于在 Vite 友好的环境中导入测试文件。这意味着，它将在运行时解析导入并转换文件内容，以便 Node 能够理解它：
+`ModuleRunner` 暴露了 `import` 方法，用于在对 Vite 友好的环境中导入测试文件。这意味着，它会在运行时解析导入并转换文件内容，以便 Node 能够理解它：
 
 ```ts
 export default class Runner {
@@ -137,7 +137,7 @@ export default class Runner {
 :::
 
 ::: warning
-如果你没有自定义运行器或未定义 `runTest` 方法，Vitest 将尝试自动检索任务。如果你没有使用 `setFn` 添加函数，它将失败。
+如果你没有自定义运行器，或者未定义 `runTest` 方法，Vitest 将尝试自动检索任务。如果你没有使用 `setFn` 添加函数，它将失败。
 :::
 
 ::: tip
@@ -147,12 +147,12 @@ export default class Runner {
 ## 任务
 
 ::: warning
-"Runner Tasks API" 是实验性的，应该主要仅在测试运行时使用。Vitest 还暴露了 ["Reported Tasks API"](/api/advanced/test-module)，在主线程中工作时（例如在报告器内部）应该优先使用它。
+“运行器任务 API” 是实验性的，应该主要仅在测试运行时使用。Vitest 还暴露了 [“已报告任务 API”](/api/advanced/test-module)，在主线程中工作时（例如在报告器内部）应优先使用它。
 
-团队目前正在讨论未来是否应该用 "Reported Tasks" 替换 "Runner Tasks"。
+团队目前正在讨论未来是否应该用 “已报告任务” 替换 “运行器任务”。
 :::
 
-套件和测试在内部被称为 `任务`。Vitest 运行器在收集任何测试之前启动一个 `File` 任务 - 这是 `Suite` 的超集，带有几个额外的属性。它在每个任务（包括 `File`）上都可作为 `file` 属性使用。
+套件和测试在内部被称为 `任务`。Vitest 运行器在收集任何测试之前会启动一个 `File` 任务——它是 `Suite` 的超集，并带有几个额外的属性。它在每个任务（包括 `File`）上都可作为 `file` 属性使用。
 
 ```ts
 interface File extends Suite {
@@ -219,13 +219,13 @@ interface Test<ExtraContext = object> extends TaskBase {
    */
   fails?: boolean
   /**
-   * 存储承诺（来自异步 expects），以便在结束测试之前等待它们
+   * 存储 Promise（来自异步 expects），以便在结束测试之前等待它们
    */
   promises?: Promise<any>[]
 }
 ```
 
-每个任务都可以有一个 `result` 字段。套件只有在套件回调或 `beforeAll`/`afterAll` 回调中抛出错误阻止它们收集测试时才会有此字段。测试在回调被调用后总是有这个字段 - `state` 和 `errors` 字段根据结果存在。如果在 `beforeEach` 或 `afterEach` 回调中抛出错误，抛出的错误将出现在 `task.result.errors` 中。
+每个任务都可以有一个 `result` 字段。只有当套件回调或 `beforeAll`/`afterAll` 回调抛出错误，从而阻止它们收集测试时，套件才会有此字段。测试在回调被调用后总是有这个字段——`state` 和 `errors` 字段会根据结果存在。如果在 `beforeEach` 或 `afterEach` 回调中抛出错误，抛出的错误将出现在 `task.result.errors` 中。
 
 ```ts
 export interface TaskResult {
@@ -254,7 +254,7 @@ export interface TaskResult {
    */
   heap?: number
   /**
-   * 与此任务相关的钩子的状态。在报告期间有用。
+   * 与此任务相关的钩子的状态。在报告期间很有用。
    */
   hooks?: Partial<Record<'afterAll' | 'beforeAll' | 'beforeEach' | 'afterEach', TaskState>>
   /**
@@ -270,21 +270,21 @@ export interface TaskResult {
 
 ## 你的任务函数
 
-Vitest 暴露了 `createTaskCollector` 工具来创建你自己的 `test` 方法。它的行为与测试相同，但在收集期间调用自定义方法。
+Vitest 暴露了 `createTaskCollector` 工具来创建你自己的 `test` 方法。它的行为与测试相同，但会在收集期间调用自定义方法。
 
-任务是套件的一部分的对象。它通过 `suite.task` 方法自动添加到当前套件：
+任务是作为套件一部分的对象。它会通过 `suite.task` 方法自动添加到当前套件：
 
 ```js [custom.js]
 export { afterAll, beforeAll, describe, TestRunner } from 'vitest'
 
-// 这个函数将在收集阶段被调用：
-// 不要在这里调用函数处理程序，将其添加到套件任务
+// 这个函数会在收集阶段被调用：
+// 不要在这里直接调用函数处理器；请将其添加到套件任务中
 // 使用 "getCurrentSuite().task()" 方法
-// 注意：createTaskCollector 提供支持 "todo"/"each"/...
+// 注意：createTaskCollector 提供对 "todo"/"each"/... 的支持
 export const myCustomTask = TestRunner.createTaskCollector(
   function (name, fn, timeout) {
     TestRunner.getCurrentSuite().task(name, {
-      ...this, // 所以 "todo"/"skip"/... 被正确跟踪
+      ...this, // 这样 "todo"/"skip"/... 就能被正确跟踪
       meta: {
         customPropertyToDifferentiateTask: true
       },
@@ -304,18 +304,18 @@ import {
 } from './custom.js'
 import { gardener } from './gardener.js'
 
-describe('take care of the garden', () => {
+describe('照料花园', () => {
   beforeAll(() => {
     gardener.putWorkingClothes()
   })
 
-  myCustomTask('weed the grass', () => {
+  myCustomTask('除草', () => {
     gardener.weedTheGrass()
   })
-  myCustomTask.todo('mow the lawn', () => {
+  myCustomTask.todo('修剪草坪', () => {
     gardener.mowerTheLawn()
   })
-  myCustomTask('water flowers', () => {
+  myCustomTask('给花浇水', () => {
     gardener.waterFlowers()
   })
 

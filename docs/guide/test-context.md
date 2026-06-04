@@ -117,6 +117,29 @@ it('stop request when test times out', async ({ signal }) => {
 }, 2000)
 ```
 
+### `bench` <Version>5.0.0</Version> {#bench}
+
+`bench` 夹具允许你在普通测试中定义并运行基准测试。你可以测量吞吐量、比较实现，并断言相对性能：
+
+```ts
+import { expect, test } from 'vitest'
+
+test('compare parsers', async ({ bench }) => {
+  const result = await bench.compare(
+    bench('JSON.parse', () => {
+      JSON.parse('{"key":"value"}')
+    }),
+    bench('custom parser', () => {
+      customParse('{"key":"value"}')
+    }),
+  )
+
+  expect(result.get('JSON.parse')).toBeFasterThan(result.get('custom parser'))
+})
+```
+
+有关比较、基线和断言匹配器的完整文档，请参阅 [基准测试指南](/guide/benchmarking)。
+
 ### `onTestFailed`
 
 绑定到当前测试的 [`onTestFailed`](/api/hooks#ontestfailed) 钩子。如果你并发运行测试并且需要仅针对此特定测试进行特殊处理，此 API 很有用。

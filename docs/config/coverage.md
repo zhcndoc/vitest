@@ -250,7 +250,7 @@ npx vitest --coverage.enabled --coverage.provider=istanbul
 当当前覆盖率优于配置的阈值时，将所有阈值 `lines`、`functions`、`branches` 和 `statements` 更新到配置文件中。
 此选项有助于在覆盖率提高时维护阈值。
 
-你也可以传递一个函数来格式化更新后的阈值值：
+你也可以传递一个用于格式化更新后阈值值的函数。该函数接收新的阈值作为第一个参数，接收之前的阈值作为第二个参数：
 
 <!-- eslint-skip -->
 ```ts
@@ -259,6 +259,12 @@ npx vitest --coverage.enabled --coverage.provider=istanbul
     thresholds: {
       // 更新阈值时不带小数
       autoUpdate: (newThreshold) => Math.floor(newThreshold),
+
+      // 记录变更并在不带小数的情况下更新
+      autoUpdate: (newThreshold, previousThreshold) => {
+        console.log(`Updated threshold from ${previousThreshold} to ${newThreshold}`)
+        return Math.floor(newThreshold)
+      },
 
       // 95.85 -> 95
       functions: 95,

@@ -29,11 +29,11 @@ test('error banner is rendered', async () => {
     name: /error/i,
   })
 
-  // Vitest 提供带有内置重试能力的 `expect.element`
-  // 它将反复检查元素是否存在于 DOM 中，并且
-  // `element.textContent` 的内容等于 "Error!"
-  // 直到满足所有条件
-  await expect.element(banner).toHaveTextContent('Error!')
+  // Vitest 提供了具有内置重试能力的 `expect.element`
+  // 它会反复检查该元素是否存在于 DOM 中，以及
+  // `element.textContent` 的内容是否等于 "Error!"
+  // 直到所有条件都满足为止
+  await expect.element(banner).toMatchTextContent('Error!')
 })
 ```
 
@@ -55,11 +55,11 @@ interface ExpectPollOptions {
 ::: tip
 与 [`expect.poll`](/api/expect#poll) 类似，`expect.element` 会重试 DOM 断言，直到它们通过或达到超时时间。当它接收到一个定位器时，Vitest 会在执行 DOM 断言之前，先使用 [`locator.findElement()`](/api/browser/locators#findelement) 解析它。`timeout` 选项适用于整个重试操作。`interval` 选项控制失败的 DOM 断言多久重试一次，但定位器解析使用的是 `findElement` 自身逐渐增加的重试间隔。
 
-`toHaveTextContent` 和所有其他断言仍然可以在常规的 `expect` 上使用，但没有内置的重试机制：
+`toMatchTextContent` 和所有其他断言在普通的 `expect` 中仍然可用，但不具备内置的重试机制：
 
 ```ts
-// 如果 .textContent 不是 `'Error!'` 将立即失败
-expect(banner).toHaveTextContent('Error!')
+// 如果 .textContent 不是 `'Error!'`，会立即失败
+expect(banner).toMatchTextContent('Error!')
 ```
 :::
 
@@ -708,18 +708,14 @@ await expect.element(button).not.toHaveStyle({
 
 ```ts
 function toHaveTextContent(
-  text: string | RegExp,
+  text: string | number,
   options?: { normalizeWhitespace: boolean }
 ): Promise<void>
 ```
 
-这允许你检查给定节点是否具有文本内容。这支持元素，也支持文本节点和片段。
+此匹配器允许你验证元素的文本是否与提供的字符串完全匹配。这支持元素，也支持文本节点和片段。
 
-当传入 `string` 参数时，它将对节点内容执行部分区分大小写的匹配。
-
-要执行不区分大小写的匹配，你可以使用带有 `/i` 修饰符的 `RegExp`。
-
-如果你想匹配全部内容，可以使用 `RegExp` 来实现。
+如果你希望执行部分检查或进行区分大小写的匹配，请改用 [`toMatchTextContent`](#tomatchtextcontent)。
 
 ```html
 <span data-testid="text-content">文本内容</span>
@@ -728,12 +724,41 @@ function toHaveTextContent(
 ```ts
 const element = getByTestId('text-content')
 
-await expect.element(element).toHaveTextContent('内容')
-// 匹配全部内容
-await expect.element(element).toHaveTextContent(/^Text Content$/)
+await expect.element(element).toHaveTextContent('Text Content')
+await expect.element(element).not.toHaveTextContent('Content')
+```
+
+## toMatchTextContent
+
+```ts
+function toMatchTextContent(
+  text: string | number | RegExp,
+  options?: { normalizeWhitespace: boolean }
+): Promise<void>
+```
+
+此匹配器允许你检查给定节点是否具有文本内容。它支持元素，也支持文本节点和片段。
+
+当传入 `string` 参数时，它会对节点内容执行部分、区分大小写的匹配。
+
+要执行不区分大小写的匹配，你可以使用带有 `/i`
+修饰符的 `RegExp`。
+
+如果你想匹配完整内容，可以使用 `RegExp` 来实现，或者改用 [`toHaveTextContent`](#tohavetextcontent) 匹配器。
+
+```html
+<span data-testid="text-content">Text Content</span>
+```
+
+```ts
+const element = getByTestId('text-content')
+
+await expect.element(element).toMatchTextContent('Content')
+// 匹配完整内容
+await expect.element(element).toMatchTextContent(/^Text Content$/)
 // 使用不区分大小写的匹配
-await expect.element(element).toHaveTextContent(/content$/i)
-await expect.element(element).not.toHaveTextContent('content')
+await expect.element(element).toMatchTextContent(/content$/i)
+await expect.element(element).not.toMatchTextContent('content')
 ```
 
 ## toHaveValue
@@ -1014,7 +1039,7 @@ await expect.element(queryByTestId('prev')).not.toHaveSelection()
 await expect.element(queryByTestId('next')).toHaveSelection('ne')
 ```
 
-## toMatchScreenshot <Experimental /> {#tomatchscreenshot}
+## toMatchScreenshot <实验性 /> {#tomatchscreenshot}
 
 ```ts
 function toMatchScreenshot(

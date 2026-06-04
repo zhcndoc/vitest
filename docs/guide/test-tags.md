@@ -233,7 +233,7 @@ vitest --tags-filter="frontend and backend"
 ```ts
 import { startVitest } from 'vitest/node'
 
-await startVitest('test', [], {
+await startVitest([], {
   tagsFilter: ['frontend and backend'],
 })
 ```

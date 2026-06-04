@@ -5,42 +5,16 @@ title: Vitest API
 
 # Vitest
 
-Vitest 实例需要当前的测试模式。它可以是：
+## mode <Deprecated /> {#mode}
 
-- `test`：运行运行时测试时
-- `benchmark`：运行基准测试时 <Experimental />
-
-::: details Vitest 4 新增
-Vitest 4 添加了几个新 API（它们标有 "4.0.0+" 徽章）并移除了已弃用的 API：
-
-- `invalidates`
-- `changedTests`（请使用 [`onFilterWatchedSpecification`](#onfilterwatchedspecification) 代替）
-- `server`（请使用 [`vite`](#vite) 代替）
-- `getProjectsByTestFile`（请使用 [`getModuleSpecifications`](#getmodulespecifications) 代替）
-- `getFileWorkspaceSpecs`（请使用 [`getModuleSpecifications`](#getmodulespecifications) 代替）
-- `getModuleProjects`（自行通过 [`this.projects`](#projects) 过滤）
-- `updateLastChanged`（重命名为 [`invalidateFile`](#invalidatefile)）
-- `globTestSpecs`（请使用 [`globTestSpecifications`](#globtestspecifications) 代替）
-- `globTestFiles`（请使用 [`globTestSpecifications`](#globtestspecifications) 代替）
-- `listFile`（请使用 [`getRelevantTestSpecifications`](#getrelevanttestspecifications) 代替）
-:::
-
-## 模式
-
-### 测试
-
-测试模式只会调用 `test` 或 `it` 内部的函数，当遇到 `bench` 时抛出错误。此模式使用配置中的 `include` 和 `exclude` 选项来查找测试文件。
-
-### benchmark <Experimental /> {#benchmark}
-
-基准测试模式调用 `bench` 函数，当遇到 `test` 或 `it` 时抛出错误。此模式使用配置中的 `benchmark.include` 和 `benchmark.exclude` 选项来查找基准测试文件。
+自 Vitest 5 起，此属性始终为 `'test'`。
 
 ## 配置
 
-根配置（或全局配置）。如果定义了项目，它们将会将此引用为 `globalConfig`。
+根配置（或全局配置）。如果定义了项目，它们将把此项引用为 `globalConfig`。
 
 ::: warning
-这是 Vitest 配置，它不扩展 _Vite_ 配置。它只包含来自 `test` 属性的解析值。
+这是 Vitest 的配置，它不会扩展 _Vite_ 配置。它只包含来自 `test` 属性的解析值。
 :::
 
 ## vite
@@ -50,10 +24,10 @@ Vitest 4 添加了几个新 API（它们标有 "4.0.0+" 徽章）并移除了已
 ## state <Experimental /> {#state}
 
 ::: warning
-公共 `state` 是一个实验性 API（`vitest.state.getReportedEntity` 除外）。破坏性变更可能不遵循 SemVer，请在使用时固定 Vitest 的版本。
+公共 `state` 是一个实验性 API（`vitest.state.getReportedEntity` 除外）。破坏性变更可能不会遵循 SemVer，请在使用时固定 Vitest 版本。
 :::
 
-全局状态存储有关当前测试的信息。默认情况下它使用来自 `@vitest/runner` 的相同 API，但我们建议通过调用 `@vitest/runner` API 上的 `state.getReportedEntity()` 来使用 [Reported Tasks API](/api/advanced/reporters#reported-tasks)：
+全局状态存储当前测试的信息。默认情况下，它使用内部可序列化的 Task API，但我们建议改用 [Reported Tasks API](/api/advanced/reporters#reported-tasks)，方法是调用 `state.getReportedEntity()`：
 
 ```ts
 const task = vitest.state.idMap.get(taskId) // 旧 API
@@ -70,7 +44,7 @@ const testCase = vitest.state.getReportedEntity(task) // 新 API
 
 ## 缓存
 
-缓存管理器，存储有关最新测试结果和测试文件统计信息。在 Vitest 本身中，这仅由默认排序器用于排序测试。
+缓存管理器，存储有关最新测试结果和测试文件统计信息。在 Vitest 本身中，这仅由默认排序器用于测试排序。
 
 ## 监听器 <Version>4.0.0</Version> {#watcher}
 
@@ -78,9 +52,9 @@ Vitest 监听器的实例，具有跟踪文件更改和重新运行测试的有�
 
 ## 项目
 
-属于用户项目的 [测试项目](/api/advanced/test-project) 数组。如果用户未指定它们，此数组将仅包含一个 [根项目](#getrootproject)。
+属于用户项目的 [测试项目](/api/advanced/test-project) 数组。如果用户未指定这些项目，此数组将仅包含一个 [根项目](#getrootproject)。
 
-Vitest 将确保此数组中始终至少有一个项目。如果用户指定了不存在的 `--project` 名称，Vitest 将在定义此数组之前抛出错误。
+Vitest 将确保此数组中始终至少有一个项目。如果用户指定了不存在的 `--project` 名称，Vitest 会在定义此数组之前抛出错误。
 
 ## getRootProject
 
@@ -114,7 +88,7 @@ import { inject } from 'vitest'
 const port = inject('wsPort') // 3000
 ```
 
-为了更好的类型安全，我们鼓励你扩充 `ProvidedContext` 的类型：
+为了获得更好的类型安全，我们鼓励你扩充 `ProvidedContext` 的类型：
 
 ```ts
 import { createVitest } from 'vitest/node'
@@ -152,9 +126,9 @@ function getProjectByName(name: string): TestProject
 此方法按名称返回项目。类似于调用 `vitest.projects.find`。
 
 ::: warning
-如果项目不存在，此方法将返回根项目——如果返回的项目是你正在查找的项目，请再次检查名称。
+如果项目不存在，此方法将返回根项目——如果返回的项目正是你要查找的项目，请再次检查名称。
 
-如果用户未自定义名称，Vitest 将分配一个空字符串作为名称。
+如果用户没有自定义名称，Vitest 将分配一个空字符串作为名称。
 :::
 
 ## globTestSpecifications

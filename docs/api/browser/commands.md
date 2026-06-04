@@ -58,7 +58,9 @@ expect(input).toHaveValue('a')
 ```
 
 ::: warning
-CDP 会话仅适用于 `playwright` 提供者，且仅在使用 `chromium` 浏览器时有效。你可以在 playwright 的 [`CDPSession`](https://playwright.dev/docs/api/class-cdpession) 文档中阅读更多关于它的信息。
+CDP 会话仅适用于 `playwright` provider，并且仅在使用 `chromium` 浏览器时可用。你可以在 playwright 的 [`CDPSession`](https://playwright.dev/docs/api/class-cdpsession) 文档中了解更多。
+
+CDP 是一个特权调试 API。只有在通过 [`browser.api.allowWrite`](/config/browser/api#api-allowwrite)、[`browser.api.allowExec`](/config/browser/api#api-allowexec)、[`api.allowWrite`](/config/api#api-allowwrite) 和 [`api.allowExec`](/config/api#api-allowexec) 启用浏览器 API 的写入和执行操作时，它才可用。
 :::
 
 ## 自定义命令
@@ -124,7 +126,7 @@ declare module 'vitest/browser' {
 如果自定义函数与内置函数同名，它们将覆盖内置函数。
 :::
 
-::: warning Security
+::: warning 安全
 自定义命令在 Vitest Node 进程中运行，并可通过 Vitest 的 browser RPC 连接从浏览器测试代码中调用。它们可以访问本地文件、环境变量、网络服务、数据库、shell 命令以及其他 Node API。
 
 Vitest 的内置文件命令会根据 Vite 的 [`server.fs`](https://vite.dev/config/server-options#server-fs-allow) 限制验证路径，并单独检查是否允许写入。自定义命令不会自动继承这些保护。如果某个自定义命令接受浏览器提供的输入并使用它来读取、写入、删除、执行或暴露本地资源，那么在使用之前必须先验证该输入。
@@ -172,7 +174,7 @@ export const myWriteFileCommand: BrowserCommand<[path: string, content: string]>
 
 :::
 
-### Recording trace markers
+### 记录 trace 标记
 
 自定义命令可以通过 `context.mark` 为触发它们的测试记录 [trace 标记](/api/browser/context#mark)。这相当于服务端的 `page.mark`，并有助于在 [trace 视图](/guide/browser/trace-view) 中标注命令内部执行的自定义操作。
 

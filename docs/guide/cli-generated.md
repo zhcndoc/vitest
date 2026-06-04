@@ -311,7 +311,7 @@
 - **CLI:** `--mode <name>`
 - **Config:** [mode](/config/mode)
 
-覆盖 Vite 模式（默认：`test` 或 `benchmark`）
+覆盖 Vite 模式（默认：`test`）
 
 ### 隔离
 

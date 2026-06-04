@@ -6,9 +6,11 @@ outline: deep
 
 如果你正在使用 Vite 并且有一个 `vite.config` 文件，Vitest 会读取它以便与你的 Vite 应用的插件和设置相匹配。如果你想为测试使用不同的配置，或者你的主应用并不专门依赖 Vite，你可以：
 
-- 创建 `vitest.config.ts`，它将具有更高的优先级并**覆盖** `vite.config.ts` 中的配置（Vitest 支持所有常规的 JS 和 TS 扩展，但不支持 `json`）——这意味着你 `vite.config` 中的所有选项都将被**忽略**
+- 创建 `vitest.config.ts`，它将具有更高的优先级，并会 **覆盖** `vite.config.ts` 中的配置（Vitest 支持所有常见的 JS 和 TS 扩展名，但不支持 `json`）——这意味着 `vite.config` 中的所有选项都会被 **忽略**
 - 向 CLI 传递 `--config` 选项，例如 `vitest --config ./path/to/vitest.config.ts`
-- 在 `defineConfig` 上使用 `process.env.VITEST` 或 `mode` 属性（如果没有被 `--mode` 覆盖，将被设置为 `test`/`benchmark`）以便在 `vite.config.ts` 中条件性地应用不同的配置。请注意，像任何其他环境变量一样，`VITEST` 也在你的测试中通过 `import.meta.env` 暴露
+- 在 `defineConfig` 上使用 `process.env.VITEST` 或 `mode` 属性（如果没有通过 `--mode` 覆盖，则会被设置为 `test`），以便在 `vite.config.ts` 中有条件地应用不同的配置。注意，像其他任何环境变量一样，`VITEST` 也会在你的测试中暴露到 `import.meta.env`
+
+当未提供显式的 `--config` 选项时，Vitest 会首先在项目 [`root`](/config/root) 中查找 `vitest.config.{ts,mts,cts,js,mjs,cjs}`，其次查找 `vite.config.{ts,mts,cts,js,mjs,cjs}`。如果没有找到配置文件，Vitest 将在没有配置文件的情况下运行。
 
 要配置 `vitest` 本身，请在你的 Vite 配置中添加 `test` 属性。如果你是从 `vite` 本身导入 `defineConfig`，你还需要在配置文件的顶部使用 [三斜杠指令](https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html#-reference-types-) 添加对 Vitest 类型的引用。
 
@@ -80,10 +82,10 @@ export default defineConfig(configEnv => mergeConfig(
 
 由于 Vitest 使用 Vite 配置，你也可以使用 [Vite](https://vitejs.dev/config/) 中的任何配置选项。例如，`define` 用于定义全局变量，或 `resolve.alias` 用于定义别名——这些选项应该在顶层定义，_而不是_ 在 `test` 属性内。
 
-## Automatic Dependency Installation
+## 自动安装依赖项
 
 如果尚未安装，Vitest 会提示你安装某些依赖项。你可以通过设置 `VITEST_SKIP_INSTALL_CHECKS=1` 环境变量来禁用此行为。
 
-## Config Options
+## 配置选项
 
 在 [项目](/guide/projects) 配置中不受支持的配置选项旁带有 <CRoot /> 图标。这意味着它们只能在根 Vitest 配置中设置。

@@ -5,13 +5,43 @@ outline: deep
 
 # 迁移指南
 
-[Migrating to Vitest 4.0](https://v4.vitest.dev/guide/migration) | [Migrating to Vitest 3.0](https://v3.vitest.dev/guide/migration)
+[迁移到 Vitest 4.0](https://v4.vitest.dev/guide/migration) | [迁移到 Vitest 3.0](https://v3.vitest.dev/guide/migration)
 
 ## 迁移到 Vitest 5.0 {#vitest-5}
 
 ::: warning 正在进行中
 Vitest 5.0 目前处于 beta 版。本节会跟踪合并中的破坏性变更，并且在稳定版发布前可能仍会更改。
 :::
+
+### 基准测试 API 重写
+
+基准测试 API 已经重写。`bench` 不再是从 `vitest` 顶层导入的内容；它现在是一个 [测试上下文 fixture](/guide/test-context#bench)，需要在普通的 `test()` 内部访问。有关新 API，请参见 [基准测试指南](/guide/benchmarking)。
+
+已移除，并在适用时提供替代方案：
+
+- **模块作用域下的 `bench(name, fn)`**：请改为从测试上下文中解构出 `bench`。
+
+```ts
+// v4
+import { bench } from 'vitest' // [!code --]
+
+bench('sort', () => { // [!code --]
+  [3, 1, 2].sort() // [!code --]
+}) // [!code --]
+
+// v5
+import { test } from 'vitest' // [!code ++]
+
+test('sort', async ({ bench }) => { // [!code ++]
+  await bench('sort', () => { [3, 1, 2].sort() }).run() // [!code ++]
+}) // [!code ++]
+```
+
+- **`bench.skip`、`bench.only`、`bench.todo`** 已被移除。请改为在外层的 `test()` 上使用常规的 `test.skip`、`test.only`、`test.todo`。
+- **`benchmark.reporters` / `benchmark.outputFile`** 已被移除。基准测试输出现在是默认报告器和 `json` 报告器的一部分；请改为通过顶层的 `test.reporters` 进行配置。
+- **`benchmark.compare` 配置和 `--compare` CLI 标志** 已被移除。请将 [`writeResult`](/guide/benchmarking#storing-and-replaying-results) 作为每个基准测试的选项来持久化结果，并在 `bench.compare()` 中通过 [`bench.from()`](/guide/benchmarking#bench-from) 读取。
+- **`benchmark.outputJson` 配置和 `--outputJson` CLI 标志** 已被移除。请使用 `--reporter=json --outputFile=<path>` 来捕获基准测试结果；`JSON` 报告器现在会在每个测试用例上包含一个 `benchmarks` 字段。
+- **`Vitest` 实例的 `mode` 属性** 现在始终为 `'test'`。之前的 `'benchmark'` 值不再使用；基准测试会在同一个 `Vitest` 实例的专用项目中运行。
 
 ### 已移除 `test.sequential`、`describe.sequential` 和 `sequential` 选项
 
@@ -36,7 +66,7 @@ test('example', { concurrent: false }, async () => { /* ... */ }) // [!code ++]
 
 ### 命令中的定位器会被序列化为对象
 
-传递给 [browser commands](/api/browser/commands) 的定位器现在会被序列化为 `SerializedLocator` 对象，而不是裸选择器字符串。该对象暴露两个字段：
+传递给 [浏览器命令](/api/browser/commands) 的定位器现在会被序列化为 `SerializedLocator` 对象，而不是裸选择器字符串。该对象暴露两个字段：
 
 - `selector`：特定提供者的选择器字符串（与命令之前接收的值相同）。
 - `locator`：定位器的人类可读表示（例如 `getByRole('button')`），用于错误消息和追踪。
@@ -80,6 +110,30 @@ Vitest 4.1 中有多个入口点被标记为已弃用。此版本将它们完全
 - `vitest/mocker` 已被完全移除，请直接使用 `@vitest/mocker` 包（它曾一度被意外发布，且从未移除）
 - `vitest/internal/module-runner` 已被移除
 
+### `toHaveTextContent` 现在执行严格相等比较
+
+浏览器模式下的 [`toHaveTextContent`](/api/browser/assertions#tohavetextcontent) matcher 现在会验证元素的文本内容是否与预期字符串完全相等，而不再执行部分、区分大小写的匹配。不再接受正则表达式。之前的行为，包括对 `RegExp` 的支持，已迁移到新的 [`toMatchTextContent`](/api/browser/assertions#tomatchtextcontent) matcher 中。
+
+```ts
+// 部分匹配或正则匹配：
+await expect.element(banner).toHaveTextContent('Error') // [!code --]
+await expect.element(banner).toHaveTextContent(/error/i) // [!code --]
+await expect.element(banner).toMatchTextContent('Error') // [!code ++]
+await expect.element(banner).toMatchTextContent(/error/i) // [!code ++]
+
+// 精确匹配仍然使用 `toHaveTextContent`：
+await expect.element(banner).toHaveTextContent('Error!')
+```
+
+### 不再从父目录查找配置文件
+
+Vitest 不再向上搜索父目录中的配置文件。如果你之前依赖于在子目录中运行 `vitest`，同时使用父目录中的配置文件，请显式传入配置，并使用 `--dir` 限定测试发现范围。例如：
+
+```bash
+$ cd subdir && vitest # [!code --]
+$ cd subdir && vitest --config ../vitest.config.ts # [!code ++]
+```
+
 ## 迁移到 Vitest 4.0 {#vitest-4}
 
 ::: warning 前提条件
@@ -110,7 +164,7 @@ Vitest 的 V8 代码覆盖率提供者现在使用更准确的覆盖率结果重
 这是由于 `coverage.all` 默认为 `true`，且 `coverage.include` 默认为 `**`。
 选择这些默认值是有充分理由的——测试工具不可能猜测用户将源文件存储在哪里。
 
-这导致 Vitest 的覆盖率提供者处理了意外文件，如混淆后的 Javascript，导致覆盖率报告生成缓慢/卡住。
+这导致 Vitest 的覆盖率提供者处理了意外文件，如混淆后的 JavaScript，导致覆盖率报告生成缓慢/卡住。
 在 Vitest v4 中，我们完全移除了 `coverage.all` 并 <ins>**默认仅在报告中包含已覆盖的文件**</ins>。
 
 升级到 v4 时，建议在配置中定义 `coverage.include`，然后在需要时开始应用简单的 `coverage.exclude` 模式。
@@ -226,7 +280,7 @@ const mock = new Spy()
 
 除了支持构造函数等新功能外，Vitest 4 以不同方式创建模拟，以解决几年来我们收到的几个模块模拟问题。此版本试图使模块 spy 不那么令人困惑，尤其是在使用类时。
 
-- `vi.fn().getMockName()` 现在默认返回 `vi.fn()` 而不是 `spy`。这可能会影响带有模拟的快照 - 名称将从 `[MockFunction spy]` 更改为 `[MockFunction]`。使用 `vi.spyOn` 创建的 spy 默认将继续使用原始名称以获得更好的调试体验
+- `vi.fn().getMockName()` 现在默认返回 `vi.fn()` 而不是 `spy`。这可能会影响带有模拟的快照——名称将从 `[MockFunction spy]` 更改为 `[MockFunction]`。使用 `vi.spyOn` 创建的 spy 默认将继续使用原始名称以获得更好的调试体验
 - `vi.restoreAllMocks` 不再重置 spy 的状态，仅恢复使用 `vi.spyOn` 手动创建的 spy，自动模拟不再受此函数影响（这也影响配置选项 [`restoreMocks`](/config/restoremocks)）。请注意，`.mockRestore` 仍将重置模拟实现并清除状态
 - 在模拟上调用 `vi.spyOn` 现在返回相同的模拟
 - `mock.settledResults` 现在在函数调用时立即填充，带有 `'incomplete'` 结果。当 promise 完成时，类型会根据结果更改。
@@ -426,7 +480,7 @@ export default defineConfig({
 })
 ```
 
-以前在使用 [Vitest Projects](/guide/projects) 时，无法为每个项目指定一些池相关选项。使用新架构，这不再是障碍。
+以前在使用 [Vitest 项目](/guide/projects) 时，无法为每个项目指定一些池相关选项。使用新架构，这不再是障碍。
 
 ::: code-group
 ```ts [每个项目的隔离]

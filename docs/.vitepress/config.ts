@@ -894,7 +894,11 @@ export default ({ mode }: { mode: string }) => {
                 link: '/guide/testing-types',
               },
               {
-                text: '源码内测试',
+                text: '基准测试',
+                link: '/guide/benchmarking',
+              },
+              {
+                text: '源内测试',
                 link: '/guide/in-source',
               },
             ],
