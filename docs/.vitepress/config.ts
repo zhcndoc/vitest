@@ -500,6 +500,10 @@ export default ({ mode }: { mode: string }) => {
                 link: '/config/retry',
               },
               {
+                text: '重复',
+                link: '/config/repeats',
+              },
+              {
                 text: '控制台日志回调',
                 link: '/config/onconsolelog',
               },
@@ -572,7 +576,11 @@ export default ({ mode }: { mode: string }) => {
                 link: '/config/disableconsoleintercept',
               },
               {
-                text: '实验性',
+                text: 'changed',
+                link: '/config/changed',
+              },
+              {
+                text: 'experimental',
                 link: '/config/experimental',
               },
             ],
@@ -1036,7 +1044,11 @@ export default ({ mode }: { mode: string }) => {
                 link: '/guide/recipes/explicit-resources',
               },
               {
-                text: '按文件隔离设置',
+                text: 'Conditional Mocking with `vi.when`',
+                link: '/guide/recipes/conditional-mocking',
+              },
+              {
+                text: 'Per-File Isolation Settings',
                 link: '/guide/recipes/disable-isolation',
               },
               {

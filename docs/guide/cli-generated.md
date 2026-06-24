@@ -197,10 +197,10 @@
 
 ### coverage.thresholds.perFile
 
-- **CLI:** `--coverage.thresholds.perFile`
+- **CLI:** `--coverage.thresholds.perFile <boolean>`
 - **Config:** [coverage.thresholds.perFile](/config/coverage#coverage-thresholds-perfile)
 
-按文件检查阈值。实际阈值请参见 `--coverage.thresholds.lines`、`--coverage.thresholds.functions`、`--coverage.thresholds.branches` 和 `--coverage.thresholds.statements`（默认：`false`）
+按文件检查阈值。实际阈值请参见 `--coverage.thresholds.lines`、`--coverage.thresholds.functions`、`--coverage.thresholds.branches` 和 `--coverage.thresholds.statements`（默认：`false`）。对象形式仅在配置文件中可用。
 
 ### coverage.thresholds.autoUpdate
 
@@ -540,6 +540,13 @@ VM 池的内存限制。如果你看到内存泄漏，可以尝试调整此值�
 
 忽略发生的任何未处理错误
 
+### changed
+
+- **CLI:** `--changed [since]`
+- **Config:** [changed](/config/changed)
+
+运行受变更文件影响的测试（默认：`false`）
+
 ### sequence.shuffle.files
 
 - **CLI:** `--sequence.shuffle.files`
@@ -635,6 +642,13 @@ hook 的默认超时时间（毫秒）（默认：`10000`）。使用 `0` 可完
 - **Config:** [retry.condition](/config/retry#retry-condition)
 
 匹配应触发重试的错误消息的正则表达式模式。只有匹配此模式的错误才会重试（默认：对所有错误重试）
+
+### repeats
+
+- **CLI:** `--repeats <number>`
+- **Config:** [repeats](/config/repeats)
+
+无论结果如何，都将每个测试重复特定次数（默认：`0`）
 
 ### diff.aAnnotation
 

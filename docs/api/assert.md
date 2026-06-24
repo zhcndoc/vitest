@@ -2,6 +2,34 @@
 
 Vitest 从 [`chai`](https://www.chaijs.com/api/assert/) 重新导出 `assert` 方法，用于验证不变量。
 
+::: warning In-Source Testing {#in-source-testing}
+当在 [源内测试](/guide/in-source) 中使用来自 `import.meta.vitest` 的 [断言函数](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions)，例如 `assert` 时，TypeScript 会报告错误 `TS2775`，因为它们必须通过显式标注名称来调用。请将变量标注为 `Chai.Assert`，或者直接调用它：
+
+::: code-group
+```ts [Annotated variable]
+if (import.meta.vitest) {
+  const { test, assert } = import.meta.vitest // [!code --]
+  const { test } = import.meta.vitest // [!code ++]
+  const assert: Chai.Assert = import.meta.vitest.assert // [!code ++]
+
+  test('assert', () => {
+    assert('foo' !== 'bar', 'foo should not be equal to bar')
+  })
+}
+```
+```ts [Direct call]
+if (import.meta.vitest) {
+  const { test, assert } = import.meta.vitest // [!code --]
+  const { test } = import.meta.vitest // [!code ++]
+
+  test('assert', () => {
+    assert('foo' !== 'bar', 'foo should not be equal to bar') // [!code --]
+    import.meta.vitest!.assert('foo' !== 'bar', 'foo should not be equal to bar') // [!code ++]
+  })
+}
+```
+:::
+
 ## assert
 
 - **类型:** `(expression: any, message?: string) => asserts expression`
@@ -424,7 +452,7 @@ test('assert.isNotFunction', () => {
 
 - **类型:** `<T>(value: T, message?: string) => void`
 
-断言 `value` 是 Object 类型的对象（由 Object.prototype.toString 揭示）。该断言不匹配子类对象。
+断言 `value` 是一个 Object 类型的对象（由 Object.prototype.toString 揭示）。该断言不匹配子类对象。
 
 ```ts
 import { assert, test } from 'vitest'
@@ -1295,14 +1323,14 @@ test('assert.doesNotHaveAllDeepKeys', () => {
 import { assert, test } from 'vitest'
 
 test('assert.throws', () => {
-  assert.throws(fn, 'Error thrown must have this msg')
-  assert.throws(fn, /Error thrown must have a msg that matches this/)
+  assert.throws(fn, '抛出的错误必须具有此消息')
+  assert.throws(fn, /抛出的错误必须匹配此消息/)
   assert.throws(fn, ReferenceError)
   assert.throws(fn, errorInstance)
-  assert.throws(fn, ReferenceError, 'Error thrown must be a ReferenceError and have this msg')
-  assert.throws(fn, errorInstance, 'Error thrown must be the same errorInstance and have this msg')
-  assert.throws(fn, ReferenceError, /Error thrown must be a ReferenceError and match this/)
-  assert.throws(fn, errorInstance, /Error thrown must be the same errorInstance and match this/)
+  assert.throws(fn, ReferenceError, '抛出的错误必须是 ReferenceError 并具有此消息')
+  assert.throws(fn, errorInstance, '抛出的错误必须是同一个 errorInstance 并具有此消息')
+  assert.throws(fn, ReferenceError, /抛出的错误必须是 ReferenceError 并匹配此消息/)
+  assert.throws(fn, errorInstance, /抛出的错误必须是同一个 errorInstance 并匹配此消息/)
 })
 ```
 
@@ -1317,14 +1345,14 @@ test('assert.throws', () => {
 import { assert, test } from 'vitest'
 
 test('assert.doesNotThrow', () => {
-  assert.doesNotThrow(fn, 'Any Error thrown must not have this message')
-  assert.doesNotThrow(fn, /Any Error thrown must not match this/)
+  assert.doesNotThrow(fn, '任何抛出的错误都不能有此消息')
+  assert.doesNotThrow(fn, /任何抛出的错误都不能匹配此项/)
   assert.doesNotThrow(fn, Error)
   assert.doesNotThrow(fn, errorInstance)
-  assert.doesNotThrow(fn, Error, 'Error must not have this message')
-  assert.doesNotThrow(fn, errorInstance, 'Error must not have this message')
-  assert.doesNotThrow(fn, Error, /Error must not match this/)
-  assert.doesNotThrow(fn, errorInstance, /Error must not match this/)
+  assert.doesNotThrow(fn, Error, '错误不能有此消息')
+  assert.doesNotThrow(fn, errorInstance, '错误不能有此消息')
+  assert.doesNotThrow(fn, Error, /错误不能匹配此项/)
+  assert.doesNotThrow(fn, errorInstance, /错误不能匹配此项/)
 })
 ```
 
@@ -1338,7 +1366,7 @@ test('assert.doesNotThrow', () => {
 import { assert, test } from 'vitest'
 
 test('assert.operator', () => {
-  assert.operator(1, '<', 2, 'everything is ok')
+  assert.operator(1, '<', 2, '一切正常')
 })
 ```
 
@@ -1353,7 +1381,7 @@ test('assert.operator', () => {
 import { assert, test } from 'vitest'
 
 test('assert.closeTo', () => {
-  assert.closeTo(1.5, 1, 0.5, 'numbers are close')
+  assert.closeTo(1.5, 1, 0.5, '数字很接近')
 })
 ```
 
@@ -1367,7 +1395,7 @@ test('assert.closeTo', () => {
 import { assert, test } from 'vitest'
 
 test('assert.sameMembers', () => {
-  assert.sameMembers([1, 2, 3], [2, 1, 3], 'same members')
+  assert.sameMembers([1, 2, 3], [2, 1, 3], '相同成员')
 })
 ```
 
@@ -1381,7 +1409,7 @@ test('assert.sameMembers', () => {
 import { assert, test } from 'vitest'
 
 test('assert.sameMembers', () => {
-  assert.notSameMembers([1, 2, 3], [5, 1, 3], 'not same members')
+  assert.notSameMembers([1, 2, 3], [5, 1, 3], '不相同的成员')
 })
 ```
 
@@ -1395,7 +1423,7 @@ test('assert.sameMembers', () => {
 import { assert, test } from 'vitest'
 
 test('assert.sameDeepMembers', () => {
-  assert.sameDeepMembers([{ a: 1 }, { b: 2 }, { c: 3 }], [{ b: 2 }, { a: 1 }, { c: 3 }], 'same deep members')
+  assert.sameDeepMembers([{ a: 1 }, { b: 2 }, { c: 3 }], [{ b: 2 }, { a: 1 }, { c: 3 }], '相同的深度成员')
 })
 ```
 
@@ -1409,7 +1437,7 @@ test('assert.sameDeepMembers', () => {
 import { assert, test } from 'vitest'
 
 test('assert.sameDeepMembers', () => {
-  assert.sameDeepMembers([{ a: 1 }, { b: 2 }, { c: 3 }], [{ b: 2 }, { a: 1 }, { c: 3 }], 'same deep members')
+  assert.sameDeepMembers([{ a: 1 }, { b: 2 }, { c: 3 }], [{ b: 2 }, { a: 1 }, { c: 3 }], '相同的深度成员')
 })
 ```
 
@@ -1423,7 +1451,7 @@ test('assert.sameDeepMembers', () => {
 import { assert, test } from 'vitest'
 
 test('assert.sameOrderedMembers', () => {
-  assert.sameOrderedMembers([1, 2, 3], [1, 2, 3], 'same ordered members')
+  assert.sameOrderedMembers([1, 2, 3], [1, 2, 3], '相同顺序的成员')
 })
 ```
 
@@ -1437,7 +1465,7 @@ test('assert.sameOrderedMembers', () => {
 import { assert, test } from 'vitest'
 
 test('assert.notSameOrderedMembers', () => {
-  assert.notSameOrderedMembers([1, 2, 3], [2, 1, 3], 'not same ordered members')
+  assert.notSameOrderedMembers([1, 2, 3], [2, 1, 3], '不相同顺序的成员')
 })
 ```
 
@@ -1451,13 +1479,13 @@ test('assert.notSameOrderedMembers', () => {
 import { assert, test } from 'vitest'
 
 test('assert.sameDeepOrderedMembers', () => {
-  assert.sameDeepOrderedMembers([{ a: 1 }, { b: 2 }, { c: 3 }], [{ a: 1 }, { b: 2 }, { c: 3 }], 'same deep ordered members')
+  assert.sameDeepOrderedMembers([{ a: 1 }, { b: 2 }, { c: 3 }], [{ a: 1 }, { b: 2 }, { c: 3 }], '相同深度顺序成员')
 })
 ```
 
 ## notSameDeepOrderedMembers
 
-- **类型:** `<T>(set1: T[], set2: T[], message?: string) => void`
+- **类型：** `<T>(set1: T[], set2: T[], message?: string) => void`
 
 断言 `set1` 和 `set2` 不具有相同顺序的相同成员。使用深度相等检查。
 
@@ -1465,8 +1493,8 @@ test('assert.sameDeepOrderedMembers', () => {
 import { assert, test } from 'vitest'
 
 test('assert.notSameDeepOrderedMembers', () => {
-  assert.notSameDeepOrderedMembers([{ a: 1 }, { b: 2 }, { c: 3 }], [{ a: 1 }, { b: 2 }, { z: 5 }], 'not same deep ordered members')
-  assert.notSameDeepOrderedMembers([{ a: 1 }, { b: 2 }, { c: 3 }], [{ b: 2 }, { a: 1 }, { c: 3 }], 'not same deep ordered members')
+  assert.notSameDeepOrderedMembers([{ a: 1 }, { b: 2 }, { c: 3 }], [{ a: 1 }, { b: 2 }, { z: 5 }], '不相同深度顺序成员')
+  assert.notSameDeepOrderedMembers([{ a: 1 }, { b: 2 }, { c: 3 }], [{ b: 2 }, { a: 1 }, { c: 3 }], '不相同深度顺序成员')
 })
 ```
 
@@ -1480,7 +1508,7 @@ test('assert.notSameDeepOrderedMembers', () => {
 import { assert, test } from 'vitest'
 
 test('assert.includeMembers', () => {
-  assert.includeMembers([1, 2, 3], [2, 1, 2], 'include members')
+  assert.includeMembers([1, 2, 3], [2, 1, 2], '包含成员')
 })
 ```
 
@@ -1494,7 +1522,7 @@ test('assert.includeMembers', () => {
 import { assert, test } from 'vitest'
 
 test('assert.notIncludeMembers', () => {
-  assert.notIncludeMembers([1, 2, 3], [5, 1], 'not include members')
+  assert.notIncludeMembers([1, 2, 3], [5, 1], '不包含成员')
 })
 ```
 
@@ -1508,13 +1536,13 @@ test('assert.notIncludeMembers', () => {
 import { assert, test } from 'vitest'
 
 test('assert.includeDeepMembers', () => {
-  assert.includeDeepMembers([{ a: 1 }, { b: 2 }, { c: 3 }], [{ b: 2 }, { a: 1 }, { b: 2 }], 'include deep members')
+  assert.includeDeepMembers([{ a: 1 }, { b: 2 }, { c: 3 }], [{ b: 2 }, { a: 1 }, { b: 2 }], '包含深度成员')
 })
 ```
 
 ## notIncludeDeepMembers
 
-- **类型:** `<T>(superset: T[], subset: T[], message?: string) => void`
+- **类型：** `<T>(superset: T[], subset: T[], message?: string) => void`
 
 断言 `subset` 不包含于 `superset` 中，顺序任意。使用深度相等检查。重复项将被忽略。
 
@@ -1522,13 +1550,13 @@ test('assert.includeDeepMembers', () => {
 import { assert, test } from 'vitest'
 
 test('assert.notIncludeDeepMembers', () => {
-  assert.notIncludeDeepMembers([{ a: 1 }, { b: 2 }, { c: 3 }], [{ b: 2 }, { f: 5 }], 'not include deep members')
+  assert.notIncludeDeepMembers([{ a: 1 }, { b: 2 }, { c: 3 }], [{ b: 2 }, { f: 5 }], '不包含深度成员')
 })
 ```
 
 ## includeOrderedMembers
 
-- **类型:** `<T>(superset: T[], subset: T[], message?: string) => void`
+- **类型：** `<T>(superset: T[], subset: T[], message?: string) => void`
 
 断言 `subset` 包含于 `superset` 中，且顺序相同，从 `superset` 的第一个元素开始。使用严格相等检查 (===)。
 
@@ -1536,13 +1564,13 @@ test('assert.notIncludeDeepMembers', () => {
 import { assert, test } from 'vitest'
 
 test('assert.includeOrderedMembers', () => {
-  assert.includeOrderedMembers([1, 2, 3], [1, 2], 'include ordered members')
+  assert.includeOrderedMembers([1, 2, 3], [1, 2], '包含顺序成员')
 })
 ```
 
 ## notIncludeOrderedMembers
 
-- **类型:** `<T>(superset: T[], subset: T[], message?: string) => void`
+- **类型：** `<T>(superset: T[], subset: T[], message?: string) => void`
 
 断言 `subset` 不包含于 `superset` 中，且顺序相同，从 `superset` 的第一个元素开始。使用严格相等检查 (===)。
 
@@ -1550,14 +1578,14 @@ test('assert.includeOrderedMembers', () => {
 import { assert, test } from 'vitest'
 
 test('assert.notIncludeOrderedMembers', () => {
-  assert.notIncludeOrderedMembers([1, 2, 3], [2, 1], 'not include ordered members')
-  assert.notIncludeOrderedMembers([1, 2, 3], [2, 3], 'not include ordered members')
+  assert.notIncludeOrderedMembers([1, 2, 3], [2, 1], '不包含顺序成员')
+  assert.notIncludeOrderedMembers([1, 2, 3], [2, 3], '不包含顺序成员')
 })
 ```
 
 ## includeDeepOrderedMembers
 
-- **类型:** `<T>(superset: T[], subset: T[], message?: string) => void`
+- **类型：** `<T>(superset: T[], subset: T[], message?: string) => void`
 
 断言 `subset` 包含于 `superset` 中，且顺序相同，从 `superset` 的第一个元素开始。使用深度相等检查。
 
@@ -1565,13 +1593,13 @@ test('assert.notIncludeOrderedMembers', () => {
 import { assert, test } from 'vitest'
 
 test('assert.includeDeepOrderedMembers', () => {
-  assert.includeDeepOrderedMembers([{ a: 1 }, { b: 2 }, { c: 3 }], [{ a: 1 }, { b: 2 }], 'include deep ordered members')
+  assert.includeDeepOrderedMembers([{ a: 1 }, { b: 2 }, { c: 3 }], [{ a: 1 }, { b: 2 }], '包含深度顺序成员')
 })
 ```
 
 ## notIncludeDeepOrderedMembers
 
-- **类型:** `<T>(superset: T[], subset: T[], message?: string) => void`
+- **类型：** `<T>(superset: T[], subset: T[], message?: string) => void`
 
 断言 `subset` 不包含于 `superset` 中，且顺序相同，从 superset 的第一个元素开始。使用深度相等检查。
 
@@ -1579,9 +1607,9 @@ test('assert.includeDeepOrderedMembers', () => {
 import { assert, test } from 'vitest'
 
 test('assert.includeDeepOrderedMembers', () => {
-  assert.notIncludeDeepOrderedMembers([{ a: 1 }, { b: 2 }, { c: 3 }], [{ a: 1 }, { f: 5 }], 'not include deep ordered members')
-  assert.notIncludeDeepOrderedMembers([{ a: 1 }, { b: 2 }, { c: 3 }], [{ b: 2 }, { a: 1 }], 'not include deep ordered members')
-  assert.notIncludeDeepOrderedMembers([{ a: 1 }, { b: 2 }, { c: 3 }], [{ b: 2 }, { c: 3 }], 'not include deep ordered members')
+  assert.notIncludeDeepOrderedMembers([{ a: 1 }, { b: 2 }, { c: 3 }], [{ a: 1 }, { f: 5 }], '不包含深度顺序成员')
+  assert.notIncludeDeepOrderedMembers([{ a: 1 }, { b: 2 }, { c: 3 }], [{ b: 2 }, { a: 1 }], '不包含深度顺序成员')
+  assert.notIncludeDeepOrderedMembers([{ a: 1 }, { b: 2 }, { c: 3 }], [{ b: 2 }, { c: 3 }], '不包含深度顺序成员')
 })
 ```
 
@@ -1595,7 +1623,7 @@ test('assert.includeDeepOrderedMembers', () => {
 import { assert, test } from 'vitest'
 
 test('assert.oneOf', () => {
-  assert.oneOf(1, [2, 1], 'Not found in list')
+  assert.oneOf(1, [2, 1], '未在列表中找到')
 })
 ```
 

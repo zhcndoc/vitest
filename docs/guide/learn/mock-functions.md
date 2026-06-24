@@ -21,7 +21,7 @@ Vitest 通过 [`vi`](/api/vi) 对象提供模拟工具。
 ```js
 import { expect, test, vi } from 'vitest'
 
-test('mock function basics', () => {
+test('模拟函数基础', () => {
   const getApples = vi.fn()
 
   // 调用它
@@ -43,7 +43,7 @@ test('mock function basics', () => {
 ```js
 import { expect, test, vi } from 'vitest'
 
-test('mock return values', () => {
+test('模拟返回值', () => {
   const getApples = vi.fn()
 
   // 始终返回这个值
@@ -60,26 +60,30 @@ test('mock return values', () => {
 如果你模拟的是一个异步函数，请使用 [`mockResolvedValue`](/api/mock#mockresolvedvalue) 和 [`mockRejectedValue`](/api/mock#mockrejectedvalue) 来控制 Promise 的结果：
 
 ```js
-test('mock async return values', async () => {
+test('模拟异步返回值', async () => {
   const fetchUser = vi.fn()
 
   fetchUser.mockResolvedValue({ name: 'Alice' })
   const user = await fetchUser()
   expect(user.name).toBe('Alice')
 
-  fetchUser.mockRejectedValue(new Error('Not found'))
-  await expect(fetchUser()).rejects.toThrow('Not found')
+  fetchUser.mockRejectedValue(new Error('未找到'))
+  await expect(fetchUser()).rejects.toThrow('未找到')
 })
 ```
 
-## 模拟实现
+::: tip
+`mockReturnValue` 总是返回相同的值，而不管模拟函数接收到什么参数。如果你需要根据参数返回不同的值，[`vi.when`](/api/vi#vi-when) 允许你为不同的参数组合附加不同的行为，而无需自己编写 `if/else` 逻辑。详情请参见 [条件模拟](/guide/recipes/conditional-mocking) 配方。
+:::
+
+## Mock 实现
 
 有时你需要的不仅仅是固定的返回值。你希望模拟函数实际对其参数执行某些操作。这时可以使用 [`mockImplementation`](/api/mock#mockimplementation) 提供一个完整的替代函数：
 
 ```js
 import { expect, test, vi } from 'vitest'
 
-test('mock with custom implementation', () => {
+test('使用自定义实现进行模拟', () => {
   const add = vi.fn()
   add.mockImplementation((a, b) => a + b)
 
@@ -101,7 +105,7 @@ const add = vi.fn((a, b) => a + b)
 ```js
 import { expect, test, vi } from 'vitest'
 
-test('inspecting mock calls', () => {
+test('检查模拟调用', () => {
   const greet = vi.fn()
 
   greet('Alice')
@@ -185,7 +189,7 @@ const calculator = {
   },
 }
 
-test('spy on a method', () => {
+test('监视一个方法', () => {
   const spy = vi.spyOn(calculator, 'add')
 
   // 原始实现仍然有效
@@ -196,7 +200,7 @@ test('spy on a method', () => {
   expect(spy).toHaveBeenCalledTimes(1)
 })
 
-test('spy can override implementation', () => {
+test('监视可以覆盖实现', () => {
   const spy = vi.spyOn(calculator, 'add')
   spy.mockReturnValue(42)
 
@@ -227,7 +231,7 @@ afterEach(() => {
   vi.restoreAllMocks()
 })
 
-test('spy is restored after the test', () => {
+test('测试后会恢复间谍', () => {
   const spy = vi.spyOn(calculator, 'add').mockReturnValue(42)
   expect(calculator.add(1, 2)).toBe(42)
   // afterEach 会将 calculator.add 恢复为原始实现
@@ -258,7 +262,7 @@ vi.mock(import('./db.js'), () => ({
   getUser: vi.fn(),
 }))
 
-test('mock a module', () => {
+test('模拟一个模块', () => {
   vi.mocked(getUser).mockReturnValue({ name: 'Alice' })
 
   const user = getUser(1)

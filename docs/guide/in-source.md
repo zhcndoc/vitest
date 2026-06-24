@@ -152,7 +152,11 @@ module.exports = {
 
 参考 [`examples/in-source-test`](https://github.com/vitest-dev/vitest/tree/main/examples/in-source-test) 获取完整示例。
 
-## 注意事项
+::: warning
+使用 [断言函数](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions)（如 `assert`）进行源内测试时存在一个限制。详情和解决方法请参见 [`assert`](/api/assert#in-source-testing)。
+:::
+
+## 说明
 
 此功能可能适用于：
 

@@ -33,15 +33,20 @@ test('items 初始包含 3 个水果', () => {
   expect(items).toHaveLength(3)
 })
 
+test('可以移除一个项目', () => {
+  items.pop()
+  expect(items).toHaveLength(2)
+})
+
 test('可以添加一个项目', () => {
   items.push('date')
   expect(items).toHaveLength(4)
-  // afterEach 会在下一个测试前重置 items，
-  // 因此这里的修改不会泄漏到其他测试中
+  // beforeEach 在此测试运行前将数组重置为 3 个项目，
+  // 证明前一个测试中的变更不会泄漏。
 })
 ```
 
-如果没有这些钩子，第二个测试中的 `push` 操作会影响其之后运行的所有测试，这是导致测试不稳定（flaky tests）的经典原因。这些钩子保证了每个测试都有一个干净的状态。
+如果没有这些钩子，前面测试中的 `pop` 或 `push` 等变更会影响后续测试，这是不稳定测试的典型来源，而这些钩子能保证每个测试都有干净的状态。
 
 ## 一次性 Setup
 
@@ -129,11 +134,11 @@ describe('测试套件', () => {
   beforeEach(() => console.log('3 - inner beforeEach'))
   afterEach(() => console.log('4 - inner afterEach'))
 
-  test('first test', () => {
+  test('第一个测试', () => {
     console.log('  first test')
   })
 
-  test('second test', () => {
+  test('第二个测试', () => {
     console.log('  second test')
   })
 })

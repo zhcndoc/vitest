@@ -118,9 +118,7 @@ export default defineConfig({
 ```
 
 ::: info
-Vitest 分配端口 `63315` 以避免与开发服务器冲突，允许你并行运行两者。你可以使用 [`browser.api`](/config/browser/api) 选项更改该端口。
-
-CLI 不会自动打印 Vite 服务器 URL。你可以在监视模式下运行时按 "b" 键来打印 URL。
+Vitest 会分配端口 `63315` 以避免与开发服务器冲突，从而允许你并行运行两者。你可以通过 [`browser.api`](/config/browser/api) 选项更改这一点。
 :::
 
 如果你之前没有使用过 Vite，请确保已安装并在配置中指定了你的框架插件。某些框架可能需要额外配置才能工作 - 请查看它们的 Vite 相关文档以确保无误。
@@ -330,7 +328,7 @@ npx vitest --browser.headless
 
 默认情况下，Vitest 将自动打开浏览器 UI 进行开发。你的测试将在中心的 iframe 内运行。你可以通过选择首选尺寸、在测试中调用 `page.viewport` 或在 [配置](/config/browser/viewport) 中设置默认值来配置视口。
 
-For an alternative debugging model that captures DOM snapshots for every test instead of showing a live iframe, see [Trace View](/guide/browser/trace-view).
+对于另一种调试模型——它会为每个测试捕获 DOM 快照，而不是显示实时 iframe——请参阅 [Trace View](/guide/browser/trace-view)。
 
 ## Headless
 

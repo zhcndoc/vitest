@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "@opentelemetry/api": "^1.9.0",
-    "@opentelemetry/sdk-node": "^0.213.0",
+    "@opentelemetry/sdk-node": "^0.217.0",
     "@opentelemetry/sdk-trace-web": "^2.6.0",
     "@test/pkg-reporter": "link:./deps/pkg-reporter",
     "@test/test-dep-config": "link:./deps/test-dep-config",
@@ -40,6 +40,7 @@
     "test-dep-conditions": "file:./deps/test-dep-conditions",
     "test-dep-invalid": "link:./deps/dep-invalid",
     "test-dep-simple": "file:./deps/dep-simple",
+    "test-dep-simple2": "file:./deps/dep-simple2",
     "tinyexec": "^1.0.2",
     "tinyspy": "catalog:",
     "typescript": "catalog:",

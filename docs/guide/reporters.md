@@ -60,7 +60,7 @@ export default defineConfig({
 
 ## 报告器输出
 
-默认情况下，Vitest 的报告器会将输出打印到终端。当使用 `json`、`html` 或 `junit` 报告器时，你可以通过在 Vite 配置文件或命令行中包含 `outputFile` [配置选项](/config/outputfile)，将测试输出写入文件。
+默认情况下，Vitest 的报告器会将输出打印到终端。使用 `json` 或 `junit` 报告器时，你也可以通过在 Vite 配置文件中或通过 CLI 包含 `outputFile` [配置选项](/config/outputfile) 来将测试输出写入文件。`html` 报告器则会写入一个报告目录；请参见其 [`outputDir`](#html-reporter) 选项。
 
 :::code-group
 ```bash [命令行]
@@ -506,7 +506,7 @@ export default defineConfig({
 
 生成一个 HTML 文件，以便通过交互式 [GUI](/guide/ui) 查看测试结果。文件生成后，Vitest 将保持本地开发服务器运行，并提供一个链接以便在浏览器中查看报告。
 
-可以使用 [`outputFile`](/config/outputfile) 配置选项指定输出文件。如果未提供 `outputFile` 选项，将创建一个新的 HTML 文件。
+报告工件根目录可以使用报告器的 `outputDir` 选项指定。报告入口文件将写入 `<outputDir>/index.html`，而 UI 资源文件位于 `<outputDir>/ui/` 下。默认情况下 `outputDir` 为 `.vitest`，即共享的 Vitest 工件目录，因此附件（`.vitest/attachments`）和覆盖率（`.vitest/coverage`）会被复用而不会被复制。
 
 :::code-group
 ```bash [命令行]

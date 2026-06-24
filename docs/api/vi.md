@@ -797,9 +797,137 @@ globalThis.IntersectionObserver === undefined
 IntersectionObserver === undefined
 ```
 
-## 虚假计时器
+### vi.when <Version>5.0.0</Version> {#vi-when}
 
-本节介绍如何使用 [虚假计时器](/guide/mocking/timers)。
+```ts
+interface WhenOptions {
+  onUnmatched?: 'throw' | 'passthrough' | ((...args: unknown[]) => unknown)
+}
+
+interface BehaviorOptions {
+  times?: number
+}
+
+function when(spy: Mock, options?: WhenOptions): When
+```
+
+在间谍上按参数定义行为，在 `when` 链持续期间替换其实现。
+
+在返回的对象上调用 `.calledWith(...args)` 来指定要匹配的调用参数，然后链式调用一个或多个 `then*` 方法，以声明当使用这些参数调用时，间谍应该返回、抛出或解析什么。参数按深度相等进行匹配，并支持诸如 `expect.any()` 之类的非对称匹配器。
+
+```ts
+const spy = vi.fn()
+
+vi.when(spy)
+  .calledWith(1)
+  .thenReturn('one')
+  .calledWith(2)
+  .thenReturn('two')
+
+expect(spy(1)).toBe('one')
+expect(spy(2)).toBe('two')
+```
+
+可用的 `then*` 方法：
+
+| 方法 | 描述 |
+|--------|-------------|
+| `thenReturn(value, options?)` | 返回 `value`。 |
+| `thenReturnOnce(value)` | 返回一次 `value`，然后回退。 |
+| `thenThrow(error, options?)` | 抛出 `error`。 |
+| `thenThrowOnce(error)` | 只抛出一次 `error`，然后回退。 |
+| `thenResolve(value, options?)` | 返回一个以 `value` 解析的 `Promise`。 |
+| `thenResolveOnce(value)` | 只解析一次，然后回退。 |
+| `thenReject(error, options?)` | 返回一个以 `error` 拒绝的 `Promise`。 |
+| `thenRejectOnce(error)` | 只拒绝一次，然后回退。 |
+
+可选的 `times` 选项限制某个行为在耗尽之前可应用的次数。针对相同参数注册的行为按后进先出方式消耗：最近注册的行为优先尝试，一旦耗尽，较早注册的行为作为回退。
+
+```ts
+const spy = vi.fn<(key: string) => string>()
+
+vi.when(spy)
+  .calledWith('theme')
+  .thenReturn('light') // 回退，永久生效
+  .thenReturn('dark', { times: 2 }) // 先应用于接下来的 2 次调用
+
+expect(spy('theme')).toBe('dark')
+expect(spy('theme')).toBe('dark')
+expect(spy('theme')).toBe('light') // 回退
+```
+
+当使用未匹配任何已注册行为的参数调用时，间谍默认会回退到其原始实现。使用 `onUnmatched` 选项可更改此行为：
+
+- `'passthrough'`（**默认**）：委托给间谍的原始实现
+- `'throw'`：抛出一个列出未匹配参数的错误
+- 一个函数：使用未匹配的参数调用；其返回值将被使用
+
+```ts
+const spy = vi.fn<(id: number) => string>()
+
+vi.when(spy, { onUnmatched: 'throw' })
+  .calledWith(1)
+  .thenReturn('Alice')
+
+expect(spy(1)).toBe('Alice')
+expect(() => spy(99)).toThrow() // 未为 99 定义行为
+```
+
+`vi.when` 返回的 `When` 对象支持 [`toHaveBeenExhausted` 断言](/api/expect#tohavebeenexhausted)，当所有已注册行为都被消耗后，该断言通过。
+
+```ts
+const spy = vi.fn()
+const w = vi.when(spy)
+  .calledWith(1)
+  .thenReturnOnce('once')
+  .calledWith(2)
+  .thenReturn('always')
+
+expect(w).not.toHaveBeenExhausted()
+
+spy(1) // 消耗 `thenReturnOnce` 行为
+spy(2) // 满足 `thenReturn`（至少调用一次）
+
+expect(w).toHaveBeenExhausted()
+```
+
+::: tip
+在支持 [显式资源管理](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Resource_management) 的环境中，你可以使用 `using` 代替 `const`，以便在包含块退出时自动恢复间谍的原始实现：
+
+```ts
+const spy = vi.fn(() => 'original')
+
+{
+  using w = vi.when(spy)
+    .calledWith('hello')
+    .thenReturn('mocked')
+
+  expect(spy('hello')).toBe('mocked')
+} // ← 间谍的原始实现在此处恢复
+
+expect(spy('hello')).toBe('original')
+```
+:::
+
+### vi.isWhenChain <Version>5.0.0</Version> {#vi-iswhenchain}
+
+```ts
+function isWhenChain(input: object): input is When
+```
+
+如果给定值是由 [`vi.when`](#vi-when) 创建的 `When` 链，则返回 `true`。如果你使用 TypeScript，它还会缩小其类型。
+
+```ts
+const spy = vi.fn()
+const w = vi.when(spy).calledWith(1).thenReturn(0)
+
+expect(vi.isWhenChain(w)).toBe(true)
+expect(vi.isWhenChain(spy)).toBe(false)
+```
+
+## Fake Timers
+
+本节介绍如何使用 [假计时器](/guide/mocking/timers)。
 
 ### vi.advanceTimersByTime
 
@@ -1030,7 +1158,7 @@ await vi.runOnlyPendingTimersAsync()
 function setSystemTime(date: string | number | Date): Vitest
 ```
 
-如果启用了虚假计时器，此方法模拟用户更改系统时钟（将影响日期相关的 API，如 `hrtime`、`performance.now` 或 `new Date()`）——但是，它不会触发任何计时器。如果未启用虚假计时器，此方法将仅模拟 `Date.*` 调用。
+如果启用了假计时器，此方法模拟用户更改系统时钟（将影响日期相关的 API，如 `hrtime`、`performance.now` 或 `new Date()`）——但是，它不会触发任何计时器。如果未启用假计时器，此方法将仅模拟 `Date.*` 调用。
 
 如果你需要测试任何依赖于当前日期的内容，则很有用——例如代码中的 [Luxon](https://github.com/moment/luxon/) 调用。
 
@@ -1078,7 +1206,7 @@ vi.useFakeTimers({ toNotFake: ['setInterval'] })
 
 - **类型：** `(mode: 'manual' | 'nextTimerAsync') => Vitest | (mode: 'interval', interval?: number) => Vitest`
 
-控制如何推进虚假计时器。
+控制如何推进假计时器。
 
 - `manual`: 默认行为。只有当你调用 `vi.advanceTimers...()` 方法之一时，计时器才会推进。
 - `nextTimerAsync`: 在每个宏任务之后，计时器将自动推进到下一个可用计时器。
@@ -1120,7 +1248,7 @@ await new Promise(resolve => setTimeout(resolve, 150)) // 日志 7, 8, 9
 function isFakeTimers(): boolean
 ```
 
-如果启用了虚假计时器，则返回 `true`。
+如果启用了假计时器，则返回 `true`。
 
 ### vi.useRealTimers
 
@@ -1153,16 +1281,16 @@ function waitFor<T>(
 import { expect, test, vi } from 'vitest'
 import { createServer } from './server.js'
 
-test('Server started successfully', async () => {
+test('服务器成功启动', async () => {
   const server = createServer()
 
   await vi.waitFor(
     () => {
       if (!server.isReady) {
-        throw new Error('Server not started')
+        throw new Error('服务器尚未启动')
       }
 
-      console.log('Server started')
+      console.log('服务器已启动')
     },
     {
       timeout: 500, // 默认是 1000
@@ -1181,7 +1309,7 @@ test('Server started successfully', async () => {
 import { expect, test, vi } from 'vitest'
 import { getDOMElementAsync, populateDOMAsync } from './dom.js'
 
-test('Element exists in a DOM', async () => {
+test('元素在 DOM 中存在', async () => {
   // 开始填充 DOM
   populateDOMAsync()
 
@@ -1217,7 +1345,7 @@ function waitUntil<T>(
 ```ts
 import { expect, test, vi } from 'vitest'
 
-test('Element render correctly', async () => {
+test('元素渲染正确', async () => {
   const element = await vi.waitUntil(
     () => document.querySelector('.element'),
     {

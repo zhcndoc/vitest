@@ -233,12 +233,67 @@ npx vitest --coverage.enabled --coverage.provider=istanbul
 
 ### coverage.thresholds.perFile
 
-- **类型：** `boolean`
+- **类型：** `boolean | { 100?: boolean, lines?: number, functions?: number, branches?: number, statements?: number }`
 - **默认值：** `false`
 - **适用提供者：** `'v8' | 'istanbul'`
 - **命令行：** `--coverage.thresholds.perFile`, `--coverage.thresholds.perFile=false`
 
-按文件检查阈值。
+当为 `true` 时，每个文件都会按顶层阈值进行检查，而不是按项目范围的汇总值进行检查。当设置为对象时，两者都会被检查：汇总值按顶层阈值检查，每个文件按这些按文件最低阈值检查。
+
+<!-- eslint-skip -->
+```ts
+{
+  coverage: {
+    thresholds: {
+      lines: 80,
+      functions: 80,
+      branches: 80,
+      statements: 80,
+      perFile: {
+        lines: 50,
+        functions: 50,
+        branches: 50,
+        statements: 50,
+      },
+    }
+  }
+}
+```
+
+对象中也可以接受 `{ 100: true }` 作为将全部四项指标设置为 `100` 的快捷方式：
+
+<!-- eslint-skip -->
+```ts
+{
+  coverage: {
+    thresholds: {
+      lines: 80,
+      perFile: {
+        100: true,
+      },
+    }
+  }
+}
+```
+
+`perFile` 也可以在单个 [glob 模式阈值](/config/coverage#coverage-thresholds-glob-pattern) 上设置。glob 模式**不会**继承顶层的 `perFile`；请在每个 glob 上单独设置。
+
+<!-- eslint-skip -->
+```ts
+{
+  coverage: {
+    thresholds: {
+      perFile: true,
+      lines: 80,
+
+      'src/utils/**': {
+        lines: 90,
+        perFile: true,
+      },
+    }
+  }
+}
+```
 
 ### coverage.thresholds.autoUpdate
 
@@ -257,10 +312,7 @@ npx vitest --coverage.enabled --coverage.provider=istanbul
 {
   coverage: {
     thresholds: {
-      // 更新阈值时不带小数
-      autoUpdate: (newThreshold) => Math.floor(newThreshold),
-
-      // 记录变更并在不带小数的情况下更新
+      // 记录变更并在不保留小数的情况下更新
       autoUpdate: (newThreshold, previousThreshold) => {
         console.log(`Updated threshold from ${previousThreshold} to ${newThreshold}`)
         return Math.floor(newThreshold)
@@ -285,14 +337,16 @@ npx vitest --coverage.enabled --coverage.provider=istanbul
 
 ### coverage.thresholds[glob-pattern]
 
-- **类型：** `{ statements?: number functions?: number branches?: number lines?: number }`
-- **默认值：** `undefined`
-- **适用提供者：** `'v8' | 'istanbul'`
+- **Type:** `{ statements?: number, functions?: number, branches?: number, lines?: number, perFile?: boolean | object }`
+- **Default:** `undefined`
+- **Available for providers:** `'v8' | 'istanbul'`
 
 为匹配 glob 模式的文件设置阈值。
 
-::: tip 注意
-Vitest 将所有文件（包括被 glob 模式覆盖的文件）计入全局覆盖率阈值。
+每个 glob 模式都可以设置自己的 `perFile`（`boolean | object`），其检查方式与顶层 `perFile` 完全相同，但作用域限定为匹配的文件。glob 模式不会继承顶层的 `perFile`——请为每个 glob 单独设置。
+
+::: tip NOTE
+Vitest 会将所有文件（包括被 glob 模式覆盖的文件）计入全局覆盖率阈值。
 这与 Jest 的行为不同。
 :::
 
@@ -311,6 +365,8 @@ Vitest 将所有文件（包括被 glob 模式覆盖的文件）计入全局覆�
         functions: 90,
         branches: 85,
         lines: 80,
+        // 每个匹配文件都必须单独达到上述阈值
+        perFile: true,
       },
 
       // 匹配此模式的文件将只设置行阈值。

@@ -951,7 +951,7 @@ Vitest 会在测试文件中向 matcher 添加和更新 inlineSnapshot 字符串
 ```ts
 import { expect, test } from 'vitest'
 
-test('matches inline snapshot', () => {
+test('匹配内联快照', () => {
   const data = { foo: new Set(['bar', 'snapshot']) }
   // 更新快照时 Vitest 将更新以下内容
   expect(data).toMatchInlineSnapshot(`
@@ -970,7 +970,7 @@ test('matches inline snapshot', () => {
 ```ts
 import { expect, test } from 'vitest'
 
-test('matches snapshot', () => {
+test('匹配快照', () => {
   const data = { foo: new Set(['bar', 'snapshot']) }
   expect(data).toMatchInlineSnapshot(
     { foo: expect.any(Set) },
@@ -1452,6 +1452,38 @@ test('spy function returns bananas on second call', async () => {
   expect(sell).toHaveNthResolvedWith(2, { product: 'bananas' })
 })
 ```
+
+## toHaveBeenExhausted <Version>5.0.0</Version> {#tohavebeenexhausted}
+
+- **类型:** `() => void`
+
+此断言检查在 [`vi.when`](/api/vi#vi-when) 链上注册的每个行为是否都已被消耗完毕。当行为已被调用达到其 `times` 选项指定的次数，或者对于无限期适用的行为至少被调用一次时，即视为已耗尽。
+
+需要将 `vi.when` 返回的 `When` 链传递给 `expect`。
+
+```ts
+import { expect, test, vi } from 'vitest'
+
+test('all behaviors were consumed', () => {
+  const spy = vi.fn()
+  const w = vi.when(spy)
+    .calledWith(1)
+    .thenReturnOnce('once')
+    .calledWith(2)
+    .thenReturn('always')
+
+  expect(w).not.toHaveBeenExhausted()
+
+  spy(1) // 消耗 `thenReturnOnce` 行为
+  spy(2) // 满足 `thenReturn` 行为（至少被调用一次）
+
+  expect(w).toHaveBeenExhausted()
+})
+```
+
+::: warning
+如果一个 `When` 链没有注册任何行为，则永远不会被视为已耗尽。只有在至少注册了一个带有关联操作（`then*`）的 `calledWith`，并且每个注册的行为都已被完全消耗时，`toHaveBeenExhausted` 才会通过。
+:::
 
 ## called <Version>4.1.0</Version> {#called}
 
@@ -1987,7 +2019,6 @@ test.each(errorDirs)('build 因 "%s" 失败', async (dir) => {
     }
   }
 })
-```
 
 ## expect.anything
 

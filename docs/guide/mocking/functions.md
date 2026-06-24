@@ -8,7 +8,11 @@
 
 `vi.spyOn` 和 `vi.fn` 共享相同的方法。
 
-## 示例
+::: tip
+如果你需要根据接收到的参数让 mock 返回不同的值，[`vi.when()`](/api/vi#vi-when) 可以让你定义基于参数的行为，而无需自己编写 `if/else` 逻辑。详情请参阅 [条件模拟](/guide/recipes/conditional-mocking) 配方。
+:::
+
+## Example
 
 ```js
 import { afterEach, describe, expect, it, vi } from 'vitest'

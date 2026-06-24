@@ -43,6 +43,15 @@ test('sort', async ({ bench }) => { // [!code ++]
 - **`benchmark.outputJson` 配置和 `--outputJson` CLI 标志** 已被移除。请使用 `--reporter=json --outputFile=<path>` 来捕获基准测试结果；`JSON` 报告器现在会在每个测试用例上包含一个 `benchmarks` 字段。
 - **`Vitest` 实例的 `mode` 属性** 现在始终为 `'test'`。之前的 `'benchmark'` 值不再使用；基准测试会在同一个 `Vitest` 实例的专用项目中运行。
 
+### Vitest UI 需要经过身份验证的 URL
+
+Vitest UI 现在要求对 HTML 页面和 API 访问进行令牌认证。`/__vitest__/` URL 在浏览器完成认证之前会显示错误。要进行认证，请使用 Vitest 打印的令牌打开该 URL，如下所示。认证完成后，直接访问 `/__vitest__/` URL 将正常工作。
+
+```bash
+vitest --ui
+# UI started at http://localhost:51204/__vitest__/?token=...
+```
+
 ### 已移除 `test.sequential`、`describe.sequential` 和 `sequential` 选项
 
 Vitest 5.0 移除了已弃用的 `test.sequential`、`describe.sequential` 和 `sequential` 测试选项。在需要测试或测试套件退出继承的或全局配置的并发时，请使用 `concurrent: false`。
@@ -125,7 +134,28 @@ await expect.element(banner).toMatchTextContent(/error/i) // [!code ++]
 await expect.element(banner).toHaveTextContent('Error!')
 ```
 
-### 不再从父目录查找配置文件
+### Glob 覆盖率阈值不再继承 `perFile`
+
+`coverage.thresholds.perFile` 过去会应用于每个阈值集合，包括被 glob 模式阈值匹配的文件。现在 glob 模式会自行控制按文件检查，不再继承顶层的 `perFile` —— 请在每个需要的 glob 上设置 `perFile`。
+
+```ts [vitest.config.ts]
+export default defineConfig({
+  test: {
+    coverage: {
+      thresholds: {
+        'perFile': true,
+
+        'src/utils/**': {
+          lines: 80,
+          perFile: true, // [!code ++]
+        },
+      },
+    },
+  },
+})
+```
+
+### 配置文件不再从父目录查找
 
 Vitest 不再向上搜索父目录中的配置文件。如果你之前依赖于在子目录中运行 `vitest`，同时使用父目录中的配置文件，请显式传入配置，并使用 `--dir` 限定测试发现范围。例如：
 
@@ -133,6 +163,24 @@ Vitest 不再向上搜索父目录中的配置文件。如果你之前依赖于�
 $ cd subdir && vitest # [!code --]
 $ cd subdir && vitest --config ../vitest.config.ts # [!code ++]
 ```
+
+### DOM 环境中的全局赋值现在会更新底层窗口
+
+在 `jsdom` 和 `happy-dom` 环境中，对 `globalThis` 或 `window` 上属性的赋值现在会传播到底层 DOM 实现。诸如 `innerWidth` 之类的可变属性会影响由 DOM 环境实现的 API，例如 `happy-dom` 的 `matchMedia`。
+
+### Browser Orchestrator URL 需要会话
+
+Vitest 不再通过一个裸的 `/__vitest_test__/` URL 提供浏览器 orchestrator UI。浏览器运行器 URL 现在绑定到会话，并且必须包含 Vitest 生成的 `sessionId`，例如 `/__vitest_test__/?sessionId=...`。
+
+如果你之前是通过复制 Vite 服务器 URL 或直接访问 `/__vitest_test__/` 来手动打开浏览器预览，请改用 Vitest 打开或打印的 URL。
+
+### 生成的报告和工件使用 `.vitest` 目录
+
+Vitest 现在在项目根目录下使用单一的 `.vitest` 目录作为共享工件根目录，因此 `.gitignore` 中只需要一条 `.vitest` 规则即可。本次主要版本迁移的默认位置变更如下：
+
+- **附件** ([`attachmentsDir`](/config/attachmentsdir))：`.vitest-attachements/` → `.vitest/attachments/`
+- **Blob 报告器** 和 `--merge-reports`：`.vitest-reports/blob-*.json` → `.vitest/blob/blob-*.json`
+- **HTML 报告器** ([`html`](/guide/reporters#html-reporter))：`html/index.html` → `.vitest/index.html`，并且其选项从 `outputFile`（文件）改为 `outputDir`（目录）
 
 ## 迁移到 Vitest 4.0 {#vitest-4}
 
