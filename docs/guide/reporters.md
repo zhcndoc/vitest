@@ -32,21 +32,21 @@ export default defineConfig({
   test: {
     reporters: [
       'default',
-      ['junit', { suiteName: 'UI tests' }]
+      ['junit', { suiteName: 'UI 测试' }]
     ],
   },
 })
 ```
 
-## 默认配置
+## Default Configuration
 
-当未配置 `reporters` 时，Vitest 会使用以下报告器：
+When `reporters` is not configured, Vitest will use the following reporters:
 
-- 在普通终端运行中使用 [`default`](#default-reporter)
-- 当 Vitest 检测到 AI 编码代理时使用 [`minimal`](#minimal-reporter)
-- 当 `process.env.GITHUB_ACTIONS === 'true'` 时会添加 [`github-actions`](#github-actions-reporter)
+- use [`default`](#default-reporter) in normal terminal runs
+- use [`minimal`](#minimal-reporter) when Vitest detects an AI coding agent
+- add [`github-actions`](#github-actions-reporter) when `process.env.GITHUB_ACTIONS === 'true'`
 
-如果你配置了自己的报告器，配置列表将替代默认列表。若想在保留 Vitest 默认值的同时添加一个报告器，请扩展 `configDefaults.reporters`：
+If you configure your own reporters, the configured list will replace the default list. If you want to add a reporter while keeping Vitest’s default values, extend `configDefaults.reporters`:
 
 ```ts
 import { configDefaults, defineConfig } from 'vitest/config'
@@ -60,7 +60,13 @@ export default defineConfig({
 
 ## 报告器输出
 
-默认情况下，Vitest 的报告器会将输出打印到终端。使用 `json` 或 `junit` 报告器时，你也可以通过在 Vite 配置文件中或通过 CLI 包含 `outputFile` [配置选项](/config/outputfile) 来将测试输出写入文件。`html` 报告器则会写入一个报告目录；请参见其 [`outputDir`](#html-reporter) 选项。
+默认情况下，Vitest 的报告器会将输出打印到终端。`json`、`junit` 和 `html` 报告器则会将输出写入 `.vitest/` 下的指定位置：
+
+- `json` 写入 `.vitest/json/output.json`
+- `junit` 写入 `.vitest/junit/output.xml`
+- `html` 写入 `.vitest/index.html`
+
+`json` 和 `junit` 的位置可以通过 Vitest 配置文件中的 `outputFile` [配置选项](/config/outputfile) 或 CLI 进行覆盖。`html` 报告器则使用其 [`outputDir`](#html-reporter) 选项。
 
 :::code-group
 ```bash [命令行]
@@ -75,6 +81,30 @@ export default defineConfig({
   },
 })
 ```
+:::
+
+`json` 和 `junit` 报告器也接受将 `outputFile` 作为报告器选项，此时它的优先级高于顶层的 `outputFile`：
+
+```ts [vitest.config.ts]
+export default defineConfig({
+  test: {
+    reporters: [['json', { outputFile: './test-output.json' }]],
+  },
+})
+```
+
+要将报告打印到终端，而不是写入文件，请在 `json` 或 `junit` 报告器上设置 `stdout` 选项。当设置了 `outputFile` 时，该选项会被忽略：
+
+```ts [vitest.config.ts]
+export default defineConfig({
+  test: {
+    reporters: [['json', { stdout: true }]],
+  },
+})
+```
+
+::: warning
+启用 `stdout` 时，报告可能会与其他直接写入终端的输出交错在一起——例如测试文件中的 `process.stdout.write`，或主进程中的日志（如全局设置文件）——这可能导致 JSON 或 XML 无法解析。在需要以程序方式消费报告时，建议优先使用默认的文件输出。
 :::
 
 ## 组合报告器
@@ -218,10 +248,10 @@ export default defineConfig({
 带有 `--includeTaskLocation` 的示例：
 
 ```bash
-✓ __tests__/file1.test.ts:2:1 > first test file > 2 + 2 should equal 4 1ms
-✓ __tests__/file1.test.ts:3:1 > first test file > 4 - 2 should equal 2 1ms
-✓ __tests__/file2.test.ts:2:1 > second test file > 1 + 1 should equal 2 1ms
-✓ __tests__/file2.test.ts:3:1 > second test file > 2 - 1 should equal 1 1ms
+✓ __tests__/file1.test.ts:2 > first test file > 2 + 2 should equal 4 1ms
+✓ __tests__/file1.test.ts:3 > first test file > 4 - 2 should equal 2 1ms
+✓ __tests__/file2.test.ts:2 > second test file > 1 + 1 should equal 2 1ms
+✓ __tests__/file2.test.ts:3 > second test file > 2 - 1 should equal 1 1ms
 
  Test Files  2 passed (2)
       Tests  4 passed (4)
@@ -253,36 +283,36 @@ export default defineConfig({
 
 ```bash
  ✓ __tests__/example-1.test.ts (2) 725ms
-   ✓ first test file (2) 725ms
-     ✓ 2 + 2 should equal 4
-     ✓ 4 - 2 should equal 2
+   ✓ 第一个测试文件 (2) 725ms
+     ✓ 2 + 2 应等于 4
+     ✓ 4 - 2 应等于 2
 
  ❯ test/example-2.test.ts 3/5
-   ↳ should run longer than three seconds 1.57s
+   ↳ 应该运行超过三秒 1.57s
  ❯ test/example-3.test.ts 1/5
 
- Test Files 2 passed (4)
-      Tests 10 passed | 3 skipped (65)
-   Start at 11:01:36
-   Duration 2.00s
+ 测试文件 2 通过 (4)
+      测试 10 通过 | 3 跳过 (65)
+   开始于 11:01:36
+   持续时间 2.00s
 ```
 
 通过测试套件的最终终端输出示例：
 
 ```bash
 ✓ __tests__/file1.test.ts (2) 725ms
-   ✓ first test file (2) 725ms
-     ✓ 2 + 2 should equal 4
-     ✓ 4 - 2 should equal 2
+   ✓ 第一个测试文件 (2) 725ms
+     ✓ 2 + 2 应等于 4
+     ✓ 4 - 2 应等于 2
 ✓ __tests__/file2.test.ts (2) 746ms
-  ✓ second test file (2) 746ms
-    ✓ 1 + 1 should equal 2
-    ✓ 2 - 1 should equal 1
+  ✓ 第二个测试文件 (2) 746ms
+    ✓ 1 + 1 应等于 2
+    ✓ 2 - 1 应等于 1
 
- Test Files  2 passed (2)
-      Tests  4 passed (4)
-   Start at  12:34:32
-   Duration  1.26s (transform 35ms, setup 1ms, collect 90ms, tests 1.47s, environment 0ms, prepare 267ms)
+ 测试文件  2 通过 (2)
+      测试  4 通过 (4)
+   开始于  12:34:32
+   持续时间  1.26s (transform 35ms, setup 1ms, collect 90ms, tests 1.47s, environment 0ms, prepare 267ms)
 ```
 
 ### 点状报告器
@@ -316,7 +346,7 @@ export default defineConfig({
 
 ### JUnit 报告器
 
-以 JUnit XML 格式输出测试结果的报告。可以使用 [`outputFile`](/config/outputfile) 配置选项将其打印到终端或写入 XML 文件。
+以 JUnit XML 格式输出测试结果报告。默认写入 `.vitest/junit/output.xml`。如需写入其他位置，可使用 [`outputFile`](/config/outputfile) 配置项或报告器自身的 `outputFile` 选项。若要改为直接打印到终端，请设置报告器的 [`stdout`](#reporter-output) 选项。
 
 :::code-group
 ```bash [命令行]
@@ -351,7 +381,7 @@ AssertionError: expected 5 to be 4 // Object.is equality
 
 输出的 XML 包含嵌套的 `testsuites` → `testsuite` → `testcase` 标签。你可以使用以下选项自定义报告器行为：
 
-| Option | Description | Default |
+| 选项 | 描述 | 默认值 |
 |---|---|---|
 | `suiteName` | `<testsuites>` 的 `name` 属性 | `"vitest tests"` |
 | `suiteNameTemplate` | `<testsuite>` 的 `name` 属性模板。接受带占位符的字符串或函数。 | 相对文件路径 |
@@ -420,7 +450,7 @@ export default defineConfig({
 
 ### JSON 报告器
 
-生成与 Jest 的 `--json` 选项兼容的 JSON 格式测试结果报告。可以使用 [`outputFile`](/config/outputfile) 配置选项将其打印到终端或写入文件。
+以与 Jest 的 `--json` 选项兼容的 JSON 格式生成测试结果报告。默认情况下，它会写入 `.vitest/json/output.json`。若要写到其他位置，请使用 [`outputFile`](/config/outputfile) 配置项或报告器自身的 `outputFile` 选项。若要改为输出到终端，请设置报告器的 [`stdout`](#reporter-output) 选项。
 
 :::code-group
 ```bash [命令行]

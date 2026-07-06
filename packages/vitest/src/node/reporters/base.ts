@@ -307,7 +307,7 @@ export abstract class BaseReporter implements Reporter {
 
     let name = test.file.name
     if (test.location) {
-      name += c.dim(`:${test.location.line}:${test.location.column}`)
+      name += c.dim(`:${test.location.line}`)
     }
     name += separator
     name += getTestName(test, separator)
@@ -1080,7 +1080,7 @@ function deepEqual(a: any, b: any): boolean {
   }
 
   for (const key of keysA) {
-    if (!Object.prototype.hasOwnProperty.call(b, key) || !deepEqual(a[key], b[key])) {
+    if (!Object.hasOwn(b, key) || !deepEqual(a[key], b[key])) {
       return false
     }
   }

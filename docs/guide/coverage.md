@@ -81,10 +81,7 @@ import Box from '../.vitepress/components/Box.vue'
 
 ## Istanbul 提供者
 
-[Istanbul 代码覆盖率工具](https://istanbul.js.org/) 自 2012 年以来就一直存在，并且经过了充分的实战测试。
-此提供者适用于任何 Javascript 运行时，因为覆盖率跟踪是通过插桩用户的源文件完成的。
-
-实际上，插桩源文件意味着在用户的文件中添加额外的 Javascript：
+[Istanbul 代码覆盖率工具](https://istanbul.js.org/) 自 2012 年以来一直存在，且经过了非常充分的实战检验。这个提供者可在任何 JavaScript 运行时上工作，因为覆盖率跟踪是通过转换你的源代码来添加插桩逻辑实现的。实际上，Vitest 最终运行的代码大致会像这样：
 
 ```js
 // 分支和函数覆盖率计数器的简化示例
@@ -114,12 +111,11 @@ globalThis.__VITEST_COVERAGE__[filename] = coverage // [!code ++]
 ```
 
 - ✅ 适用于任何 Javascript 运行时
-- ✅ 广泛使用并经过超过 13 年的实战测试。
-- ✅ 在某些情况下比 V8 快。覆盖率插桩可以限制在特定文件，而 V8 则是所有模块都被插桩。
-- ❌ 需要预插桩步骤
-- ❌ 由于插桩开销，执行速度比 V8 慢
-- ❌ 插桩会增加文件大小
-- ❌ 内存使用量比 V8 高
+- ✅ 广泛使用，并且经过了 13 年以上的实战检验。
+- ✅ 在某些情况下比 V8 更快。覆盖率插桩可以限制在特定文件上，而 V8 会对所有模块进行插桩。
+- ❌ 在运行之前，源代码会被转换以添加插桩
+- ❌ 由于插桩开销，执行速度比 V8 更慢
+- ❌ 内存使用比 V8 更高
 
 <div style="display: flex; flex-direction: column; align-items: center; padding: 2rem 0; max-width: 20rem;">
   <Box>测试文件</Box>
@@ -184,7 +180,7 @@ export default defineConfig({
   },
 })
 ```
-```sh [覆盖的文件]
+```sh [被覆盖的文件]
 ├── src
 │   ├── components
 │   │   └── counter.tsx   # [!code ++]
@@ -219,7 +215,7 @@ export default defineConfig({
   },
 })
 ```
-```sh [覆盖的文件]
+```sh [被覆盖的文件]
 ├── src
 │   ├── components
 │   │   └── counter.tsx   # [!code ++]
@@ -276,11 +272,11 @@ module.exports = class CustomReporter extends ReportBase {
 
   onStart(root, context) {
     this.contentWriter = context.writer.writeFile(this.file)
-    this.contentWriter.println('Start of custom coverage report')
+    this.contentWriter.println('自定义覆盖率报告开始')
   }
 
   onEnd() {
-    this.contentWriter.println('End of custom coverage report')
+    this.contentWriter.println('自定义覆盖率报告结束')
     this.contentWriter.close()
   }
 }
@@ -503,17 +499,17 @@ export function ignored() { // [!code error]
 
 这与具有 HTML 输出的内置覆盖率报告器集成（`html`、`html-spa` 和 `lcov` 报告器）。`html` 报告器默认启用，开箱即用。要与自定义报告器集成，你可以配置 [`coverage.htmlDir`](/config/coverage#coverage-htmldir)。
 
-<img alt="Vitest UI 中的 html 覆盖率激活" img-light src="/vitest-ui-show-coverage-light.png">
-<img alt="Vitest UI 中的 html 覆盖率激活" img-dark src="/vitest-ui-show-coverage-dark.png">
+<img alt="Vitest UI 中的 HTML 覆盖率已激活" img-light src="/vitest-ui-show-coverage-light.png">
+<img alt="Vitest UI 中的 HTML 覆盖率已激活" img-dark src="/vitest-ui-show-coverage-dark.png">
 
-<img alt="html coverage in Vitest UI" img-light src="/ui-coverage-1-light.png">
-<img alt="html coverage in Vitest UI" img-dark src="/ui-coverage-1-dark.png">
+<img alt="Vitest UI 中的 HTML 覆盖率" img-light src="/ui-coverage-1-light.png">
+<img alt="Vitest UI 中的 HTML 覆盖率" img-dark src="/ui-coverage-1-dark.png">
 
-## Coverage in Agent Environments
+## 代理环境中的覆盖率
 
-When Vitest detects it is running inside an AI coding agent, it automatically adjusts the default `text` reporter to reduce output and minimize token usage:
+当 Vitest 检测到它正在 AI 编码代理中运行时，它会自动调整默认的 `text` 报告器，以减少输出并最小化 token 使用量：
 
-- `skipFull: true` is set on the `text` reporter, so files with 100% coverage are omitted from the terminal output.
-- The [`text-summary`](/config/coverage#coverage-reporter) reporter is added automatically, so the agent always sees a concise totals table even when `skipFull` hides all individual files.
+- 在 `text` 报告器上设置 `skipFull: true`，因此覆盖率达到 100% 的文件会从终端输出中省略。
+- [`text-summary`](/config/coverage#coverage-reporter) 报告器会自动添加，因此即使 `skipFull` 隐藏了所有单个文件，代理也始终能看到一个简洁的总计表。
 
-These adjustments only apply when the `text` reporter is already part of the active reporter list (it is included in the default). Explicitly configured reporters are never removed.
+这些调整仅在 `text` 报告器已经是活动报告器列表的一部分时才会生效（默认情况下已包含）。显式配置的报告器绝不会被移除。

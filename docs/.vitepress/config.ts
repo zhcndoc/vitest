@@ -1089,8 +1089,8 @@ export default ({ mode }: { mode: string }) => {
             collapsed: false,
             items: [
               {
-                text: '迁移到 Vitest 4.0',
-                link: '/guide/migration#vitest-4',
+                text: '迁移到 Vitest 5.0',
+                link: '/guide/migration#vitest-5',
               },
               {
                 text: '从 Jest 迁移',

@@ -19,9 +19,9 @@ outline: deep
 例如，如果你的代码中有 `setTimeout` 调用在测试结束后执行回调，你将看到以下错误：
 
 ```sh
-⎯⎯⎯⎯⎯⎯⎯⎯ Async Leaks 1 ⎯⎯⎯⎯⎯⎯⎯⎯
+⎯⎯⎯⎯⎯⎯⎯⎯ 异步泄漏 1 ⎯⎯⎯⎯⎯⎯⎯⎯
 
-Timeout leaking in test/checkout-screen.test.tsx
+Timeout 泄漏于 test/checkout-screen.test.tsx
  26|
  27|   useEffect(() => {
  28|     setTimeout(() => setWindowWidth(window.innerWidth), 150)
@@ -34,8 +34,8 @@ Timeout leaking in test/checkout-screen.test.tsx
 
 ```js
 useEffect(() => {
-  setTimeout(() => setWindowWidth(window.innerWidth), 150) // [!code --]
-  const timeout = setTimeout(() => setWindowWidth(window.innerWidth), 150) // [!code ++]
+  setTimeout(setWindowWidth, 150, window.innerWidth) // [!code --]
+  const timeout = setTimeout(setWindowWidth, 150, window.innerWidth) // [!code ++]
 
   return function cleanup() { // [!code ++]
     clearTimeout(timeout) // [!code ++]

@@ -1,7 +1,7 @@
 # 配置 WebdriverIO
 
-::: info Playwright 与 WebdriverIO
-如果您的项目中尚未使用 WebdriverIO，我们建议从 [Playwright](/config/browser/playwright) 开始，因为它更容易配置且具有更灵活的 API。
+::: info Community maintained
+WebdriverIO 提供程序（[`@vitest/browser-webdriverio`](https://github.com/vitest-community/vitest-webdriverio)）由 Vitest 社区在 [`vitest-community`](https://github.com/vitest-community) 组织下维护，独立于 Vitest 核心包。请将特定于提供程序的问题报告到其仓库。
 :::
 
 要使用 WebdriverIO 运行测试，您需要安装 [`@vitest/browser-webdriverio`](https://npmx.dev/package/@vitest/browser-webdriverio) npm 包，并在配置的 `test.browser.provider` 属性中指定其 `webdriverio` 导出：
@@ -29,7 +29,7 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   test: {
     browser: {
-      // 所有实例之间共享的提供者选项
+      // 所有实例之间共享的提供程序选项
       provider: webdriverio({
         capabilities: {
           browserVersion: '82',

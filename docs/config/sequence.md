@@ -5,7 +5,7 @@ outline: deep
 
 # sequence
 
-- **Type:** `{ sequencer?, shuffle?, seed?, hooks?, setupFiles?, groupOrder }`
+- **类型:** `{ sequencer?, shuffle?, seed?, hooks?, setupFiles?, groupOrder }`
 
 测试排序方式的选项。
 
@@ -99,13 +99,15 @@ export default defineConfig({
 
 Vitest 通常使用缓存来排序测试，因此运行时间较长的测试会更早开始，从而使测试运行得更快。如果你的文件和测试按随机顺序运行，你将失去这种性能改进，但它可能有助于跟踪偶然依赖于之前运行的另一个测试的测试。
 
-### sequence.shuffle.files {#sequence-shuffle-files}
+### sequence.shuffle.files <CRoot /> {#sequence-shuffle-files}
 
 - **Type:** `boolean`
 - **Default:** `false`
 - **CLI:** `--sequence.shuffle.files`, `--sequence.shuffle.files=false`
 
 是否随机化文件，请注意，如果启用此选项，运行时间较长的测试将不会更早开始。
+
+Because file ordering is shared across [projects](/guide/projects), this option is resolved from the root config only. A project can still randomize its own tests with [`sequence.shuffle.tests`](#sequence-shuffle-tests).
 
 ### sequence.shuffle.tests {#sequence-shuffle-tests}
 
@@ -117,8 +119,8 @@ Vitest 通常使用缓存来排序测试，因此运行时间较长的测试会�
 
 ## sequence.concurrent {#sequence-concurrent}
 
-- **Type:** `boolean`
-- **Default:** `false`
+- **类型:** `boolean`
+- **默认值:** `false`
 - **CLI:** `--sequence.concurrent`, `--sequence.concurrent=false`
 
 如果你希望测试并行运行，可以通过此选项或 CLI 参数 [`--sequence.concurrent`](/guide/cli) 启用它。
@@ -129,16 +131,16 @@ Vitest 通常使用缓存来排序测试，因此运行时间较长的测试会�
 
 ## sequence.seed <CRoot />
 
-- **Type:** `number`
-- **Default:** `Date.now()`
+- **类型:** `number`
+- **默认值:** `Date.now()`
 - **CLI:** `--sequence.seed=1000`
 
 设置随机化种子，如果测试按随机顺序运行。
 
 ## sequence.hooks
 
-- **Type:** `'stack' | 'list' | 'parallel'`
-- **Default:** `'stack'`
+- **类型:** `'stack' | 'list' | 'parallel'`
+- **默认值:** `'stack'`
 - **CLI:** `--sequence.hooks=<value>`
 
 更改钩子执行的顺序。
@@ -153,9 +155,9 @@ Vitest 通常使用缓存来排序测试，因此运行时间较长的测试会�
 
 ## sequence.setupFiles {#sequence-setupfiles}
 
-- **Type:** `'list' | 'parallel'`
-- **Default:** `'parallel'`
-- **CLI:** `--sequence.setupFiles=<value>`
+- **类型：** `'list' | 'parallel'`
+- **默认值：** `'parallel'`
+- **CLI：** `--sequence.setupFiles=<value>`
 
 更改 setup 文件执行的顺序。
 

@@ -90,7 +90,7 @@ test('两个回调都被调用', async () => {
 
 ```js
 function fetchData(callback) {
-  setTimeout(() => callback('花生酱'), 100)
+  setTimeout(callback, 100, 'peanut butter')
 }
 
 test('数据是花生酱', async () => {

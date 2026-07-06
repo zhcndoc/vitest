@@ -96,9 +96,9 @@ interface PopulateOptions {
 interface PopulateResult {
   // 所有已复制键的列表，即使值在原始对象上不存在
   keys: Set<string>
-  // 可能被键覆盖的原始对象映射
-  // 你可以在 `teardown` 函数中返回这些值
-  originals: Map<string | symbol, any>
+  // 可能已被覆盖的键的属性描述符映射
+  // 你可以在 `teardown` 中使用 `Object.defineProperty` 将其恢复
+  originals: Map<string | symbol, PropertyDescriptor>
 }
 
 export function populateGlobal(global: any, original: any, options: PopulateOptions): PopulateResult

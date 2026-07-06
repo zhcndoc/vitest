@@ -59,18 +59,18 @@ export default defineConfig({
 
 ## launchOptions
 
-这些选项直接传递给 `playwright[browser].launch` 命令。你可以在 [Playwright 文档](https://playwright.dev/docs/api/class-browsertype#browser-type-launch) 中阅读有关该命令和可用参数的更多信息。
+These options are passed directly to the `playwright[browser].launch` command. You can read more about this command and the available parameters in the [Playwright documentation](https://playwright.dev/docs/api/class-browsertype#browser-type-launch).
 
 ::: warning
-Vitest 将忽略 `launch.headless` 选项。相反，请使用 [`test.browser.headless`](/config/browser/headless)。
+Vitest will ignore the `launch.headless` option. Instead, use [`test.browser.headless`](/config/browser/headless).
 
-请注意，如果启用了 [`--inspect`](/guide/cli#inspect)，Vitest 会将调试标志推送到 `launch.args`。
+Please note that if [`--inspect`](/guide/cli#inspect) is enabled, Vitest will push the debug flag to `launch.args`.
 :::
 
-::: tip 启用新的 Chromium 无头模式
-Playwright 支持 Chromium 的 [新无头模式](https://playwright.dev/docs/browsers#chromium-new-headless-mode)，它使用真实的 Chrome 浏览器而不是专用的无头 shell。这提供了更真实、可靠的测试执行，并无需安装单独的无头 Chromium 构建。
+::: tip Enable the new Chromium headless mode
+Playwright supports Chromium's [new headless mode](https://playwright.dev/docs/browsers#chromium-new-headless-mode), which uses a real Chrome browser instead of a dedicated headless shell. This provides a more realistic and reliable test execution, and there is no need to install a separate headless Chromium build.
 
-要启用，请在 `launchOptions` 中将 `channel` 设置为 `'chromium'`：
+To enable it, set `channel` to `'chromium'` in `launchOptions`:
 
 ```ts [vitest.config.ts]
 import { playwright } from '@vitest/browser-playwright'
@@ -94,13 +94,13 @@ export default defineConfig({
 
 ## connectOptions
 
-这些选项直接传递给 `playwright[browser].connect` 命令。你可以在 [Playwright 文档](https://playwright.dev/docs/api/class-browsertype#browser-type-connect) 中阅读有关该命令和可用参数的更多信息。
+这些选项会直接传递给 `playwright[browser].connect` 命令。你可以在 [Playwright 文档](https://playwright.dev/docs/api/class-browsertype#browser-type-connect) 中阅读有关该命令及可用参数的更多信息。
 
 使用 `connectOptions.wsEndpoint` 连接到现有的 Playwright 服务器，而不是在本地启动浏览器。这对于在 Docker、CI 或远程机器上运行浏览器很有用。
 
 ::: warning
 
-Vitest 通过 `x-playwright-launch-options` 头将 `launchOptions` 转发给 Playwright 服务器。这仅在远程 Playwright 服务器支持此头时才有效，例如使用 `playwright run-server` CLI 时。
+Vitest 通过 `x-playwright-launch-options` 头将 `launchOptions` 转发给 Playwright 服务器。此方式仅在远程 Playwright 服务器支持该头时才有效，例如使用 `playwright run-server` CLI 时。
 
 :::
 
@@ -112,8 +112,8 @@ Vitest 通过 `x-playwright-launch-options` 头将 `launchOptions` 转发给 Pla
 ```yaml [docker-compose.yml]
 services:
   playwright:
-    image: mcr.microsoft.com/playwright:v1.58.1-noble
-    command: /bin/sh -c "npx -y playwright@1.58.1 run-server --port 6677 --host 0.0.0.0"
+    image: mcr.microsoft.com/playwright:v1.61.0-noble
+    command: /bin/sh -c "npx -y playwright@1.61.0 run-server --port 6677 --host 0.0.0.0"
     init: true
     ipc: host
     user: pwuser
@@ -125,7 +125,7 @@ services:
 docker compose up -d
 ```
 
-然后配置 Vitest 以连接到它。[`exposeNetwork`](https://playwright.dev/docs/api/class-browsertype#browser-type-connect-option-expose-network) 选项让容器化浏览器能够到达主机上的 Vitest 开发服务器：
+然后配置 Vitest 以连接到它。[`exposeNetwork`](https://playwright.dev/docs/api/class-browsertype#browser-type-connect-option-expose-network) 选项可让容器化浏览器访问主机上的 Vitest 开发服务器：
 
 ```ts [vitest.config.ts]
 import { playwright } from '@vitest/browser-playwright'

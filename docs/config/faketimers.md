@@ -18,8 +18,8 @@ outline: deep
 
 ## fakeTimers.toFake
 
-- **类型：** `('setTimeout' | 'clearTimeout' | 'setImmediate' | 'clearImmediate' | 'setInterval' | 'clearInterval' | 'Date' | 'nextTick' | 'hrtime' | 'requestAnimationFrame' | 'cancelAnimationFrame' | 'requestIdleCallback' | 'cancelIdleCallback' | 'performance' | 'queueMicrotask')[]`
-- **默认值：** 全局可用的所有内容，除了 `nextTick` 和 `queueMicrotask`
+- **类型：** `('setTimeout' | 'clearTimeout' | 'setImmediate' | 'clearImmediate' | 'setInterval' | 'clearInterval' | 'Date' | 'nextTick' | 'hrtime' | 'requestAnimationFrame' | 'cancelAnimationFrame' | 'requestIdleCallback' | 'cancelIdleCallback' | 'performance' | 'queueMicrotask' | 'Intl' | 'Temporal')[]`
+- **默认值：** 全局可用的所有内容，`nextTick` 和 `queueMicrotask` 除外
 
 一个包含要模拟的全局方法和 API 名称的数组。例如，如果只想模拟 `setTimeout()` 和 `nextTick()`，请将此属性指定为 `['setTimeout', 'nextTick']`。
 
@@ -27,8 +27,8 @@ outline: deep
 
 ## fakeTimers.toNotFake
 
-- **类型：** `('setTimeout' | 'clearTimeout' | 'setImmediate' | 'clearImmediate' | 'setInterval' | 'clearInterval' | 'Date' | 'nextTick' | 'hrtime' | 'requestAnimationFrame' | 'cancelAnimationFrame' | 'requestIdleCallback' | 'cancelIdleCallback' | 'performance' | 'queueMicrotask')[]`
-- **默认值：** `[]`
+- **Type:** `('setTimeout' | 'clearTimeout' | 'setImmediate' | 'clearImmediate' | 'setInterval' | 'clearInterval' | 'Date' | 'nextTick' | 'hrtime' | 'requestAnimationFrame' | 'cancelAnimationFrame' | 'requestIdleCallback' | 'cancelIdleCallback' | 'performance' | 'queueMicrotask' | 'Intl' | 'Temporal')[]`
+- **Default:** `[]`
 
 一个包含要保持为原生实现的全局方法和 API 名称的数组。所有其他可用的计时器都将被模拟。例如，如果想保持 `setInterval()` 为原生并模拟其他所有计时器，请将此属性指定为 `['setInterval']`。
 

@@ -12,14 +12,14 @@
 如果你需要根据接收到的参数让 mock 返回不同的值，[`vi.when()`](/api/vi#vi-when) 可以让你定义基于参数的行为，而无需自己编写 `if/else` 逻辑。详情请参阅 [条件模拟](/guide/recipes/conditional-mocking) 配方。
 :::
 
-## Example
+## 示例
 
 ```js
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 const messages = {
   items: [
-    { message: 'Simple test message', from: 'Testman' },
+    { message: '简单的测试消息', from: 'Testman' },
     // ...
   ],
   addItem(item) {
@@ -36,29 +36,29 @@ function getLatest(index = messages.items.length - 1) {
   return messages.items[index]
 }
 
-it('should get the latest message with a spy', () => {
+it('应该使用 spy 获取最新消息', () => {
   const spy = vi.spyOn(messages, 'getLatest')
   expect(spy.getMockName()).toEqual('getLatest')
 
   expect(messages.getLatest()).toEqual(
-    messages.items[messages.items.length - 1],
+    messages.items.at(-1),
   )
 
   expect(spy).toHaveBeenCalledTimes(1)
 
-  spy.mockImplementationOnce(() => 'access-restricted')
-  expect(messages.getLatest()).toEqual('access-restricted')
+  spy.mockImplementationOnce(() => '访问受限')
+  expect(messages.getLatest()).toEqual('访问受限')
 
   expect(spy).toHaveBeenCalledTimes(2)
 })
 
-it('passing down the mock', () => {
+it('传递 mock', () => {
   const callback = vi.fn()
   messages.onItem(callback)
 
-  messages.addItem({ message: 'Another test message', from: 'Testman' })
+  messages.addItem({ message: '另一条测试消息', from: 'Testman' })
   expect(callback).toHaveBeenCalledWith({
-    message: 'Another test message',
+    message: '另一条测试消息',
     from: 'Testman',
   })
 })
