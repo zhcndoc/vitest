@@ -50,7 +50,7 @@ test('button renders in default state', async () => {
 - 操作系统
 - 字体渲染管线
 - 浏览器、浏览器版本和设置
-- 浏览器是以 headless 还是 headed 模式运行
+- 浏览器是以无头模式还是有头模式运行
 - 屏幕缩放、色彩配置文件和显示设置
 - ……以及偶尔像是月相 <MoonPhase /> 这种因素
 
@@ -70,7 +70,7 @@ test('button renders in default state', async () => {
 
 ### 项目结构
 
-将视觉测试套件与其他测试分开，可以让失败信号更清晰，也能带来更有意图的更新流程。推荐的设置是使用 [projects](/guide/projects) 并采用 `[name].vrt.test.[ext]` 的命名约定来保持它们的独立性，同时以 headless 模式运行以确保一致性。由于浏览器实例可能有不同的默认尺寸，还应设置一个特定的 viewport 大小。
+将视觉测试套件与其他测试分开，可以让失败信号更清晰，也能带来更有意图的更新流程。推荐的设置是使用 [projects](/guide/projects) 并采用 `[name].vrt.test.[ext]` 的命名约定来保持它们的独立性，同时以无头模式运行以确保一致性。由于浏览器实例可能有不同的默认尺寸，还应设置一个特定的视口大小。
 
 ```ts [vitest.config.ts]
 import { defaultExclude, defineConfig } from 'vitest/config'
@@ -82,14 +82,12 @@ export default defineConfig({
     // ...其他配置
     projects: [
       {
-        extends: true,
         test: {
           name: 'unit',
           exclude: [vrtPattern, ...defaultExclude],
         },
       },
       {
-        extends: true,
         test: {
           name: 'vrt',
           browser: {
@@ -129,7 +127,7 @@ expect(element).toMatchScreenshot()
 
 未找到现有的参考截图；已创建一个新截图。在再次运行测试之前请检查它。
 
-Reference screenshot:
+参考截图：
   tests/__screenshots__/button.vrt.test.ts/button-default-state-chromium-darwin.png
 ```
 
@@ -180,7 +178,7 @@ $ vitest --project vrt --update
 
 1. **参考截图**：期望的基线图像
 1. **实际截图**：测试期间捕获到的图像
-1. **差异图**：突出显示差异；仅当两张截图尺寸相同时才会生成（使用自定义 matcher 时行为可能不同）
+1. **差异图**：突出显示差异；仅当两张截图尺寸相同时才会生成（使用自定义匹配器时行为可能不同）
 
 你会在 CLI 输出中看到类似这样的内容：
 
@@ -190,13 +188,13 @@ expect(element).toMatchScreenshot()
 截图与存储的参考图不匹配。
 245 个像素（比例 0.03）不同。
 
-Reference screenshot:
+参考截图：
   tests/__screenshots__/button.vrt.test.ts/button-chromium-darwin.png
 
-Actual screenshot:
+实际截图：
   tests/.vitest/attachments/button.vrt.test.ts/button-chromium-darwin-actual.png
 
-Diff image:
+差异图：
   tests/.vitest/attachments/button.vrt.test.ts/button-chromium-darwin-diff.png
 ```
 
@@ -206,13 +204,13 @@ Diff image:
   <img alt="视觉回归差异视图的动画演示，切换标签并使用滑块显示差异" img-light src="/visual-regression/diff-view-light.avif">
   <img alt="视觉回归差异视图的动画演示，切换标签并使用滑块显示差异" img-dark src="/visual-regression/diff-view-dark.avif">
 
-  <sup>视觉回归差异 UI 的示例，展示了“Diff”、“Reference”、“Actual”和“Slider”标签，以及滑块如何揭示组件中非预期的视觉变化。</sup>
+  <sup>视觉回归差异 UI 的示例，展示了“差异”、“参考”、“实际”和“滑块”标签，以及滑块如何揭示组件中非预期的视觉变化。</sup>
 </center>
 
 #### 理解差异图
 
 - **红色像素**：参考图和实际图之间不同的区域
-- **黄色像素**：抗锯齿差异（当不忽略 anti-alias 时）
+- **黄色像素**：抗锯齿差异（当不忽略抗锯齿时）
 - **透明/原始**：未变化的区域
 
 :::tip
@@ -675,7 +673,6 @@ export default defineConfig({
     // ...其他配置
     projects: [
       {
-        extends: true,
         test: {
           name: 'vrt',
           browser: {
@@ -718,7 +715,7 @@ export default defineConfig({
 1. **设置端点 URL**：遵循 [官方指南](https://learn.microsoft.com/en-us/azure/app-testing/playwright-workspaces/quickstart-run-end-to-end-tests?tabs=playwrightcli&pivots=playwright-test-runner#configure-the-browser-endpoint)，检索 URL 并将其设置为 `PLAYWRIGHT_SERVICE_URL` 环境变量。
 1. **启用令牌认证**：为你的工作区 [启用访问令牌](https://learn.microsoft.com/en-us/azure/app-testing/playwright-workspaces/how-to-manage-authentication?pivots=playwright-test-runner#enable-authentication-using-access-tokens)，然后 [生成令牌](https://learn.microsoft.com/en-us/azure/app-testing/playwright-workspaces/how-to-manage-access-tokens#generate-a-workspace-access-token) 并将其设置为 `PLAYWRIGHT_SERVICE_ACCESS_TOKEN` 环境变量。
 
-::: danger Keep that token secret!
+::: danger 请妥善保管令牌！
 永远不要把 `PLAYWRIGHT_SERVICE_ACCESS_TOKEN` 提交到你的仓库。任何拥有该令牌的人都可能给你产生高额账单。请在本地使用环境变量，在 CI 中使用密钥。
 :::
 

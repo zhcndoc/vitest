@@ -67,7 +67,7 @@ export interface TestArtifactBase {
 创建自定义测试工件时扩展此接口。Vitest 自动管理 `attachments` 数组并注入 `location` 属性以指示工件是在测试代码中的何处创建的。
 
 ::: danger
-当在 [`api.allowWrite`](/config/api#api-allowwrite) 或 [`browser.api.allowWrite`](/config/browser/api#api-allowwrite) 禁用的情况下运行时，Vitest 会在报告之前清空每个工件上的 `attachments` 数组。
+当运行时禁用 [`api.allowWrite`](/config/api#api-allowwrite) 时，Vitest 会在报告每个工件之前清空其 `attachments` 数组。
 
 如果你的自定义工件缩小了 `attachments` 类型（例如变为元组），请在联合类型中包含 `| []`，以便类型反映运行时实际发生的情况。
 :::
@@ -129,7 +129,7 @@ export interface TestArtifactLocation {
 - `type` 属性应遵循模式 `'package-name:artifact-name'`，**`'internal:'` 是保留前缀**
 - 使用 `attachments` 包含文件或数据；扩展 [`TestAttachment`](#testattachment) 以获取自定义元数据
 - 如果你缩小了 `attachments` 类型（例如变为元组），在联合类型中包含 `| []`，因为 Vitest 可能在运行时清空数组（见 [`TestArtifactBase`](#testartifactbase)）
-- `location` 属性是自动注入的
+- `location` 属性是自动注入的。
 
 ## 自定义工件
 

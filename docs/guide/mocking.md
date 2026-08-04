@@ -171,7 +171,7 @@ mocked() // 是一个 spy 函数
 
 ### 模拟当前日期
 
-要模拟 `Date` 的时间，你可以使用 `vi.setSystemTime` 辅助函数。此值在不同测试之间 **不会** 自动重置。
+要模拟 `Date` 和 `Temporal` 的时间，可以使用 `vi.setSystemTime` 辅助函数。此值在不同测试之间**不会**自动重置。
 
 请注意，使用 `vi.useFakeTimers` 也会更改 `Date` 的时间。
 
@@ -180,13 +180,15 @@ const mockDate = new Date(2022, 0, 1)
 vi.setSystemTime(mockDate)
 const now = new Date()
 expect(now.valueOf()).toBe(mockDate.valueOf())
-// 重置模拟时间
+const nowInstant = Temporal.Now.instant()
+expect(nowInstant.epochMilliseconds).toBe(mockDate.valueOf())
+// 重置模拟的时间
 vi.useRealTimers()
 ```
 
 ### 模拟全局变量
 
-你可以通过给 `globalThis` 赋值或使用 [`vi.stubGlobal`](/api/vi#vi-stubglobal) 辅助工具来设置全局变量。使用 `vi.stubGlobal` 时，它在不同测试之间 **不会** 自动重置，除非你启用 [`unstubGlobals`](/config/unstubglobals) 配置选项或调用 [`vi.unstubAllGlobals`](/api/vi#vi-unstuballglobals)。
+你可以通过给 `globalThis` 赋值或使用 [`vi.stubGlobal`](/api/vi#vi-stubglobal) 辅助工具来设置全局变量。使用 `vi.stubGlobal` 时，它在不同测试之间**不会**自动重置，除非你启用 [`unstubGlobals`](/config/unstubglobals) 配置选项或调用 [`vi.unstubAllGlobals`](/api/vi#vi-unstuballglobals)。
 
 ```ts
 vi.stubGlobal('__VERSION__', '1.0.0')
@@ -198,7 +200,7 @@ expect(__VERSION__).toBe('1.0.0')
 1. 要更改环境变量，你可以直接为其赋予新值。
 
 ::: warning
-环境变量值在不同测试之间 **_不会_** 自动重置。
+环境变量值在不同测试之间**_不会_**自动重置。
 :::
 
 ```ts

@@ -4,7 +4,7 @@ title: 基准测试 | 指南
 
 # 基准测试
 
-Vitest 允许你使用来自 [测试上下文](/guide/test-context) 的 `bench` fixture，在测试旁边编写基准测试。基准测试由 [Tinybench](https://github.com/tinylibs/tinybench) 提供支持，并定义在常规的 `test()` 调用内部，这使你能够使用 Vitest 测试运行器的全部能力：重试、生命周期钩子、过滤以及断言。
+Vitest 允许你使用来自[测试上下文](/guide/test-context)的 `bench` 固件，在测试旁编写基准测试。内置的基准测试提供程序由 [Tinybench](https://github.com/tinylibs/tinybench) 提供支持，基准测试定义在常规的 `test()` 调用中，因此你可以使用 Vitest 测试运行器的全部功能：重试、生命周期钩子、筛选和断言。
 
 ## 定义基准测试
 
@@ -23,18 +23,18 @@ test('parsing performance', async ({ bench }) => {
 `bench()` 函数会注册一个基准测试，但不会执行它。调用 `.run()` 会运行该基准测试并返回结果。测试完成后，Vitest 会打印一个 [比较表](#comparing-benchmarks) 的单行版本（ops/sec、平均时间、百分位数等），因此你得到的单次基准测试输出与 `bench.compare()` 的输出是一致的。
 
 ::: warning
-`bench` fixture 仅在由 [`benchmark.include`](/config/#benchmark-include) 匹配的文件中可用（默认：`**/*.{bench,benchmark}.?(c|m)[jt]s?(x)`）。在常规测试文件中使用 `{ bench }` 会抛出错误。
+`bench` fixture 仅在匹配 [`benchmark.include`](/config/benchmark#benchmark-include) 的文件中可用（默认值：`**/*.{bench,benchmark}.?(c|m)[jt]s?(x)`）。在普通测试文件中使用 `{ bench }` 会抛出错误。
 
 某个文件是否参与基准测试运行是由文件名决定的，而不是由测试是否使用 `bench` fixture 决定的。将 `parser.test.ts` 重命名为 `parser.bench.ts`（或调整 `benchmark.include`）才会把它移入基准测试项目。
 :::
 
 ## 运行基准测试
 
-基准测试文件由 [`benchmark.include`](/config/#benchmark-include) 匹配（默认：`**/*.{bench,benchmark}.?(c|m)[jt]s?(x)`），并在它们自己的项目中运行，与常规测试分开。根据你是想跳过它们、与测试一起运行，还是单独运行，有三种运行方式。
+基准测试文件由 [`benchmark.include`](/config/benchmark#benchmark-include) 匹配（默认值：`**/*.{bench,benchmark}.?(c|m)[jt]s?(x)`），并在独立于常规测试的专属项目中运行。根据你是想跳过基准测试、让它们与测试一起运行，还是单独运行，有三种运行方式。
 
 ### `vitest`（默认）
 
-如果没有设置 [`benchmark.enabled`](/config/#benchmark-enabled)，`vitest` 命令只会运行常规测试。基准测试文件会被完全忽略。这是默认行为，也是日常开发的正确选择，因为基准测试运行缓慢且噪声较大，不应在每次保存时都运行。
+如果未启用 [`benchmark.enabled`](/config/benchmark#benchmark-enabled)，`vitest` 命令只会运行常规测试。基准测试文件会被完全忽略。这是默认设置，也是日常开发的正确选择，因为基准测试运行缓慢且会产生噪声，不应在每次保存时都运行。
 
 ### 启用 `benchmark.enabled` 的 `vitest`
 
@@ -65,12 +65,14 @@ vitest bench
 这会在本次运行中隐式启用 `benchmark.enabled`，因此你无需在配置中设置它。与 `vitest` 命令一样，它也支持文件名过滤器以及 `-t`/`--testNamePattern` 来缩小运行范围：
 
 ```bash
-# only benchmarks in files matching "parser"
+# 仅运行文件名匹配 "parser" 的基准测试
 vitest bench parser
 
-# only benchmarks whose test name matches "JSON"
+# 仅运行测试名称匹配 "JSON" 的基准测试
 vitest bench -t JSON
 ```
+
+如需使用其他基准测试引擎或执行策略运行基准测试，请参阅[自定义基准测试提供程序](/guide/advanced/benchmark-provider)指南。
 
 ## 比较基准测试
 
@@ -168,12 +170,12 @@ test('compare implementations across browsers', async ({ bench }) => {
 
 ## 断言性能
 
-使用 `toBeFasterThan()` 和 `toBeSlowerThan()` matcher 来断言基准测试之间的相对性能：
+使用 `toBeFasterThan()` 和 `toBeSlowerThan()` 匹配器来断言基准测试之间的相对性能：
 
 ```ts
 import { expect, test } from 'vitest'
 
-test('lib1 is faster than lib2', async ({ bench }) => {
+test('lib1 比 lib2 更快', async ({ bench }) => {
   const result = await bench.compare(
     bench('lib1', () => { lib1() }),
     bench('lib2', () => { lib2() }),
@@ -186,21 +188,21 @@ test('lib1 is faster than lib2', async ({ bench }) => {
 `delta` 选项指定了断言通过所需的最小相对差异。这有助于避免由基准测试噪声引起的不稳定测试：
 
 ```ts
-// lib1 must be at least 10% faster than lib2
+// lib1 必须至少比 lib2 快 10%
 expect(result.get('lib1')).toBeFasterThan(result.get('lib2'), {
   delta: 0.1,
 })
 
-// lib2 must be at least 20% slower than lib1
+// lib2 必须至少比 lib1 慢 20%
 expect(result.get('lib2')).toBeSlowerThan(result.get('lib1'), {
   delta: 0.2,
 })
 ```
 
-你也可以使用标准 matcher 来断言绝对性能：
+你也可以使用标准匹配器来断言绝对性能：
 
 ```ts
-test('parsing is fast enough', async ({ bench }) => {
+test('解析速度足够快', async ({ bench }) => {
   const result = await bench('parse', () => {
     parse(largeInput)
   }).run()
@@ -330,8 +332,8 @@ test('cross-project baseline', async ({ bench }) => {
 
 基准测试本质上是不稳定的：CPU 负载、热降频、GC 压力以及后台进程都会影响结果。Vitest 采取了几项措施来尽量减少这种噪声：
 
-- **独立项目**：基准测试文件会根据 [`benchmark.include`](/config/#benchmark-include) 模式分组到它们自己的项目中。`bench` fixture 仅在匹配该模式的文件中可用。在普通测试文件中使用它会抛出错误。
-- **无并发**：基准测试文件内的测试总是按顺序运行。基准测试文件本身也一次只运行一个，绝不会并行运行。这可以防止基准测试彼此干扰。
+- **独立项目**：基准测试文件会根据 [`benchmark.include`](/config/benchmark#benchmark-include) 模式分组到其专属项目中。`bench` fixture 只会在匹配该模式的文件中提供。在普通测试文件中使用它会抛出错误。
+- **不并发执行**：基准测试文件中的测试始终按顺序运行。基准测试文件本身也会逐个运行，绝不会并行执行。这样可以避免基准测试之间相互干扰。
 
 为了进一步提高稳定性：
 
@@ -401,7 +403,7 @@ import { parse } from 'my-library'
 
 **为基准测试禁用模块运行器。** 如果基准测试不需要 Vite 转换、mock，或 Vitest 的模块拦截，则可以为基准测试项目禁用 [`experimental.viteModuleRunner`](/config/experimental#experimental-vitemodulerunner)，这样 Node 就会直接运行原生 ESM。
 
-这只影响 Node.js 模式。Browser 模式使用原生 ESM 导入，因此没有这种开销。
+这只影响 Node.js 模式。浏览器模式使用原生 ESM 导入，因此没有这种开销。
 
 ### 引擎特定注意事项
 

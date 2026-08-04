@@ -334,7 +334,7 @@ function importMock<T>(path: string): Promise<MaybeMockedDeep<T>>
 function unmock(path: string | Promise<Module>): void
 ```
 
-从模拟注册表中移除模块。即使之前被模拟过，所有导入调用都将返回原始模块。此调用被提升到文件顶部，因此它只会取消模拟在 `setupFiles` 中定义的模块，例如。
+从模拟注册表中移除模块。即使之前被模拟过，所有导入调用都将返回原始模块。此调用会被提升到文件顶部，因此它只会取消在 `setupFiles` 中定义的模块模拟。
 
 ### vi.doUnmock
 
@@ -532,7 +532,7 @@ function isMockFunction(fn: unknown): asserts fn is Mock
 function clearAllMocks(): Vitest
 ```
 
-在所有间谍上调用 [`.mockClear()`](/api/mock#mockclear)。
+在所有间谍上调用 [`.mockClear()`](/api/mock#mockclear)。  
 这将清除模拟历史而不影响模拟实现。
 
 ### vi.resetAllMocks
@@ -612,7 +612,7 @@ const spy = vi.spyOn(cart, 'Apples')
   })
 ```
 
-如果你提供箭头函数，当调用模拟时，你将收到 [`<anonymous> is not a constructor` error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Not_a_constructor) 错误。
+如果你提供箭头函数，当调用模拟时，你将收到 [`<anonymous> is not a constructor` 错误](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Not_a_constructor)。
 
 ::: tip
 在支持 [显式资源管理](https://github.com/tc39/proposal-explicit-resource-management) 的环境中，你可以使用 `using` 代替 `const`，以便在退出包含块时自动在任何模拟函数上调用 `mockRestore`。这对于监听的方法特别有用：
@@ -741,27 +741,27 @@ function stubGlobal(
 ): Vitest
 ```
 
-更改全局变量的值。你可以通过调用 `vi.unstubAllGlobals` 恢复其原始值。
+Changes the value of a global variable. You can restore its original value by calling `vi.unstubAllGlobals`.
 
 ```ts
 import { vi } from 'vitest'
 
-// 在调用 stubGlobal 之前 `innerWidth` 是 "0"
+// Before calling stubGlobal, `innerWidth` is "0"
 
 vi.stubGlobal('innerWidth', 100)
 
 innerWidth === 100
 globalThis.innerWidth === 100
-// 如果你使用的是 jsdom 或 happy-dom
+// If you are using jsdom or happy-dom
 window.innerWidth === 100
 ```
 
 :::tip
-你也可以通过直接赋值给 `globalThis` 或 `window`（如果你使用的是 `jsdom` 或 `happy-dom` 环境）来更改值，但你将无法使用 `vi.unstubAllGlobals` 恢复原始值：
+You can also change the value by assigning directly to `globalThis` or `window` (if you are using the `jsdom` or `happy-dom` environment), but you will not be able to restore the original value using `vi.unstubAllGlobals`:
 
 ```ts
 globalThis.innerWidth = 100
-// 如果你使用的是 jsdom 或 happy-dom
+// If you are using jsdom or happy-dom
 window.innerWidth = 100
 ```
 :::
@@ -779,7 +779,7 @@ import { vi } from 'vitest'
 
 const Mock = vi.fn()
 
-// 在调用 "stubGlobal" 之前 IntersectionObserver 是 "undefined"
+// 在调用 "stubGlobal" 之前，IntersectionObserver 是 "undefined"
 
 vi.stubGlobal('IntersectionObserver', Mock)
 
@@ -793,7 +793,7 @@ vi.unstubAllGlobals()
 
 globalThis.IntersectionObserver === undefined
 'IntersectionObserver' in globalThis === false
-// 抛出 ReferenceError，因为它未定义
+// 因为它未定义，所以会抛出 ReferenceError
 IntersectionObserver === undefined
 ```
 
@@ -873,7 +873,7 @@ expect(spy(1)).toBe('Alice')
 expect(() => spy(99)).toThrow() // 未为 99 定义行为
 ```
 
-`vi.when` 返回的 `When` 对象支持 [`toHaveBeenExhausted` 断言](/api/expect#tohavebeenexhausted)，当所有已注册行为都被消耗后，该断言通过。
+`vi.when` 返回的 `When` 对象支持 [`toHaveBeenExhausted 断言](/api/expect#tohavebeenexhausted)，当所有已注册行为都被消耗后，该断言通过。
 
 ```ts
 const spy = vi.fn()
@@ -925,7 +925,7 @@ expect(vi.isWhenChain(w)).toBe(true)
 expect(vi.isWhenChain(spy)).toBe(false)
 ```
 
-## Fake Timers
+## 假计时器
 
 本节介绍如何使用 [假计时器](/guide/mocking/timers)。
 
@@ -1158,7 +1158,7 @@ await vi.runOnlyPendingTimersAsync()
 function setSystemTime(date: string | number | Date): Vitest
 ```
 
-如果启用了假计时器，此方法模拟用户更改系统时钟（将影响日期相关的 API，如 `hrtime`、`performance.now` 或 `new Date()`）——但是，它不会触发任何计时器。如果未启用假计时器，此方法将仅模拟 `Date.*` 调用。
+如果启用了假计时器，此方法将模拟用户更改系统时钟（会影响与日期相关的 API，如 `hrtime`、`performance.now` 或 `new Date()`），但不会触发任何计时器。如果未启用假计时器，此方法只会模拟对 `Date.*` 和 `Temporal.Now.*` 的调用。
 
 如果你需要测试任何依赖于当前日期的内容，则很有用——例如代码中的 [Luxon](https://github.com/moment/luxon/) 调用。
 

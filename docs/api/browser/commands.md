@@ -18,7 +18,7 @@ outline: deep
 ::: tip
 内置文件命令出于安全原因遵循 Vite 的 [`server.fs`](https://vitejs.dev/config/server-options.html#server-fs-allow) 限制。
 
-`writeFile` 和 `removeFile` 还需要通过 [`browser.api.allowWrite`](/config/browser/api) 和 [`api.allowWrite`](/config/api#api-allowwrite) 获得写入权限。
+`writeFile` 和 `removeFile` 还需要通过 [`api.allowWrite`](/config/api#api-allowwrite) 获取写入权限。
 :::
 
 ```ts
@@ -60,7 +60,7 @@ expect(input).toHaveValue('a')
 ::: warning
 CDP 会话仅适用于 `playwright` provider，并且仅在使用 `chromium` 浏览器时可用。你可以在 playwright 的 [`CDPSession`](https://playwright.dev/docs/api/class-cdpsession) 文档中了解更多。
 
-CDP 是一个特权调试 API。只有在通过 [`browser.api.allowWrite`](/config/browser/api#api-allowwrite)、[`browser.api.allowExec`](/config/browser/api#api-allowexec)、[`api.allowWrite`](/config/api#api-allowwrite) 和 [`api.allowExec`](/config/api#api-allowexec) 启用浏览器 API 的写入和执行操作时，它才可用。
+CDP 是一种具有特权的调试 API。只有通过 [`api.allowWrite`](/config/api#api-allowwrite) 和 [`api.allowExec`](/config/api#api-allowexec) 启用浏览器 API 的写入和执行操作后，才能使用它。
 :::
 
 ## 自定义命令
@@ -131,7 +131,7 @@ declare module 'vitest/browser' {
 
 Vitest 的内置文件命令会根据 Vite 的 [`server.fs`](https://vite.dev/config/server-options#server-fs-allow) 限制验证路径，并单独检查是否允许写入。自定义命令不会自动继承这些保护。如果某个自定义命令接受浏览器提供的输入并使用它来读取、写入、删除、执行或暴露本地资源，那么在使用之前必须先验证该输入。
 
-对于文件读取或 fixture 加载，请使用 `vitest/node` 中的 `isFileLoadingAllowed` 或显式的 allowlist。对于写入和删除，还应要求显式的变更策略，例如 [`browser.api.allowWrite`](/config/browser/api#api-allowwrite)、[`api.allowWrite`](/config/api#api-allowwrite) 以及某个命令特定的允许目录。对于执行代码、shell 命令或项目脚本的命令，还应检查 [`browser.api.allowExec`](/config/browser/api#api-allowexec) 和 [`api.allowExec`](/config/api#api-allowexec)。
+对于文件读取或加载 fixture，请使用 `vitest/node` 中的 `isFileLoadingAllowed` 或显式的允许列表。对于写入和删除操作，还必须要求显式的变更策略，例如 [`api.allowWrite`](/config/api#api-allowwrite)，以及针对命令设置的允许目录。对于执行代码、shell 命令或项目脚本的命令，还应检查 [`api.allowExec`](/config/api#api-allowexec)。
 
 例如，如果你创建自己的文件写入命令而不是使用 Vitest 内置的 `writeFile`，请应用相同的检查：
 

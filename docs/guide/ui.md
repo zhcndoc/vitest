@@ -118,13 +118,13 @@ npx vite preview --outDir .vitest
 <img alt="内联模块的模块信息视图" img-light src="/ui/light-module-info.png">
 <img alt="内联模块的模块信息视图" img-dark src="/ui/dark-module-info.png">
 
-此视图分为两部分。顶部显示完整的模块 ID 和一些关于模块的诊断信息。如果启用了 [`experimental.fsModuleCache`](/config/experimental#experimental-fsmodulecache)，将会有 "cached" 或 "not cached" 徽章。在右侧你可以看到时间诊断：
+此视图分为两部分。顶部显示完整的模块 ID 以及有关模块的一些诊断信息。如果启用了 [`fsModuleCache`](/config/fsmodulecache)，则会显示 "已缓存" 或 "未缓存" 徽章。在右侧，你可以看到时间诊断信息：
 
 - 自身时间 (Self Time)：导入模块所花费的时间，不包括静态导入。
 - 总时间 (Total Time)：导入模块所花费的时间，包括静态导入。请注意，这不包括当前模块的 `transform` 时间。
 - 转换 (Transform)：转换模块所花费的时间。
 
-如果你通过点击导入打开此视图，你还会在开头看到一个 "Back" 按钮，它将带你回到上一个模块。
+如果你通过点击导入打开此视图，你还会在开头看到一个 "返回" 按钮，它将带你回到上一个模块。
 
 底部部分取决于模块类型。如果模块是外部的，你只会看到该文件的源代码。你将无法进一步遍历模块图，也不会看到导入静态导入花费了多长时间。
 
@@ -174,6 +174,6 @@ npx vite preview --outDir .vitest
 
 分解显示模块列表，包含自身时间、总时间以及相对于加载整个测试文件所花费时间的百分比。
 
-如果至少有一个文件加载时间超过 [`danger` 阈值](/config/experimental#experimental-importdurations-thresholds)（默认：500ms），"Show Import Breakdown" 图标将显示红色；如果至少有一个文件加载时间超过 [`warn` 阈值](/config/experimental#experimental-importdurations-thresholds)（默认：100ms），它将显示橙色。
+如果至少有一个文件加载时间超过 [`danger` 阈值](/config/experimental#experimental-importdurations-thresholds)（默认：500ms），"显示导入分解" 图标将显示红色；如果至少有一个文件加载时间超过 [`warn` 阈值](/config/experimental#experimental-importdurations-thresholds)（默认：100ms），它将显示橙色。
 
 你可以使用 [`experimental.importDurations.limit`](/config/experimental#experimental-importdurationslimit) 来控制显示的导入数量。

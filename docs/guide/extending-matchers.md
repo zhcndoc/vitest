@@ -12,7 +12,7 @@ title: 扩展匹配器 | 指南
 
 ```ts
 expect.extend({
-  toBeFoo(received, expected) {
+  toBeFoo(received) {
     const { isNot } = this
     return {
       // 不要根据 isNot 修改你的 "pass"。Vitest 会为你处理
@@ -29,8 +29,20 @@ expect.extend({
 import 'vitest'
 
 declare module 'vitest' {
-  interface Matchers<T = any> {
+  interface Matchers<R, T> {
     toBeFoo: () => R
+  }
+}
+```
+
+`R` 是断言的返回类型，`T` 是接收到的值的类型。
+
+对于同步运行的匹配器，请返回 `R`。对于普通断言，这会使返回类型为 `void`；当断言与 `.resolves`、`.rejects`、[`expect.poll`](/api/expect#poll) 或 [`expect.element`](/api/browser/assertions) 一起使用时，返回类型则为 `Promise<void>`。当期望参数应与接收到的值具有相同类型时，可以使用 `T`：
+
+```ts
+declare module 'vitest' {
+  interface Matchers<R, T> {
+    toEqualTyped: (expected: T) => R
   }
 }
 ```
@@ -45,30 +57,42 @@ declare module 'vitest' {
 别忘了在你的 `tsconfig.json` 中包含环境声明文件。
 :::
 
-匹配器的返回值应与以下接口兼容：
+匹配器的返回值应与以下类型兼容：
 
 ```ts
-interface MatcherResult {
+interface SyncMatcherResult {
   pass: boolean
   message: () => string
   // 如果你传递这些，当匹配器未通过时，它们将自动出现在 diff 中
   // 所以你不需要自己打印 diff
   actual?: unknown
   expected?: unknown
+  meta?: object
 }
+
+type MatcherResult = SyncMatcherResult | Promise<SyncMatcherResult>
 ```
 
 ::: warning
-如果你创建了一个异步匹配器，别忘了在测试本身中 `await` 结果 (`await expect('foo').toBeFoo()`)：
+如果匹配器的实现是异步的，请将其返回类型声明为 `Promise<void>` 而不是 `R`，并且不要忘记在测试中对其使用 `await`：
 
 ```ts
 expect.extend({
-  async toBeAsyncAssertion() {
-    // ...
+  async toBeAsyncAssertion(received) {
+    return {
+      pass: received === 'foo',
+      message: () => `expected ${received} to be foo`,
+    }
   }
 })
 
-await expect().toBeAsyncAssertion()
+declare module 'vitest' {
+  interface Matchers<R, T> {
+    toBeAsyncAssertion: () => Promise<void>
+  }
+}
+
+await expect('foo').toBeAsyncAssertion()
 ```
 :::
 
@@ -155,9 +179,9 @@ expect.extend({ customMatcher })
 
 断言是否作为 [`soft`](/api/expect#soft) 调用。你不需要处理它，Vitest 总是会捕获错误。
 
-## `assertion` <Advanced /> <Version type="experimental">4.1.4</Version> {#assertion}
+## `assertion` <Advanced /> <Version>5.0.0</Version> {#assertion}
 
-The underlying [Chai assertion](https://www.chaijs.com/guide/plugins/) object. This is the same instance that Chai plugins receive, giving you access to Chai's flag system and chainable methods. This can be useful for building custom matchers that need to interact with Chai's internals.
+底层的 [Chai 断言](https://www.chaijs.com/guide/plugins/)对象。这是 Chai 插件接收的同一个实例，让你可以访问 Chai 的标记系统和可链式调用的方法。对于构建需要与 Chai 内部机制交互的自定义匹配器，这会很有用。
 
 ::: tip
 这些并不是所有可用的属性，只是最有用的那些。其他状态值由 Vitest 内部使用。

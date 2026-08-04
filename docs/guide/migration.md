@@ -5,7 +5,7 @@ outline: deep
 
 # 迁移指南
 
-[迁移到 Vitest 4.0](https://v4.vitest.dev/guide/migration) | [迁移到 Vitest 3.0](https://v3.vitest.dev/guide/migration)
+[迁移到 Vitest 4.0](https://v4.vitest.dev/guide/migration) | [迁移到 Vitest 3.0](https://v3.vitest.dev/guide/migration)。
 
 ## 迁移到 Vitest 5.0 {#vitest-5}
 
@@ -56,7 +56,89 @@ export default defineConfig({
 })
 ```
 
-### 提升的 Mock 调用必须位于顶层
+### 内联项目默认继承根配置
+
+[`extends`](/guide/projects#configuration) 选项现在默认为 `true`：在 [`test.projects`](/guide/projects) 中以内联配置定义的每个项目，都会继承根配置中的所有选项，包括 `plugins` 或 `resolve.alias` 等 Vite 选项。选项合并时遵循与 Vitest 4 中显式设置 `extends: true` 时相同的规则：
+
+```ts [vitest.config.ts]
+import { defineConfig } from 'vitest/config'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    projects: [
+      {
+        // v4：此项目不会应用 react 插件
+        // v5：此插件会从根配置继承
+        test: {
+          name: 'unit',
+          include: ['**/*.unit.test.ts'],
+        },
+      },
+    ],
+  },
+})
+```
+
+以下选项不会被继承，因为它们始终限定于单个项目或整个测试运行：
+
+- `name` 和 `projects` 永远不会被继承。
+- 根配置中的 `globalSetup` 不会被继承：根级别的 `globalSetup` 已经会在每次测试运行时执行一次，因此继承它会导致相同的文件在每个项目中再次执行。从非根配置文件扩展时，仍然会继承该选项。
+- 项目自身的 `tags` 会替换继承的数组，而不是与其合并。
+
+以配置文件或目录形式引用的项目不受影响；它们仍然不会从根配置继承任何选项。
+
+请注意，数组会被合并，而不是被覆盖。例如，如果根配置定义了 `setupFiles`，项目自身的 `setupFiles` 会追加到继承的配置中。如果需要恢复之前的行为，请在项目配置中设置 `extends: false`：
+
+```ts [vitest.config.ts]
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    setupFiles: ['./setup.global.ts'],
+    projects: [
+      {
+        extends: false, // [!code ++]
+        test: {
+          name: 'unit',
+          setupFiles: ['./setup.unit.ts'],
+        },
+      },
+    ],
+  },
+})
+```
+
+### 被引用的配置文件可以定义自己的项目
+
+在 [`test.projects`](/guide/projects) 中被引用且自身声明了 `projects` 的配置文件，现在会像根配置一样处理：它不会自行运行测试，而只会提供它所声明的[嵌套项目](/guide/projects#nested-projects)。这些项目的名称会以声明该配置的配置文件名称作为前缀，例如 `app (unit)`。
+
+在 Vitest 4 中，被引用配置的 `projects` 字段会被静默忽略，该配置会作为单个项目运行。请检查你的项目配置是否在不知情的情况下包含 `projects` 字段。最常见的情况是合并了一个定义了该字段的配置：
+
+```ts [packages/app/vitest.config.ts]
+import { defineProject, mergeConfig } from 'vitest/config'
+import rootConfig from '../../vitest.config' // [!code --]
+import sharedConfig from '../../vitest.shared' // [!code ++]
+
+export default mergeConfig(
+  // 根配置定义了 `test.projects`，因此合并它会
+  // 使此项目变成这些项目的容器
+  rootConfig, // [!code --]
+  sharedConfig, // [!code ++]
+  defineProject({
+    test: {
+      environment: 'jsdom',
+    },
+  }),
+)
+```
+
+由于继承的 `projects` 路径会相对于被引用的配置进行解析，因此这种错误配置通常会在启动时明确失败，并显示 `Projects definition references a non-existing file or a directory`、`No projects were found in "..."` 或循环 `projects` 定义错误。
+
+内联配置在运行时仍会忽略 `projects` 字段，但现在该字段也会从其 `ProjectConfig` 类型中排除。
+
+### 提升的模拟调用必须位于顶层
 
 [`vi.mock`](/api/vi#vi-mock)、[`vi.unmock`](/api/vi#vi-unmock) 和 [`vi.hoisted`](/api/vi#vi-hoisted) 会被提升到文件顶部，并在任何外围代码之前执行。之前在函数、代码块或 `describe`/`test` 回调中调用它们只会记录警告。Vitest 5.0 现在会抛出错误，因为该调用并不会在其书写位置执行：
 
@@ -147,7 +229,16 @@ Temporal.Now.instant().epochMilliseconds // 0（在 v4 中这里是实际时间�
 vi.useFakeTimers({ toNotFake: ['Temporal'] })
 ```
 
-### `toThrow("")` 匹配任何错误消息
+### `setSystemTime` 现在也会模拟 Temporal
+
+之前，`vi.setSystemTime` 在没有使用虚假计时器时只会模拟 `Date`，但现在它也会模拟 `Temporal.Now` 的方法。
+
+```ts
+vi.setSystemTime(0)
+Temporal.Now.instant().epochMilliseconds // 0（在 v4 中是实际时间）
+```
+
+### `toThrow("")` 匹配任意错误消息
 
 [`toThrow`](/api/expect#tothrow)（及其别名 `toThrowError`）会将字符串参数视为错误消息的子字符串。在 Vitest 4 中，空字符串有特殊处理，会被当作 `/^$/` 模式，因此它只会匹配消息为空的错误。现在它的行为与其他子字符串一致，而空字符串会出现在每条消息中：
 
@@ -162,7 +253,44 @@ expect(() => { throw new Error('boom') }).toThrow('') // [!code ++]
 expect(() => { throw new Error('boom') }).not.toThrow(/^$/)
 ```
 
-### `expect.poll` 在超时时失败
+### 断言类型公开返回类型和接收类型
+
+断言接口现在使用两个类型参数：`R` 是匹配器返回类型，`T` 是接收值类型。同步断言使用 `void`，而通过 `.resolves`、`.rejects`、[`expect.poll`](/api/expect#poll) 或 [`expect.element`](/api/browser/assertions) 访问的断言使用 `Promise<void>`。
+
+如果你声明自定义匹配器，请扩展 `Matchers<R, T>` 接口。它会将匹配器添加到实例断言、非对称匹配器以及 `expect.extend` 接受的类型中：
+
+```ts [vitest.d.ts]
+import 'vitest'
+
+interface CustomMatchers<R = unknown, T = unknown> {
+  toBeFoo: () => R
+  toEqualTyped: (expected: T) => R
+}
+
+declare module 'vitest' {
+  interface Matchers<R, T> extends CustomMatchers<R, T> {}
+}
+```
+
+这样，自定义匹配器的返回类型就会反映匹配器的使用方式：
+
+```ts
+const syncResult = expect('value').toEqualTyped('other') // void
+const asyncResult = expect(Promise.resolve('value')).resolves.toEqualTyped('other') // Promise<void>
+await asyncResult
+```
+
+直接引用断言类型的代码也必须首先提供返回类型：
+
+```ts
+Assertion<string> // [!code --]
+Assertion<void, string> // [!code ++]
+Assertion<Promise<void>, string> // 异步断言
+```
+
+Vitest 不再从全局 `jest.Matchers` 接口读取自定义匹配器声明。同时支持 Jest 和 Vitest 的库应分别扩展 `jest.Matchers` 和 `vitest.Matchers`。这只会影响 TypeScript 声明；使用 `expect.extend` 注册匹配器的方式保持不变。
+
+### `expect.poll` 超时失败
 
 [`expect.poll`](/api/expect#poll) 现在会在其回调或轮询断言未能在 `timeout` 内完成时拒绝。此前，超出截止时间后才解析的回调，或者只有在较晚一次尝试中才通过的断言，仍然可能成功。现在回调还会接收一个 `AbortSignal`，它会在超时时中止，因此你可以取消正在进行的工作：
 
@@ -247,7 +375,7 @@ await locator.click()
 
 ### `toHaveTextContent` 现在执行严格相等匹配
 
-浏览器模式下的 [`toHaveTextContent`](/api/browser/assertions#tohavetextcontent) matcher 现在会验证元素的文本内容是否与预期字符串完全相等，而不再执行部分、区分大小写的匹配。不再接受正则表达式。之前的行为，包括对 `RegExp` 的支持，已迁移到新的 [`toMatchTextContent`](/api/browser/assertions#tomatchtextcontent) matcher 中。
+浏览器模式下的 [`toHaveTextContent`](/api/browser/assertions#tohavetextcontent) 匹配器现在会验证元素的文本内容是否与预期字符串完全相等，而不再执行部分、区分大小写的匹配。不再接受正则表达式。之前的行为，包括对 `RegExp` 的支持，已迁移到新的 [`toMatchTextContent`](/api/browser/assertions#tomatchtextcontent) 匹配器中。
 
 ```ts
 // 部分匹配或正则匹配：
@@ -421,7 +549,7 @@ Node.js 和浏览器测试运行在不同的池中，不共享这些 id，因此
 - `vitest/runners`：请改用 `vitest` 中的 `TestRunner`
 - `vitest/suite`：请改用 vitest 中 `TestRunner` 的静态方法（例如，`TestRunner.getCurrentTest()`）
 - `vitest/mocker` 已被完全移除，请直接使用 `@vitest/mocker` 包（这个包曾一度被意外发布，但从未被移除）
-- `vitest/internal/module-runner` 已被移除
+- `vitest/internal/module-runner` 已被移除。
 
 ## 从 Jest 迁移 {#jest}
 

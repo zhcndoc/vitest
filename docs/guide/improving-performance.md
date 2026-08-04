@@ -79,7 +79,7 @@ export default defineConfig({
 
 ## 重运行之间的缓存
 
-在 watch 模式下，Vitest 会将所有转换后的文件缓存到内存中，这使得重运行变得很快。然而，一旦测试运行结束，这个缓存就会被丢弃。通过启用 [`experimental.fsModuleCache`](/config/experimental#experimental-fsmodulecache)，Vitest 会将此缓存持久化到文件系统，以便在重运行之间复用。
+在监视模式下，Vitest 会将所有转换后的文件缓存到内存中，从而加快重运行速度。但是，测试运行完成后，此缓存会被丢弃。启用 [`fsModuleCache`](/config/fsmodulecache) 后，Vitest 会将此缓存持久化到文件系统，以便在重运行之间重复使用。
 
 这种改进最为明显的是当重运行依赖大型模块图的少量测试时。对于完整的测试套件，并行化已经减轻了成本，因为其他测试会在早期测试仍在运行时填充内存缓存。例如，运行一个具有巨大模块图（>900 个模块）的测试文件：
 
@@ -90,6 +90,18 @@ Duration  8.75s (transform 4.02s, setup 629ms, import 5.52s, tests 2.52s, enviro
 # 第二次运行
 Duration  5.90s (transform 842ms, setup 543ms, import 2.35s, tests 2.94s, environment 0ms, prepare 3ms)
 ```
+
+## Node 编译缓存
+
+Vitest 支持 Node 的[磁盘编译缓存](https://nodejs.org/api/cli.html#node_compile_cachedir)：当 `NODE_COMPILE_CACHE` 环境变量指向某个目录时，Vitest 自身模块和外部化依赖的 V8 字节码会写入磁盘，并在后续运行中重复使用，而不是重新编译。Vitest 会将该变量传递给每个工作线程，并且工作线程会在关闭时持久化它们所编译的模块。
+
+```shell
+NODE_COMPILE_CACHE=node_modules/.cache/node-compile-cache vitest
+```
+
+首次使用空目录运行时，需要为序列化已编译模块付出开销，因此只有在该目录能在多次运行之间保留时，启用此功能才值得：例如本地运行，或会缓存该目录的 CI 流水线。`NODE_DISABLE_COMPILE_CACHE=1` 会完全禁用缓存，其优先级高于 `NODE_COMPILE_CACHE`。
+
+请注意，启用 `v8` 覆盖率提供程序时，Vitest 会自动在工作线程中禁用编译缓存——V8 序列化缓存脚本时不会包含精确覆盖率所依赖的源代码位置信息。
 
 ## 池
 

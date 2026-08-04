@@ -239,7 +239,7 @@ Vitest 现在有一个 `Matchers` 类型，你可以扩展它，以便在一个�
 
 例如，要拥有类型安全的 `toBeFoo` 匹配器，你可以编写如下内容：
 
-```ts twoslash
+```ts
 import { expect } from 'vitest'
 
 interface CustomMatchers<R = unknown> {
@@ -252,7 +252,6 @@ declare module 'vitest' {
 
 expect.extend({
   toBeFoo(actual, arg) {
-    //            ^?
     // ... 实现
     return {
       pass: true,

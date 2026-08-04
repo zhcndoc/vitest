@@ -198,7 +198,7 @@ function collect(filters?: string[]): Promise<TestRunResult>
 这使得此方法非常慢，除非你在收集测试之前禁用了隔离。
 :::
 
-## start
+## 启动
 
 ```ts
 function start(filters?: string[]): Promise<TestRunResult>
@@ -212,7 +212,7 @@ function start(filters?: string[]): Promise<TestRunResult>
 
 如果未设置 `config.mergeReports` 和 `config.standalone`，[`startVitest`](/guide/advanced/tests) 会自动调用此方法。
 
-## standalone <Version type="experimental">4.1.1</Version> {#standalone}
+## 独立模式 <Version type="experimental">4.1.1</Version> {#standalone}
 
 ```ts
 function standalone(): Promise<void>
@@ -287,11 +287,11 @@ function runTestFiles(
 ): Promise<TestRunResult>
 ```
 
-这会自动基于文件路径过滤器创建要运行的规范。
+This automatically creates the specs to run based on the file path filter.
 
-这与 [`start`](#start) 不同，因为它不会创建覆盖率提供者，不会触发 `onInit` 和 `onWatcherStart` 事件，也不会在没有可运行文件时抛出错误（在这种情况下，函数将返回空数组而不触发测试运行）。
+This differs from [`start`](#start) because it does not create a coverage provider, trigger the `onInit` and `onWatcherStart` events, or throw an error when there are no runnable files (in which case, the function returns an empty array without triggering a test run).
 
-此函数接受与 [`start`](#start) 和 CLI 相同的过滤器。
+This function accepts the same filters as [`start`](#start) and the CLI.
 
 ## updateSnapshot
 
@@ -601,7 +601,7 @@ function experimental_parseSpecifications(
 function experimental_clearCache(): Promise<void>
 ```
 
-删除所有 Vitest 缓存，包括 [`experimental.fsModuleCache`](/config/experimental#experimental-fsmodulecache)。
+删除所有 Vitest 缓存，包括 [`fsModuleCache`](/config/fsmodulecache)。
 
 ## experimental_getSourceModuleDiagnostic <Version type="experimental">4.0.15</Version> <Experimental /> {#getsourcemodulediagnostic}
 

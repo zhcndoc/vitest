@@ -1,109 +1,9 @@
 ---
-title: experimental | 配置
+title: 实验性 | 配置
 outline: deep
 ---
 
-# experimental
-
-## experimental.fsModuleCache <Version type="experimental">4.0.11</Version> {#experimental-fsmodulecache}
-
-::: tip 反馈
-请在 [GitHub 讨论](https://github.com/vitest-dev/vitest/discussions/9221) 中留下关于此功能的反馈。
-:::
-
-- **类型:** `boolean`
-- **默认值:** `false`
-
-启用此选项允许 Vitest 将缓存模块保留在文件系统上，使测试在重新运行之间运行得更快。
-
-你可以通过运行 [`vitest --clearCache`](/guide/cli#clearcache) 来删除旧缓存。
-
-::: warning 浏览器支持
-目前，此选项不影响 [浏览器模式](/guide/browser/)。
-:::
-
-你可以通过设置 `DEBUG=vitest:cache:fs` 环境变量来运行 vitest，以调试模块是否被缓存：
-
-```shell
-DEBUG=vitest:cache:fs vitest --experimental.fsModuleCache
-```
-
-### 已知问题
-
-Vitest 基于文件内容、其 ID、Vite 的环境配置和覆盖率状态创建持久文件哈希。Vitest 尝试使用尽可能多的配置信息，但它仍然不完整。目前，无法跟踪你的插件选项，因为没有标准接口。
-
-如果你的插件依赖于文件内容或公共配置之外的事物（如读取另一个文件或文件夹），缓存可能会过时。为解决这个问题，你可以定义一个 [缓存键生成器](/api/advanced/plugin#definecachekeygenerator) 来指定动态选项或为该模块选择退出缓存：
-
-```js [vitest.config.js]
-import { defineConfig } from 'vitest/config'
-
-export default defineConfig({
-  plugins: [
-    {
-      name: 'vitest-cache',
-      configureVitest({ experimental_defineCacheKeyGenerator }) {
-        experimental_defineCacheKeyGenerator(({ id, sourceCode }) => {
-          // 永不缓存此 id
-          if (id.includes('do-not-cache')) {
-            return false
-          }
-
-          // 根据动态变量的值缓存此文件
-          if (sourceCode.includes('myDynamicVar')) {
-            return process.env.DYNAMIC_VAR_VALUE
-          }
-        })
-      }
-    }
-  ],
-  test: {
-    experimental: {
-      fsModuleCache: true,
-    },
-  },
-})
-```
-
-如果你是插件作者，如果你的插件可以使用影响转换结果的不同选项进行注册，请考虑在你的插件中定义一个 [缓存键生成器](/api/advanced/plugin#definecachekeygenerator)。
-
-另一方面，如果你的插件不应影响缓存键，你可以通过将 `api.vitest.experimental.ignoreFsModuleCache` 设置为 `true` 来选择退出：
-
-```js [vitest.config.js]
-import { defineConfig } from 'vitest/config'
-
-export default defineConfig({
-  plugins: [
-    {
-      name: 'vitest-cache',
-      api: {
-        vitest: {
-          experimental: {
-            ignoreFsModuleCache: true,
-          },
-        },
-      },
-    },
-  ],
-  test: {
-    experimental: {
-      fsModuleCache: true,
-    },
-  },
-})
-```
-
-注意，即使插件选择退出模块缓存，你仍然可以定义缓存键生成器。
-
-## experimental.fsModuleCachePath <Version type="experimental">4.0.11</Version> {#experimental-fsmodulecachepath}
-
-- **类型:** `string`
-- **默认值:** `'node_modules/.experimental-vitest-cache'`
-
-文件系统缓存所在的目录。
-
-默认情况下，Vitest 将尝试找到工作区根目录并将缓存存储在 `node_modules` 文件夹内。根目录基于你的包管理器的锁文件（例如，`.package-lock.json`、`.yarn-state.yml`、`.pnpm/lock.yaml` 等）。
-
-目前，Vitest 完全忽略 [test.cache.dir](/config/cache) 或 [cacheDir](https://vite.dev/config/shared-options#cachedir) 选项，并创建一个单独的文件夹。
+# 实验性
 
 ## experimental.openTelemetry <Version type="experimental">4.0.11</Version> {#experimental-opentelemetry}
 
@@ -221,8 +121,8 @@ interface ImportDurationsOptions {
 
 `print` 选项控制 CLI 终端输出。`limit` 选项控制收集和显示多少个导入。[Vitest UI](/guide/ui#import-breakdown) 始终可以切换细分显示，无论 `print` 设置如何。
 
-- Self：导入模块所花费的时间，不包括静态导入；
-- Total：导入模块所花费的时间，包括静态导入。注意，这不包括当前模块的 `transform` 时间。
+- 自身：导入模块所花费的时间，不包括静态导入；
+- 总计：导入模块所花费的时间，包括静态导入。注意，这不包括当前模块的 `transform` 时间。
 
 <img alt="终端中导入细分的示例" src="/reporter-import-breakdown.png" img-dark />
 <img alt="终端中导入细分的示例" src="/reporter-import-breakdown-light.png" img-light />
@@ -330,11 +230,11 @@ Vitest 只会在测试文件内部检测 `vi.mock` 和 `vi.hoisted`，它们不�
 
 由于 `viteModuleRunner` 的性质，某些功能将无法工作，包括：
 
-- no `import.meta.env`: `import.meta.env` is a Vite feature, use `process.env` instead
-- no `plugins`: plugins are not applied because there is no transformation phase, use [customization hooks](https://nodejs.org/api/module.html#customization-hooks) via [`execArgv`](/config/execargv) instead
-- no `alias`: aliases are not applied because there is no transformation phase
-- `istanbul` coverage provider doesn't work because there is no transformation phase, use `v8` instead
-- `vi.resetModules()`: there is no API to invalidate ES modules from the module cache
+- 不支持 `import.meta.env`：`import.meta.env` 是 Vite 的功能，请改用 `process.env`
+- 不支持 `plugins`：由于没有转换阶段，插件不会被应用，请改用通过 [`execArgv`](/config/execargv) 使用的[自定义钩子](https://nodejs.org/api/module.html#customization-hooks)
+- 不支持 `alias`：由于没有转换阶段，别名不会被应用
+- `istanbul` 覆盖率提供者无法工作，因为没有转换阶段，请改用 `v8`
+- `vi.resetModules()`：没有 API 可以使模块缓存中的 ES 模块失效
 
 ::: warning 覆盖率支持
 目前 Vitest 支持通过 `v8` 提供者进行覆盖率统计，只要文件可以转换为 JavaScript。为了转换 TypeScript，Vitest 使用 [`module.stripTypeScriptTypes`](https://nodejs.org/api/module.html#modulestriptypescripttypescode-options)，它在 Node.js v22.13 以来可用。如果你使用自定义 [模块加载器](https://nodejs.org/api/module.html#customization-hooks)，Vitest 无法重用它来转换文件进行分析。
@@ -486,7 +386,7 @@ export default {
 - **类型：** `boolean`
 - **默认值：** `false`
 
-在运行之前解析测试规范。这会在不执行文件的情况下，跨所有文件应用 [`.only`](/api/test#test-only) 修饰符、[`-t`](/config/testnamepattern) 测试名称模式、[`--tags-filter`](/guide/test-tags#syntax)、[test lines](/api/advanced/test-specification#testlines) 和 [test IDs](/api/advanced/test-specification#testids)。例如，如果只有一个测试标记了 `.only`，Vitest 将跳过所有文件中的其他所有测试。
+在运行之前解析测试规范。这会在不执行文件的情况下，跨所有文件应用 [`.only`](/api/test#test-only) 修饰符、[`-t`](/config/testnamepattern) 测试名称模式、[`--tags-filter`](/guide/test-tags#syntax)、[测试行](/api/advanced/test-specification#testlines) 和 [测试 ID](/api/advanced/test-specification#testids)。例如，如果只有一个测试标记了 `.only`，Vitest 将跳过所有文件中的其他所有测试。
 
 ::: tip
 当使用 [`.only`](/api/test#test-only)、[`-t`](/config/testnamepattern) 标志或 [`--tags-filter`](/guide/test-tags#syntax) 时，推荐使用此选项。

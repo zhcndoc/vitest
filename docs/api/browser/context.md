@@ -181,7 +181,7 @@ await frame.getByText('Hello World').click() // ✅
 await frame.click() // ❌ 不可用
 ```
 
-::: danger IMPORTANT
+::: danger 重要 <Version>3.2.0</Version>
 默认情况下，`frameLocator` 不支持在跨源 iframe 中使用 `expect.element()` 查询元素。像 `.click()` 这样的交互方法可以正常工作。这与 Playwright 的行为不同。
 
 ```ts
@@ -195,7 +195,7 @@ await expect.element(button).toBeVisible() // 查询元素无法工作 ❌
 如果你需要处理跨源 iframe，需要在 [`launchOptions`](/config/browser/playwright.html#launchoptions) 中传递 `args: ["--disable-web-security"]`。或者，你也可以创建一个自定义 [浏览器命令](/api/browser/commands.html#custom-commands)，在服务器端访问该 iframe，因为它在那里是可用的。
 :::
 
-::: danger IMPORTANT
+::: danger 重要 <Version>3.2.0</Version>
 目前，`frameLocator` 方法仅受 `playwright` 提供者支持。
 
 交互方法（如 `click` 或 `fill`）在 iframe 内的元素上始终可用，但带有 `expect.element` 的断言要求 iframe 具有 [同源策略](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy)。
@@ -212,7 +212,7 @@ function cdp(): CDPSession
 ::: warning
 CDP 会话仅适用于 `playwright` 提供者，并且仅在使用 `chromium` 浏览器时可用。你可以在 playwright 的 [`CDPSession`](https://playwright.dev/docs/api/class-cdpsession) 文档中了解更多。
 
-CDP 是一种特权调试 API。仅当通过 [`browser.api.allowWrite`](/config/browser/api#api-allowwrite)、[`browser.api.allowExec`](/config/browser/api#api-allowexec)、[`api.allowWrite`](/config/api#api-allowwrite) 和 [`api.allowExec`](/config/api#api-allowexec) 启用了浏览器 API 写入和执行操作时，它才可用。
+CDP 是一种具有特权的调试 API。只有通过 [`api.allowWrite`](/config/api#api-allowwrite) 启用浏览器 API 的写入操作，并通过 [`api.allowExec`](/config/api#api-allowexec) 启用执行操作时，该 API 才可用。
 :::
 
 ```ts

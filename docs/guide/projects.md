@@ -14,7 +14,7 @@ title: 测试项目 | 指南
 此功能也被称为 `workspace`。`workspace` 自 3.2 起已弃用，并被 `projects` 配置取代。它们在功能上是相同的。
 :::
 
-Vitest 提供了一种在单个 Vitest 进程中定义多个项目配置的方法。此功能对于 monorepo 设置特别有用，但也可用于使用不同配置运行测试，例如 `resolve.alias`、`plugins` 或 `test.browser` 等。
+Vitest 提供了一种在单个 Vitest 进程中定义多个项目配置的方法。此功能对于单仓库设置特别有用，但也可用于使用不同配置运行测试，例如 `resolve.alias`、`plugins` 或 `test.browser` 等。
 
 ## 定义项目
 
@@ -126,8 +126,8 @@ export default defineConfig({
       // 匹配 `packages` 文件夹内的每个文件夹和文件
       'packages/*',
       {
-        // 添加 "extends: true" 以继承根配置中的选项
-        extends: true,
+        // 内联项目默认继承
+        // 此配置文件中的选项
         test: {
           include: ['tests/**/*.{browser}.test.{ts,js}'],
           // 建议在使用内联配置时定义名称
@@ -136,6 +136,9 @@ export default defineConfig({
         }
       },
       {
+        // 添加 "extends: false" 以忽略
+        // 此配置文件中定义的选项
+        extends: false,
         test: {
           include: ['tests/**/*.{node}.test.{ts,js}'],
           // 名称标签的颜色可以更改
@@ -234,7 +237,67 @@ bun run test --project e2e --project unit
 
 ## 配置
 
-没有任何配置选项是从根级配置文件继承的。你可以创建一个共享配置文件并将其与项目配置自行合并：
+使用内联配置定义的项目会继承根级配置中的所有选项。这由 `extends` 选项控制，自 Vitest 5.0 起默认启用：
+
+```ts [vitest.config.ts]
+import { defineConfig } from 'vitest/config'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    pool: 'threads',
+    projects: [
+      {
+        // 继承此配置中的选项，例如插件和 pool
+        //（`extends: true` 是默认值）
+        test: {
+          name: 'unit',
+          include: ['**/*.unit.test.ts'],
+        },
+      },
+      {
+        // 不会继承此配置中的任何选项
+        extends: false,
+        test: {
+          name: 'integration',
+          include: ['**/*.integration.test.ts'],
+        },
+      },
+    ],
+  },
+})
+```
+
+如果你希望从根配置之外的其他配置文件继承选项，`extends` 选项也接受另一个配置文件的路径：
+
+```ts [vitest.config.ts]
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    projects: [
+      {
+        extends: './vitest.shared.ts',
+        test: {
+          name: 'unit',
+          include: ['**/*.unit.test.ts'],
+        },
+      },
+    ],
+  },
+})
+```
+
+扩展配置中的所有选项都会与项目自身的选项合并。请注意，`setupFiles` 等数组会进行拼接，而不是被覆盖。有几个选项会被特殊处理：
+
+- `name` 和 `projects` 永远不会被继承。
+- `globalSetup` 不会从根配置中继承：根级别的 `globalSetup` 已经会在每次测试运行时执行一次，因此继承它会导致相同的文件在每个项目中再次执行。从非根配置文件扩展时，仍然会继承该选项。
+- 项目自身的 `tags` 会替换继承的数组，而不是与其合并。
+
+如果你通过[高级 API](/guide/advanced/)运行 Vitest，请参阅[项目配置解析](/guide/advanced/#project-configuration-resolution)，了解程序化配置如何参与继承。
+
+以配置文件或目录形式引用的项目不会从根配置中继承任何选项。你可以创建一个共享配置文件，然后自行将其与项目配置合并：
 
 ```ts [packages/a/vitest.config.ts]
 import { defineProject, mergeConfig } from 'vitest/config'
@@ -250,32 +313,49 @@ export default mergeConfig(
 )
 ```
 
-此外，你可以使用 `extends` 选项从根级配置继承。所有选项都将合并。
+::: danger 不支持的选项
+某些配置选项不允许在项目配置中使用。其中最重要的包括：
+
+- `coverage`：覆盖率在整个进程中计算
+- `reporters`：仅支持根级报告器
+- `resolveSnapshotPath`：仅支持根级解析器
+- `attachmentsDir`：附件存储在一个由所有项目共享的根级目录中
+- 所有其他不会影响测试运行器的选项
+
+所有在项目配置中不受支持的配置选项都在其名称旁边标记有 <CRoot /> 图标。它们只能在根配置文件中定义一次。
+:::
+
+## 嵌套项目
+
+作为配置文件（或包含配置文件的目录）引用的项目本身可以声明 `projects`。这样的配置表现得就像根配置一样：它自身不会运行任何测试，只提供实际运行测试的项目。这样就可以引用一个已经定义了自身项目的工作区：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
-import react from '@vitejs/plugin-react'
 
 export default defineConfig({
-  plugins: [react()],
   test: {
-    pool: 'threads',
+    projects: ['./packages/app/vitest.config.ts'],
+  },
+})
+```
+
+```ts [packages/app/vitest.config.ts]
+import { defineProject } from 'vitest/config'
+
+export default defineProject({
+  test: {
+    name: 'app',
     projects: [
       {
-        // 将从此配置继承选项，如 plugins 和 pool
-        extends: true,
         test: {
           name: 'unit',
           include: ['**/*.unit.test.ts'],
         },
       },
       {
-        // 不会从此配置继承任何选项
-        // 这是默认行为
-        extends: false,
         test: {
-          name: 'integration',
-          include: ['**/*.integration.test.ts'],
+          name: 'e2e',
+          include: ['**/*.e2e.test.ts'],
         },
       },
     ],
@@ -283,14 +363,31 @@ export default defineConfig({
 })
 ```
 
-::: danger 不支持的选项
-某些配置选项不允许在项目配置中使用。最值得注意的是：
+嵌套项目的工作方式与根配置中定义的项目相同：内联配置会扩展声明它们的配置（此处是 `app` 配置，而不是根配置），`extends` 路径相对于该配置解析，并且它自身的 `globalSetup` 会被扩展项目继承，就像[任何其他非根配置](#configuration)一样。
 
-- `coverage`: 覆盖率在整个进程中计算
-- `reporters`: 仅支持根级报告器
-- `resolveSnapshotPath`: 仅支持根级解析器
-- `attachmentsDir`: 附件存储在一个由所有项目共享的根级目录中
-- all other options that don't affect test runners
+嵌套项目的名称会添加声明它们的配置名称作为前缀，因此上面的示例会创建 `app (unit)` 和 `app (e2e)` 项目。`--project` 过滤器也会匹配此前缀：`--project app` 会运行 `app` 配置的所有项目，而 `--project "app (unit)"` 只会运行其中一个项目。
 
-所有在项目配置中不受支持的配置选项都在其名称旁边标记有 <CRoot /> 图标。它们只能在根配置文件中定义一次。
-:::
+如果还要运行声明 `projects` 的配置中的测试，请引用其自身的配置文件：
+
+```ts [packages/app/vitest.config.ts]
+import { defineProject } from 'vitest/config'
+
+export default defineProject({
+  test: {
+    name: 'app',
+    include: ['**/*.test.ts'],
+    projects: [
+      // "app" 项目会运行其自身的 "include"，以及 "app (unit)"
+      './vitest.config.ts',
+      {
+        test: {
+          name: 'unit',
+          include: ['**/*.unit.test.ts'],
+        },
+      },
+    ],
+  },
+})
+```
+
+请注意，只有配置文件可以定义嵌套项目。内联配置中的 `projects` 选项不受支持。

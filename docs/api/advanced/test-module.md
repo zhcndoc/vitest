@@ -26,7 +26,7 @@ if (task.type === 'module') {
 
 ## relativeModuleId
 
-相对于项目的模块 id。这与已弃用 API 中的 `task.name` 相同。
+相对于项目的模块 ID。这与已弃用 API 中的 `task.name` 相同。
 
 ```ts
 'project/example.test.ts' // ✅
@@ -50,7 +50,7 @@ function state(): TestModuleState
 
 工作方式与 [`testSuite.state()`](/api/advanced/test-suite#state) 相同，但如果模块尚未执行，也可以返回 `queued`。
 
-## meta <Version>3.1.0</Version> {#meta}
+## 元数据 <Version>3.1.0</Version> {#meta}
 
 ```ts
 function meta(): TaskMeta
@@ -61,11 +61,11 @@ function meta(): TaskMeta
 ```ts {5,10}
 import { test } from 'vitest'
 
-describe('the validation works correctly', (task) => {
+describe('验证工作正常', (task) => {
   // 在收集期间分配 "decorated"
   task.file.meta.decorated = false
 
-  test('some test', ({ task }) => {
+  test('某个测试', ({ task }) => {
     // 在测试运行期间分配 "decorated"，它将可用
     // 仅在 onTestCaseReady 钩子中
     task.file.meta.decorated = false
@@ -118,21 +118,21 @@ interface ModuleDiagnostic {
    */
   readonly importDurations: Record<string, ImportDuration>
   /**
-   * The id of the worker that ran this file. This value cannot be higher than `maxWorkers`.
-   * If file did not run yet, this will be 0.
+   * 运行此文件的工作线程的 ID。此值不能高于 `maxWorkers`。
+   * 如果文件尚未运行，则此值为 0。
    *
-   * **Warning**: Node.js tests and browser tests run in different pools and do not share `concurrencyId`.
-   * It is possible to have multiple modules with the same `concurrencyId` because of that.
-   * Use `project.isBrowserEnabled()` to distinguish the concurrency.
+   * **警告**：Node.js 测试和浏览器测试在不同的池中运行，并且不共享 `concurrencyId`。
+   * 因此，可能会有多个模块具有相同的 `concurrencyId`。
+   * 使用 `project.isBrowserEnabled()` 来区分并发环境。
    */
   readonly concurrencyId: number
   /**
-   * Incremental number of the worker that ran this file. This number increases with each worker.
-   * If file did not run yet, this will be 0.
+   * 运行此文件的工作线程的递增编号。此编号会随每个工作线程递增。
+   * 如果文件尚未运行，则此值为 0。
    *
-   * **Warning**: Node.js tests and browser tests run in different pools and do not share `workerId`.
-   * It is possible to have multiple modules with the same `workerId` because of that.
-   * Use `project.isBrowserEnabled()` to distinguish the concurrency.
+   * **警告**：Node.js 测试和浏览器测试在不同的池中运行，并且不共享 `workerId`。
+   * 因此，可能会有多个模块具有相同的 `workerId`。
+   * 使用 `project.isBrowserEnabled()` 来区分并发环境。
    */
   readonly workerId: number
 }
@@ -147,13 +147,13 @@ interface ImportDuration {
 }
 ```
 
-## logs <Version>5.0.0</Version> {#logs}
+## 日志 <Version>5.0.0</Version> {#logs}
 
 ```ts
 function logs(): ReadonlyArray<UserConsoleLog>
 ```
 
-在测试收集期间记录在模块顶层的 Console 日志。例如：
+测试收集期间在模块顶层记录的控制台日志。例如：
 
 ```ts
 console.log('included') // [!code highlight]

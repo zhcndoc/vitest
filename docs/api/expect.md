@@ -9,8 +9,11 @@ type Awaitable<T> = T | PromiseLike<T>
 `expect` 用于创建断言。在此上下文中，`assertions` 是可以被调用来断言语句的函数。Vitest 默认提供 `chai` 断言，同时也提供基于 `chai` 构建的 `Jest` 兼容断言。自 Vitest 4.1 起，对于 spy/mock 测试，Vitest 还提供 Chai 风格的断言（例如，[`expect(spy).to.have.been.called()`](#called)）以及 Jest 风格的断言（例如，`expect(spy).toHaveBeenCalled()`）。与 `Jest` 不同，Vitest 支持将消息作为第二个参数 - 如果断言失败，错误消息将等于该参数。
 
 ```ts
-export interface ExpectStatic extends Chai.ExpectStatic, AsymmetricMatchersContaining {
-  <T>(actual: T, message?: string): Assertion<T>
+export interface ExpectStatic
+  extends Chai.ExpectStatic,
+  Matchers<any>,
+  AsymmetricMatchersContaining {
+  <T>(actual: T, message?: string): Assertion<void, T>
   extend: (expects: MatchersObject) => void
   anything: () => any
   any: (constructor: unknown) => any
@@ -373,7 +376,7 @@ function getApplesCount() {
   return i > 1 ? Number.NaN : i
 }
 
-test('getApplesCount has some unusual side effects...', () => {
+test('getApplesCount 有一些不寻常的副作用...', () => {
   expect(getApplesCount()).not.toBeNaN()
   expect(getApplesCount()).toBeNaN()
 })
@@ -383,10 +386,10 @@ test('getApplesCount has some unusual side effects...', () => {
 
 - **类型：** `(sample: Array<any> | Set<any>) => any`
 
-`toBeOneOf` 断言一个值是否匹配提供的数组或集合中的任何值。
+`toBeOneOf` 断言一个值是否匹配所提供的数组或集合中的任意值。
 
 ::: warning 实验性
-提供 `Set` 是一个实验性功能，可能会在未来的版本中更改。
+提供 `Set` 是一项实验性功能，未来版本中可能会发生变化。
 :::
 
 ```ts
@@ -397,7 +400,7 @@ test('fruit is one of the allowed values', () => {
 })
 ```
 
-非对称匹配器在测试可选属性（可能是 `null` 或 `undefined`）时特别有用：
+非对称匹配器在测试可选属性（可能为 `null` 或 `undefined`）时特别有用：
 
 ```ts
 test('optional properties can be null or undefined', () => {
@@ -416,7 +419,7 @@ test('optional properties can be null or undefined', () => {
 ```
 
 :::tip
-你可以在此匹配器中使用 `expect.not` 以确保值不匹配任何提供的选项。
+你可以在此匹配器中使用 `expect.not`，以确保值不匹配所提供的任何选项。
 :::
 
 ## toBeTypeOf
@@ -914,7 +917,7 @@ test('rejects', async () => {
 
 这确保值与最近的快照匹配。
 
-你可以提供一个可选的 `hint` 字符串参数，它会附加到测试名称后面。虽然 Vitest 总是在快照名称末尾附加一个数字，但简短的描述性提示可能比数字更有用，以便在单个 it 或 test 块中区分多个快照。Vitest 在相应的 `.snap` 文件中按名称对快照进行排序。
+你可以提供一个可选的 `hint` 字符串参数，它会附加到测试名称后面。虽然 Vitest 总是在快照名称末尾附加一个数字，但简短的描述性提示可能比数字更有用，以便在单个 `it` 或 `test` 块中区分多个快照。Vitest 在相应的 `.snap` 文件中按名称对快照进行排序。
 
 :::tip
   当快照不匹配导致测试失败时，如果预期不匹配，你可以按 `u` 键更新快照一次。或者你可以传递 `-u` 或 `--update` CLI 选项让 Vitest 始终更新测试。
@@ -1023,9 +1026,9 @@ import { expect, test } from 'vitest'
 
 test('navigation accessibility', () => {
   document.body.innerHTML = `
-    <nav aria-label="Actions">
-      <button>Save</button>
-      <button>Cancel</button>
+    <nav aria-label="操作">
+      <button>保存</button>
+      <button>取消</button>
     </nav>
   `
   expect(document.querySelector('nav')).toMatchAriaSnapshot()
@@ -1115,7 +1118,7 @@ const market = {
   },
 }
 
-test('spy function', () => {
+test('间谍函数', () => {
   const buySpy = vi.spyOn(market, 'buy')
 
   market.buy('apples', 10)
@@ -1218,7 +1221,7 @@ test('spy function', () => {
 
 - **类型:** `(time: number, ...args: any[]) => Awaitable<void>`
 
-此断言检查一个函数在第几次调用时是否带有特定参数。计数从 1 开始。因此，要检查第二次条目，你应该写 `.toHaveBeenNthCalledWith(2, ...)`。
+此断言检查一个函数在第几次调用时是否带有特定参数。计数从 1 开始。因此，要检查第二次调用，你应该写 `.toHaveBeenNthCalledWith(2, ...)`。
 
 需要向 `expect` 传递一个 spy 函数。
 
@@ -1485,7 +1488,7 @@ test('all behaviors were consumed', () => {
 如果一个 `When` 链没有注册任何行为，则永远不会被视为已耗尽。只有在至少注册了一个带有关联操作（`then*`）的 `calledWith`，并且每个注册的行为都已被完全消耗时，`toHaveBeenExhausted` 才会通过。
 :::
 
-## called <Version>4.1.0</Version> {#called}
+## 已调用 <Version>4.1.0</Version> {#called}
 
 - **类型:** `Assertion`（属性，而非方法）
 
@@ -1579,7 +1582,7 @@ test('spy called once', () => {
 ```ts
 import { expect, test, vi } from 'vitest'
 
-test('spy called once with arguments', () => {
+test('使用参数调用一次 spy', () => {
   const spy = vi.fn()
 
   spy('apple', 10)
@@ -1611,7 +1614,7 @@ test('spy called twice', () => {
 })
 ```
 
-## calledThrice <Version>4.1.0</Version> {#calledthrice}
+## calledThrice <Version>版本 4.1.0</Version> {#calledthrice}
 
 - **类型:** `Assertion`（属性，而非方法）
 
@@ -1637,9 +1640,9 @@ test('spy called thrice', () => {
 
 ## lastCalledWith
 
-- **类型:** `(...args: any[]) => void`
+- **Type:** `(...args: any[]) => void`
 
-检查对 spy 的最后一次调用是否使用特定参数的 Chai 风格断言。这等同于 `toHaveBeenLastCalledWith(...args)`。
+A Chai-style assertion that checks whether the last call to the spy used specific arguments. This is equivalent to `toHaveBeenLastCalledWith(...args)`.
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -2241,12 +2244,11 @@ import { expect, test } from 'vitest'
 
 test('自定义匹配器', () => {
   expect.extend({
-    toBeFoo: (received, expected) => {
-      if (received !== 'foo') {
-        return {
-          message: () => `expected ${received} to be foo`,
-          pass: false,
-        }
+    toBeFoo(received) {
+      const { isNot } = this
+      return {
+        message: () => `expected ${received} is${isNot ? ' not' : ''} foo`,
+        pass: received === 'foo',
       }
     },
   })
@@ -2262,18 +2264,19 @@ test('自定义匹配器', () => {
 
 此函数与 Jest 的 `expect.extend` 兼容，因此任何使用它创建自定义匹配器的库都将与 Vitest 一起工作。
 
-如果你使用的是 TypeScript，自 Vitest 0.31.0 起，你可以在环境声明文件（例如：`vitest.d.ts`）中使用以下代码扩展默认 `Assertion` 接口：
+如果你使用 TypeScript，可以在环境声明文件（例如：`vitest.d.ts`）中使用以下代码扩展默认的 `Matchers` 接口：
 
 ```ts
-interface CustomMatchers<R = unknown> {
-  toBeFoo: () => R
-}
+import 'vitest'
 
 declare module 'vitest' {
-  interface Assertion<T = any> extends CustomMatchers<T> {}
-  interface AsymmetricMatchersContaining extends CustomMatchers {}
+  interface Matchers<R, T> {
+    toBeFoo: () => R
+  }
 }
 ```
+
+`R` 是断言返回类型，`T` 是所接收值的类型。
 
 ::: warning
 别忘了将环境声明文件包含在你的 `tsconfig.json` 中。

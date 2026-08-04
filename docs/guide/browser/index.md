@@ -118,7 +118,7 @@ export default defineConfig({
 ```
 
 ::: info
-Vitest 会分配端口 `63315` 以避免与开发服务器冲突，从而允许你并行运行两者。你可以通过 [`browser.api`](/config/browser/api) 选项更改这一点。
+Vitest 分配端口 `63315` 以避免与开发服务器发生冲突，从而允许你同时运行两者。你可以通过 [`api`](/config/api) 选项更改该端口。
 :::
 
 如果你之前没有使用过 Vite，请确保已安装并在配置中指定了你的框架插件。某些框架可能需要额外配置才能工作 - 请查看它们的 Vite 相关文档以确保无误。
@@ -330,7 +330,7 @@ npx vitest --browser.headless
 
 对于另一种调试模型——它会为每个测试捕获 DOM 快照，而不是显示实时 iframe——请参阅 [Trace View](/guide/browser/trace-view)。
 
-## Headless
+## 无头模式
 
 无头模式是浏览器模式中的另一个可用选项。在无头模式下，浏览器在没有用户界面的情况下在后台运行，这使得它对于运行自动化测试非常有用。Vitest 中的 headless 选项可以设置为布尔值以启用或禁用无头模式。
 
@@ -588,7 +588,7 @@ test('renders a message', async () => {
 
 ### 线程阻塞对话框
 
-使用 Vitest 浏览器模式时，重要的是要注意像 `alert` 或 `confirm` 这样的线程阻塞对话框不能原生使用。这是因为它们会阻塞网页，这意味着 Vitest 无法继续与页面通信，导致执行挂起。
+使用 Vitest Browser 时，需要注意的是，像 `alert`、`confirm` 或 `print` 这样的线程阻塞对话框无法原生使用。这是因为它们会阻塞网页，导致 Vitest 无法继续与网页通信，从而使执行挂起。
 
 在这种情况下，Vitest 为这些 API 提供了带有默认返回值的默认模拟。这确保了即使用户不小心使用了同步弹出网页 API，执行也不会挂起。然而，仍然建议用户模拟这些网页 API 以获得更好的体验。请在 [模拟](/guide/mocking) 阅读更多内容。
 
