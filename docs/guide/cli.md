@@ -3,7 +3,7 @@ title: 命令行界面 | 指南
 outline: deep
 ---
 
-# 命令行界面
+# 命令行界面。
 
 ## 命令
 
@@ -123,6 +123,50 @@ tests/test2.test.ts
 
 自 Vitest 4.1 起，你可以传递 `--static-parse` 来 [解析测试文件](/api/advanced/vitest#parsespecifications) 而不是运行它们来收集测试。Vitest 以有限的并发度解析测试文件，默认为 `os.availableParallelism()`。你可以通过 `--static-parse-concurrency` 选项更改它。
 
+### `vitest doctor`
+
+`vitest doctor` 会通过在每种候选配置下运行测试套件，测量在替代配置下测试套件的运行速度可以提升多少。候选配置根据当前配置选定：
+
+```bash
+vitest doctor
+```
+
+```
+结果（每种配置取 3 次运行中的最短时间）
+
+  基准（pool: forks · isolate: true）     4.08s
+  pool: 'threads'                         3.64s (-11%)
+  pool: 'vmThreads'                       1.33s (-67%)
+  isolate: false                          1.28s (-69%)
+
+建议：pool: 'vmThreads' (-67%)
+
+  // vitest.config.ts
+  import { defineConfig } from 'vitest/config'
+
+  export default defineConfig({
+    test: {
+      pool: 'vmThreads', // 在此套件中测得快 67%
+    },
+  })
+```
+
+`isolate: false` 候选配置还会通过以随机文件顺序运行两次测试套件进行额外验证：如果任何测试依赖隔离，该候选配置会被报告为失败，而不会被推荐。当多个候选配置与最快配置相差不大时，doctor 会优先选择能够保留文件级隔离的配置。
+
+Doctor 还会在获胜配置的基础上测试较低的 [`maxWorkers`](/config/maxworkers) 值：每个 worker 都会将其转换请求通过同一个主线程 Vite 服务器处理，因此超过某个数量后，增加 worker 会使运行变慢而不是变快。Doctor 从当前 worker 数量的一半开始，只要测试套件至少快 5%，就会继续将数量减半，并在建议中包含获胜的值。
+
+运行 DOM 环境的测试套件会在两个 vm pool（`vmThreads` 和 `vmForks`）下进行测量：它们通过让每个 worker 保留一个环境来摊销环境创建成本，同时每个文件仍会获得一个全新的 VM 上下文。`vmForks` 使用子进程而不是 worker 线程：每个子进程都有自己的堆和垃圾回收器，因此根据测试套件的不同，任一 pool 都可能更快；对于无法在 worker 线程中运行的测试套件，应使用 `vmForks` 这一 vm 选项。
+
+如果安装了 `jsdom`，运行 `jsdom` 的项目也会在 `environment: 'happy-dom'` 下进行测量。该替换会针对每个项目单独应用；使用其他环境的项目会保留原环境。happy-dom 与 jsdom 采用不同的 DOM 实现，因此在采用此替换方案前，应验证依赖布局或导航功能的测试。当 [fs 模块缓存](/config/fsmodulecache) 关闭时，doctor 会在一次不计时的预热运行（用于填充缓存）之后测量 `fsModuleCache: true`，因此报告的时间就是重复运行时实际付出的时间。
+
+每次测量都会运行完整的测试套件，包括浏览器项目：`isolate: false` 也会影响浏览器模式。无法影响浏览器项目的候选配置（`pool`、`environment`、fs 模块缓存）会根据仅运行 Node 端项目的结果选定。
+
+失败的候选配置会附带其错误信息摘录。如果测试套件在当前配置下失败，doctor 会中止并显示错误：它需要一个通过测试的基准配置才能进行比较。
+
+较短的测试套件会被多次测量，并报告其中的最佳时间，因此比较结果能够反映预热后的稳定状态。Doctor 会多次运行完整的测试套件，因此所需时间是普通运行时间的数倍。有关每个候选配置背后权衡的详细信息，请参阅[改进性能](/guide/improving-performance)。
+
+即使没有候选配置可供比较，doctor 也会测量并报告基准配置。在 `vm` pool 上的配置还会与 `pool: 'threads'` 和 `isolate: false` 进行额外比较，该配置同样会复用 worker，但会在文件之间共享模块状态；已经使用其中一个 vm pool 的配置仍会在另一个 vm pool 下进行测量。
+
 ## Shell 自动补全
 
 Vitest 为命令、选项和选项值提供 Shell 自动补全，由 [`@bomb.sh/tab`](https://github.com/bombshell-dev/tab) 提供支持。
@@ -138,7 +182,7 @@ source <(vitest complete zsh)
 
 ### 包管理器集成
 
-`@bomb.sh/tab` 与 [包管理器](https://github.com/bombshell-dev/tab?tab=readme-ov-file#package-manager-completions) 集成。直接运行 vitest 时自动补全生效：
+`@bomb.sh/tab` 与[包管理器](https://github.com/bombshell-dev/tab?tab=readme-ov-file#package-manager-completions)集成。直接运行 vitest 时自动补全生效：
 
 ::: code-group
 
@@ -164,7 +208,7 @@ bun vitest <Tab>
 
 :::
 
-对于包管理器自动补全，你应该单独安装 [tab 的包管理器补全](https://github.com/bombshell-dev/tab?tab=readme-ov-file#package-manager-completions)。
+对于包管理器自动补全，你应该单独安装 [Tab 的包管理器补全](https://github.com/bombshell-dev/tab?tab=readme-ov-file#package-manager-completions)。
 
 ## 选项
 
@@ -192,7 +236,7 @@ vitest --api=false
 ### shard
 
 - **类型:** `string`
-- **默认值:** disabled
+- **默认值:** 已禁用
 
 要执行的测试套件分片，格式为 `<index>`/`<count>`，其中
 

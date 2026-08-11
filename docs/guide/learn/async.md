@@ -46,7 +46,7 @@ test('拒绝并抛出错误', async () => {
 ```
 
 ::: warning
-不要忘记在 `expect` 前加上 `await`。Vitest 会检测到未被等待的断言并在测试结束时打印警告，但最好总是明确地包含 `await`。Vitest 也会在开始下一个测试前等待 `Promise.all` 中的所有挂起 Promise，但依赖这种行为会让测试更难理解。
+不要忘记在 `expect` 前加上 `await`。Vitest 会检测未等待的断言，并在测试结束时使测试失败。
 :::
 
 ## 断言计数

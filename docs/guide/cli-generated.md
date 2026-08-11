@@ -1,7 +1,7 @@
 ### 根路径
 
 - **CLI:** `-r, --root <path>`
-- **Config:** [root](/config/root)
+- **Config:** [根路径](/config/root)
 
 根路径
 
@@ -21,36 +21,36 @@
 ### 监听
 
 - **CLI:** `-w, --watch`
-- **Config:** [watch](/config/watch)
+- **Config:** [监听](/config/watch)
 
 启用监听模式。
 
 ### 测试名称模式
 
 - **CLI:** `-t, --testNamePattern <pattern>`
-- **Config:** [testNamePattern](/config/testnamepattern)
+- **配置：** [testNamePattern](/config/testnamepattern)
 
 运行完整名称匹配指定正则表达式模式的测试
 
 ### 目录
 
 - **CLI:** `--dir <path>`
-- **Config:** [dir](/config/dir)
+- **Config:** [目录](/config/dir)
 
 扫描测试文件的基础目录
 
-### UI
+### 用户界面
 
-- **CLI:** `--ui`
+- **命令行界面：** `--ui`
 
-启用 UI
+启用用户界面
 
 ### 打开
 
-- **CLI:** `--open`
-- **Config:** [打开](/config/open)
+- **CLI：** `--open`
+- **配置：** [打开](/config/open)
 
-自动打开 UI（默认：`!process.env.CI`）
+自动打开 UI（默认：`!process.env.CI`）。
 
 ### api.port
 
@@ -72,8 +72,8 @@
 
 ### api.allowExec
 
-- **CLI:** `--api.allowExec`
-- **Config:** [api.allowExec](/config/api#api-allowexec)
+- **命令行：** `--api.allowExec`
+- **配置：** [api.allowExec](/config/api#api-allowexec)
 
 允许 API 执行代码。（在不受信任的环境中启用此选项时请谨慎。）
 
@@ -102,7 +102,7 @@
 - **CLI:** `--reporter <name>`
 - **Config:** [报告器](/config/reporters)
 
-指定报告器（default、agent、minimal、blob、verbose、dot、json、tap、tap-flat、junit、tree、hanging-process、github-actions）
+指定报告器（default、agent、minimal、blob、verbose、dot、json、tap、tap-flat、junit、tree、hanging-process、github-actions）。
 
 ### 输出文件
 
@@ -116,12 +116,12 @@
 - **命令行：** `--coverage.provider <name>`
 - **配置：** [coverage.provider](/config/coverage#coverage-provider)
 
-选择用于收集覆盖率的工具，可用值为："v8"、"istanbul" 和 "custom"
+选择用于收集覆盖率的工具，可用值为："v8"、"istanbul" 和 "custom"。
 
 ### coverage.enabled
 
-- **CLI:** `--coverage.enabled`
-- **Config:** [coverage.enabled](/config/coverage#coverage-enabled)
+- **CLI：** `--coverage.enabled`
+- **配置：** [coverage.enabled](/config/coverage#coverage-enabled)
 
 启用覆盖率收集。可通过 `--coverage` CLI 选项覆盖（默认：`false`）
 
@@ -162,15 +162,15 @@
 
 ### coverage.reporter
 
-- **CLI:** `--coverage.reporter <name>`
-- **Config:** [coverage.reporter](/config/coverage#coverage-reporter)
+- **命令行：** `--coverage.reporter <name>`
+- **配置：** [coverage.reporter](/config/coverage#coverage-reporter)
 
 要使用的覆盖率报告器。更多信息请访问 [`coverage.reporter`](/config/coverage#coverage-reporter)（默认：`["text", "html", "clover", "json"]`）
 
 ### coverage.reportOnFailure
 
-- **CLI:** `--coverage.reportOnFailure`
-- **Config:** [coverage.reportOnFailure](/config/coverage#coverage-reportonfailure)
+- **CLI：** `--coverage.reportOnFailure`
+- **配置：** [coverage.reportOnFailure](/config/coverage#coverage-reportonfailure)
 
 即使测试失败也生成覆盖率报告（默认：`false`）
 
@@ -179,7 +179,7 @@
 - **命令行界面：** `--coverage.allowExternal`
 - **配置：** [coverage.allowExternal](/config/coverage#coverage-allowexternal)
 
-收集项目根目录之外文件的覆盖率（默认：`false`）
+收集项目根目录之外文件的覆盖率（默认：`false`）。
 
 ### coverage.skipFull
 
@@ -197,17 +197,17 @@
 
 ### coverage.thresholds.perFile
 
-- **CLI:** `--coverage.thresholds.perFile <boolean>`
-- **Config:** [coverage.thresholds.perFile](/config/coverage#coverage-thresholds-perfile)
+- **命令行：** `--coverage.thresholds.perFile <boolean>`
+- **配置：** [coverage.thresholds.perFile](/config/coverage#coverage-thresholds-perfile)
 
 按文件检查阈值。实际阈值请参见 `--coverage.thresholds.lines`、`--coverage.thresholds.functions`、`--coverage.thresholds.branches` 和 `--coverage.thresholds.statements`（默认：`false`）。对象形式仅在配置文件中可用。
 
 ### coverage.thresholds.autoUpdate
 
-- **CLI:** `--coverage.thresholds.autoUpdate <boolean|function>`
-- **Config:** [coverage.thresholds.autoUpdate](/config/coverage#coverage-thresholds-autoupdate)
+- **命令行界面：** `--coverage.thresholds.autoUpdate <boolean|function>`
+- **配置：** [coverage.thresholds.autoUpdate](/config/coverage#coverage-thresholds-autoupdate)
 
-当当前覆盖率高于配置的阈值时，将 "lines"、"functions"、"branches" 和 "statements" 的阈值更新到配置文件（默认：`false`）
+当当前覆盖率高于配置的阈值时，将 "lines"、"functions"、"branches" 和 "statements" 的阈值更新到配置文件（默认：`false`）。
 
 ### coverage.thresholds.lines
 
@@ -242,8 +242,8 @@
 
 ### coverage.processingConcurrency
 
-- **CLI:** `--coverage.processingConcurrency <number>`
-- **Config:** [coverage.processingConcurrency](/config/coverage#coverage-processingconcurrency)
+- **CLI：** `--coverage.processingConcurrency <number>`
+- **配置：** [coverage.processingConcurrency](/config/coverage#coverage-processingconcurrency)
 
 处理覆盖率结果时使用的并发限制。（默认值为 20 与 CPU 数量之间的较小值。）
 
@@ -280,8 +280,8 @@
 
 ### coverage.changed
 
-- **CLI:** `--coverage.changed <commit/branch>`
-- **Config:** [coverage.changed](/config/coverage#coverage-changed)
+- **命令行：** `--coverage.changed <提交/分支>`
+- **配置：** [coverage.changed](/config/coverage#coverage-changed)
 
 仅收集自指定提交或分支以来发生变更文件的覆盖率（例如 `origin/main` 或 `HEAD~1`）。默认继承 `--changed` 的值。
 
@@ -294,10 +294,10 @@
 
 ### coverage.htmlDir
 
-- **CLI:** `--coverage.htmlDir <path>`
-- **Config:** [coverage.htmlDir](/config/coverage#coverage-htmldir)
+- **CLI：** `--coverage.htmlDir <path>`
+- **配置：** [coverage.htmlDir](/config/coverage#coverage-htmldir)
 
-在 UI 模式和 HTML reporter 中提供的 HTML 覆盖率输出目录。
+在 UI 模式和 HTML 报告器中提供的 HTML 覆盖率输出目录。
 
 ### coverage.autoAttachSubprocess
 
@@ -311,7 +311,7 @@
 - **CLI:** `--mode <name>`
 - **配置：** [模式](/config/mode)
 
-覆盖 Vite 模式（默认：`test`）
+覆盖 Vite 模式（默认：`test`）。
 
 ### 隔离
 
@@ -331,7 +331,7 @@
 - **CLI：** `--injectCjsGlobals`
 - **配置：** [injectCjsGlobals](/config/injectcjsglobals)
 
-将 CommonJS 变量（`module`、`exports`、`require`、`__filename`、`__dirname`）注入每个测试模块。要禁用此功能，请使用 `--no-inject-cjs-globals`（默认值：`true`）
+将 CommonJS 变量（`module`、`exports`、`require`、`__filename`、`__dirname`）注入每个测试模块。要禁用此功能，请使用 `--no-inject-cjs-globals`（默认值：`true`）。
 
 ### dom
 
@@ -350,7 +350,7 @@
 
 - **CLI:** `--browser.name <name>`
 
-在指定浏览器中运行所有测试。某些浏览器仅对特定 provider 可用（请参见 `--browser.provider`）。
+在指定浏览器中运行所有测试。某些浏览器仅对特定提供程序可用（请参见 `--browser.provider`）。
 
 ### browser.headless
 
@@ -371,7 +371,7 @@
 - **CLI:** `--browser.detailsPanelPosition <position>`
 - **Config:** [browser.detailsPanelPosition](/config/browser/detailspanelposition)
 
-浏览器模式下详情面板的默认位置。可以是 `right`（水平分割）或 `bottom`（垂直分割）（默认：`right`）
+浏览器模式下详情面板的默认位置。可以是 `right`（水平分割）或 `bottom`（垂直分割）（默认：`right`）。
 
 ### browser.connectTimeout
 
@@ -396,10 +396,10 @@
 
 ### browser.trace
 
-- **CLI:** `--browser.trace <模式>`
+- **命令行界面：** `--browser.trace <模式>`
 - **配置：** [browser.trace](/config/browser/trace)
 
-启用 trace 视图模式。支持：“on”、“off”、“on-first-retry”、“on-all-retries”、“retain-on-failure”。
+启用追踪视图模式。支持：“on”、“off”、“on-first-retry”、“on-all-retries”、“retain-on-failure”。
 
 ### browser.traceView.enabled
 
@@ -438,8 +438,8 @@
 
 ### execArgv
 
-- **CLI:** `--execArgv <option>`
-- **Config:** [execArgv](/config/execargv)
+- **CLI：** `--execArgv <option>`
+- **配置：** [execArgv](/config/execargv)
 
 在启动 `worker_threads` 或 `child_process` 时向 `node` 进程传递额外参数。
 
@@ -450,10 +450,10 @@
 
 VM 池的内存限制。如果你看到内存泄漏，可以尝试调整此值。
 
-### fileParallelism
+### 文件并行性
 
-- **CLI:** `--fileParallelism`
-- **Config:** [fileParallelism](/config/fileparallelism)
+- **CLI：** `--fileParallelism`
+- **配置：** [文件并行性](/config/fileparallelism)
 
 是否应并行运行所有测试文件。使用 `--no-file-parallelism` 可禁用（默认：`true`）
 
@@ -494,8 +494,8 @@ VM 池的内存限制。如果你看到内存泄漏，可以尝试调整此值�
 
 ### 允许 only
 
-- **CLI:** `--allowOnly`
-- **Config:** [allowOnly](/config/allowonly)
+- **命令行界面：** `--allowOnly`
+- **配置：** [allowOnly](/config/allowonly)
 
 允许标记为 only 的测试和测试套件（默认：`!process.env.CI`）
 
@@ -515,15 +515,15 @@ VM 池的内存限制。如果你看到内存泄漏，可以尝试调整此值�
 
 ### sequence.shuffle.files
 
-- **CLI:** `--sequence.shuffle.files`
-- **Config:** [sequence.shuffle.files](/config/sequence#sequence-shuffle-files)
+- **命令行：** `--sequence.shuffle.files`
+- **配置：** [sequence.shuffle.files](/config/sequence#sequence-shuffle-files)
 
 按随机顺序运行文件。启用此选项后，长时间运行的测试不会更早开始。（默认：`false`）
 
 ### sequence.shuffle.tests
 
 - **CLI:** `--sequence.shuffle.tests`
-- **Config:** [sequence.shuffle.tests](/config/sequence#sequence-shuffle-tests)
+- **配置：** [sequence.shuffle.tests](/config/sequence#sequence-shuffle-tests)
 
 按随机顺序运行测试（默认：`false`）
 
@@ -536,30 +536,30 @@ VM 池的内存限制。如果你看到内存泄漏，可以尝试调整此值�
 
 ### sequence.seed
 
-- **CLI:** `--sequence.seed <seed>`
-- **Config:** [sequence.seed](/config/sequence#sequence-seed)
+- **命令行界面：** `--sequence.seed <seed>`
+- **配置：** [sequence.seed](/config/sequence#sequence-seed)
 
-设置随机化种子。如果 `--sequence.shuffle` 为假值，此选项将无效。更多信息请访问 ["随机种子"页面](https://en.wikipedia.org/wiki/Random_seed)。
+设置随机化种子。如果 `--sequence.shuffle` 为假值，此选项将无效。更多信息请访问[“随机种子”页面](https://en.wikipedia.org/wiki/Random_seed)。
 
 ### sequence.hooks
 
 - **命令行：** `--sequence.hooks <order>`
 - **配置：** [sequence.hooks](/config/sequence#sequence-hooks)
 
-更改钩子的执行顺序。可接受值为："stack"、"list" 和 "parallel"。更多信息请访问 [`sequence.hooks`](/config/sequence#sequence-hooks)（默认：`"parallel"`）
+更改钩子的执行顺序。可接受的值为："stack"、"list" 和 "parallel"。更多信息请访问 [`sequence.hooks`](/config/sequence#sequence-hooks)（默认值：`"parallel"`）。
 
 ### sequence.setupFiles
 
 - **命令行：** `--sequence.setupFiles <order>`
 - **配置：** [sequence.setupFiles](/config/sequence#sequence-setupfiles)
 
-更改设置文件的执行顺序。可接受值为："list" 和 "parallel"。如果设置为 "list"，将按定义顺序运行设置文件。如果设置为 "parallel"，将并行运行设置文件（默认：`"parallel"`）
+更改设置文件的执行顺序。可接受值为：“list”和“parallel”。如果设置为“list”，将按定义顺序运行设置文件。如果设置为“parallel”，将并行运行设置文件（默认：`"parallel"`）
 
 ### inspect
 
 - **CLI:** `--inspect [[host:]port]`
 
-启用 Node.js inspector（默认：`127.0.0.1:9229`）。
+启用 Node.js 检查器（默认：`127.0.0.1:9229`）。
 
 ### inspectBrk
 
@@ -576,8 +576,8 @@ VM 池的内存限制。如果你看到内存泄漏，可以尝试调整此值�
 
 ### hookTimeout
 
-- **CLI:** `--hookTimeout <timeout>`
-- **Config:** [hookTimeout](/config/hooktimeout)
+- **命令行：** `--hookTimeout <timeout>`
+- **配置：** [hookTimeout](/config/hooktimeout)
 
 钩子的默认超时时间（毫秒）（默认：`10000`）。使用 `0` 可完全禁用超时。
 
@@ -590,17 +590,17 @@ VM 池的内存限制。如果你看到内存泄漏，可以尝试调整此值�
 
 ### retry.count
 
-- **CLI:** `--retry.count <times>`
-- **Config:** [retry.count](/config/retry#retry-count)
+- **命令行：** `--retry.count <times>`
+- **配置：** [retry.count](/config/retry#retry-count)
 
 测试失败时重试的次数（默认：`0`）
 
 ### retry.delay
 
-- **CLI:** `--retry.delay <ms>`
-- **Config:** [retry.delay](/config/retry#retry-delay)
+- **CLI：** `--retry.delay <ms>`
+- **配置：** [retry.delay](/config/retry#retry-delay)
 
-重试尝试之间的延迟（毫秒）（默认：`0`）
+各次重试之间的延迟（毫秒）（默认：`0`）
 
 ### retry.condition
 
@@ -667,17 +667,17 @@ VM 池的内存限制。如果你看到内存泄漏，可以尝试调整此值�
 
 ### diff.expand
 
-- **CLI:** `--diff.expand`
-- **Config:** [diff.expand](/config/diff#diff-expand)
+- **命令行：** `--diff.expand`
+- **配置：** [diff.expand](/config/diff#diff-expand)
 
 展开所有公共行（默认：`true`）。
 
 ### diff.includeChangeCounts
 
-- **CLI:** `--diff.includeChangeCounts`
-- **Config:** [diff.includeChangeCounts](/config/diff#diff-includechangecounts)
+- **CLI：** `--diff.includeChangeCounts`
+- **配置：** [diff.includeChangeCounts](/config/diff#diff-includechangecounts)
 
-在 diff 输出中包含比较计数（默认：`false`）
+在 diff 输出中包含变更计数（默认值：`false`）
 
 ### diff.omitAnnotationLines
 
@@ -702,8 +702,8 @@ VM 池的内存限制。如果你看到内存泄漏，可以尝试调整此值�
 
 ### diff.truncateThreshold
 
-- **CLI:** `--diff.truncateThreshold <threshold>`
-- **Config:** [diff.truncateThreshold](/config/diff#diff-truncatethreshold)
+- **CLI：** `--diff.truncateThreshold <threshold>`
+- **配置：** [diff.truncateThreshold](/config/diff#diff-truncatethreshold)
 
 每个变更前后显示的行数（默认：`0`）
 
@@ -765,8 +765,8 @@ VM 池的内存限制。如果你看到内存泄漏，可以尝试调整此值�
 
 ### typecheck.ignoreSourceErrors
 
-- **CLI:** `--typecheck.ignoreSourceErrors`
-- **Config:** [typecheck.ignoreSourceErrors](/config/typecheck#typecheck-ignoresourceerrors)
+- **CLI：** `--typecheck.ignoreSourceErrors`
+- **配置：** [typecheck.ignoreSourceErrors](/config/typecheck#typecheck-ignoresourceerrors)
 
 忽略源文件中的类型错误。
 
@@ -775,18 +775,18 @@ VM 池的内存限制。如果你看到内存泄漏，可以尝试调整此值�
 - **CLI:** `--typecheck.build`
 - **Config:** [typecheck.build](/config/typecheck#typecheck-build)
 
-使用 TypeScript 构建模式
+使用 TypeScript 构建模式。
 
 ### typecheck.tsconfig
 
 - **CLI:** `--typecheck.tsconfig <path>`
-- **Config:** [typecheck.tsconfig](/config/typecheck#typecheck-tsconfig)
+- **配置:** [typecheck.tsconfig](/config/typecheck#typecheck-tsconfig)
 
 自定义 tsconfig 文件的路径。
 
 ### typecheck.spawnTimeout
 
-- **CLI:** `--typecheck.spawnTimeout <time>`
+- **CLI：** `--typecheck.spawnTimeout <time>`
 - **配置：** [typecheck.spawnTimeout](/config/typecheck#typecheck-spawntimeout)
 
 启动类型检查器所需的最短时间（毫秒）。
@@ -821,7 +821,7 @@ teardown 函数的默认超时时间（毫秒）（默认：`10000`）。
 ### fsModuleCache
 
 - **CLI:** `--fsModuleCache`
-- **Config:** [fsModuleCache](/config/fsmodulecache)
+- **配置：** [fsModuleCache](/config/fsmodulecache)
 
 在文件系统中缓存转换后的模块，并在重新运行之间重复使用它们（默认值：`false`）
 
@@ -841,8 +841,8 @@ teardown 函数的默认超时时间（毫秒）（默认：`10000`）。
 
 ### expect.poll.interval
 
-- **CLI:** `--expect.poll.interval <interval>`
-- **Config:** [expect.poll.interval](/config/expect#expect-poll-interval)
+- **CLI：** `--expect.poll.interval <interval>`
+- **配置：** [expect.poll.interval](/config/expect#expect-poll-interval)
 
 `expect.poll()` 断言的轮询间隔（毫秒）（默认：`50`）。
 
@@ -858,7 +858,7 @@ teardown 函数的默认超时时间（毫秒）（默认：`10000`）。
 - **命令行：** `--printConsoleTrace`
 - **配置：** [printConsoleTrace](/config/printconsoletrace)
 
-始终打印控制台堆栈跟踪
+始终打印控制台堆栈跟踪。
 
 ### includeTaskLocation
 
@@ -929,6 +929,13 @@ teardown 函数的默认超时时间（毫秒）（默认：`10000`）。
 
 如果测试具有配置中未定义的标签，Vitest 是否应抛出错误。（默认：`true`）
 
+### sharedViteServer
+
+- **CLI：** `--sharedViteServer`
+- **配置：** [sharedViteServer](/config/sharedviteserver)
+
+让不修改 Vite 配置的内联项目复用声明它们的配置所使用的 Vite 服务器。（默认值：`true`）
+
 ### experimental.importDurations.print
 
 - **CLI:** `--experimental.importDurations.print <boolean|on-warn>`
@@ -960,7 +967,7 @@ teardown 函数的默认超时时间（毫秒）（默认：`10000`）。
 ### experimental.importDurations.thresholds.danger
 
 - **CLI:** `--experimental.importDurations.thresholds.danger <number>`
-- **Config:** [experimental.importDurations.thresholds.danger](/config/experimental#experimental-importdurations-thresholds-danger)
+- **配置：** [experimental.importDurations.thresholds.danger](/config/experimental#experimental-importdurations-thresholds-danger)
 
 危险阈值 - 超过此值的导入将以红色显示（默认：`500`）。
 
@@ -969,12 +976,12 @@ teardown 函数的默认超时时间（毫秒）（默认：`10000`）。
 - **命令行：** `--experimental.viteModuleRunner`
 - **配置：** [experimental.viteModuleRunner](/config/experimental#experimental-vitemodulerunner)
 
-控制 Vitest 是使用 Vite 的模块运行器运行代码，还是回退到原生 `import`。（默认值：`true`）
+控制 Vitest 是使用 Vite 的模块运行器运行代码，还是回退到原生 `import`。（默认值：`true`）。
 
 ### experimental.nodeLoader
 
-- **CLI:** `--experimental.nodeLoader`
-- **Config:** [experimental.nodeLoader](/config/experimental#experimental-nodeloader)
+- **CLI：** `--experimental.nodeLoader`
+- **配置：** [experimental.nodeLoader](/config/experimental#experimental-nodeloader)
 
 控制 Vitest 是否使用 Node.js Loader API 处理源码内或被模拟的文件。如果启用了 `viteModuleRunner`，此项无效。禁用它可以提升性能。（默认：`true`）
 
@@ -990,4 +997,32 @@ teardown 函数的默认超时时间（毫秒）（默认：`10000`）。
 - **命令行界面：** `--experimental.preParse`
 - **配置：** [experimental.preParse](/config/experimental#experimental-preparse)
 
-在运行测试前解析测试规范。这将在不运行文件的情况下，对所有文件应用 `.only` 标记和测试名称模式。（默认：`false`）
+在运行测试前解析测试规范。此选项会在不运行测试的情况下，将 `.only` 标记和测试名称模式应用于所有文件。（默认值：`false`）
+
+### experimental.diagnostics.isolate
+
+- **CLI：** `--experimental.diagnostics.isolate`
+- **配置：** [experimental.diagnostics.isolate](/config/experimental#experimental-diagnostics-isolate)
+
+打印一条提示，估算当 `isolate: true` 为每个测试文件生成工作线程并耗费大量时间时，`isolate: false` 可以节省多少时间。（默认值：`true`）
+
+### experimental.diagnostics.environment
+
+- **命令行界面：** `--experimental.diagnostics.environment`
+- **配置：** [experimental.diagnostics.environment](/config/experimental#experimental-diagnostics-environment)
+
+当为每个测试文件重新创建 DOM 环境占用了运行的大部分时间，而使用 `vm` 池可以为每个工作进程设置一次时，打印提示。（默认值：`true`）
+
+### experimental.diagnostics.import
+
+- **CLI：** `--experimental.diagnostics.import`
+- **配置：** [experimental.diagnostics.import](/config/experimental#experimental-diagnostics-import)
+
+当测试文件重复评估相同的模块图（通常是导入 barrel 文件）时，输出提示；`isolate: false` 将使其在每个工作进程中评估一次。（默认值：`true`）
+
+### experimental.diagnostics.transform
+
+- **CLI：** `--experimental.diagnostics.transform`
+- **配置：** [experimental.diagnostics.transform](/config/experimental#experimental-diagnostics-transform)
+
+当转换模块占据运行过程的大部分时间，并且 `fsModuleCache` 可以在多次运行之间持久化结果时，打印提示。（默认值：`true`）

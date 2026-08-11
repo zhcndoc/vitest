@@ -1,8 +1,8 @@
 ---
-title: TestProject
+title: 测试项目
 ---
 
-# TestProject <Version>3.0.0</Version> {#testproject}
+# 测试项目 <Version>3.0.0</Version> {#testproject}
 
 ::: warning
 本指南描述了高级 Node.js API。如果你只是想定义项目，请遵循 ["测试项目"](/guide/projects) 指南。
@@ -86,7 +86,7 @@ import type { ResolvedConfig } from 'vitest/node'
 vitest.config === vitest.projects[0].globalConfig
 ```
 
-## config
+## 配置
 
 这是项目的解析后测试配置。
 
@@ -98,7 +98,15 @@ vitest.config === vitest.projects[0].globalConfig
 
 ## vite
 
-这是项目的 [`ViteDevServer`](https://vite.dev/guide/api-javascript#vitedevserver)。所有项目都有自己的 Vite 服务器。
+这是项目的 [`ViteDevServer`](https://vite.dev/guide/api-javascript#vitedevserver)。请注意，该服务器不一定专属于此项目：当 [`sharedViteServer`](/config/sharedviteserver) 选项适用时，其他项目也可以复用它；同一集群中的浏览器实例共享一个浏览器服务器。
+
+## sharedViteServer
+
+```ts
+const sharedViteServer: boolean
+```
+
+当项目复用声明该项目的配置所使用的 Vite 服务器，而不是解析自己的 Vite 服务器时为 `true`（参见 [`sharedViteServer`](/config/sharedviteserver) 选项）。拥有该服务器的项目即使被其他项目复用，也会报告 `false`。要检测任意两个共享同一服务器的项目（包括浏览器实例），请比较它们的 [`vite`](#vite) 引用。
 
 ## browser
 
@@ -233,13 +241,13 @@ project.globTestFiles(['basic/foo.js:10']) // ❌
 ```
 
 ::: tip
-Vitest 使用 [fast-glob](https://npmx.dev/package/fast-glob) 来查找测试文件。`test.dir`, `test.root`, `root` 或 `process.cwd()` 定义 `cwd` 选项。
+Vitest 使用 [fast-glob](https://npmx.dev/package/fast-glob) 来查找测试文件。`test.dir`、`test.root`、`root` 或 `process.cwd()` 定义 `cwd` 选项。
 
 此方法查看几个配置选项：
 
-- `test.include`, `test.exclude` 用于查找常规测试文件
-- `test.includeSource`, `test.exclude` 用于查找源内测试
-- `test.typecheck.include`, `test.typecheck.exclude` 用于查找类型检查测试
+- `test.include`、`test.exclude` 用于查找常规测试文件
+- `test.includeSource`、`test.exclude` 用于查找源内测试
+- `test.typecheck.include`、`test.typecheck.exclude` 用于查找类型检查测试
 :::
 
 ## matchesTestGlob
@@ -314,7 +322,7 @@ function isBrowserEnabled(): boolean
 
 如果此项目在浏览器中运行测试，则返回 `true`。
 
-## close
+## 关闭
 
 ```ts
 function close(): Promise<void>

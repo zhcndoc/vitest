@@ -544,7 +544,11 @@ export default ({ mode }: { mode: string }) => {
                 link: '/config/projects',
               },
               {
-                text: '隔离',
+                text: 'sharedViteServer',
+                link: '/config/sharedviteserver',
+              },
+              {
+                text: 'isolate',
                 link: '/config/isolate',
               },
               {

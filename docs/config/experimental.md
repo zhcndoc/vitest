@@ -311,7 +311,7 @@ export default defineConfig({
 如果你在 Deno 中运行测试，TypeScript 文件由运行时处理，无需任何额外配置。
 :::
 
-## experimental.vcsProvider <Version type="experimental">4.1.1</Version> {#experimental-vcsprovider}
+## experimental.vcsProvider <Version type="experimental">实验性</Version> {#experimental-vcsprovider}
 
 - **类型：** `VCSProvider | string`
 
@@ -381,7 +381,7 @@ export default {
 
 如果你不使用这些功能，可以禁用它以提升性能。
 
-## experimental.preParse <Version type="experimental">4.1.3</Version> {#experimental-preparse}
+## experimental.preParse <Version type="experimental">实验性</Version> {#experimental-preparse}
 
 - **类型：** `boolean`
 - **默认值：** `false`
@@ -413,3 +413,84 @@ const tags = getTags()
 test('my test', { tags }, () => {})
 ```
 :::
+
+## experimental.diagnostics <Version type="experimental">实验性</Version> {#experimental-diagnostics}
+
+- **类型：**
+
+```ts
+interface DiagnosticsOptions {
+  /**
+   * 当 `isolate: true` 为每个测试文件花费大量时间生成新的工作线程
+   * （并重新创建环境）时提供提示，并估算 `isolate: false` 可以节省多少时间。
+   * @default true
+   */
+  isolate?: boolean
+  /**
+   * 当为每个测试文件重新创建 DOM 环境占据运行时间的大部分时提供提示，
+   * 因为 `vm` 池可以为每个工作线程设置一次环境。
+   * @default true
+   */
+  environment?: boolean
+  /**
+   * 当测试文件重复评估相同的模块图时提供提示
+   * （桶文件导入的典型情况），因为 `isolate: false` 会在每个工作线程中评估一次。
+   * @default true
+   */
+  import?: boolean
+  /**
+   * 当转换模块占据运行时间的大部分时提供提示，
+   * 因为 `fsModuleCache` 会在多次运行之间持久化结果。
+   * @default true
+   */
+  transform?: boolean
+}
+```
+
+- **默认值：** `true`
+
+当收集的计时数据显示某项配置更改可以显著加快运行速度时，在运行结束后打印性能提示：
+
+```
+环境  jsdom 被创建了 40 次 · 总计 23.80 秒，占已追踪时间的 79%
+      使用 pool: 'vmThreads'（保留每个文件的隔离）或 isolate: false（在文件之间共享），为每个工作线程创建一次
+      了解更多：https://vitest.dev/guide/improving-performance#test-environments
+```
+
+提示绝不会建议更改已显式设置的选项：如果配置定义了 `pool`，则不会建议其他池；显式配置的 `isolate` 也绝不会建议将其禁用。提示在 CI 中同样会打印。将此选项设置为 `false` 可禁用所有提示，也可以单独禁用某些提示。
+
+若要测量配置更改的影响，而不是进行估算，请运行 [`vitest doctor`](/guide/cli#vitest-doctor)。
+
+### experimental.diagnostics.isolate {#experimental-diagnostics-isolate}
+
+- **类型：** `boolean`
+- **默认值：** `true`
+
+当 `isolate: true` 为每个测试文件花费大量时间生成新的工作线程（并重新创建环境）时提供提示，并估算 `isolate: false` 可以节省多少时间。复用的工作线程也会保留已评估的模块，因此文件不再重复评估它们共享的模块图。只有启用 [`experimental.importDurations`](#experimental-importdurations) 时，才会收集每个模块的评估时间；未启用时，估算仅计算工作线程启动时间，并会以较低界限（“至少”）的形式报告。
+
+### experimental.diagnostics.environment {#experimental-diagnostics-environment}
+
+- **类型：** `boolean`
+- **默认值：** `true`
+
+当为每个测试文件重新创建 DOM 环境占据运行时间的大部分时提供提示，因为 `vm` 池可以为每个工作线程设置一次环境。
+
+### experimental.diagnostics.import {#experimental-diagnostics-import}
+
+- **类型：** `boolean`
+- **默认值：** `true`
+
+当测试文件重复评估相同的模块图，而 `isolate: false` 可以在每个工作线程中评估一次时提供提示。这在桶文件导入中很常见：每个测试文件通过索引文件导入少量符号，并评估其背后的整个模块图。重复程度根据每个模块被提供给工作线程的次数进行测量，因此测试文件主要导入彼此不相交模块的测试套件不会显示提示：复用工作线程不会减少它们的导入工作量。
+
+```
+导入  837 个模块被评估了 16740 次 · 总计 15.69 秒，占已追踪时间的 64%
+      使用 isolate: false 可快约 850 毫秒——共享模块在每个工作线程中评估一次，而不是每个文件评估一次
+      了解更多：https://vitest.dev/guide/improving-performance#test-isolation
+```
+
+### experimental.diagnostics.transform {#experimental-diagnostics-transform}
+
+- **类型：** `boolean`
+- **默认值：** `true`
+
+当转换模块占据运行时间的大部分时提供提示。没有持久化缓存时，每次 `vitest run` 都会从头开始转换整个模块图；[`fsModuleCache`](/config/fsmodulecache) 会将结果存储在磁盘上，从而跳过重复运行中的转换。该提示会估算下一次运行可以节省的时间。在 CI 中，提示会包含一条说明：必须在多次运行之间持久化缓存目录，缓存才能生效。

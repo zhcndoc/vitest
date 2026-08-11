@@ -406,6 +406,23 @@ export interface InlineConfig {
   projects?: TestProjectConfiguration[]
 
   /**
+   * Let inline projects that don't modify the Vite config reuse the Vite
+   * server of the config that declares them. Instead of resolving a new
+   * Vite config and creating a new server per project, such projects share
+   * the server and its transform cache.
+   *
+   * A project still gets its own server when it defines Vite-level options
+   * (`plugins`, `resolve`, ...) or test options that affect the
+   * Vite config: `alias`, `browser`, `css`, `deps.moduleDirectories`,
+   * `deps.optimizer`, `mode`, `root`,
+   * or when `extends` doesn't point to the declaring config.
+   *
+   * This option is only respected in the root configuration.
+   * @default true
+   */
+  sharedViteServer?: boolean
+
+  /**
    * Update snapshot
    *
    * @default false
@@ -1013,6 +1030,35 @@ export interface InlineConfig {
      * This will apply `.only` flag and test name pattern across all files without running them.
      */
     preParse?: boolean
+
+    /**
+     * Print performance hints after the run when the collected timings show
+     * that a configuration change would make the run significantly faster.
+     * Hints are never printed for options that were set explicitly.
+     *
+     * Set to `false` to disable all hints, or disable them individually:
+     * - `isolate`: hint when `isolate: true` spends a significant amount of
+     *   time spawning a fresh worker (and re-creating the environment) for
+     *   every test file, estimating how much `isolate: false` could save.
+     * - `environment`: hint when re-creating a DOM environment for every test
+     *   file dominates the run and a `vm` pool would set it up once per worker.
+     * - `import`: hint when test files repeatedly evaluate the same module
+     *   graph (typical for barrel-file imports) and `isolate: false` would
+     *   evaluate it once per worker.
+     * - `transform`: hint when transforming modules dominates the run and
+     *   `fsModuleCache` would persist the results across runs.
+     * @default true
+     */
+    diagnostics?: boolean | {
+      /** @default true */
+      isolate?: boolean
+      /** @default true */
+      environment?: boolean
+      /** @default true */
+      import?: boolean
+      /** @default true */
+      transform?: boolean
+    }
   }
 
   /**
@@ -1227,6 +1273,12 @@ export interface ResolvedConfig
   reporters: (InlineReporter | ReporterWithOptions)[]
 
   defines: Record<string, any>
+  /**
+   * `define` entries applied by the runtime defines script instead of the
+   * server's transforms.
+   * @internal
+   */
+  _scriptDefines?: Record<string, any>
 
   api: ResolvedApiConfig
   cliExclude?: string[]
@@ -1269,7 +1321,7 @@ export interface ResolvedConfig
   tagsFilter?: string[]
   mergeReportsLabel?: string
 
-  experimental: Omit<Required<UserConfig>['experimental'], 'importDurations'> & {
+  experimental: Omit<Required<UserConfig>['experimental'], 'importDurations' | 'diagnostics'> & {
     importDurations: {
       print: boolean | 'on-warn'
       limit: number
@@ -1279,6 +1331,25 @@ export interface ResolvedConfig
         danger: number
       }
     }
+    diagnostics: {
+      isolate: boolean
+      environment: boolean
+      import: boolean
+      transform: boolean
+    }
+  }
+
+  /**
+   * Options that were explicitly provided by the user, as opposed to resolved
+   * defaults. Used by diagnostics to avoid suggesting changes to options the
+   * user chose deliberately.
+   * @internal
+   */
+  providedOptions: {
+    pool: boolean
+    isolate: boolean
+    environment: boolean
+    fsModuleCache: boolean
   }
 
   cliOptions: CliOptions
@@ -1293,6 +1364,18 @@ export interface ResolvedConfig
    */
   _containerConfigFiles?: string[]
   /**
+   * The raw `test` options captured by `CaptureRawTestConfig`, used to
+   * resolve inline projects that share this config's Vite server.
+   * @internal
+   */
+  _rawTestConfig?: UserConfig
+  /**
+   * The `server.deps` entries contributed by `vitest:test-config`, applied
+   * to inline projects that share this config's Vite server.
+   * @internal
+   */
+  _moduleRunnerOptions?: ModuleRunnerTestOptions
+  /**
    * Browser server contribution captured by the `vitest:browser:loader` plugin
    * during this config's resolution (set only when `browser.enabled`). Used by
    * server creation to build the single Vite server shared by `project.vite` and
@@ -1301,6 +1384,32 @@ export interface ResolvedConfig
    * @internal
    */
   _browserContribution?: BrowserServerContribution
+}
+
+/**
+ * Values captured by Vitest's own plugins while Vite resolves a config,
+ * handed back to the resolution caller.
+ *
+ * The resolved config retains the plugins (and this object with them) for
+ * the server's lifetime: `browserContribution` is also read by the browser
+ * loader's server hooks and stays for as long as the server lives, while
+ * `rawTestConfig` must be cleared by the consumer once it is stored.
+ */
+export interface ConfigResolutionCaptures {
+  browserContribution?: BrowserServerContribution
+  rawTestConfig?: UserConfig
+  moduleRunnerOptions?: ModuleRunnerTestOptions
+}
+
+/**
+ * The `server.deps` entries that `vitest:test-config` derives from the
+ * config's original `resolve` options while the Vite config resolves. They
+ * cannot be recomputed later: the resolution overwrites the `resolve` options.
+ */
+export interface ModuleRunnerTestOptions {
+  inlineAll: boolean
+  inline: (string | RegExp)[]
+  external: (string | RegExp)[]
 }
 
 /**
@@ -1340,6 +1449,12 @@ export interface ResolvedProjectEntry {
    * @internal
    */
   ancestors?: string[]
+  /**
+   * The project reuses the Vite server of the config that declares it
+   * (`sharedViteServer`).
+   * @internal
+   */
+  sharedServer?: boolean
 }
 
 type NonProjectOptions
@@ -1370,6 +1485,7 @@ type NonProjectOptions
     | 'coverage'
     | 'watchTriggerPatterns'
     | 'tagsFilter' // CLI option only
+    | 'sharedViteServer'
 
 export interface ServerDepsOptions {
   /**
@@ -1411,7 +1527,7 @@ export type ProjectConfig = Omit<
     // from the root config only, so projects can only shuffle their own tests.
     shuffle?: boolean | { tests?: boolean }
   }
-  deps?: Omit<DepsOptions, 'moduleDirectories'>
+  deps?: DepsOptions
 }
 
 export type ResolvedProjectConfig = Omit<

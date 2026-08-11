@@ -104,7 +104,7 @@ test('expect.soft test', () => {
 `expect.soft` 只能在 [`test`](/api/test) 函数内部使用。
 :::
 
-## poll
+## 轮询
 
 ```ts
 interface ExpectPoll extends ExpectStatic {
@@ -112,7 +112,7 @@ interface ExpectPoll extends ExpectStatic {
 }
 ```
 
-`expect.poll` 会重复运行 _断言_，直到它成功。你可以通过设置 `interval` 和 `timeout` 选项来配置 Vitest 重试的频率以及等待的时长。`timeout` 适用于整个轮询操作，包括待处理的回调以及异步匹配器的执行。
+`expect.poll` 会重复运行 _断言_，直到断言成功。你可以通过设置 `interval` 和 `timeout` 选项来配置 Vitest 重试的频率以及等待的时长。`timeout` 适用于整个轮询操作，包括待处理的回调以及异步匹配器的执行。
 
 回调会接收一个 `AbortSignal`，当轮询超时时该信号会被中止。
 
@@ -129,11 +129,11 @@ test('element exists', async () => {
 ```
 
 ::: warning
-`expect.poll` 会使每个断言都变为异步，所以你需要 await 它。自 Vitest 3 起，如果你忘记 await 它，测试将失败并发出警告。
+`expect.poll` 会使每个断言都变为异步，因此你需要 await 它。自 Vitest 3 起，如果你忘记 await 它，测试将失败并发出警告。
 
-`expect.poll` 不适用于几个匹配器：
+`expect.poll` 不适用于以下几个匹配器：
 
-- 不支持快照匹配器，因为它们总是会成功。如果你的条件不稳定，考虑使用 [`vi.waitFor`](/api/vi#vi-waitfor) 来先解决它：
+- 不支持快照匹配器，因为它们总是会成功。如果你的条件不稳定，可以考虑使用 [`vi.waitFor`](/api/vi#vi-waitfor) 先解决它：
 
 ```ts
 import { expect, vi } from 'vitest'
@@ -143,7 +143,7 @@ expect(flakyValue).toMatchSnapshot()
 ```
 
 - 不支持 `.resolves` 和 `.rejects`。如果条件是异步的，`expect.poll` 已经会 await 它。
-- 不支持 `toThrow` 及其别名，因为 `expect.poll` 的条件总是在匹配器获取值之前解析
+- 不支持 `toThrow` 及其别名，因为 `expect.poll` 的条件总是在匹配器获取值之前解析。
 :::
 
 ## not
@@ -223,7 +223,7 @@ function getApples() {
   return 3
 }
 
-test('function returned something', () => {
+test('函数返回了内容', () => {
   expect(getApples()).toBeDefined()
 })
 ```
@@ -626,7 +626,7 @@ test('元素包含一个类并且被包含在内', () => {
 
 - **类型：** `(received: any) => Awaitable<void>`
 
-`toContainEqual` 断言具有特定结构和值的项是否包含在数组中。
+`toContainEqual` 断言具有特定结构和值的项是否包含在数组中。  
 它对每个元素内部的工作方式类似于 [`toEqual`](#toequal)。
 
 ```ts
@@ -1093,7 +1093,7 @@ const market = {
   },
 }
 
-test('spy function called two times', () => {
+test('间谍函数被调用了两次', () => {
   const buySpy = vi.spyOn(market, 'buy')
 
   market.buy('apples', 10)
@@ -1234,7 +1234,7 @@ const market = {
   },
 }
 
-test('first call of spy function called with right params', () => {
+test('spy 函数第一次调用时使用了正确的参数', () => {
   const buySpy = vi.spyOn(market, 'buy')
 
   market.buy('apples', 10)
@@ -1277,7 +1277,7 @@ test('spy function returned a value', () => {
 ```ts
 import { expect, test, vi } from 'vitest'
 
-test('spy function returns a value two times', () => {
+test('spy 函数返回值两次', () => {
   const sell = vi.fn((product: string) => ({ product }))
 
   sell('apples')
@@ -1330,7 +1330,7 @@ test('spy function returns bananas on a last call', () => {
 
 你可以调用此断言来检查一个函数在某次调用时是否成功返回了带有特定参数的值。需要向 `expect` 传递一个 spy 函数。
 
-计数从 1 开始。因此，要检查第二次条目，你应该写 `.toHaveNthReturnedWith(2, ...)`。
+计数从 1 开始。因此，要检查第二次调用，你应该写 `.toHaveNthReturnedWith(2, ...)`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1382,7 +1382,7 @@ test('spy function resolved a value', async () => {
 ```ts
 import { expect, test, vi } from 'vitest'
 
-test('spy function resolved a value two times', async () => {
+test('spy 函数成功解析了两次值', async () => {
   const sell = vi.fn((product: string) => Promise.resolve({ product }))
 
   await sell('apples')
@@ -1640,9 +1640,9 @@ test('spy called thrice', () => {
 
 ## lastCalledWith
 
-- **Type:** `(...args: any[]) => void`
+- **类型：** `(...args: any[]) => void`
 
-A Chai-style assertion that checks whether the last call to the spy used specific arguments. This is equivalent to `toHaveBeenLastCalledWith(...args)`.
+一种 Chai 风格的断言，用于检查 spy 的最后一次调用是否使用了指定的参数。这等价于 `toHaveBeenLastCalledWith(...args)`。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1872,9 +1872,7 @@ test('buyApples returns new stock id', async () => {
 ```
 
 :::warning
-如果断言未被 await，那么你将会得到一个每次都会通过的假阳性测试。为了确保断言确实被调用，你可以使用 [`expect.assertions(number)`](#expect-assertions)。
-
-自 Vitest 3 起，如果方法未被 await，Vitest 将在测试结束时显示警告。在 Vitest 4 中，如果断言未被 await，测试将被标记为“失败”。
+如果断言未被 await，测试将在结束时被标记为“失败”。
 :::
 
 ## rejects
@@ -1903,9 +1901,7 @@ test('buyApples throws an error when no id provided', async () => {
 ```
 
 :::warning
-如果断言未被 await，那么你将会得到一个每次都会通过的假阳性测试。为了确保断言确实被调用，你可以使用 [`expect.assertions(number)`](#expect-assertions)。
-
-自 Vitest 3 起，如果方法未被 await，Vitest 将在测试结束时显示警告。在 Vitest 4 中，如果断言未被 await，测试将被标记为“失败”。
+如果没有等待该断言，测试将在测试结束时被标记为“失败”。
 :::
 
 ## expect.assertions
@@ -2112,7 +2108,7 @@ test('篮子里包含 fuji', () => {
 ```ts
 import { expect, test } from 'vitest'
 
-test('篮子里有 empire 苹果', () => {
+test('篮子里有 Empire 苹果', () => {
   const basket = {
     varieties: [
       {

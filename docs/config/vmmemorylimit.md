@@ -5,12 +5,21 @@ outline: deep
 
 # vmMemoryLimit
 
-- **类型：** `string | number`
-- **默认值：** `1 / CPU 核心数`
+- **Type:** `string | number`
+- **Default:** `1 / maxWorkers`
 
 此选项仅影响 `vmForks` 和 `vmThreads` 池。
 
-指定 worker 在被回收之前的内存限制。该值很大程度上取决于您的环境，因此最好手动指定它，而不是依赖默认值。
+指定 worker 在被回收前的内存限制。
+
+默认情况下，系统总内存会在各个 worker 之间平均分配。增加 [`maxWorkers`](/config/maxworkers) 后，每个 worker 可用的内存会减少，因此回收频率会更高。
+
+此值高度取决于您的环境，因此最好手动指定，而不是依赖默认值。
+
+之所以需要回收，是因为 VM 上下文会[泄漏内存](https://github.com/nodejs/node/issues/33439)：worker 每运行一个测试文件，内存使用量就会增加，因此 worker 不可能永久运行。该限制需要在以下因素之间进行权衡：
+
+- 较低的限制会频繁回收 worker。在 `vmThreads` 池中，这会带来较高的开销，因为销毁 worker 线程会对该 worker 的内存执行完整的垃圾回收，并与正在运行的测试争用进程共享的后台线程。`vmForks` 池通过让子进程退出的方式回收 worker，因此频繁回收的成本要低得多。
+- 较高的限制会让 worker 累积内存。当所有 worker 的总内存使用量接近机器可承载的内存时，每个池的运行速度都会变慢。
 
 ::: tip
 实现基于 Jest 的 [`workerIdleMemoryLimit`](https://jestjs.io/docs/configuration#workeridlememorylimit-numberstring)。

@@ -1,14 +1,37 @@
 # 提升性能
 
+## 优先分析性能
+
+摘要中的 `Duration` 行会将这次运行按阶段拆分，并以所有已追踪时间的百分比表示：
+
+```
+Duration  3.76s (environment 79%, import 13%, transform 6%, tests 1%, setup 1%)
+```
+
+这些百分比是相对于所有已追踪阶段时间之和，而不是相对于墙上时钟时间：各阶段会在并行工作进程中运行，因此它们的总和通常会大于整个运行过程本身。在多项目配置中，这些百分比会汇总所有[项目](/guide/projects)的数据，因此某个项目中占主导地位的阶段可能会被其他项目的数据稀释；下面的性能提示会分别分析每个项目。
+
+这些阶段对应以下配置选项：
+
+- `environment` - 为测试文件创建测试环境（例如 `jsdom`、`happy-dom`）。请参阅[测试环境](#test-environments)。
+- `transform` - 等待 Vite 解析并转换导入的模块。请参阅[重复运行期间的缓存](#caching-between-reruns)。
+- `import` - 评估测试文件及其模块，不包括上面追踪的转换等待时间。当文件导入的模块大多相同时（桶文件导入的典型情况），隔离机制会为每个文件重新评估该共享模块图。请参阅[测试隔离](#test-isolation)。
+- `setup` - 运行 [`setupFiles`](/config/setupfiles)。
+- `worker` - 在每个工作进程中准备测试运行器。隔离机制会为每个测试文件承担这项开销。请参阅[测试隔离](#test-isolation)。
+- `tests` - 运行测试本身。如果运行时间主要消耗在此阶段，那么通过配置更改获得的收益会很小。
+
+当收集到的计时数据显示某项配置更改可以显著加快运行速度时，Vitest 还会在摘要后打印提示，请参阅 [`experimental.diagnostics`](/config/experimental#experimental-diagnostics)。提示不会建议更改已显式设置的选项。
+
+[`vitest doctor`](/guide/cli#vitest-doctor) 不会估算替代配置的效果，而是对其进行实际测量：它会在每个候选配置下运行测试套件并报告比较结果，其中包括测试是否能在 `isolate: false` 下通过。
+
 ## 测试隔离
 
-默认情况下，Vitest 基于 [pool](/config/pool) 在隔离环境中运行每个测试文件：
+默认情况下，Vitest 基于 [池](/config/pool) 在隔离环境中运行每个测试文件：
 
 - `threads` 池在单独的 [`Worker`](https://nodejs.org/api/worker_threads.html#class-worker) 中运行每个测试文件
-- `forks` 池在单独的 [fork 出的子进程](https://nodejs.org/api/child_process.html#child_processforkmodulepath-args-options) 中运行每个测试文件
+- `forks` 池在单独的 [fork 子进程](https://nodejs.org/api/child_process.html#child_processforkmodulepath-args-options) 中运行每个测试文件
 - `vmThreads` 池在单独的 [VM 上下文](https://nodejs.org/api/vm.html#vmcreatecontextcontextobject-options) 中运行每个测试文件，但它使用 worker 来实现并行
 
-这会大大增加测试时间，对于不依赖副作用并正确清理状态的项目来说，这可能不是理想的（对于 `node` 环境的项目通常是这样）。在这种情况下，禁用隔离将提高测试速度。为此，你可以向 CLI 提供 `--no-isolate` 标志，或在配置中将 [`test.isolate`](/config/isolate) 属性设置为 `false`。
+这会大大增加测试时间，对于不依赖副作用并能正确清理状态的项目来说，这可能不是理想的选择（对于 `node` 环境的项目通常是这样）。在这种情况下，禁用隔离将提高测试速度。为此，你可以向 CLI 提供 `--no-isolate` 标志，或在配置中将 [`test.isolate`](/config/isolate) 属性设置为 `false`。
 
 ::: code-group
 ```bash [CLI]
@@ -36,7 +59,7 @@ export default defineConfig({
       {
         test: {
           name: '隔离',
-          isolate: true, // (默认值)
+          isolate: true, // （默认值）
           exclude: ['**.non-isolated.test.ts'],
         },
       },
@@ -56,7 +79,7 @@ export default defineConfig({
 如果你使用的是 `vmThreads` 池，则无法禁用隔离。请改用 `threads` 池来提高测试性能。
 :::
 
-对于某些项目，可能还需要禁用并行性以提高启动时间。为此，向 CLI 提供 `--no-file-parallelism` 标志，或在配置中将 [`test.fileParallelism`](/config/fileparallelism) 属性设置为 `false`。
+对于某些项目，可能还需要禁用并行性以提高启动速度。为此，向 CLI 提供 `--no-file-parallelism` 标志，或在配置中将 [`test.fileParallelism`](/config/fileparallelism) 属性设置为 `false`。
 
 ::: code-group
 ```bash [CLI]
@@ -73,6 +96,31 @@ export default defineConfig({
 ```
 :::
 
+## 测试环境
+
+DOM 环境的创建成本很高：`jsdom` 每次导入大约需要 200-500ms，`happy-dom` 大约需要 90-200ms，此外还要加上构造窗口的时间。使用隔离池（默认配置）时，每个测试文件都会承担这项成本，因为每个文件都会获得一个全新的工作线程。在大量使用 DOM 的测试套件中，这通常是运行过程中最大的开销；它会显示为 `Duration` 分解中的 `environment` 占比。
+
+以下三种配置可以降低这项成本：
+
+| 配置 | 创建环境的频率 | 隔离方式 | 权衡 |
+|---|---|---|---|
+| `pool: 'forks'`/`'threads'` + `isolate: true`（默认） | 每个文件一次 | 每个文件使用全新的进程/线程和环境 | 最安全，但速度最慢 |
+| `pool: 'vmThreads'` | 每个工作线程一次 | 每个文件使用全新的 VM 上下文和 `window` | 测试代码在 VM realm 中运行：与外部化包一起使用时可能出现跨 realm 的 `instanceof` 边界情况，并且内存回收不够可靠（请参阅 [`vmMemoryLimit`](/config/vmmemorylimit)） |
+| `isolate: false` | 每个工作线程一次 | 无 - 同一工作线程中的文件共享环境和模块状态 | 测试不能依赖干净的 `window` 或模块状态；运行 `vitest doctor` 进行检查 |
+
+```ts [vitest.config.js]
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    environment: 'jsdom',
+    pool: 'vmThreads', // 每个工作线程一个环境，每个文件使用全新的 window
+  },
+})
+```
+
+如果测试能够容忍共享状态，优先将 `isolate: false` 与 `threads` 一起使用：这是最快的选项，并且内存行为更简单。当每个文件都需要全新的 `window`，且每个文件创建环境的成本占运行时间的主要部分时，请使用 `vmThreads`。在所有配置中，创建 `happy-dom` 的成本都低于 `jsdom`。
+
 ## 限制目录搜索
 
 你可以使用 [`test.dir`](/config/dir) 选项限制 Vitest 搜索文件时的工作目录。如果你的根目录中有不相关的文件夹和文件，这应该会使搜索更快。
@@ -85,10 +133,10 @@ export default defineConfig({
 
 ```shell
 # 第一次运行
-Duration  8.75s (transform 4.02s, setup 629ms, import 5.52s, tests 2.52s, environment 0ms, prepare 3ms)
+Duration  8.75s (import 43%, transform 32%, tests 20%, setup 5%)
 
 # 第二次运行
-Duration  5.90s (transform 842ms, setup 543ms, import 2.35s, tests 2.94s, environment 0ms, prepare 3ms)
+Duration  5.90s (tests 44%, import 35%, transform 13%, setup 8%)
 ```
 
 ## Node 编译缓存

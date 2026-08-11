@@ -56,6 +56,25 @@ export default defineConfig({
 })
 ```
 
+### `testNamePattern` 匹配由 `>` 连接的完整名称
+
+[`testNamePattern`](/config/testnamepattern)（`-t` CLI 标志）现在会匹配测试的完整名称，其中测试套件链和测试名称通过 `' > '` 连接，这与 reporter 输出中显示的字符串相同。此前各段之间使用单个空格连接，与 Jest 保持一致。
+
+这只会影响跨越测试套件与测试之间边界（或嵌套测试套件之间边界）的模式。在单个名称段内匹配的模式，以及在各段之间使用 `.`/`.*` 的模式，不受影响。
+
+```ts
+describe('math', () => {
+  test('adds', () => {})
+})
+```
+
+```bash
+vitest -t 'math adds' # [!code --]
+vitest -t 'math > adds' # [!code ++]
+```
+
+如果希望模式无论分隔符为何都能正常工作，可以匹配单个名称段（`-t adds`），或在各段之间使用通配符（`-t 'math.*adds'`）。
+
 ### 内联项目默认继承根配置
 
 [`extends`](/guide/projects#configuration) 选项现在默认为 `true`：在 [`test.projects`](/guide/projects) 中以内联配置定义的每个项目，都会继承根配置中的所有选项，包括 `plugins` 或 `resolve.alias` 等 Vite 选项。选项合并时遵循与 Vitest 4 中显式设置 `extends: true` 时相同的规则：
@@ -138,7 +157,33 @@ export default mergeConfig(
 
 内联配置在运行时仍会忽略 `projects` 字段，但现在该字段也会从其 `ProjectConfig` 类型中排除。
 
-### 提升的模拟调用必须位于顶层
+### 内联项目默认共享 Vite 服务器
+
+不修改 Vite 配置的内联项目现在会复用声明它们的配置所使用的 Vite 服务器，而不是解析新的 Vite 配置并为每个项目创建新的服务器。这由新的 [`sharedViteServer`](/config/sharedviteserver) 选项控制，该选项默认启用。
+
+共享服务器意味着文件只需转换一次，而不是每个项目转换一次，因此测试现在应该运行得更快：在同一代码库上包含多个内联项目的配置受益最大，而只有一个项目的配置不会有明显差异。
+
+请注意，这_仅_适用于内联项目。作为配置文件或目录引用的项目始终会解析自己的 Vite 配置并创建自己的服务器，与之前完全一致。
+
+当内联项目定义了会改变服务器的 Vite 级别选项（`plugins`、`resolve` 等）、非默认的 `extends`，或会影响 Vite 配置的测试选项（`alias`、`browser`、`css`、`deps.moduleDirectories`、`deps.optimizer`、`mode` 或 `root`）时，它仍会获得自己的 Vite 服务器。每个项目都保留自己的模块解析规则、模块运行器和模块实例，因此 `env`、`setupFiles`、`server.deps` 或 `environment` 等选项仍会按项目分别解析。
+
+可观察到的变化是：共享服务器时，声明配置文件只会执行一次，而不是每个项目执行一次，因此其中的插件只会实例化一次，它们的 `config` 钩子也不再针对每个项目运行。如果某个插件依赖于为每个项目重新实例化，请禁用共享：
+
+```ts [vitest.config.ts]
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    sharedViteServer: false, // [!code ++]
+    projects: [
+      { test: { name: 'unit' } },
+      { test: { name: 'integration' } },
+    ],
+  },
+})
+```
+
+### 提升的 Mock 调用必须位于顶层
 
 [`vi.mock`](/api/vi#vi-mock)、[`vi.unmock`](/api/vi#vi-unmock) 和 [`vi.hoisted`](/api/vi#vi-hoisted) 会被提升到文件顶部，并在任何外围代码之前执行。之前在函数、代码块或 `describe`/`test` 回调中调用它们只会记录警告。Vitest 5.0 现在会抛出错误，因为该调用并不会在其书写位置执行：
 
@@ -303,7 +348,22 @@ await expect.poll(async ({ signal }) => {
 
 如果轮询确实需要更多时间，应当提高其 `timeout`。否则它会以 `expect.poll() function didn't resolve in time.`（或 `expect.poll() assertion didn't resolve in time.`）失败。
 
-### 测试标题和被检查的值使用 `pretty-format`
+### 未等待的异步断言会导致测试失败
+
+异步断言（如 `resolves`、`rejects` 和 `toMatchFileSnapshot`）如果未使用 `await`，现在会导致测试失败。此前，Vitest 会在测试结束时自动等待它们，并打印警告：
+
+```ts
+test('unawaited assertion', async () => {
+  // v4：打印警告，测试通过 // [!code --]
+  // v5：测试失败 // [!code ++]
+  expect(promise).resolves.toBe(1) // [!code --]
+  await expect(promise).resolves.toBe(1) // [!code ++]
+})
+```
+
+报告的错误会指向未等待的断言。
+
+### 测试标题和检查的值使用 `pretty-format`
 
 Vitest 现在在检查值时使用 [`pretty-format`](https://www.npmjs.com/package/pretty-format) 而不是 `loupe` 来格式化这些值，包括插入到 [`test.each`](/api/test#test-each) 和 [`test.for`](/api/test#test-for) 标题中的值。某些值的渲染会发生变化，因此捕获检查输出的快照或断言可能需要更新。
 
@@ -621,6 +681,13 @@ Vitest 的 `test` 名称用 `>` 符号连接，以便更容易区分测试和套
 ```diff
 - `${describeTitle} ${testTitle}`
 + `${describeTitle} > ${testTitle}`
+```
+
+同样适用于 [`testNamePattern`](/config/testnamepattern)（`-t` 标志）：Vitest 会匹配使用 `>` 连接的完整名称，而 Jest 会匹配使用空格连接的名称。请相应地更新跨越套件和测试的模式，或者匹配单个片段（`-t adds`），或在片段之间使用通配符（`-t 'math.*adds'`）。
+
+```diff
+- vitest -t 'math adds'
++ vitest -t 'math > adds'
 ```
 
 ### 环境变量
