@@ -217,6 +217,32 @@ describe('calculator', () => {
 
 现在，automock 会被还原为 automock。如果某个浏览器测试依赖于通过自动 mock 模块运行原始实现，那么它的导出现在默认会返回 `undefined`。请传入 [`{ spy: true }`](/api/vi#vi-mock) 以在继续调用真实实现的同时跟踪调用，或者提供一个符合你所需行为的 factory。
 
+### Class Mock 保留原型方法
+
+从类 mock 创建的实例之前会继承 mock 自身的空 `prototype`。使用常规类语法定义的方法在实例上会是 `undefined`，即使是在构造函数内部也是如此，并且针对实现类的 `instanceof` 检查也会失败。这会影响 [`vi.fn(Dog)`](/api/vi#vi-fn)、带或不带 mock 实现的 `vi.spyOn(obj, 'Dog')`，以及 [`.mockImplementation(class ...)`](/api/mock#mockimplementation)。
+
+现在，只要设置了实现，mock 的 `prototype` 就会链接到实现的 prototype，并且会在实现发生变化时保持同步，因此实例的行为会像实现类的实例一样：
+
+```ts
+class Dog {
+  speak() {
+    return 'bark!'
+  }
+}
+
+const MockedDog = vi.fn(Dog)
+const dog = new MockedDog()
+
+typeof dog.speak // was 'undefined', now 'function'
+dog instanceof Dog // was false, now true
+dog instanceof MockedDog // true, as before
+
+// the chain is visible on the mock itself
+Object.getPrototypeOf(MockedDog.prototype) // was Object.prototype, now Dog.prototype
+```
+
+在 mock 的 `prototype` 上覆盖方法仍然有效，并且会遮蔽实现。 [`mockReset`](/api/mock#mockreset) 会连同实现一起还原该链接：对于 `vi.fn(Dog)` 和 `vi.spyOn()`，还原为原始类；对于 `vi.fn()`，还原为普通对象。有关详细信息，请参阅[Mocking Classes](/guide/mocking/classes)。
+
 ### 基准测试 API 重写
 
 基准测试 API 已经重写。`bench` 不再是从 `vitest` 顶层导入的内容；它现在是一个 [测试上下文 fixture](/guide/test-context#bench)，需要在普通的 `test()` 内部访问。有关新 API，请参见 [基准测试指南](/guide/benchmarking)。
@@ -676,7 +702,7 @@ server.deps.inline: ["lib-name"]
 
 ### expect.getState().currentTestName
 
-Vitest 的 `test` 名称用 `>` 符号连接，以便更容易区分测试和套件，而 Jest 使用空格 (` `)。
+Vitest 的 `test` 名称用 `>` 符号连接，以便更容易区分测试和套件，而 Jest 使用空格（` `）。
 
 ```diff
 - `${describeTitle} ${testTitle}`
@@ -692,7 +718,7 @@ Vitest 的 `test` 名称用 `>` 符号连接，以便更容易区分测试和套
 
 ### 环境变量
 
-就像 Jest 一样，如果之前未设置，Vitest 会将 `NODE_ENV` 设置为 `test`。Vitest 还有一个对应于 `JEST_WORKER_ID` 的 `VITEST_POOL_ID`（总是小于或等于 `maxWorkers`），所以如果您依赖它，别忘了重命名它。Vitest 还暴露了 `VITEST_WORKER_ID`，这是运行 worker 的唯一 ID - 这个数字不受 `maxWorkers` 影响，并且会随着每个创建的 worker 增加。
+就像 Jest 一样，如果之前未设置，Vitest 会将 `NODE_ENV` 设置为 `test`。Vitest 还有一个对应于 `JEST_WORKER_ID` 的 `VITEST_POOL_ID`（总是小于或等于 `maxWorkers`），所以如果您依赖它，别忘了重命名它。Vitest 还暴露了 `VITEST_WORKER_ID`，这是运行 worker 的唯一 ID——这个数字不受 `maxWorkers` 影响，并且会随着每个创建的 worker 增加。
 
 ### 替换属性
 

@@ -152,8 +152,8 @@ expect(getRole('user@example.com')).toBe('user')
 有三种不同的处理方式：
 
 1. [抛出错误](#onunmatched-throw)；
-1. [运行自定义函数](#onunmatched-fn)；
-1. [将非对称匹配器作为兜底行为](#asymmetric-matcher-as-catch-all)。
+2. [运行自定义函数](#onunmatched-fn)；
+3. [使用非对称匹配器作为兜底 behavior](#asymmetric-matcher-as-catch-all)。
 
 ### `onUnmatched: 'throw'`
 
@@ -247,7 +247,7 @@ AssertionError: expected all behaviors to have been exhausted, but some remain:
 
 `vi.when` 支持 [显式资源管理](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Resource_management) 协议。
 
-使用 `using` 声明该链，以将 behaviors 限定在当前块内，并在执行离开时自动恢复 spy。
+使用 `using` 声明该链，以将行为限定在当前块内，并在执行离开时自动恢复 spy。
 
 ```ts
 const spy = vi.fn(() => 'original')
@@ -267,4 +267,4 @@ test('没有 mock 行为', () => {
 - [`vi.when`](/api/vi#vi-when)
 - [`toHaveBeenExhausted`](/api/expect#tohavebeenexhausted)
 - [`vi.isWhenChain`](/api/vi#vi-iswhenchain)
-- [`using 自动清理`](/guide/recipes/explicit-resources)
+- [`using 自动清理`](/guide/recipes/explicit-resources)。

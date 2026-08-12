@@ -40,13 +40,13 @@ await originalUserEvent.keyboard('{/Shift}') // 没有释放 shift，因为状�
 :::
 
 ::: warning
-With `playwright` and `webdriverio` providers, interactions are performed by the underlying browser driver. That means some interaction state, like pressed keys or pointer position and the resulting hover state, can persist between tests in the same file.
+使用 `playwright` 和 `webdriverio` 提供程序时，交互由底层浏览器驱动程序执行。这意味着某些交互状态（例如按下的按键或指针位置，以及由此产生的悬停状态）可能会在同一文件中的测试之间持续存在。
 
-Vitest resets unreleased keyboard state automatically before starting each test case, but pointer position and the resulting hover state are not reset automatically since resetting pointer position can be expensive.
+Vitest 会在每个测试用例开始前自动重置未释放的键盘状态，但不会自动重置指针位置及由此产生的悬停状态，因为重置指针位置可能会产生较高开销。
 
-This applies both to `userEvent.*` calls and locator shortcuts like `locator.click()` or `locator.hover()`, because they use the same underlying interaction state.
+这既适用于 `userEvent.*` 调用，也适用于 `locator.click()` 或 `locator.hover()` 等定位器快捷方法，因为它们使用相同的底层交互状态。
 
-If your tests depend on a neutral hover state, reset it explicitly, for example in `beforeEach`:
+如果你的测试依赖于中性的悬停状态，请显式重置它，例如在 `beforeEach` 中：
 
 ```ts
 import { beforeEach } from 'vitest'
@@ -109,7 +109,7 @@ await userEvent.click(element, { modifiers: ['Shift'] })
 
 - [Playwright `locator.click` API](https://playwright.dev/docs/api/class-locator#locator-click)
 - [WebdriverIO `element.click` API](https://webdriver.io/docs/api/element/click/)
-- [testing-library `click` API](https://testing-library.com/docs/user-event/convenience/#click)
+- [testing-library `click` API](https://testing-library.com/docs/user-event/convenience/#click)。
 
 ## userEvent.dblClick
 
@@ -140,7 +140,7 @@ test('triggers a double click on an element', async () => {
 
 - [Playwright `locator.dblclick` API](https://playwright.dev/docs/api/class-locator#locator-dblclick)
 - [WebdriverIO `element.doubleClick` API](https://webdriver.io/docs/api/element/doubleClick/)
-- [testing-library `dblClick` API](https://testing-library.com/docs/user-event/convenience/#dblClick)
+- [testing-library `dblClick` API](https://testing-library.com/docs/user-event/convenience/#dblClick)。
 
 ## userEvent.tripleClick
 
@@ -178,8 +178,8 @@ test('triggers a triple click on an element', async () => {
 参考：
 
 - [Playwright `locator.click` API](https://playwright.dev/docs/api/class-locator#locator-click)：通过 `click` 实现，带有 `clickCount: 3`。
-- [WebdriverIO `browser.action` API](https://webdriver.io/docs/api/browser/action/)：通过 actions api 实现，带有 `move` 加上三个 `down + up + pause` 事件连续
-- [testing-library `tripleClick` API](https://testing-library.com/docs/user-event/convenience/#tripleClick)
+- [WebdriverIO `browser.action` API](https://webdriver.io/docs/api/browser/action/)：通过 actions API 实现，带有 `move` 加上三个连续的 `down + up + pause` 事件。
+- [testing-library `tripleClick` API](https://testing-library.com/docs/user-event/convenience/#tripleClick)。
 
 ## userEvent.wheel <Version>4.1.0</Version> {#userevent-wheel}
 
@@ -271,7 +271,7 @@ test('update input', async () => {
 
 - [Playwright `locator.fill` API](https://playwright.dev/docs/api/class-locator#locator-fill)
 - [WebdriverIO `element.setValue` API](https://webdriver.io/docs/api/element/setValue)
-- [testing-library `type` API](https://testing-library.com/docs/user-event/utility/#type)
+- [testing-library `type` API](https://testing-library.com/docs/user-event/utility/#type)。
 
 ## userEvent.keyboard
 
@@ -281,7 +281,14 @@ function keyboard(text: string): Promise<void>
 
 `userEvent.keyboard` 允许你触发键盘击键。如果任何输入获得焦点，它将字符输入到该输入中。否则，它将在当前聚焦的元素上触发键盘事件（如果没有聚焦的元素，则为 `document.body`）。
 
-此 API 支持 [user-event `keyboard` 语法](https://testing-library.com/docs/user-event/keyboard)。
+此 API 支持 [user-event `keyboard` 语法](https://testing-library.com/docs/user-event/keyboard)。可以在花括号内引用的常见特殊键包括：
+
+- **修饰键：** `{Shift}`、`{Control}`、`{Alt}`、`{Meta}`
+- **导航：** `{ArrowUp}`、`{ArrowDown}`、`{ArrowLeft}`、`{ArrowRight}`、`{Home}`、`{End}`、`{PageUp}`、`{PageDown}`
+- **编辑：** `{Backspace}`、`{Delete}`、`{Insert}`、`{Tab}`、`{Enter}`、`{Escape}`
+- **功能键：** `{F1}` 到 `{F12}`
+
+注意：支持的确切键集合可能因底层浏览器提供程序（Playwright 与 WebdriverIO）而异。如果按键没有触发预期行为，请查阅提供程序的文档或提交 issue。
 
 ```ts
 import { userEvent } from 'vitest/browser'
@@ -373,7 +380,7 @@ Vitest 没有在 locator 上暴露 `.type` 方法（如 `input.type`），因为
 
 - [Playwright `locator.press` API](https://playwright.dev/docs/api/class-locator#locator-press)
 - [WebdriverIO `action('key')` API](https://webdriver.io/docs/api/browser/action#key-input-source)
-- [testing-library `type` API](https://testing-library.com/docs/user-event/utility/#type)
+- [testing-library `type` API](https://testing-library.com/docs/user-event/utility/#type)。
 
 ## userEvent.clear
 
@@ -461,7 +468,7 @@ test('clears input', async () => {
 
 - [Playwright `locator.selectOption` API](https://playwright.dev/docs/api/class-locator#locator-select-option)
 - [WebdriverIO `element.selectByIndex` API](https://webdriver.io/docs/api/element/selectByIndex)
-- [testing-library `selectOptions` API](https://testing-library.com/docs/user-event/utility/#-selectoptions-deselectoptions)
+- [testing-library `selectOptions` API](https://testing-library.com/docs/user-event/utility/#-selectoptions-deselectoptions)。
 
 ## userEvent.hover
 
@@ -496,7 +503,7 @@ test('hovers logo element', async () => {
 
 - [Playwright `locator.hover` API](https://playwright.dev/docs/api/class-locator#locator-hover)
 - [WebdriverIO `element.moveTo` API](https://webdriver.io/docs/api/element/moveTo/)
-- [testing-library `hover` API](https://testing-library.com/docs/user-event/convenience/#hover)
+- [testing-library `hover` API](https://testing-library.com/docs/user-event/convenience/#hover)。
 
 ## userEvent.unhover
 
@@ -529,7 +536,7 @@ test('unhover logo element', async () => {
 
 - [Playwright `locator.hover` API](https://playwright.dev/docs/api/class-locator#locator-hover)
 - [WebdriverIO `element.moveTo` API](https://webdriver.io/docs/api/element/moveTo/)
-- [testing-library `hover` API](https://testing-library.com/docs/user-event/convenience/#hover)
+- [testing-library `hover` API](https://testing-library.com/docs/user-event/convenience/#hover)。
 
 ## userEvent.upload
 
@@ -568,7 +575,7 @@ test('can upload a file', async () => {
 
 - [Playwright `locator.setInputFiles` API](https://playwright.dev/docs/api/class-locator#locator-set-input-files)
 - [WebdriverIO `browser.uploadFile` API](https://webdriver.io/docs/api/browser/uploadFile)
-- [testing-library `upload` API](https://testing-library.com/docs/user-event/utility/#upload)
+- [testing-library `upload` API](https://testing-library.com/docs/user-event/utility/#upload)。
 
 ## userEvent.dragAndDrop
 
@@ -604,7 +611,7 @@ test('drag and drop works', async () => {
 参考：
 
 - [Playwright `frame.dragAndDrop` API](https://playwright.dev/docs/api/class-frame#frame-drag-and-drop)
-- [WebdriverIO `element.dragAndDrop` API](https://webdriver.io/docs/api/element/dragAndDrop/)
+- [WebdriverIO `element.dragAndDrop` API](https://webdriver.io/docs/api/element/dragAndDrop/)。
 
 ## userEvent.copy
 
@@ -637,7 +644,7 @@ test('copy and paste', async () => {
 
 参考：
 
-- [testing-library `copy` API](https://testing-library.com/docs/user-event/convenience/#copy)
+- [testing-library `copy` API](https://testing-library.com/docs/user-event/convenience/#copy)。
 
 ## userEvent.cut
 
@@ -670,7 +677,7 @@ test('copy and paste', async () => {
 
 参考：
 
-- [testing-library `cut` 接口](https://testing-library.com/docs/user-event/clipboard#cut)
+- [testing-library `cut` 接口](https://testing-library.com/docs/user-event/clipboard#cut)。
 
 ## userEvent.paste
 
@@ -682,4 +689,4 @@ function paste(): Promise<void>
 
 参考：
 
-- [testing-library `paste` 接口](https://testing-library.com/docs/user-event/clipboard#paste)
+- [testing-library `paste` 接口](https://testing-library.com/docs/user-event/clipboard#paste)。

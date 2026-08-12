@@ -473,12 +473,17 @@ expect(getApples).toHaveNthReturnedWith(2, 5)
 
 ```ts
 const Cart = vi.fn(class {
-  get = () => 0
+  get() {
+    return 0
+  }
 })
 
 const cart = new Cart()
 expect(Cart).toHaveBeenCalled()
+expect(cart.get()).toBe(0)
 ```
+
+实例会保留实现类的原型链，因此其实例上可以使用原型方法，并且针对实现类的 `instanceof` 检查也会通过。详情请参阅[模拟类](/guide/mocking/classes)。
 
 ### vi.mockObject <Version>3.2.0</Version>
 
@@ -614,6 +619,8 @@ const spy = vi.spyOn(cart, 'Apples')
 
 如果你提供箭头函数，当调用模拟时，你将收到 [`<anonymous> is not a constructor` 错误](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/Not_a_constructor)。
 
+使用类实现时，实例会保留该类的原型链：实例上可以使用 `getApples` 等原型方法，并且针对实现类的 `instanceof` 检查会通过。有关详细信息，请参阅 [Mocking Classes](/guide/mocking/classes)。
+
 ::: tip
 在支持 [显式资源管理](https://github.com/tc39/proposal-explicit-resource-management) 的环境中，你可以使用 `using` 代替 `const`，以便在退出包含块时自动在任何模拟函数上调用 `mockRestore`。这对于监听的方法特别有用：
 
@@ -741,7 +748,7 @@ function stubGlobal(
 ): Vitest
 ```
 
-Changes the value of a global variable. You can restore its original value by calling `vi.unstubAllGlobals`.
+更改全局变量的值。你可以通过调用 `vi.unstubAllGlobals` 来恢复其原始值。
 
 ```ts
 import { vi } from 'vitest'
@@ -757,7 +764,7 @@ window.innerWidth === 100
 ```
 
 :::tip
-You can also change the value by assigning directly to `globalThis` or `window` (if you are using the `jsdom` or `happy-dom` environment), but you will not be able to restore the original value using `vi.unstubAllGlobals`:
+你也可以通过直接赋值给 `globalThis` 或 `window`（如果你使用的是 `jsdom` 或 `happy-dom` 环境）来更改值，但将无法使用 `vi.unstubAllGlobals` 恢复原始值：
 
 ```ts
 globalThis.innerWidth = 100

@@ -166,6 +166,8 @@ mockFn.mock.calls[0][0] === 0 // true
 mockFn.mock.calls[1][0] === 1 // true
 ```
 
+如果实现是一个类，mock 的 `prototype` 会重新指向该实现的 `prototype`，因此构造出的实例可以访问其原型方法，并且能够通过针对该实现的 `instanceof` 检查。详情请参阅[模拟类](/guide/mocking/classes)。
+
 ## mockImplementationOnce
 
 ```ts
@@ -283,7 +285,9 @@ function mockReset(): Mock<T>
 
 请注意，重置来自 `vi.fn()` 的模拟会将实现设置为返回 `undefined` 的空函数。重置来自 `vi.fn(impl)` 的模拟会将实现重置为 `impl`。
 
-当你想要将模拟重置为其原始状态时，这很有用。
+模拟的 `prototype` 链也会随之变化：对于 `vi.fn(impl)` 和 `vi.spyOn()`，它会恢复为原始类；对于 `vi.fn()`，它会恢复为普通对象，因此重置后构造的实例不再通过针对之前设置的类实现的 `instanceof` 检查。
+
+当你想将模拟重置为其原始状态时，此方法很有用。
 
 ```ts
 const person = {
