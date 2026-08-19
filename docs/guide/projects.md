@@ -235,6 +235,15 @@ bun run test --project e2e --project unit
 ```
 :::
 
+该过滤器支持 `*` 通配符和 `!` 排除项。如果项目不匹配任何否定模式，并且同时提供了常规模式，则至少匹配其中一个常规模式，该项目就会运行：
+
+```bash
+# run every project except "e2e"
+vitest --project '!e2e'
+# run every project starting with "unit", except "unit (browser)"
+vitest --project 'unit*' --project '!unit (browser)'
+```
+
 ## 配置
 
 使用内联配置定义的项目会继承根级配置中的所有选项。这由 `extends` 选项控制，自 Vitest 5.0 起默认启用：
@@ -390,4 +399,23 @@ export default defineProject({
 })
 ```
 
-请注意，只有配置文件可以定义嵌套项目。内联配置中的 `projects` 选项不受支持。
+请注意，只有配置文件才能定义嵌套项目。内联配置中的 `projects` 选项不受支持。
+
+## 调试项目解析
+
+如果项目未按照预期解析，请使用环境变量 `DEBUG=vitest:projects` 运行 Vitest：
+
+```bash
+DEBUG=vitest:projects vitest
+```
+
+Vitest 会记录每个项目的解析方式：glob 模式匹配了哪些文件、浏览器实例和基准测试项目是如何展开的、项目为何被 `--project` 过滤器排除，以及项目是创建自己的 Vite 服务器还是与其他项目[共享一个](/config/sharedviteserver)：
+
+```
+vitest:projects resolving 3 project definitions declared by <root>/vitest.config.ts
+vitest:projects projects glob "packages/*" matched 2 paths
+vitest:projects inline project "unit" shares the Vite server of <root>/vitest.config.ts
+vitest:projects project "e2e" is dropped by the --project filter: unit
+vitest:projects resolved projects: "unit", "pkg-a", "pkg-b"
+vitest:projects creating a Vite server for project "pkg-a"
+```

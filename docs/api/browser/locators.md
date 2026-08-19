@@ -515,7 +515,7 @@ page.getByRole('button')
 ## filter
 
 ```ts
-function filter(options: LocatorOptions): Locator
+function filter(options: LocatorFilterOptions): Locator
 ```
 
 此方法根据选项缩小定位器范围，例如按文本过滤。它可以链式调用以应用多个过滤器。

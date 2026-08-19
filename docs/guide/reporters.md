@@ -38,15 +38,15 @@ export default defineConfig({
 })
 ```
 
-## Default Configuration
+## 默认配置
 
-When `reporters` is not configured, Vitest will use the following reporters:
+当未配置 `reporters` 时，Vitest 将使用以下报告器：
 
-- use [`default`](#default-reporter) in normal terminal runs
-- use [`minimal`](#minimal-reporter) when Vitest detects an AI coding agent
-- add [`github-actions`](#github-actions-reporter) when `process.env.GITHUB_ACTIONS === 'true'`
+- 在普通终端运行中使用 [`default`](#default-reporter)
+- 当 Vitest 检测到 AI 编码代理时使用 [`minimal`](#minimal-reporter)
+- 当 `process.env.GITHUB_ACTIONS === 'true'` 时添加 [`github-actions`](#github-actions-reporter)
 
-If you configure your own reporters, the configured list will replace the default list. If you want to add a reporter while keeping Vitest’s default values, extend `configDefaults.reporters`:
+如果配置了自定义报告器，配置的列表将替换默认列表。如果希望在保留 Vitest 默认值的同时添加报告器，请扩展 `configDefaults.reporters`：
 
 ```ts
 import { configDefaults, defineConfig } from 'vitest/config'
@@ -740,7 +740,25 @@ export default defineConfig({
 })
 ```
 
-摘要的不稳定测试部分包含永久链接 URL，可将测试名称直接链接到 GitHub 上的相关源代码行。这些链接是使用 GitHub Actions 提供的环境变量（`$GITHUB_REPOSITORY`、`$GITHUB_SHA` 和 `$GITHUB_WORKSPACE`）自动生成的，因此在大多数情况下无需配置。
+任务摘要标题默认为 `Vitest Test Report`；当设置了 [`test.name`](/config/name) 时，默认为 `(${test.name}) Vitest Test Report`。
+
+你可以通过设置 `jobSummary.title` 自定义标题，以区分追加到同一任务摘要中的多个 Vitest 调用。请注意，使用自定义标题时不会显示 `test.name`。
+
+```ts
+export default defineConfig({
+  test: {
+    reporters: [
+      ['github-actions', {
+        jobSummary: {
+          title: 'My Test Report',
+        },
+      }],
+    ],
+  },
+})
+```
+
+摘要中的不稳定测试部分包含永久链接 URL，可将测试名称直接链接到 GitHub 上相关的源代码行。这些链接会自动使用 GitHub Actions 提供的环境变量（`$GITHUB_REPOSITORY`、`$GITHUB_SHA` 和 `$GITHUB_WORKSPACE`）生成，因此大多数情况下无需配置。
 
 如果你需要覆盖这些值——例如，在容器或自定义环境中运行时——你可以通过 `fileLinks` 选项自定义它们：
 

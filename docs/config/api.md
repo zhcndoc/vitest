@@ -31,5 +31,4 @@ Vitest 默认不会将 API 暴露到互联网，而只监听 `localhost`。但�
 - **类型：** `boolean`
 - **默认值：** 如果不暴露给网络则为 `true`，否则为 `false`
 
-允许通过 UI 运行任意测试文件。这适用于 [UI](/guide/ui) 中能够运行代码的交互元素（及其背后的服务器代码）。此选项还会限制能够间接执行代码的特权浏览器 API，例如通过 [`cdp()`](/api/browser/context#cdp) 访问原始 Chrome DevTools 协议。
-
+允许通过 UI 运行任意测试文件。这适用于[UI](/guide/ui)中可以运行代码的交互元素（以及其背后的服务器代码）。在浏览器模式下，此选项还会限制间接代码执行，包括在服务器上评估外部 `.snap` 文件，以及通过 [`cdp()`](/api/browser/context#cdp) 访问原始 Chrome DevTools 协议。

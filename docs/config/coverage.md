@@ -45,6 +45,8 @@ npx vitest --coverage.enabled --coverage.provider=istanbul
 
 建议在模式中传递文件扩展名。
 
+模式会根据每个文件相对于项目根目录的路径进行匹配。不包含 glob 通配符的模式会被视为目录，并匹配其中的所有内容，因此 `include: ['src']` 等同于 `include: ['src/**']`。
+
 示例请参阅 [在覆盖率报告中包含和排除文件](/guide/coverage.html#including-and-excluding-files-from-coverage-report)。
 
 ## coverage.exclude
@@ -54,7 +56,7 @@ npx vitest --coverage.enabled --coverage.provider=istanbul
 - **适用提供者：** `'v8' | 'istanbul'`
 - **命令行：** `--coverage.exclude=<path>`, `--coverage.exclude=<path1> --coverage.exclude=<path2>`
 
-作为 glob 模式从覆盖率中排除的文件列表。
+以 glob 模式列出从覆盖率中排除的文件。模式的匹配方式与 [`coverage.include`](#coverage-include) 相同。
 
 示例请参阅 [在覆盖率报告中包含和排除文件](/guide/coverage.html#including-and-excluding-files-from-coverage-report)。
 
@@ -337,9 +339,9 @@ npx vitest --coverage.enabled --coverage.provider=istanbul
 
 ### coverage.thresholds[glob-pattern]
 
-- **Type:** `{ statements?: number, functions?: number, branches?: number, lines?: number, perFile?: boolean | object }`
-- **Default:** `undefined`
-- **Available for providers:** `'v8' | 'istanbul'`
+- **类型：** `{ statements?: number, functions?: number, branches?: number, lines?: number, perFile?: boolean | object }`
+- **默认值：** `undefined`
+- **适用提供者：** `'v8' | 'istanbul'`
 
 为匹配 glob 模式的文件设置阈值。
 
@@ -496,7 +498,7 @@ export default defineConfig({
 
 - **类型：** `string`
 - **适用提供者：** `'custom'`
-- **CLI：** `--coverage.customProviderModule=<path or module name>`
+- **命令行：** `--coverage.customProviderModule=<path or module name>`
 
 指定自定义覆盖率提供者模块的模块名称或路径。参见 [指南 - 自定义覆盖率提供者](/guide/coverage#custom-coverage-provider) 获取更多信息。
 
@@ -504,7 +506,7 @@ export default defineConfig({
 
 - **类型：** `string`
 - **默认值：** 自动从 `html`、`html-spa` 或 `lcov` 覆盖率报告器推断
-- **CLI：** `--coverage.htmlDir=<path>`
+- **命令行：** `--coverage.htmlDir=<path>`
 
 要在 [Vitest UI](/guide/ui) 和 [HTML 报告器](/guide/reporters.html#html-reporter) 中展示的 HTML 覆盖率输出目录。
 

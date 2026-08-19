@@ -23,12 +23,14 @@ outline: deep
 
 一个包含要模拟的全局方法和 API 名称的数组。例如，如果只想模拟 `setTimeout()` 和 `nextTick()`，请将此属性指定为 `['setTimeout', 'nextTick']`。
 
-当使用 `--pool=forks` 在 `node:child_process` 内部运行 Vitest 时，不支持模拟 `nextTick`。NodeJS 在 `node:child_process` 内部使用 `process.nextTick`，如果对其进行模拟会导致挂起。当使用 `--pool=threads` 运行 Vitest 时，支持模拟 `nextTick`。
+仅当 `Temporal` 在全局对象上可用时才会被模拟：原生支持（Node.js >= 26 默认支持，旧版本需在 `--harmony-temporal` 后使用，并且受支持的浏览器也支持），或通过全局安装的 polyfill（例如 `import 'temporal-polyfill/global'`）支持。
+
+在使用 `--pool=forks` 通过 `node:child_process` 在 Vitest 内部运行时，不支持模拟 `nextTick`。NodeJS 在 `node:child_process` 内部使用 `process.nextTick`，而在模拟它时会卡住。在使用 `--pool=threads` 运行 Vitest 时支持模拟 `nextTick`。
 
 ## fakeTimers.toNotFake
 
-- **Type:** `('setTimeout' | 'clearTimeout' | 'setImmediate' | 'clearImmediate' | 'setInterval' | 'clearInterval' | 'Date' | 'nextTick' | 'hrtime' | 'requestAnimationFrame' | 'cancelAnimationFrame' | 'requestIdleCallback' | 'cancelIdleCallback' | 'performance' | 'queueMicrotask' | 'Intl' | 'Temporal')[]`
-- **Default:** `[]`
+- **类型：** `('setTimeout' | 'clearTimeout' | 'setImmediate' | 'clearImmediate' | 'setInterval' | 'clearInterval' | 'Date' | 'nextTick' | 'hrtime' | 'requestAnimationFrame' | 'cancelAnimationFrame' | 'requestIdleCallback' | 'cancelIdleCallback' | 'performance' | 'queueMicrotask' | 'Intl' | 'Temporal')[]`
+- **默认值：** `[]`
 
 一个包含要保持为原生实现的全局方法和 API 名称的数组。所有其他可用的计时器都将被模拟。例如，如果想保持 `setInterval()` 为原生并模拟其他所有计时器，请将此属性指定为 `['setInterval']`。
 

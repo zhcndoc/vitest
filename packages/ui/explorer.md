@@ -14,7 +14,7 @@ Explorer 不会直接使用来自 `ws-client` 状态中的 `idsMap` 和 `filesMa
 - [nodes](client/composables/explorer/tree.ts)：`ws-client` 状态中的变化会在这里映射为树结构。
 - [uiEntries](client/composables/explorer/state.ts)：一个浅层 ref，用于表示 UI 中的扁平树条目，逻辑会使用 `nodes` 来构建它。
 
-Explorer 中的任何操作都会使用 `queueMicrotask` 来避免阻塞主线程，并且对 list/map 的任何操作都会使用 `generators`。
+Explorer 更新会通过 `requestAnimationFrame` 进行节流，并且列表和 map 上的操作使用生成器。
 
 Explorer 逻辑将动作分为三个主要部分：
 - 在运行测试时收集任务

@@ -60,6 +60,28 @@ test.describe('ui', () => {
     await expect(badToken.text()).resolves.toContain('Vitest UI requires authentication.')
   })
 
+  test('blocks unauthenticated coverage requests', async ({ request }) => {
+    const base = new URL(pageUrl)
+    base.search = ''
+
+    const entry = new URL('coverage/index.html', base).toString()
+    const tokenless = await request.get(entry)
+    expect(tokenless.status()).toBe(403)
+    await expect(tokenless.text()).resolves.toContain('Vitest UI requires authentication.')
+
+    // Connect matches the mount case-insensitively and treats `.` as a
+    // boundary, so these must be gated too, not just the `/`-delimited path.
+    for (const path of ['Coverage/index.html', 'coverage.', 'coverage./index.html']) {
+      const res = await request.get(new URL(path, base).toString())
+      expect(res.status(), path).toBe(403)
+    }
+
+    const withToken = new URL(entry)
+    withToken.searchParams.set('token', vitest!.config.api.token)
+    const authed = await request.get(withToken.toString())
+    expect(authed.status()).toBe(200)
+  })
+
   test('does not serve the api token file', async ({ request }) => {
     const { tokenPath } = resolveApiToken(vitest!.config.root)
     expect(existsSync(tokenPath)).toBe(true)
@@ -101,6 +123,22 @@ test.describe('ui', () => {
   test('console', async ({ page }) => {
     await page.goto(pageUrl)
     await testConsole(page)
+  })
+
+  test('collapses explorer suites only from the disclosure button', async ({ page }) => {
+    await page.goto(pageUrl)
+
+    // "suite" is an actual title of this suite
+    const suite = getExplorerItem(page, 'suite')
+    await suite.click()
+    await expect(page.getByTestId('file-detail')).toContainText('console.test.ts')
+    await expect(getExplorerItem(page, 'nested suite')).toBeVisible()
+
+    await suite.getByRole('button', { name: 'Collapse suite', exact: true }).click()
+    await expect(getExplorerItem(page, 'nested suite')).not.toBeVisible()
+
+    await suite.getByRole('button', { name: 'Expand suite', exact: true }).click()
+    await expect(getExplorerItem(page, 'nested suite')).toBeVisible()
   })
 
   test('error', async ({ page }) => {

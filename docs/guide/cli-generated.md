@@ -795,7 +795,7 @@ VM 池的内存限制。如果你看到内存泄漏，可以尝试调整此值�
 
 - **CLI:** `-p, --project <name>`
 
-如果你使用 Vitest workspace 功能，这是要运行的项目名称。可以重复指定多个项目：`--project=1 --project=2`。你也可以使用通配符过滤项目，如 `--project=packages*`，并通过 `--project=!pattern` 排除项目。
+如果使用 Vitest workspace 功能，这是要运行的项目名称。可以重复此选项以指定多个项目：`--project=1 --project=2`。也可以使用通配符筛选项目，例如 `--project=packages*`，并使用 `--project=!pattern` 排除项目。如果项目不匹配任何否定模式，并且指定了常规模式时至少匹配其中一个模式，则会运行该项目。
 
 ### 慢测试阈值
 
@@ -945,7 +945,7 @@ teardown 函数的默认超时时间（毫秒）（默认：`10000`）。
 
 ### experimental.importDurations.limit
 
-- **CLI：** `--experimental.importDurations.limit <number>`
+- **命令行：** `--experimental.importDurations.limit <number>`
 - **配置：** [experimental.importDurations.limit](/config/experimental#experimental-importdurations-limit)
 
 要收集并显示的导入最大数量（默认：`0`，如果启用了 print 或 UI，则为 `10`）。
@@ -1025,4 +1025,4 @@ teardown 函数的默认超时时间（毫秒）（默认：`10000`）。
 - **CLI：** `--experimental.diagnostics.transform`
 - **配置：** [experimental.diagnostics.transform](/config/experimental#experimental-diagnostics-transform)
 
-当转换模块占据运行过程的大部分时间，并且 `fsModuleCache` 可以在多次运行之间持久化结果时，打印提示。（默认值：`true`）
+当转换模块占据运行过程的大部分时间，并且 `fsModuleCache` 可以在多次运行之间持久化结果时，打印提示。（默认值：`true`）。

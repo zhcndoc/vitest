@@ -9,17 +9,13 @@ outline: deep
 
 ## 迁移到 Vitest 5.0 {#vitest-5}
 
-::: warning 正在进行中
-Vitest 5.0 目前处于 beta 版。本节会跟踪合并中的破坏性变更，并且在稳定版发布前可能仍会更改。
-:::
-
-::: warning 前置条件
-Vitest 5.0 需要 Vite >= 6.4.0 和 Node.js >= 22.12.0。在进行任何其他迁移步骤之前，请确保你的环境满足这些要求。在较旧版本的 Vite 或 Node.js 上运行 Vitest 5.0 不受支持，可能会导致意外错误。
+::: warning Prerequisites
+Vitest 5.0 requires Vite >= 6.4.0 and Node.js >= 22.12.0. Before proceeding with any other migration steps, ensure your environment meets these requirements. Running Vitest 5.0 on older versions of Vite or Node.js is not supported and may result in unexpected errors.
 :::
 
 ### `clearMocks` 默认已启用
 
-[`clearMocks`](/config/#clearmocks) 现在默认值为 `true`。Vitest 会在每个测试之前调用 [`vi.clearAllMocks()`](/api/vi#vi-clearallmocks)，重置每个 mock 的 `mock.calls`、`mock.instances`、`mock.contexts` 和 `mock.results`。mock 的实现会保持不变，因此这只会影响已记录的历史。
+[`clearMocks`](/config/clearmocks) 现在默认为 `true`：Vitest 会在每个测试前调用 [`vi.clearAllMocks()`](/api/vi#vi-clearallmocks)，清除每个 mock 的记录历史，同时保留其实现。
 
 实际上，这意味着一个 mock 不再会把一个测试中的调用带到下一个测试中：
 
@@ -60,7 +56,7 @@ export default defineConfig({
 
 [`testNamePattern`](/config/testnamepattern)（`-t` CLI 标志）现在会匹配测试的完整名称，其中测试套件链和测试名称通过 `' > '` 连接，这与 reporter 输出中显示的字符串相同。此前各段之间使用单个空格连接，与 Jest 保持一致。
 
-这只会影响跨越测试套件与测试之间边界（或嵌套测试套件之间边界）的模式。在单个名称段内匹配的模式，以及在各段之间使用 `.`/`.*` 的模式，不受影响。
+只有跨越两个名称段边界的模式会受到影响：
 
 ```ts
 describe('math', () => {
@@ -100,15 +96,9 @@ export default defineConfig({
 })
 ```
 
-以下选项不会被继承，因为它们始终限定于单个项目或整个测试运行：
+作为配置文件或目录引用的项目不受影响；它们仍然不会继承根配置中的任何选项。
 
-- `name` 和 `projects` 永远不会被继承。
-- 根配置中的 `globalSetup` 不会被继承：根级别的 `globalSetup` 已经会在每次测试运行时执行一次，因此继承它会导致相同的文件在每个项目中再次执行。从非根配置文件扩展时，仍然会继承该选项。
-- 项目自身的 `tags` 会替换继承的数组，而不是与其合并。
-
-以配置文件或目录形式引用的项目不受影响；它们仍然不会从根配置继承任何选项。
-
-请注意，数组会被合并，而不是被覆盖。例如，如果根配置定义了 `setupFiles`，项目自身的 `setupFiles` 会追加到继承的配置中。如果需要恢复之前的行为，请在项目配置中设置 `extends: false`：
+请注意，数组会被合并，而不是覆盖：如果根配置定义了 `setupFiles`，项目自身的 `setupFiles` 会追加到继承的配置中。有关合并规则以及永远不会被继承的少数选项，请参阅[项目指南](/guide/projects#configuration)。如果需要之前的行为，请在项目配置中设置 `extends: false`：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
@@ -131,9 +121,9 @@ export default defineConfig({
 
 ### 被引用的配置文件可以定义自己的项目
 
-在 [`test.projects`](/guide/projects) 中被引用且自身声明了 `projects` 的配置文件，现在会像根配置一样处理：它不会自行运行测试，而只会提供它所声明的[嵌套项目](/guide/projects#nested-projects)。这些项目的名称会以声明该配置的配置文件名称作为前缀，例如 `app (unit)`。
+在 [`test.projects`](/guide/projects) 中引用的配置文件，如果自身声明了 `projects`，现在会提供它所声明的[嵌套项目](/guide/projects#nested-projects)（名称为 `app (unit)`、`app (e2e)` 等），而不是将测试作为单个项目运行。
 
-在 Vitest 4 中，被引用配置的 `projects` 字段会被静默忽略，该配置会作为单个项目运行。请检查你的项目配置是否在不知情的情况下包含 `projects` 字段。最常见的情况是合并了一个定义了该字段的配置：
+在 Vitest 4 中，被引用配置的 `projects` 字段会被静默忽略。请检查你的项目配置是否在不知情的情况下包含 `projects` 字段。最常见的情况是合并了定义该字段的配置：
 
 ```ts [packages/app/vitest.config.ts]
 import { defineProject, mergeConfig } from 'vitest/config'
@@ -159,15 +149,11 @@ export default mergeConfig(
 
 ### 内联项目默认共享 Vite 服务器
 
-不修改 Vite 配置的内联项目现在会复用声明它们的配置所使用的 Vite 服务器，而不是解析新的 Vite 配置并为每个项目创建新的服务器。这由新的 [`sharedViteServer`](/config/sharedviteserver) 选项控制，该选项默认启用。
-
-共享服务器意味着文件只需转换一次，而不是每个项目转换一次，因此测试现在应该运行得更快：在同一代码库上包含多个内联项目的配置受益最大，而只有一个项目的配置不会有明显差异。
+不修改 Vite 配置的内联项目现在会复用声明它们的配置所使用的 Vite 服务器，而不是为每个项目解析新的 Vite 配置并创建新的服务器，因此共享文件只需转换一次，测试运行速度也会更快。这由新的 [`sharedViteServer`](/config/sharedviteserver) 选项控制，该选项默认启用；其文档列出了仍会为项目提供独立服务器的确切选项。
 
 请注意，这_仅_适用于内联项目。作为配置文件或目录引用的项目始终会解析自己的 Vite 配置并创建自己的服务器，与之前完全一致。
 
-当内联项目定义了会改变服务器的 Vite 级别选项（`plugins`、`resolve` 等）、非默认的 `extends`，或会影响 Vite 配置的测试选项（`alias`、`browser`、`css`、`deps.moduleDirectories`、`deps.optimizer`、`mode` 或 `root`）时，它仍会获得自己的 Vite 服务器。每个项目都保留自己的模块解析规则、模块运行器和模块实例，因此 `env`、`setupFiles`、`server.deps` 或 `environment` 等选项仍会按项目分别解析。
-
-可观察到的变化是：共享服务器时，声明配置文件只会执行一次，而不是每个项目执行一次，因此其中的插件只会实例化一次，它们的 `config` 钩子也不再针对每个项目运行。如果某个插件依赖于为每个项目重新实例化，请禁用共享：
+可观察到的变化是：共享服务器时，声明配置文件只会执行一次，而不是每个项目执行一次，因此其中的插件只会实例化一次，其 `config` 钩子也不再为每个项目运行。如果某个插件依赖于为每个项目重新实例化，请禁用共享：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
@@ -213,15 +199,13 @@ describe('calculator', () => {
 
 ### 自动 mock 模块在浏览器中仍保持自动 mock
 
-在浏览器模式下，mock 元数据会在 Vitest 和测试 iframe 之间进行序列化。一个自动 mock 模块（即不带 factory 的 [`vi.mock`](/api/vi#vi-mock) 调用）在另一侧被错误地恢复为 spy，因此它的导出会继续调用真实实现，而不是自动生成的 stub。
-
-现在，automock 会被还原为 automock。如果某个浏览器测试依赖于通过自动 mock 模块运行原始实现，那么它的导出现在默认会返回 `undefined`。请传入 [`{ spy: true }`](/api/vi#vi-mock) 以在继续调用真实实现的同时跟踪调用，或者提供一个符合你所需行为的 factory。
+在浏览器模式下，自动 mock 模块的导出内容（即不带工厂函数的 [`vi.mock`](/api/vi#vi-mock) 调用）错误地仍会调用真实实现，而不是自动生成的存根。如果浏览器测试依赖于该行为，其导出内容现在默认会返回 `undefined`。传入 [`{ spy: true }`](/api/vi#vi-mock) 可以在跟踪调用的同时继续调用真实实现，或者提供一个包含所需行为的工厂函数。
 
 ### Class Mock 保留原型方法
 
 从类 mock 创建的实例之前会继承 mock 自身的空 `prototype`。使用常规类语法定义的方法在实例上会是 `undefined`，即使是在构造函数内部也是如此，并且针对实现类的 `instanceof` 检查也会失败。这会影响 [`vi.fn(Dog)`](/api/vi#vi-fn)、带或不带 mock 实现的 `vi.spyOn(obj, 'Dog')`，以及 [`.mockImplementation(class ...)`](/api/mock#mockimplementation)。
 
-现在，只要设置了实现，mock 的 `prototype` 就会链接到实现的 prototype，并且会在实现发生变化时保持同步，因此实例的行为会像实现类的实例一样：
+mock 的 `prototype` 现在会链接到实现类的 prototype，因此实例的行为与实现类的实例一致：
 
 ```ts
 class Dog {
@@ -241,11 +225,11 @@ dog instanceof MockedDog // true, as before
 Object.getPrototypeOf(MockedDog.prototype) // was Object.prototype, now Dog.prototype
 ```
 
-在 mock 的 `prototype` 上覆盖方法仍然有效，并且会遮蔽实现。 [`mockReset`](/api/mock#mockreset) 会连同实现一起还原该链接：对于 `vi.fn(Dog)` 和 `vi.spyOn()`，还原为原始类；对于 `vi.fn()`，还原为普通对象。有关详细信息，请参阅[Mocking Classes](/guide/mocking/classes)。
+在 mock 的 `prototype` 上覆盖方法仍然有效，并且会遮蔽实现类中的方法；[`mockReset`](/api/mock#mockreset) 会连同实现一起恢复该原型链。有关详情，请参阅[Mocking Classes](/guide/mocking/classes)。
 
 ### 基准测试 API 重写
 
-基准测试 API 已经重写。`bench` 不再是从 `vitest` 顶层导入的内容；它现在是一个 [测试上下文 fixture](/guide/test-context#bench)，需要在普通的 `test()` 内部访问。有关新 API，请参见 [基准测试指南](/guide/benchmarking)。
+基准测试 API 已经重写。`bench` 不再是从 `vitest` 顶层导入的内容；它现在是一个[测试上下文 fixture](/guide/test-context#bench)，需要在普通的 `test()` 内部访问。有关新 API，请参见[基准测试指南](/guide/benchmarking)。
 
 已移除，并在适用时提供替代方案：
 
@@ -282,9 +266,9 @@ vitest --ui
 # UI started at http://localhost:51204/__vitest__/?token=...
 ```
 
-### 现在假时间器会模拟 `Temporal`
+### Fake Timers and `setSystemTime` Now Mock `Temporal`
 
-Vitest 现在在启用假时间器时，会与 `Date` 一起模拟 [`Temporal`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal) API，遵循 [`@sinonjs/fake-timers` v15.4 更新](https://github.com/sinonjs/fake-timers/blob/main/CHANGELOG.md#1540--2026-05-05)。这只有在全局对象上可用 `Temporal` 时才会生效——要么是原生支持（Node.js >= 26 默认支持，在旧版本中可通过 `--harmony-temporal` 启用，且受支持的浏览器也支持），要么是通过全局安装的 polyfill，例如 `import 'temporal-polyfill/global'`。
+Vitest 现在会像 mock `Date` 一样 mock [`Temporal`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal) API，这遵循了 [`@sinonjs/fake-timers` v15.4 的更新](https://github.com/sinonjs/fake-timers/blob/main/CHANGELOG.md#1540--2026-05-05)。只有当全局对象上存在 `Temporal` 时才会生效，无论它是原生提供的，还是通过全局安装的 polyfill（例如 `import 'temporal-polyfill/global'`）提供的。
 
 之前即使 [`vi.useFakeTimers()`](/api/vi#vi-usefaketimers) 处于激活状态，`Temporal.Now` 仍会返回真实的墙钟时间。现在它会跟随被模拟的时钟：
 
@@ -294,22 +278,20 @@ vi.useFakeTimers({ now: 0 })
 Temporal.Now.instant().epochMilliseconds // 0（在 v4 中这里是实际时间）
 ```
 
-`Temporal` 是默认被模拟的 API 集合的一部分，因此它受 [`fakeTimers.toFake`](/config/#faketimers-tofake) 和 [`fakeTimers.toNotFake`](/config/#faketimers-tonotfake) 控制。若要保持 `Temporal` 使用原生实现，请将其添加到 `toNotFake`：
-
-```ts
-vi.useFakeTimers({ toNotFake: ['Temporal'] })
-```
-
-### `setSystemTime` 现在也会模拟 Temporal
-
-之前，`vi.setSystemTime` 在没有使用虚假计时器时只会模拟 `Date`，但现在它也会模拟 `Temporal.Now` 的方法。
+[`vi.setSystemTime()`](/api/vi#vi-setsystemtime) 也同样如此；此前在不使用 fake timers 时，它只会 mock `Date`：
 
 ```ts
 vi.setSystemTime(0)
 Temporal.Now.instant().epochMilliseconds // 0（在 v4 中是实际时间）
 ```
 
-### `toThrow("")` 匹配任意错误消息
+`Temporal` 属于默认 fake API 集合，因此由 [`fakeTimers.toFake`](/config/#faketimers-tofake) 和 [`fakeTimers.toNotFake`](/config/#faketimers-tonotfake) 控制。要保留原生的 `Temporal`，请将其添加到 `toNotFake`：
+
+```ts
+vi.useFakeTimers({ toNotFake: ['Temporal'] })
+```
+
+### `toThrow("")` Matches Any Error Message
 
 [`toThrow`](/api/expect#tothrow)（及其别名 `toThrowError`）会将字符串参数视为错误消息的子字符串。在 Vitest 4 中，空字符串有特殊处理，会被当作 `/^$/` 模式，因此它只会匹配消息为空的错误。现在它的行为与其他子字符串一致，而空字符串会出现在每条消息中：
 
@@ -328,28 +310,7 @@ expect(() => { throw new Error('boom') }).not.toThrow(/^$/)
 
 断言接口现在使用两个类型参数：`R` 是匹配器返回类型，`T` 是接收值类型。同步断言使用 `void`，而通过 `.resolves`、`.rejects`、[`expect.poll`](/api/expect#poll) 或 [`expect.element`](/api/browser/assertions) 访问的断言使用 `Promise<void>`。
 
-如果你声明自定义匹配器，请扩展 `Matchers<R, T>` 接口。它会将匹配器添加到实例断言、非对称匹配器以及 `expect.extend` 接受的类型中：
-
-```ts [vitest.d.ts]
-import 'vitest'
-
-interface CustomMatchers<R = unknown, T = unknown> {
-  toBeFoo: () => R
-  toEqualTyped: (expected: T) => R
-}
-
-declare module 'vitest' {
-  interface Matchers<R, T> extends CustomMatchers<R, T> {}
-}
-```
-
-这样，自定义匹配器的返回类型就会反映匹配器的使用方式：
-
-```ts
-const syncResult = expect('value').toEqualTyped('other') // void
-const asyncResult = expect(Promise.resolve('value')).resolves.toEqualTyped('other') // Promise<void>
-await asyncResult
-```
+如果你声明自定义匹配器，请按照[扩展匹配器](/guide/extending-matchers)中的示例扩展 `Matchers<R, T>` 接口。它会将匹配器添加到实例断言、非对称匹配器以及 `expect.extend` 接受的类型中，并且匹配器的返回类型会反映其使用方式：同步调用时为 `void`，通过 `.resolves` 或 `.rejects` 调用时为 `Promise<void>`。
 
 直接引用断言类型的代码也必须首先提供返回类型：
 
@@ -428,7 +389,7 @@ test('example', { concurrent: false }, async () => { /* ... */ }) // [!code ++]
 
 ### 命令中的定位器会被序列化为对象
 
-传递给 [浏览器命令](/api/browser/commands) 的定位器现在会被序列化为 `SerializedLocator` 对象，而不是裸选择器字符串。该对象暴露两个字段：
+传递给[浏览器命令](/api/browser/commands)的定位器现在会被序列化为 `SerializedLocator` 对象，而不是裸选择器字符串。该对象暴露两个字段：
 
 - `selector`：特定提供者的选择器字符串（与命令之前接收的值相同）。
 - `locator`：定位器的人类可读表示（例如 `getByRole('button')`），用于错误消息和追踪。
@@ -513,9 +474,7 @@ export default defineConfig({
 
 ### 覆盖率 `include` 和 `exclude` 匹配更加精确
 
-`coverage.include` 和 `coverage.exclude` 之前是使用 picomatch 的 `contains` 选项与绝对路径进行匹配的，这会匹配到比预期更多的文件。例如，一个模式可能会因为其绝对路径中的某个父目录碰巧包含相同的片段而匹配到某个文件。现在，模式会针对每个文件相对于项目根目录的路径进行匹配，不再使用 `contains`。
-
-没有 glob 通配符的模式会被视为目录，并扩展为匹配其中的所有内容：
+[`coverage.include`](/config/coverage#coverage-include) 和 `coverage.exclude` 过去会针对绝对路径，并使用 picomatch 的 `contains` 选项进行匹配，这会匹配到远多于预期的文件。现在，模式会针对每个文件相对于项目根目录的路径进行匹配，不再使用 `contains`；没有 glob 通配符的模式会被视为目录，并匹配该目录中的所有内容：
 
 ```ts [vitest.config.ts]
 export default defineConfig({
@@ -544,7 +503,7 @@ $ cd subdir && vitest --config ../vitest.config.ts # [!code ++]
 
 ### `populateGlobal` 在 `originals` 中返回描述符
 
-[`populateGlobal`](/guide/environment#custom-environment) 返回的 `originals` 映射现在保存的是 [属性描述符](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyDescriptor)，而不是普通值。这样可以在捕获原始值时避免调用原生的延迟 getter（例如 Node 的 `localStorage`），并在清理时准确地恢复它们。
+[`populateGlobal`](/guide/environment#custom-environment) 返回的 `originals` 映射现在保存的是[属性描述符](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyDescriptor)，而不是普通值。这样可以在捕获原始值时避免调用原生的延迟 getter（例如 Node 的 `localStorage`），并在清理时准确地恢复它们。
 
 如果你在自定义环境中手动恢复它们，请使用 `Object.defineProperty`，而不是赋值：
 
@@ -559,17 +518,38 @@ Vitest 不再通过一个裸的 `/__vitest_test__/` URL 提供浏览器协调器
 
 如果你之前是通过复制 Vite 服务器 URL 或直接访问 `/__vitest_test__/` 来手动打开浏览器预览，请改用 Vitest 打开或打印的 URL。
 
+### `browser.api` Is Replaced by the Top-Level `api`
+
+浏览器模式现在运行在由顶层 [`api`](/config/api) 选项配置的单个 Vite 服务器上；浏览器模式下的默认端口仍然是 `63315`。`browser.api` 选项已被弃用且不再生效，因此请将其值移至 `api`：
+
+```ts [vitest.config.ts]
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    api: { port: 4444 }, // [!code ++]
+    browser: {
+      enabled: true,
+      api: { port: 4444 }, // [!code --]
+    },
+  },
+})
+```
+
+之前已弃用的 `browser.isolate` 选项现在也会在启动时打印警告；其值仍会应用到替代它的顶层 [`isolate`](/config/isolate) 选项。
+
 ### 生成的报告和工件使用 `.vitest` 目录
 
 Vitest 现在在项目根目录下使用单一的 `.vitest` 目录作为共享工件根目录，因此 `.gitignore` 中只需要一条 `.vitest` 规则即可。本次主要版本迁移的默认位置变更如下：
 
-- **附件** ([`attachmentsDir`](/config/attachmentsdir)): `.vitest-attachements/` → `.vitest/attachments/`
-- **Blob 报告器** 和 `--merge-reports`: `.vitest-reports/blob-*.json` → `.vitest/blob/blob-*.json`
-- **HTML 报告器** ([`html`](/guide/reporters#html-reporter)): `html/index.html` → `.vitest/index.html`，并且其选项已从 `outputFile`（文件）改为 `outputDir`（目录）
-- **JSON 报告器** ([`json`](/guide/reporters#json-reporter)): stdout → `.vitest/json/output.json`
-- **JUnit 报告器** ([`junit`](/guide/reporters#junit-reporter)): stdout → `.vitest/junit/output.xml`
+- **Attachments**（[`attachmentsDir`](/config/attachmentsdir)）：`.vitest-attachements/` → `.vitest/attachments/`
+- **Failure screenshots**（[`screenshotFailures`](/config/browser/screenshotfailures)）：`__screenshots__/` → `.vitest/attachments/failure-screenshots/`，因此不再与 `toMatchScreenshot` 的参考截图混在一起
+- **Blob reporter** 和 `--merge-reports`：`.vitest-reports/blob-*.json` → `.vitest/blob/blob-*.json`
+- **HTML reporter**（[`html`](/guide/reporters#html-reporter)）：`html/index.html` → `.vitest/index.html`，其选项也从 `outputFile`（文件）改为 `outputDir`（目录）
+- **JSON reporter**（[`json`](/guide/reporters#json-reporter)）：标准输出 → `.vitest/json/output.json`
+- **JUnit reporter**（[`junit`](/guide/reporters#junit-reporter)）：标准输出 → `.vitest/junit/output.xml`
 
-`json` 和 `junit` 报告器现在默认写入文件，而不是打印到 stdout。如果你之前依赖报告输出到 stdout（例如 `vitest --reporter=json > out.json` 或 `vitest --reporter=json | jq`），可以改为直接读取生成的工件文件（例如 `jq . .vitest/json/output.json`），或者通过报告器的 `stdout` 选项重新启用 stdout（`reporters: [['json', { stdout: true }]]`）。显式指定的 `outputFile` 仍然有效，且保持不变。
+`json` 和 `junit` 报告器现在默认写入文件，而不是打印到标准输出。如果你之前通过管道传递报告（例如 `vitest --reporter=json | jq`），请改为读取工件文件，或者通过报告器的 [`stdout` 选项](/guide/reporters#reporter-output) 恢复写入标准输出（`reporters: [['json', { stdout: true }]]`）。显式设置的 `outputFile` 仍会被遵循且保持不变。
 
 ### `toMatchScreenshot` 现在使用专用的截图目录配置
 
@@ -615,6 +595,20 @@ class MyReporter implements Reporter {
 
 Node.js 和浏览器测试运行在不同的池中，不共享这些 id，因此相同的值可能会同时出现在两者中。
 
+### `resolveConfig` 返回已解析的 Vite 配置
+
+来自 `vitest/node` 的 [`resolveConfig`](/guide/advanced/#resolveconfig) 辅助函数不再返回 `{ vitestConfig, viteConfig }` 对。它会在不创建 Vite 服务器的情况下解析配置，并返回已解析的 Vite 配置；完全解析的 Vitest 配置可通过其 `test` 属性访问：
+
+```ts
+import { resolveConfig } from 'vitest/node'
+
+const { viteConfig, vitestConfig } = await resolveConfig(options) // [!code --]
+const viteConfig = await resolveConfig(options) // [!code ++]
+const vitestConfig = viteConfig.test // [!code ++]
+```
+
+Vitest 4 的限制已被移除：现在返回的配置包含完全解析的 `projects`，并且 `viteConfig.test` 不再保存部分解析的选项。
+
 ### 包迁移
 
 以下包自本次发布起已被弃用。它们将不再接收功能更新，但安全修复仍将继续回移植：
@@ -622,7 +616,9 @@ Node.js 和浏览器测试运行在不同的池中，不共享这些 id，因此
 - [`@vitest/runner`](https://npmx.dev/package/@vitest/runner)
 - [`@vitest/ws-client`](https://npmx.dev/package/@vitest/ws-client)
 
-[`@vitest/browser-webdriverio`](https://npmx.dev/package/@vitest/browser-webdriverio) 提供程序已迁移到 [vitest-community](https://github.com/vitest-community/vitest-webdriverio) 组织。从现在起，WebdriverIO 支持将由社区维护，并按具体问题逐一处理。如果你正在使用它，请将依赖更新到新包，并在新的仓库中报告任何问题。
+`vitest` 也不再依赖 [`@vitest/expect`](https://npmx.dev/package/@vitest/expect)：断言代码已打包到 `vitest` 自身中。该包仍会发布，也可以单独使用，但不再与 Vitest 的 `expect` 共享状态。请通过 `vitest` 入口（`expect`、`expect.extend`、`chai`）使用 Vitest 的断言。
+
+[`@vitest/browser-webdriverio`](https://npmx.dev/package/@vitest/browser-webdriverio) 提供程序已移至 [vitest-community](https://github.com/vitest-community/vitest-webdriverio) 组织。今后，WebdriverIO 支持将由社区维护，并根据具体问题逐一处理。如果你正在使用它，请将依赖更新为新包，并在新的代码仓库中报告问题。
 
 ### 移除已弃用的入口点
 
@@ -643,7 +639,7 @@ Vitest 的设计采用了与 Jest 兼容的 API，以使从 Jest 迁移尽可能
 
 ### 默认全局变量
 
-Jest 默认启用了它们的 [全局 API](https://jestjs.io/docs/api)。Vitest 没有。您可以通过 [`globals` 配置设置](/config/globals) 启用全局变量，或者更新代码以使用从 `vitest` 模块导入的内容。
+Jest 默认启用了它们的[全局 API](https://jestjs.io/docs/api)。Vitest 没有。您可以通过 [`globals` 配置设置](/config/globals) 启用全局变量，或者更新代码以使用从 `vitest` 模块导入的内容。
 
 如果您决定保持全局变量禁用，请注意像 [`testing-library`](https://testing-library.com/) 这样的常用库将不会运行自动 DOM [清理](https://testing-library.com/docs/svelte-testing-library/api/#cleanup)。
 
@@ -732,7 +728,7 @@ Vitest 不支持以回调风格声明测试。您可以重写它们以使用 `as
 
 ### 钩子
 
-`beforeAll`/`beforeEach` 钩子在 Vitest 中可以返回 [清理函数](/api/hooks#beforeach)。因此，如果它们返回 `undefined` 或 `null` 以外的内容，您可能需要重写钩子声明：
+`beforeAll`/`beforeEach` 钩子在 Vitest 中可以返回[清理函数](/api/hooks#beforeach)。因此，如果它们返回 `undefined` 或 `null` 以外的内容，您可能需要重写钩子声明：
 
 ```ts
 beforeEach(() => setActivePinia(createTestingPinia())) // [!code --]
