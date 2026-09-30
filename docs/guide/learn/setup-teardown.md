@@ -251,5 +251,5 @@ expect.extend(customMatchers)
 与每个文件只运行一次的 `beforeAll` 不同，Setup 文件会在测试文件**开始收集之前**的一个独立阶段运行。这使得它们成为扩展 `expect` API 或配置全局 polyfills 的合适位置。
 
 ::: tip
-对于需要运行在包装上下文中的高级用例（例如数据库事务或跟踪 span），请参考 [`aroundEach`](/api/hooks#aroundeach) 和 [`aroundAll`](/api/hooks#aroundall) 钩子。如需了解完整的生命周期，请参阅[测试运行生命周期](/guide/lifecycle)。
+对于需要在包装上下文中运行的高级场景（例如数据库事务或 tracing span），请参阅 [`aroundEach`](/api/hooks#aroundeach) 和 [`aroundAll`](/api/hooks#aroundall) 钩子。完整生命周期请参阅[测试运行生命周期](/guide/lifecycle)。
 :::

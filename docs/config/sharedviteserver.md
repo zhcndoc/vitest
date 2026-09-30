@@ -13,7 +13,7 @@ outline: deep
 
 此选项_仅_适用于内联项目。作为配置文件或目录引用的项目始终会解析自己的 Vite 配置并创建自己的服务器。
 
-当项目定义了会更改服务器的 Vite 级选项（`plugins`、`resolve` 等）、其 `extends` 未指向声明配置，或定义了会影响 Vite 配置的测试选项时，项目仍会获得自己的 Vite 服务器：
+当项目定义了会更改服务器的 Vite 级选项（`plugins`、`resolve` 等）、其 `extends` 未指向声明配置（`extends: true` 与解析到声明配置文件的路径等价），或定义了会影响 Vite 配置的测试选项时，项目仍会获得自己的 Vite 服务器：
 
 - [`alias`](/config/alias)
 - [`browser`](/config/browser/enabled)
@@ -63,6 +63,7 @@ export default defineConfig({
   },
 })
 ```
+
 :::
 
 要查看每个项目的决策结果，包括项目解析自己的服务器的原因，请使用 `DEBUG=vitest:projects` 运行 Vitest。API 使用者可以通过 [`project.sharedViteServer`](/api/advanced/test-project#sharedviteserver) 检查项目是否复用了声明配置的服务器。

@@ -12,7 +12,8 @@ outline: deep
 
 `location` 属性具有 `column` 和 `line` 值，对应于原始文件中 `test` 或 `describe` 的位置。
 
-如果你没有显式禁用此选项，并且在以下情况下运行 Vitest，此选项将自动启用：
+如果未显式禁用，并且在以下情况下运行 Vitest，此选项会自动启用：
+
 - [Vitest UI](/guide/ui)
 - 或使用了 [浏览器模式](/guide/browser/) 且未启用 [无头](/guide/browser/#headless) 模式
 - 或使用了 [HTML 报告器](/guide/reporters#html-reporter)

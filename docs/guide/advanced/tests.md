@@ -15,11 +15,10 @@ Vitest 暴露了两个方法来启动 Vitest：
 import { startVitest } from 'vitest/node'
 
 const vitest = await startVitest(
-  'test',
-  [], // CLI 过滤器
-  {}, // 覆盖测试配置
-  {}, // 覆盖 Vite 配置
-  {}, // 自定义 Vitest 选项
+  [], // CLI filters
+  {}, // override test config
+  {}, // override Vite config
+  {}, // custom Vitest options
 )
 const testModules = vitest.state.getTestModules()
 for (const testModule of testModules) {
@@ -37,10 +36,9 @@ for (const testModule of testModules) {
 import { createVitest } from 'vitest/node'
 
 const vitest = await createVitest(
-  'test',
-  {}, // 覆盖测试配置
-  {}, // 覆盖 Vite 配置
-  {}, // 自定义 Vitest 选项
+  {}, // override test config
+  {}, // override Vite config
+  {}, // custom Vitest options
 )
 
 // 当调用 `vitest.cancelCurrentRun()` 时触发
@@ -100,13 +98,13 @@ watcher.on('add', async (file) => {
   }
 })
 ```
+
 :::
 
 在需要禁用监视器的情况下，自 Vite 5.3 起，你可以将 `server.watch: null` 或 `server.watch: { ignored: ['*/*'] }` 传递给 Vite 配置：
 
 ```ts
 await createVitest(
-  'test',
   {},
   {
     plugins: [

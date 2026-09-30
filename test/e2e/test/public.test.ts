@@ -3,6 +3,7 @@ import { resolve } from 'pathe'
 import { expect, test } from 'vitest'
 import { configDefaults } from 'vitest/config'
 import { resolveConfig } from 'vitest/node'
+import { resolveTestConfig } from '#test-utils'
 
 test('resolves the test config', async () => {
   const viteConfig = await resolveConfig()
@@ -10,8 +11,10 @@ test('resolves the test config', async () => {
   expect(viteConfig.test.mode).toBe('test')
   // inherits the root config
   // TODO: test cwd loading behavior without relying on test/e2e/vitest.config.ts
-  expect(viteConfig.test.reporters.slice(0, 1)).toEqual([[process.env.CI ? 'minimal' : 'verbose', {}]])
-  expect(viteConfig.plugins.find(p => p.name === 'vitest:config')).toBeDefined()
+  expect(viteConfig.test.reporters.slice(0, 1)).toEqual([
+    [process.env.CI ? 'minimal' : 'verbose', {}],
+  ])
+  expect(viteConfig.plugins.find((p) => p.name === 'vitest:config')).toBeDefined()
 })
 
 test('applies custom options', async () => {
@@ -22,7 +25,7 @@ test('applies custom options', async () => {
   expect(viteConfig.mode).toBe('development')
   expect(viteConfig.test.mode).toBe('development')
   expect(viteConfig.test.setupFiles).toEqual(['/test/setup.ts'])
-  expect(viteConfig.plugins.find(p => p.name === 'vitest:config')).toBeDefined()
+  expect(viteConfig.plugins.find((p) => p.name === 'vitest:config')).toBeDefined()
 })
 
 test('respects root', async () => {
@@ -33,7 +36,7 @@ test('respects root', async () => {
   })
   expect(viteConfig.configFile).toBe(resolve(configRoot, 'vitest.config.ts'))
   expect(viteConfig.test.name).toBe('root config')
-  expect(viteConfig.test.reporters).toEqual(configDefaults.reporters.map(v => [v, {}]))
+  expect(viteConfig.test.reporters).toEqual(configDefaults.reporters.map((v) => [v, {}]))
 })
 
 test('respects custom config', async () => {
@@ -44,7 +47,7 @@ test('respects custom config', async () => {
   })
   expect(viteConfig.configFile).toBe(config)
   expect(viteConfig.test.name).toBe('custom config')
-  expect(viteConfig.test.reporters).toEqual(configDefaults.reporters.map(v => [v, {}]))
+  expect(viteConfig.test.reporters).toEqual(configDefaults.reporters.map((v) => [v, {}]))
 })
 
 test('default value changes of coverage.exclude do not reflect to test.exclude', async () => {
@@ -116,9 +119,7 @@ test.for([
     config: false,
     coverage: { enabled: true, ...options },
   })
-  expect(viteConfig.test.coverage.htmlDir).toBe(
-    expected && resolve(viteConfig.test.root, expected),
-  )
+  expect(viteConfig.test.coverage.htmlDir).toBe(expected && resolve(viteConfig.test.root, expected))
 })
 
 test('coverage.changed inherits from test.changed but can be overridden', async () => {
@@ -139,4 +140,21 @@ test('coverage.changed inherits from test.changed but can be overridden', async 
   })
 
   expect(overridden.coverage.changed).toBe(false)
+})
+
+test("user oxc.target as array doesn't break config resolution", async () => {
+  const { config } = await resolveTestConfig({
+    $viteConfig: {
+      oxc: {
+        target: ['chrome121', 'firefox118'],
+      },
+      esbuild: {
+        target: ['chrome121', 'firefox118'],
+      },
+    },
+  })
+  expect.assert(config.oxc !== false)
+  expect.assert(config.esbuild !== false)
+  expect(config.oxc.target).toEqual(['chrome121', 'firefox118'])
+  expect(config.esbuild.target).toEqual(['chrome121', 'firefox118'])
 })

@@ -56,12 +56,12 @@ test('返回用户数据', async () => {
 
 这种方法适用于所有 mock 结果类型。以下是完整的 action 及其等价形式：
 
-| Action | 等价于 | 等价代码 |
-|---|---|---|
-| `thenReturn(value)` | `mockReturnValue(value)` | `return value` |
-| `thenThrow(error)` | `mockThrow(error)` | `throw error` |
+| 操作                 | 等价于                     | 等价代码                        |
+| -------------------- | -------------------------- | ------------------------------- |
+| `thenReturn(value)`  | `mockReturnValue(value)`   | `return value`                  |
+| `thenThrow(error)`   | `mockThrow(error)`         | `throw error`                   |
 | `thenResolve(value)` | `mockResolvedValue(value)` | `return Promise.resolve(value)` |
-| `thenReject(error)` | `mockRejectedValue(error)` | `return Promise.reject(error)` |
+| `thenReject(error)`  | `mockRejectedValue(error)` | `return Promise.reject(error)`  |
 
 ## 叠加 actions
 
@@ -143,6 +143,7 @@ vi.when(getRole)
 expect(getRole('user@example.com')).toBe('admin')
 expect(getRole('user@example.com')).toBe('user')
 ```
+
 :::
 
 ## 处理未匹配的调用

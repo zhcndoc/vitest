@@ -55,12 +55,14 @@ Vite 模块图中模块的 ID。通常，它是使用 posix 分隔符的绝对�
 请注意，如果至少有一行上没有测试，整个套件将失败。正确 `testLines` 配置的示例：
 
 ::: code-group
+
 ```ts [script.js]
 const specification = project.createSpecification(
   resolve('./example.test.ts'),
   [3, 8, 9],
 )
 ```
+
 ```ts:line-numbers{3,8,9} [example.test.js]
 import { test, describe } from 'vitest'
 
@@ -73,6 +75,7 @@ describe('a group of tests', () => { // [!code error]
   test.skip('skipped test')
 })
 ```
+
 :::
 
 ## testNamePattern <Version>4.1.0</Version> {#testnamepattern}

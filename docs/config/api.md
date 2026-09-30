@@ -11,6 +11,8 @@ outline: deep
 
 监听端口并为[用户界面](/guide/ui)或[浏览器服务器](/guide/browser/)提供 API。设置为 `true` 时，默认端口为 `51204`；如果在浏览器模式下运行，则默认端口为 `63315`。
 
+在浏览器模式下，除非启用了 `api` 或 `ui`，服务器会在首次启动浏览器时绑定端口。
+
 ## api.allowWrite <Version>4.1.0</Version> {#api-allowwrite}
 
 - **类型：** `boolean`

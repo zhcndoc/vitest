@@ -69,6 +69,7 @@ export default defineConfig({
 `json` 和 `junit` 的位置可以通过 Vitest 配置文件中的 `outputFile` [配置选项](/config/outputfile) 或 CLI 进行覆盖。`html` 报告器则使用其 [`outputDir`](#html-reporter) 选项。
 
 :::code-group
+
 ```bash [命令行]
 npx vitest --reporter=json --outputFile=./test-output.json
 ```
@@ -81,6 +82,7 @@ export default defineConfig({
   },
 })
 ```
+
 :::
 
 `json` 和 `junit` 报告器也接受将 `outputFile` 作为报告器选项，此时它的优先级高于顶层的 `outputFile`：
@@ -153,6 +155,7 @@ export default defineConfig({
 你可以通过配置报告器来禁用摘要：
 
 :::code-group
+
 ```ts [vitest.config.ts]
 export default defineConfig({
   test: {
@@ -162,6 +165,7 @@ export default defineConfig({
   },
 })
 ```
+
 :::
 
 测试进行中的示例输出：
@@ -216,6 +220,7 @@ export default defineConfig({
 这是唯一一个在测试未失败时报告 [注解](/guide/test-annotations) 的终端报告器。
 
 :::code-group
+
 ```bash [命令行]
 npx vitest --reporter=verbose
 ```
@@ -229,6 +234,7 @@ export default defineConfig({
   },
 })
 ```
+
 :::
 
 示例输出：
@@ -264,6 +270,7 @@ export default defineConfig({
 树形报告器与 `default` 报告器相同，但它还会在套件完成后显示每个单独的测试。与 `default` 报告器类似，你可以通过配置报告器来禁用摘要。
 
 :::code-group
+
 ```bash [命令行]
 npx vitest --reporter=tree
 ```
@@ -277,6 +284,7 @@ export default defineConfig({
   },
 })
 ```
+
 :::
 
 使用默认 `slowTestThreshold: 300` 的测试进行中示例输出：
@@ -320,6 +328,7 @@ export default defineConfig({
 为每个完成的测试打印一个点，以提供最小化输出，同时仍显示所有已运行的测试。仅提供失败测试的详细信息，以及套件的摘要。
 
 :::code-group
+
 ```bash [命令行]
 npx vitest --reporter=dot
 ```
@@ -331,6 +340,7 @@ export default defineConfig({
   },
 })
 ```
+
 :::
 
 通过测试套件的示例终端输出：
@@ -349,6 +359,7 @@ export default defineConfig({
 以 JUnit XML 格式输出测试结果报告。默认写入 `.vitest/junit/output.xml`。如需写入其他位置，可使用 [`outputFile`](/config/outputfile) 配置项或报告器自身的 `outputFile` 选项。若要改为直接打印到终端，请设置报告器的 [`stdout`](#reporter-output) 选项。
 
 :::code-group
+
 ```bash [命令行]
 npx vitest --reporter=junit
 ```
@@ -360,9 +371,11 @@ export default defineConfig({
   },
 })
 ```
+
 :::
 
 JUnit XML 报告示例：
+
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <testsuites name="vitest tests" tests="2" failures="1" errors="0" time="0.503">
@@ -381,28 +394,30 @@ AssertionError: expected 5 to be 4 // Object.is equality
 
 输出的 XML 包含嵌套的 `testsuites` → `testsuite` → `testcase` 标签。你可以使用以下选项自定义报告器行为：
 
-| 选项 | 描述 | 默认值 |
-|---|---|---|
-| `suiteName` | `<testsuites>` 的 `name` 属性 | `"vitest tests"` |
-| `suiteNameTemplate` | `<testsuite>` 的 `name` 属性模板。接受带占位符的字符串或函数。 | 相对文件路径 |
-| `classnameTemplate` | `<testcase>` 的 `classname` 属性模板。接受带占位符的字符串或函数。 | 相对文件路径 |
-| `titleTemplate` | `<testcase>` 的 `name` 属性模板。接受带占位符的字符串或函数。 | 带祖先层级的完整测试标题 |
-| `ancestorSeparator` | 在 `{classname}` 占位符以及默认测试标题中，连接祖先 describe 块名称时使用的分隔符。 | `" > "` |
-| `addFileAttribute` | 为每个 `<testcase>` 添加 `file` 属性。 | `false` |
-| `includeConsoleOutput` | 包含 `<system-out>` / `<system-err>` 控制台输出。 | `true` |
-| `stackTrace` | 在 `<failure>` 元素中包含堆栈跟踪。 | `true` |
+| 选项                   | 描述                                                                            | 默认值                   |
+| ---------------------- | ------------------------------------------------------------------------------- | ------------------------ |
+| `suiteName`            | `<testsuites>` 的 `name` 属性                                                   | `"vitest tests"`         |
+| `suiteNameTemplate`    | `<testsuite>` 的 `name` 属性模板。接受带占位符的字符串或函数。                  | 相对文件路径             |
+| `classnameTemplate`    | `<testcase>` 的 `classname` 属性模板。接受带占位符的字符串或函数。              | 相对文件路径             |
+| `titleTemplate`        | `<testcase>` 的 `name` 属性模板。接受带占位符的字符串或函数。                   | 带祖先层级的完整测试标题 |
+| `ancestorSeparator`    | 在 `{classname}` 占位符和默认测试标题中，用于连接祖先 describe 块名称的分隔符。 | `" > "`                  |
+| `addFileAttribute`     | 为每个 `<testcase>` 添加 `file` 属性。                                          | `false`                  |
+| `includeConsoleOutput` | 包含 `<system-out>` / `<system-err>` 控制台输出。                               | `true`                   |
+| `stackTrace`           | 在 `<failure>` 元素中包含堆栈跟踪。                                             | `true`                   |
 
-以下占位符可用于 `suiteNameTemplate`：
+`suiteNameTemplate` 可以使用以下占位符：
+
 - `{title}` – 第一个顶层 `describe` 块的名称；如果没有顶层 `describe`，则回退为文件基本名
 - `{filename}` – 相对于根目录的文件路径（例如 `src/foo.test.ts`）
 - `{filepath}` – 绝对文件路径
 - `{basename}` – 不含目录的文件名（例如 `foo.test.ts`）
 - `{displayName}` – Vitest 项目名称
 
-以下占位符可用于 `classnameTemplate` 和 `titleTemplate`：
+`classnameTemplate` 和 `titleTemplate` 可以使用以下占位符：
+
 - `{classname}` – 使用 `ancestorSeparator` 连接的祖先 `describe` 块名称（例如 `outer > inner`）
 - `{title}` – 叶子测试标题（传递给 `it`/`test` 的字符串）
-- `{suitename}` – 顶层 `describe` 块名称；当测试没有外层 `describe` 时为空字符串
+- `{suitename}` – 顶层 `describe` 块名称；如果测试没有外层 `describe`，则为空字符串
 - `{filename}` – 相对于根目录的文件路径
 - `{filepath}` – 绝对文件路径
 - `{basename}` – 不含目录的文件名
@@ -453,6 +468,7 @@ export default defineConfig({
 以与 Jest 的 `--json` 选项兼容的 JSON 格式生成测试结果报告。默认情况下，它会写入 `.vitest/json/output.json`。若要写到其他位置，请使用 [`outputFile`](/config/outputfile) 配置项或报告器自身的 `outputFile` 选项。若要改为输出到终端，请设置报告器的 [`stdout`](#reporter-output) 选项。
 
 :::code-group
+
 ```bash [命令行]
 npx vitest --reporter=json
 ```
@@ -464,6 +480,7 @@ export default defineConfig({
   },
 })
 ```
+
 :::
 
 JSON 报告示例：
@@ -534,11 +551,14 @@ export default defineConfig({
 
 ### HTML 报告器
 
-生成一个 HTML 文件，以便通过交互式 [GUI](/guide/ui) 查看测试结果。文件生成后，Vitest 将保持本地开发服务器运行，并提供一个链接以便在浏览器中查看报告。
+生成静态版 [Vitest UI](/guide/ui)，用于查看已完成的测试运行。有关本地预览、CI 产物和分享工作流，请参阅 [HTML 报告器指南](/guide/ui#html-reporter)。
 
-报告工件根目录可以使用报告器的 `outputDir` 选项指定。报告入口文件将写入 `<outputDir>/index.html`，而 UI 资源文件位于 `<outputDir>/ui/` 下。默认情况下 `outputDir` 为 `.vitest`，即共享的 Vitest 工件目录，因此附件（`.vitest/attachments`）和覆盖率（`.vitest/coverage`）会被复用而不会被复制。
+可以使用报告器的 `outputDir` 选项指定报告产物根目录，报告入口会写入 `<outputDir>/index.html`。默认情况下，`outputDir` 为共享的 Vitest 产物目录 `.vitest`。
+
+设置 `singleFile` 可以生成一个可移植的 HTML 文件。配置和限制请参阅[以单个文件分享](/guide/ui#share-as-a-single-file)。
 
 :::code-group
+
 ```bash [命令行]
 npx vitest --reporter=html
 ```
@@ -550,33 +570,7 @@ export default defineConfig({
   },
 })
 ```
-:::
 
-设置 `singleFile` 以生成一个自包含的 HTML 报告：
-
-```ts [vitest.config.ts]
-export default defineConfig({
-  test: {
-    reporters: [
-      ['html', { singleFile: true }],
-    ],
-  },
-})
-```
-
-当启用 `singleFile` 时，Vitest 会将 UI 资源、元数据和测试附件内联到单个自包含的 `index.html` 中。这使得报告更易于作为一个工件进行分享、上传或下载，而无需保留整个 `html` 输出目录。
-
-::: warning
-`singleFile` 有两个注意事项：
-
-- 由于所有内容都以内联方式嵌入，文件可能会变得非常大——打开速度慢、占用内存高，并且可能超过工件查看器或静态主机的大小限制。
-- 覆盖率 HTML 报告目前尚未内联，仍会作为单独文件保留。
-
-当套件包含许多或较大的附件，或者你需要将覆盖率包含在包中时，优先使用默认的多文件报告。
-:::
-
-::: tip
-此报告器需要安装 [`@vitest/ui`](/guide/ui) 包。
 :::
 
 ### TAP 报告器
@@ -584,6 +578,7 @@ export default defineConfig({
 输出遵循 [Test Anything Protocol](https://testanything.org/) (TAP) 的报告。
 
 :::code-group
+
 ```bash [命令行]
 npx vitest --reporter=tap
 ```
@@ -595,9 +590,11 @@ export default defineConfig({
   },
 })
 ```
+
 :::
 
 TAP 报告示例：
+
 ```bash
 TAP version 13
 1..1
@@ -624,6 +621,7 @@ not ok 1 - __tests__/test-file-1.test.ts # time=14.00ms {
 输出 TAP 扁平报告。与 `tap` 报告器一样，测试结果格式化为遵循 TAP 标准，但测试套件格式化为扁平列表而不是嵌套层级。
 
 :::code-group
+
 ```bash [命令行]
 npx vitest --reporter=tap-flat
 ```
@@ -635,9 +633,11 @@ export default defineConfig({
   },
 })
 ```
+
 :::
 
 TAP 扁平报告示例：
+
 ```bash
 TAP version 13
 1..2
@@ -658,6 +658,7 @@ ok 2 - __tests__/test-file-1.test.ts > first test file > 4 - 2 should equal 2 # 
 显示挂起进程的列表（如果有进程阻止 Vitest 安全退出）。`hanging-process` 报告器本身不显示测试结果，但可以与另一个报告器结合使用，以在测试运行时监控进程。使用此报告器可能会消耗大量资源，因此通常应保留用于调试目的，适用于 Vitest 一直无法退出进程的情况。
 
 :::code-group
+
 ```bash [命令行]
 npx vitest --reporter=hanging-process
 ```
@@ -669,6 +670,7 @@ export default defineConfig({
   },
 })
 ```
+
 :::
 
 ### GitHub Actions 报告器 {#github-actions-reporter}
@@ -796,6 +798,7 @@ export default defineConfig({
 此报告器非常适合 AI 编码助手和基于 LLM 的工作流，可减少 token 使用量。当 Vitest 检测到正在 AI 编码代理中运行时，它会[自动启用](#default-configuration)。
 
 :::code-group
+
 ```bash [命令行]
 npx vitest --reporter=minimal
 ```
@@ -807,6 +810,7 @@ export default defineConfig({
   },
 })
 ```
+
 :::
 
 ### Blob 报告器
@@ -843,9 +847,29 @@ export default defineConfig({
 })
 ```
 
-Blob 报告器输出不包含基于文件的 [附件](/api/advanced/artifacts.html#testattachment)。
-使用此功能时，请务必在 CI 中将 [`attachmentsDir`](/config/attachmentsdir) 与 blob 报告一起单独合并。
+Blob 报告器的输出不包含基于文件的[附件](/api/advanced/artifacts#testattachment)。
+在 CI 中使用此功能时，请务必将 [`attachmentsDir`](/config/attachmentsdir) 与 blob 报告分开合并。
 
 ::: tip
-`--reporter=blob` 和 `--merge-reports` 都不适用于监听模式。
+`--reporter=blob` 和 `--merge-reports` 均不适用于 watch 模式。
+:::
+
+## 自定义报告器
+
+你可以在报告器选项中指定包名，使用从 NPM 安装的第三方自定义报告器：
+
+:::code-group
+
+```bash [命令行]
+npx vitest --reporter=some-published-vitest-reporter
+```
+
+```ts [vitest.config.ts]
+export default defineConfig({
+  test: {
+    reporters: ['some-published-vitest-reporter']
+  },
+})
+```
+
 :::

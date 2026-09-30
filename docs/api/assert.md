@@ -6,6 +6,7 @@ Vitest 从 [`chai`](https://www.chaijs.com/api/assert/) 重新导出 `assert` �
 当在 [源内测试](/guide/in-source) 中使用来自 `import.meta.vitest` 的 [断言函数](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions)，例如 `assert` 时，TypeScript 会报告错误 `TS2775`，因为它们必须通过显式标注名称来调用。请将变量标注为 `Chai.Assert`，或者直接调用它：
 
 ::: code-group
+
 ```ts [Annotated variable]
 if (import.meta.vitest) {
   const { test, assert } = import.meta.vitest // [!code --]
@@ -17,6 +18,7 @@ if (import.meta.vitest) {
   })
 }
 ```
+
 ```ts [Direct call]
 if (import.meta.vitest) {
   const { test, assert } = import.meta.vitest // [!code --]
@@ -28,6 +30,7 @@ if (import.meta.vitest) {
   })
 }
 ```
+
 :::
 
 ## assert
@@ -419,7 +422,7 @@ test('assert.isDefined', () => {
 
 - **类型:** `<T>(value: T, message?: string) => void`
 - **别名:** `isCallable`
-断言 `value` 是一个函数。
+  断言 `value` 是一个函数。
 
 ```ts
 import { assert, test } from 'vitest'

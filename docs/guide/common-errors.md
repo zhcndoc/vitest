@@ -49,6 +49,31 @@ export default defineConfig({
 
 默认的 [`pool: 'forks'`](/config/pool#forks) 没有这个问题。如果你显式设置了 `pool: 'threads'`，切换回 `'forks'` 或使用 [`'vmForks'`](/config/pool#vmforks) 将解决它。
 
+## 项目工作目录不会改变
+
+在[多项目运行](/guide/projects)中，项目配置文件和测试里的 `process.cwd()` 默认返回启动 Vitest 时所在的目录。项目的 [`root`](/config/root) 控制 Vitest 查找文件的位置，但不会更改进程的工作目录。Vite 插件可以从解析后的 Vite 配置的 `root` 属性读取项目根目录。
+
+如果测试需要让 `process.cwd()` 指向项目目录，请使用 [`forks` 池](/config/pool#forks)和项目专属的 [`setupFiles`](/config/setupfiles) 文件：
+
+```ts [packages/lib1/vitest.config.ts]
+import { defineProject } from 'vitest/config'
+
+export default defineProject({
+  test: {
+    pool: 'forks',
+    setupFiles: ['./setup.chdir.ts'],
+  },
+})
+```
+
+```ts [packages/lib1/setup.chdir.ts]
+import { fileURLToPath } from 'node:url'
+
+process.chdir(fileURLToPath(new URL('.', import.meta.url)))
+```
+
+这会在配置加载完成后更改测试 worker 的工作目录。[`threads` 池](/config/pool#threads)无法使用 `process.chdir()`。
+
 ## 自定义 package 条件未解析
 
 如果你在 `package.json` 的 [exports](https://nodejs.org/api/packages.html#package-entry-points) 或 [subpath imports](https://nodejs.org/api/packages.html#subpath-imports) 中使用了自定义条件，你可能会发现 Vitest 默认不尊重这些条件。
@@ -86,10 +111,11 @@ export default defineConfig({
 })
 ```
 
-::: tip 为什么是 `ssr.resolve.conditions` 而不是 `resolve.conditions`？
+::: tip 为什么使用 `ssr.resolve.conditions` 而不是 `resolve.conditions`？
 Vitest 遵循 Vite 的配置约定：
-- [`resolve.conditions`](https://vite.dev/config/shared-options#resolve-conditions) 适用于 Vite 的 `client` 环境，对应于 Vitest 的 browser 模式、jsdom、happy-dom 或带有 `viteEnvironment: 'client'` 的自定义环境。
-- [`ssr.resolve.conditions`](https://vite.dev/config/ssr-options#ssr-resolve-conditions) 适用于 Vite 的 `ssr` 环境，对应于 Vitest 的 node 环境或带有 `viteEnvironment: 'ssr'` 的自定义环境。
+
+- [`resolve.conditions`](https://vite.dev/config/shared-options#resolve-conditions) 适用于 Vite 的 `client` 环境，对应 Vitest 的浏览器模式、jsdom、happy-dom，或带有 `viteEnvironment: 'client'` 的自定义环境。
+- [`ssr.resolve.conditions`](https://vite.dev/config/ssr-options#ssr-resolve-conditions) 适用于 Vite 的 `ssr` 环境，对应 Vitest 的 node 环境，或带有 `viteEnvironment: 'ssr'` 的自定义环境。
 
 由于 Vitest 默认为 `node` 环境（使用 `viteEnvironment: 'ssr'`），模块解析使用 `ssr.resolve.conditions`。这适用于 package exports 和 subpath imports。
 
@@ -108,6 +134,7 @@ Vitest 遵循 Vite 的配置约定：
 在这些情况下，原生模块可能不是为多线程安全构建的。作为变通方法，你可以切换到 `pool: 'forks'`，它在多个 `node:child_process` 中运行测试用例，而不是多个 `node:worker_threads`。
 
 ::: code-group
+
 ```ts [vitest.config.js]
 import { defineConfig } from 'vitest/config'
 
@@ -117,10 +144,47 @@ export default defineConfig({
   },
 })
 ```
+
 ```bash [CLI]
 vitest --pool=forks
 ```
+
 :::
+
+## Worker 线程中的时区不会改变
+
+在 setup 文件或测试中设置 `process.env.TZ`，或通过 [`env`](/config/env) 设置 `TZ`，都不会影响 `pool: 'threads'` 和 `pool: 'vmThreads'` 中的 `Date`。Node.js 只有在主线程设置 `TZ` 时才会应用它。worker 线程虽然能在 `process.env` 中看到新值，但仍会沿用主进程的时区。
+
+```ts
+process.env.TZ = 'Asia/Tokyo'
+new Date('2026-01-01T00:00:00Z').getHours() // 9 in forks, unchanged in threads
+```
+
+请在 worker 启动前设置时区。可以通过 shell、配置文件或 [`globalSetup`](/config/globalsetup) 设置；它们都在主进程中运行，因此适用于所有池。
+
+::: code-group
+
+```bash [CLI]
+TZ=Asia/Tokyo vitest
+```
+
+```ts [vitest.config.js]
+import { defineConfig } from 'vitest/config'
+
+process.env.TZ = 'Asia/Tokyo'
+
+export default defineConfig({})
+```
+
+```ts [globalSetup.js]
+export default function () {
+  process.env.TZ = 'Asia/Tokyo'
+}
+```
+
+:::
+
+如果测试需要在运行时使用不同的时区，请使用 `pool: 'forks'` 或 `pool: 'vmForks'`，这样每个 worker 都是独立进程；也可以为 `Intl.DateTimeFormat` 传入 `timeZone` 选项，而不是更改 `TZ`。
 
 ## 未处理的 Promise 拒绝
 
@@ -213,6 +277,46 @@ export default defineConfig({
   ssr: {
     resolve: {
       noExternal: ['wrapper-package', 'broken-package'],
+    },
+  },
+})
+```
+
+## CommonJS 源码尚未得到完整支持
+
+Vitest 以 ESM 为先。默认情况下，源码会在 Vite 的[模块运行器](/config/experimental#experimental-vitemodulerunner)中运行。该运行器为兼容性提供 `require`、`module` 和 `exports` 等 CommonJS 变量，但不会完整复现 Node.js 的 CommonJS 语义。
+
+`require()` 调用始终直接使用 Node.js，并会离开模块运行器。因此：
+
+- Vite 插件、别名、转换和模块模拟不会应用于通过 `require` 加载的文件
+- 不支持通过 `require` 加载 TypeScript 或其他 Node.js 无法执行的文件
+- 对同一文件同时使用 `import` 和 `require` 可能会执行两次，导致单例状态、对象引用或 `instanceof` 检查出错
+
+如果项目使用 CommonJS 且不需要 Vite 转换，请将 [`experimental.viteModuleRunner`](/config/experimental#experimental-vitemodulerunner) 设为 `false`，让原生运行时加载整个模块图：
+
+```ts [vitest.config.ts]
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    experimental: {
+      viteModuleRunner: false,
+    },
+  },
+})
+```
+
+如果应用使用 ESM 源码，但从同一 monorepo 导入 CommonJS 包，则可以改用 [`server.deps.external`](/config/server#server-deps-external) 将整个 CommonJS 包外部化。这样它的入口和内部 `require()` 调用会留在同一个原生模块缓存中。例如：
+
+```ts [vitest.config.ts]
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    server: {
+      deps: {
+        external: [/\/packages\/legacy-cjs\//],
+      },
     },
   },
 })

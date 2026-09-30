@@ -24,7 +24,7 @@ Cypress 被称为端到端测试工具，但他们 [新的组件测试运行器]
 
 Cypress 的测试驱动专注于确定元素是否可见、可访问和可交互。Cypress 是为 UI 开发和测试而建的，其 DX 围绕着测试驱动你的视觉组件。你会看到你的组件与测试报告器一起渲染。测试完成后，组件保持交互状态，你可以使用浏览器开发工具调试任何发生的失败。
 
-相比之下，Vitest 专注于为闪电般快速的*无头*测试提供尽可能最好的 DX。基于 Node 的运行器（如 Vitest）支持各种部分实现的浏览器环境，如 `jsdom`，它们实现了足够的功能让你快速单元测试任何引用浏览器 API 的代码。权衡的是，这些浏览器环境在它们能实现的内容上有局限性。例如，[jsdom 缺少许多功能](https://github.com/jsdom/jsdom/issues?q=is%3Aissue+is%3Aopen+sort%3Acomments-desc)，如 `window.navigation` 或布局引擎（`offsetTop` 等）。
+相比之下，Vitest 专注于为闪电般快速的_无头_测试提供尽可能好的开发体验。Vitest 这类基于 Node 的运行器支持 `jsdom` 等部分实现的浏览器环境；这些环境实现了足够的功能，让你能快速对引用浏览器 API 的代码进行单元测试。其取舍是这类浏览器环境的实现能力有限。例如，[jsdom 缺少许多功能](https://github.com/jsdom/jsdom/issues?q=is%3Aissue+is%3Aopen+sort%3Acomments-desc)，如 `window.navigation` 或布局引擎（`offsetTop` 等）。
 
 最后，与 Web Test Runner 相比，Cypress 测试运行器更像是一个 IDE 而不是一个测试运行器，因为你还会在浏览器中看到真实渲染的组件，以及它的测试结果和日志。
 

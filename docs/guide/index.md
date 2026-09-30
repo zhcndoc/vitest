@@ -22,21 +22,27 @@ Vitest（发音为 _"veetest"_）是一个由 Vite 驱动的下一代测试框�
 <CourseLink href="https://vueschool.io/lessons/how-to-install-vitest?friend=vueuse">通过视频学习如何安装</CourseLink>
 
 ::: code-group
+
 ```bash [npm]
 npm install -D vitest
 ```
+
 ```bash [yarn]
-yarn add -D vitest
+yarn add -D vitest vite
 ```
+
 ```bash [pnpm]
 pnpm add -D vitest
 ```
+
 ```bash [bun]
 bun add -D vitest
 ```
+
 ```bash [deno]
 deno add -D vitest
 ```
+
 :::
 
 :::tip
@@ -49,7 +55,7 @@ Vitest 需要 Vite >=v6.4.0 和 Node >=v22.12.0
 
 Vitest 和第三方集成可以使用 `.vitest` 目录来存储生成的工件。建议将其添加到你的 `.gitignore` 中。
 
-``` sh [.gitignore]
+```sh [.gitignore]
 # Vitest 报告和工件
 .vitest/
 ```
@@ -58,13 +64,13 @@ Vitest 和第三方集成可以使用 `.vitest` 目录来存储生成的工件�
 
 作为一个例子，我们将编写一个简单的测试，验证一个将两个数字相加的函数的输出。
 
-``` js [sum.js]
+```js [sum.js]
 export function sum(a, b) {
   return a + b
 }
 ```
 
-``` js [sum.test.js]
+```js [sum.test.js]
 import { expect, test } from 'vitest'
 import { sum } from './sum.js'
 
@@ -121,22 +127,22 @@ Vitest 默认读取你的 `vite.config.*`，因此你现有的 Vite 插件和配
 
 ## 示例
 
-| 示例 | 来源 | 在线玩 |
-|---|---|---|
-| `basic` | [GitHub](https://github.com/vitest-dev/vitest/tree/main/examples/basic) | [在线试玩](https://stackblitz.com/fork/github/vitest-dev/vitest/tree/main/examples/basic?initialPath=__vitest__/) |
-| `fastify` | [GitHub](https://github.com/vitest-dev/vitest/tree/main/examples/fastify) | [在线试玩](https://stackblitz.com/fork/github/vitest-dev/vitest/tree/main/examples/fastify?initialPath=__vitest__/) |
-| `in-source-test` | [GitHub](https://github.com/vitest-dev/vitest/tree/main/examples/in-source-test) | [在线试玩](https://stackblitz.com/fork/github/vitest-dev/vitest/tree/main/examples/in-source-test?initialPath=__vitest__/) |
-| `lit` | [GitHub](https://github.com/vitest-dev/vitest/tree/main/examples/lit) | [在线试玩](https://stackblitz.com/fork/github/vitest-dev/vitest/tree/main/examples/lit?initialPath=__vitest__/) |
-| `vue` | [GitHub](https://github.com/vitest-tests/browser-examples/tree/main/examples/vue) | [在线试玩](https://stackblitz.com/fork/github/vitest-tests/browser-examples/tree/main/examples/vue?initialPath=__vitest__/) |
-| `marko` | [GitHub](https://github.com/vitest-tests/browser-examples/tree/main/examples/marko) | [在线试玩](https://stackblitz.com/fork/github/vitest-tests/browser-examples/tree/main/examples/marko?initialPath=__vitest__/) |
-| `preact` | [GitHub](https://github.com/vitest-tests/browser-examples/tree/main/examples/preact) | [在线试玩](https://stackblitz.com/fork/github/vitest-tests/browser-examples/tree/main/examples/preact?initialPath=__vitest__/) |
-| `qwik` | [GitHub](https://github.com/vitest-tests/browser-examples/tree/main/examples/qwik) | [在线试玩](https://stackblitz.com/fork/github/vitest-tests/browser-examples/tree/main/examples/qwik?initialPath=__vitest__/) |
-| `react` | [GitHub](https://github.com/vitest-tests/browser-examples/tree/main/examples/react) | [在线试玩](https://stackblitz.com/fork/github/vitest-tests/browser-examples/tree/main/examples/react?initialPath=__vitest__/) |
-| `solid` | [GitHub](https://github.com/vitest-tests/browser-examples/tree/main/examples/solid) | [在线试玩](https://stackblitz.com/fork/github/vitest-tests/browser-examples/tree/main/examples/solid?initialPath=__vitest__/) |
-| `svelte` | [GitHub](https://github.com/vitest-tests/browser-examples/tree/main/examples/svelte) | [在线试玩](https://stackblitz.com/fork/github/vitest-tests/browser-examples/tree/main/examples/svelte?initialPath=__vitest__/) |
-| `profiling` | [GitHub](https://github.com/vitest-dev/vitest/tree/main/examples/profiling) | 不可用 |
-| `typecheck` | [GitHub](https://github.com/vitest-dev/vitest/tree/main/examples/typecheck) | [在线试玩](https://stackblitz.com/fork/github/vitest-dev/vitest/tree/main/examples/typecheck?initialPath=__vitest__/) |
-| `projects` | [GitHub](https://github.com/vitest-dev/vitest/tree/main/examples/projects) | [在线试玩](https://stackblitz.com/fork/github/vitest-dev/vitest/tree/main/examples/projects?initialPath=__vitest__/) |
+| 示例             | 来源                                                                                 | 在线玩                                                                                                                         |
+| ---------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| `basic`          | [GitHub](https://github.com/vitest-dev/vitest/tree/main/examples/basic)              | [在线试玩](https://stackblitz.com/fork/github/vitest-dev/vitest/tree/main/examples/basic?initialPath=__vitest__/)              |
+| `fastify`        | [GitHub](https://github.com/vitest-dev/vitest/tree/main/examples/fastify)            | [在线试玩](https://stackblitz.com/fork/github/vitest-dev/vitest/tree/main/examples/fastify?initialPath=__vitest__/)            |
+| `in-source-test` | [GitHub](https://github.com/vitest-dev/vitest/tree/main/examples/in-source-test)     | [在线试玩](https://stackblitz.com/fork/github/vitest-dev/vitest/tree/main/examples/in-source-test?initialPath=__vitest__/)     |
+| `lit`            | [GitHub](https://github.com/vitest-dev/vitest/tree/main/examples/lit)                | [在线试玩](https://stackblitz.com/fork/github/vitest-dev/vitest/tree/main/examples/lit?initialPath=__vitest__/)                |
+| `vue`            | [GitHub](https://github.com/vitest-tests/browser-examples/tree/main/examples/vue)    | [在线试玩](https://stackblitz.com/fork/github/vitest-tests/browser-examples/tree/main/examples/vue?initialPath=__vitest__/)    |
+| `marko`          | [GitHub](https://github.com/vitest-tests/browser-examples/tree/main/examples/marko)  | [在线试玩](https://stackblitz.com/fork/github/vitest-tests/browser-examples/tree/main/examples/marko?initialPath=__vitest__/)  |
+| `preact`         | [GitHub](https://github.com/vitest-tests/browser-examples/tree/main/examples/preact) | [在线试玩](https://stackblitz.com/fork/github/vitest-tests/browser-examples/tree/main/examples/preact?initialPath=__vitest__/) |
+| `qwik`           | [GitHub](https://github.com/vitest-tests/browser-examples/tree/main/examples/qwik)   | [在线试玩](https://stackblitz.com/fork/github/vitest-tests/browser-examples/tree/main/examples/qwik?initialPath=__vitest__/)   |
+| `react`          | [GitHub](https://github.com/vitest-tests/browser-examples/tree/main/examples/react)  | [在线试玩](https://stackblitz.com/fork/github/vitest-tests/browser-examples/tree/main/examples/react?initialPath=__vitest__/)  |
+| `solid`          | [GitHub](https://github.com/vitest-tests/browser-examples/tree/main/examples/solid)  | [在线试玩](https://stackblitz.com/fork/github/vitest-tests/browser-examples/tree/main/examples/solid?initialPath=__vitest__/)  |
+| `svelte`         | [GitHub](https://github.com/vitest-tests/browser-examples/tree/main/examples/svelte) | [在线试玩](https://stackblitz.com/fork/github/vitest-tests/browser-examples/tree/main/examples/svelte?initialPath=__vitest__/) |
+| `profiling`      | [GitHub](https://github.com/vitest-dev/vitest/tree/main/examples/profiling)          | 不可用                                                                                                                         |
+| `typecheck`      | [GitHub](https://github.com/vitest-dev/vitest/tree/main/examples/typecheck)          | [在线试玩](https://stackblitz.com/fork/github/vitest-dev/vitest/tree/main/examples/typecheck?initialPath=__vitest__/)          |
+| `projects`       | [GitHub](https://github.com/vitest-dev/vitest/tree/main/examples/projects)           | [在线试玩](https://stackblitz.com/fork/github/vitest-dev/vitest/tree/main/examples/projects?initialPath=__vitest__/)           |
 
 ## 社区
 

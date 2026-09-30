@@ -35,9 +35,11 @@ Vitest 有一份关于模拟的综合指南列表：
 我想要…
 
 ### 模拟导出的变量
+
 ```js [example.js]
 export const getter = 'variable'
 ```
+
 ```ts [example.test.ts]
 import * as exports from './example.js'
 
@@ -59,6 +61,7 @@ vi.spyOn(exports, 'getter', 'get').mockReturnValue('mocked')
 ```ts [example.js]
 export function method() {}
 ```
+
 ```ts
 import { method } from './example.js'
 
@@ -68,6 +71,7 @@ vi.mock('./example.js', () => ({
 ```
 
 2. 使用 `vi.spyOn` 的示例：
+
 ```ts
 import * as exports from './example.js'
 
@@ -81,9 +85,11 @@ vi.spyOn(exports, 'method').mockImplementation(() => {})
 ### 模拟导出的类实现
 
 1. 使用伪造 `class` 的示例：
+
 ```ts [example.js]
 export class SomeClass {}
 ```
+
 ```ts
 import { SomeClass } from './example.js'
 
@@ -200,7 +206,7 @@ expect(__VERSION__).toBe('1.0.0')
 1. 要更改环境变量，你可以直接为其赋予新值。
 
 ::: warning
-环境变量值在不同测试之间**_不会_**自动重置。
+环境变量值在不同测试之间***不会***自动重置。
 :::
 
 ```ts

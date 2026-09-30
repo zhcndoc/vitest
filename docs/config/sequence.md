@@ -87,6 +87,7 @@ export default defineConfig({
 
  1. flaky |> 在 slow 和 fast 之后单独运行
 ```
+
 :::
 
 ## sequence.shuffle
@@ -126,7 +127,7 @@ Because file ordering is shared across [projects](/guide/projects), this option 
 如果你希望测试并行运行，可以通过此选项或 CLI 参数 [`--sequence.concurrent`](/guide/cli) 启用它。
 
 ::: warning
-当你在 `sequence.concurrent` 和 `expect.requireAssertions` 设置为 `true` 的情况下运行测试时，应该使用 [本地 expect](/guide/test-context.html#expect) 而不是全局的。否则，这可能在 [某些情况 (#8469)](https://github.com/vitest-dev/vitest/issues/8469) 导致假阴性。
+当你在 `sequence.concurrent` 和 `expect.requireAssertions` 设为 `true` 的情况下运行测试时，应使用[本地 expect](/guide/test-context#expect)，而不是全局的 `expect`。否则，在[某些情况下 (#8469)](https://github.com/vitest-dev/vitest/issues/8469)可能会产生假阴性。
 :::
 
 ## sequence.seed <CRoot />
@@ -155,9 +156,9 @@ Because file ordering is shared across [projects](/guide/projects), this option 
 
 ## sequence.setupFiles {#sequence-setupfiles}
 
-- **类型：** `'list' | 'parallel'`
-- **默认值：** `'parallel'`
-- **CLI：** `--sequence.setupFiles=<value>`
+- **类型:** `'list' | 'parallel'`
+- **默认值:** `'list'`
+- **命令行:** `--sequence.setupFiles=<value>`
 
 更改 setup 文件执行的顺序。
 

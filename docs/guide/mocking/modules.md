@@ -125,6 +125,7 @@ vi.mock('./example.js', { spy: true })
 
 vi.mocked(exampleObject.answer).mockReturnValue(0)
 ```
+
 :::
 
 ::: warning
@@ -141,6 +142,7 @@ export function question() {
   return 'Unknown Question'
 }
 ```
+
 :::
 
 注意 `vi.spyOn` 只会监听在它监听该方法之后进行的调用。因此，如果函数在导入期间在顶层执行，或者在监听之前被调用，`vi.spyOn` 将无法报告它。
@@ -290,6 +292,7 @@ vi.mock(import('vscode'), () => {
 Vitest 根据环境实现不同的模块模拟机制。它们共享的唯一功能是插件转换器。当 Vitest 看到文件内部有 `vi.mock` 时，它将把每个静态导入转换为动态导入，并将 `vi.mock` 调用移动到文件顶部。这允许 Vitest 在导入发生之前注册模拟，而不会破坏 ESM 的提升导入规则。
 
 ::: code-group
+
 ```ts [example.js]
 import { answer } from './answer.js'
 
@@ -297,6 +300,7 @@ vi.mock(import('./answer.js'))
 
 console.log(answer)
 ```
+
 ```ts [example.transformed.js]
 vi.mock('./answer.js')
 
@@ -307,6 +311,7 @@ const __vitest_module_0__ = await __handle_mock__(
 // 模块命名空间上的导出
 console.log(__vitest_module_0__.answer())
 ```
+
 :::
 
 `__handle_mock__` 包装器只是确保在启动导入之前解析模拟，它不会以任何方式修改模块。
@@ -326,11 +331,13 @@ Vitest 在浏览器模式中使用原生 ESM。这意味着我们不能那么容
 例如，如果模块被自动模拟，Vitest 可以解析静态导出并创建一个占位模块：
 
 ::: code-group
+
 ```ts [answer.js]
 export function answer() {
   return 42
 }
 ```
+
 ```ts [answer.transformed.js]
 function answer() {
   return 42
@@ -343,6 +350,7 @@ const __private_module__ = {
 
 export const answer = __private_module__.answer
 ```
+
 :::
 
 示例为了简洁进行了简化，但概念不变。我们可以向模块中注入一个 `__private_module__` 变量来保存模拟值。如果用户使用 `spy: true` 调用 `vi.mock`，我们传递原始值；否则，我们创建一个简单的 `vi.fn()` 模拟。

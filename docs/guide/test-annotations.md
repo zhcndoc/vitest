@@ -33,6 +33,7 @@ test('hello world', async ({ annotate }) => {
 根据你的报告器不同，你会以不同的方式看到这些注解。
 
 ## 内置报告器
+
 ### default
 
 `default` 报告器仅在测试失败时打印注解：

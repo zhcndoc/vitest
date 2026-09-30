@@ -192,7 +192,7 @@ await button.click() // 交互方法可以正常工作 ✅
 await expect.element(button).toBeVisible() // 查询元素无法工作 ❌
 ```
 
-如果你需要处理跨源 iframe，需要在 [`launchOptions`](/config/browser/playwright.html#launchoptions) 中传递 `args: ["--disable-web-security"]`。或者，你也可以创建一个自定义 [浏览器命令](/api/browser/commands.html#custom-commands)，在服务器端访问该 iframe，因为它在那里是可用的。
+如果你需要处理跨源 iframe，需要在 [`launchOptions`](/config/browser/playwright#launchoptions) 中传入 `args: ["--disable-web-security"]`。或者，你也可以创建自定义[浏览器命令](/api/browser/commands#custom-commands)，在可访问 iframe 的服务器端进行处理。
 :::
 
 ::: danger 重要 <Version>3.2.0</Version>
@@ -345,22 +345,26 @@ const html = utils.prettyDOM(element, undefined, {
 **常见模式：**
 
 过滤掉脚本和样式：
+
 ```ts
 utils.configurePrettyDOM({ filterNode: 'script, style' })
 ```
 
-隐藏具有数据属性的特定元素：
+隐藏带有数据属性的特定元素：
+
 ```ts
 utils.configurePrettyDOM({ filterNode: '[data-test-hide]' })
 ```
 
-隐藏元素内的嵌套内容：
+隐藏元素内部的嵌套内容：
+
 ```ts
 // 隐藏具有 data-test-hide-content 元素的所有子元素
 utils.configurePrettyDOM({ filterNode: '[data-test-hide-content] *' })
 ```
 
 组合多个选择器：
+
 ```ts
 utils.configurePrettyDOM({
   filterNode: 'script, style, [data-test-hide], svg'

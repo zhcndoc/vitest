@@ -85,7 +85,8 @@ $ node --cpu-prof --cpu-prof-dir=main-profile ./node_modules/vitest/vitest.mjs -
 下面的示例展示了不使用 barrel 文件导入文件如何减少约 85% 的转换文件数量。
 
 ::: code-group
-``` [文件树]
+
+```[文件树]
 ├── src
 │   └── utils
 │       ├── currency.ts
@@ -99,6 +100,7 @@ $ node --cpu-prof --cpu-prof-dir=main-profile ./node_modules/vitest/vitest.mjs -
 │   └── formatters.test.ts
 └── vitest.config.ts
 ```
+
 ```ts [example.test.ts]
 import { expect, test } from 'vitest'
 import { formatter } from '../src/utils' // [!code --]
@@ -108,6 +110,7 @@ test('formatter works', () => {
   expect(formatter).not.toThrow()
 })
 ```
+
 :::
 
 <img src="/module-graph-barrel-file.png" alt="Vitest UI 演示 barrel 文件问题" />

@@ -19,18 +19,23 @@ outline: deep
 为了更轻松地设置，你可以使用 `vitest init browser` 命令来安装所需的依赖项并创建浏览器配置。
 
 ::: code-group
+
 ```bash [npm]
 npx vitest init browser
 ```
+
 ```bash [yarn]
 yarn exec vitest init browser
 ```
+
 ```bash [pnpm]
 pnpx vitest init browser
 ```
+
 ```bash [bun]
 bunx vitest init browser
 ```
+
 :::
 
 ### 手动安装
@@ -40,18 +45,23 @@ bunx vitest init browser
 如果你只想预览测试的样子，可以使用 `preview` 提供者：
 
 ::: code-group
+
 ```bash [npm]
 npm install -D vitest @vitest/browser-preview
 ```
+
 ```bash [yarn]
-yarn add -D vitest @vitest/browser-preview
+yarn add -D vitest vite @vitest/browser-preview
 ```
+
 ```bash [pnpm]
 pnpm add -D vitest @vitest/browser-preview
 ```
+
 ```bash [bun]
 bun add -D vitest @vitest/browser-preview
 ```
+
 :::
 
 ::: warning
@@ -64,35 +74,45 @@ bun add -D vitest @vitest/browser-preview
 [Playwright](https://npmx.dev/package/playwright) 是一个用于 Web 测试和自动化的框架。
 
 ::: code-group
+
 ```bash [npm]
 npm install -D vitest @vitest/browser-playwright
 ```
+
 ```bash [yarn]
-yarn add -D vitest @vitest/browser-playwright
+yarn add -D vitest vite @vitest/browser-playwright
 ```
+
 ```bash [pnpm]
 pnpm add -D vitest @vitest/browser-playwright
 ```
+
 ```bash [bun]
 bun add -D vitest @vitest/browser-playwright
 ```
+
 == WebdriverIO
 
 [WebdriverIO](https://npmx.dev/package/webdriverio) 允许你使用 WebDriver 协议在本地运行测试。
 
 ::: code-group
+
 ```bash [npm]
 npm install -D vitest @vitest/browser-webdriverio
 ```
+
 ```bash [yarn]
-yarn add -D vitest @vitest/browser-webdriverio
+yarn add -D vitest vite @vitest/browser-webdriverio
 ```
+
 ```bash [pnpm]
 pnpm add -D vitest @vitest/browser-webdriverio
 ```
+
 ```bash [bun]
 bun add -D vitest @vitest/browser-webdriverio
 ```
+
 :::
 
 ## 配置
@@ -118,12 +138,13 @@ export default defineConfig({
 ```
 
 ::: info
-Vitest 分配端口 `63315` 以避免与开发服务器发生冲突，从而允许你同时运行两者。你可以通过 [`api`](/config/api) 选项更改该端口。
+Vitest 会分配端口 `63315`，以避免与开发服务器冲突，从而允许两者并行运行。你可以通过 [`api`](/config/api) 选项更改端口。端口会在首次启动浏览器时绑定；如果启用了 `api` 或 `ui`，则会在启动时绑定。
 :::
 
 如果你之前没有使用过 Vite，请确保已安装并在配置中指定了你的框架插件。某些框架可能需要额外配置才能工作 - 请查看它们的 Vite 相关文档以确保无误。
 
 ::: code-group
+
 ```ts [react]
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
@@ -142,6 +163,7 @@ export default defineConfig({
   }
 })
 ```
+
 ```ts [vue]
 import { defineConfig } from 'vitest/config'
 import { playwright } from '@vitest/browser-playwright'
@@ -160,6 +182,7 @@ export default defineConfig({
   }
 })
 ```
+
 ```ts [svelte]
 import { defineConfig } from 'vitest/config'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
@@ -178,6 +201,7 @@ export default defineConfig({
   }
 })
 ```
+
 ```ts [solid]
 import { defineConfig } from 'vitest/config'
 import solidPlugin from 'vite-plugin-solid'
@@ -196,6 +220,7 @@ export default defineConfig({
   }
 })
 ```
+
 ```ts [marko]
 import { defineConfig } from 'vitest/config'
 import marko from '@marko/vite'
@@ -214,6 +239,7 @@ export default defineConfig({
   }
 })
 ```
+
 ```ts [qwik]
 import { defineConfig } from 'vitest/config'
 import { qwikVite } from '@builder.io/qwik/optimizer'
@@ -233,6 +259,7 @@ export default defineConfig({
   },
 })
 ```
+
 :::
 
 如果你需要使用基于 Node 的运行器运行某些测试，你可以定义一个 [`projects`](/guide/projects) 选项，为不同的测试策略提供单独的配置：
@@ -299,10 +326,10 @@ Vitest 中的浏览器选项取决于提供者。如果你传递 `--browser` 但
 
 Vitest 使用 [Vite 开发服务器](https://vitejs.dev/guide/#browser-support) 来运行测试，因此我们只支持 [`esbuild.target`](https://vitejs.dev/config/shared-options.html#esbuild) 选项中指定的功能（默认为 `esnext`）。
 
-默认情况下，Vite 针对支持原生 [ES 模块](https://caniuse.com/es6-module)、原生 [ESM 动态导入](https://caniuse.com/es6-module-dynamic-import) 和 [`import.meta`](https://caniuse.com/mdn-javascript_operators_import_meta) 的浏览器。除此之外，我们利用 [`BroadcastChannel`](https://caniuse.com/?search=BroadcastChannel) 在 iframe 之间通信：
+默认情况下，Vite 面向支持原生 [ES 模块](https://caniuse.com/es6-module)、原生 [ESM 动态导入](https://caniuse.com/es6-module-dynamic-import)和 [`import.meta`](https://caniuse.com/mdn-javascript_operators_import_meta) 的浏览器。此外，我们使用 [`BroadcastChannel`](https://caniuse.com/?search=BroadcastChannel) 在 iframe 之间通信，并使用 `WeakRef` 和 `FinalizationRegistry` 跟踪模拟对象，同时不阻止垃圾回收：
 
 - Chrome >=87
-- Firefox >=78
+- Firefox >=79
 - Safari >=15.4
 - Edge >=88
 
@@ -425,6 +452,7 @@ await page.getByLabelText(/username/i).fill('Alice')
 ```
 
 ::: code-group
+
 ```ts [vue]
 import { render } from 'vitest-browser-vue'
 import Component from './Component.vue'
@@ -445,6 +473,7 @@ test('properly handles v-model', async () => {
   await expect.element(screen.getByText('Hi, my name is Bob')).toBeInTheDocument()
 })
 ```
+
 ```ts [svelte]
 import { render } from 'vitest-browser-svelte'
 import { expect, test } from 'vitest'
@@ -461,6 +490,7 @@ test('greeting appears on click', async () => {
   await expect.element(greeting).toBeInTheDocument()
 })
 ```
+
 ```tsx [react]
 import { render } from 'vitest-browser-react'
 import Fetch from './fetch'
@@ -478,6 +508,7 @@ test('loads and displays greeting', async () => {
   await expect.element(screen.getByRole('button')).toBeDisabled()
 })
 ```
+
 ```ts [lit]
 import { render } from 'vitest-browser-lit'
 import { html } from 'lit'
@@ -493,6 +524,7 @@ test('greeting appears on click', async () => {
   await expect.element(greeting).toBeInTheDocument()
 })
 ```
+
 ```tsx [preact]
 import { render } from 'vitest-browser-preact'
 import { createElement } from 'preact'
@@ -508,6 +540,7 @@ test('greeting appears on click', async () => {
   await expect.element(greeting).toBeInTheDocument()
 })
 ```
+
 ```tsx [qwik]
 import { render } from 'vitest-browser-qwik'
 import Greeting from './greeting'
@@ -523,6 +556,7 @@ test('greeting appears on click', async () => {
   await expect.element(greeting).toBeInTheDocument()
 })
 ```
+
 :::
 
 Vitest 并不开箱即用支持所有框架，但你可以使用外部工具来运行这些框架的测试。我们也鼓励社区创建他们自己的 `vitest-browser` 封装——如果你有一个，随时可以将其添加到上面的示例中。
@@ -539,6 +573,7 @@ Vitest 并不开箱即用支持所有框架，但你可以使用外部工具来�
 :::
 
 ::: code-group
+
 ```tsx [solid]
 // 基于 @testing-library/solid API
 // https://testing-library.com/docs/solid-testing-library/api
@@ -566,6 +601,7 @@ it('uses params', async () => {
   await expect.screen(screen.getByText('Id: 1234')).toBeInTheDocument()
 })
 ```
+
 ```ts [marko]
 // 基于 @testing-library/marko API
 // https://testing-library.com/docs/marko-testing-library/api
@@ -582,6 +618,7 @@ test('renders a message', async () => {
   `)
 })
 ```
+
 :::
 
 ## 限制
@@ -619,17 +656,20 @@ vi.mocked(module.method).mockImplementation(() => {
 然而，模拟导出_变量_的唯一方法是导出一个方法来改变内部值：
 
 ::: code-group
+
 ```js [module.js]
 export let MODE = 'test'
 export function changeMode(newMode) {
   MODE = newMode
 }
 ```
-```ts [module.test.ts]
+
+```js [module.test.ts]
 import { expect } from 'vitest'
 import { changeMode, MODE } from './module.js'
 
 changeMode('production')
 expect(MODE).toBe('production')
 ```
+
 :::

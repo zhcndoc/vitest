@@ -7,7 +7,7 @@ outline: deep
 
 - **类型：** `string | string[]`
 
-相对于 [`root`](/config/root) 解析的设置文件路径。它们将在同一进程中的每个 _测试文件_ 之前运行。默认情况下，所有测试文件并行运行，但你可以使用 [`sequence.setupFiles`](/config/sequence#sequence-setupfiles) 选项进行配置。
+相对于 [`root`](/config/root) 解析的设置文件路径。它们会在同一进程中每个_测试文件_之前运行。默认情况下，设置文件会按定义顺序依次运行；你也可以通过 [`sequence.setupFiles`](/config/sequence#sequence-setupfiles) 选项进行配置。
 
 Vitest 将忽略这些文件中的任何导出。
 
@@ -42,4 +42,5 @@ afterEach(() => {
 
 globalThis.resetBeforeEachTest = true
 ```
+
 :::

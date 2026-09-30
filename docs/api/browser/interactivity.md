@@ -56,6 +56,7 @@ beforeEach(async () => {
   await userEvent.unhover(document.body)
 })
 ```
+
 :::
 
 ## userEvent.click
@@ -101,6 +102,7 @@ await userEvent.keyboard('{/Shift}')
 ```
 
 使用 Playwright：
+
 ```ts
 await userEvent.click(element, { modifiers: ['Shift'] })
 ```

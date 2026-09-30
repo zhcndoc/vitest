@@ -43,5 +43,5 @@ ReferenceError: __dirname is not defined
 ::: warning
 此选项不会影响外部化模块，因为这些模块始终由原生运行时执行。Node.js 会自行向外部化的 CommonJS 模块提供 CommonJS 变量。
 
-请注意，即使启用了此选项，内联的 CommonJS 模块也不会经过 Vite 插件处理：`require` 调用始终会离开模块运行器，因此模拟等功能不会对其生效。
+请注意，即使启用了此选项，内联的 CommonJS 模块也不会经过 Vite 插件处理：`require` 调用始终会离开模块运行器，因此模拟等功能不会对其生效。配置替代方案请参阅 [CommonJS 源码尚未得到完整支持](/guide/common-errors#commonjs-source-code-is-not-fully-supported)。
 :::

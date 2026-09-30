@@ -1,15 +1,16 @@
 import type { Theme } from 'vitepress'
 import TwoslashFloatingVue from '@shikijs/vitepress-twoslash/client'
-import { h } from 'vue'
-import { inBrowser } from 'vitepress'
 import VitestTheme from '@voidzero-dev/vitepress-theme/src/vitest'
+import { inBrowser } from 'vitepress'
 import { enhanceAppWithTabs } from 'vitepress-plugin-tabs/client'
-import Version from '../components/Version.vue'
+import Advanced from '../components/Advanced.vue'
+import ChangelogButton from '../components/ChangelogButton.vue'
+import CopyPrompt from '../components/CopyPrompt.vue'
+import CourseLink from '../components/CourseLink.vue'
 import CRoot from '../components/CRoot.vue'
 import Deprecated from '../components/Deprecated.vue'
 import Experimental from '../components/Experimental.vue'
-import Advanced from '../components/Advanced.vue'
-import CourseLink from '../components/CourseLink.vue'
+import Version from '../components/Version.vue'
 import './styles.css'
 import '@shikijs/vitepress-twoslash/style.css'
 import 'virtual:group-icons.css'
@@ -35,7 +36,11 @@ function getRedirectPath(url: URL) {
   // /config/#reporters           -> /config/reporters
   // /config/#coverage-provider   -> /config/coverage#coverage-provider
   // /config/#browser.enabled     -> /config/browser/enabled
-  if (url.pathname === '/config' || url.pathname === '/config/' || url.pathname === '/config.html') {
+  if (
+    url.pathname === '/config' ||
+    url.pathname === '/config/' ||
+    url.pathname === '/config.html'
+  ) {
     if (url.hash.startsWith('#browser.')) {
       const [page, ...hash] = url.hash.slice('#browser.'.length).toLowerCase().split('-')
       return `/config/browser/${page}${hash.length ? `#${[page, ...hash].join('-')}` : ''}`
@@ -44,7 +49,11 @@ function getRedirectPath(url: URL) {
     return `/config/${page}${hash.length ? `#${[page, ...hash].join('-')}` : ''}`
   }
   // /guide/browser/config#browser.locators-testidattribute -> /config/browser/locators#browser-locators-testidattribute
-  if (url.pathname === '/guide/browser/config' || url.pathname === '/guide/browser/config/' || url.pathname === '/guide/browser/config.html') {
+  if (
+    url.pathname === '/guide/browser/config' ||
+    url.pathname === '/guide/browser/config/' ||
+    url.pathname === '/guide/browser/config.html'
+  ) {
     const [page, ...hash] = url.hash.slice('#browser.'.length).toLowerCase().split('-')
     return `/config/browser/${page}${hash.length ? `#${[page, ...hash].join('-')}` : ''}`
   }
@@ -56,14 +65,14 @@ export default {
     return h(VitestTheme.Layout, null, {
       'aside-outline-before': () =>
         h('div', {
-          'class': 'wwads-cn wwads-vertical',
-          'style': 'margin-top: 0; margin-bottom: 1rem; max-width:200px;',
+          class: 'wwads-cn wwads-vertical',
+          style: 'margin-top: 0; margin-bottom: 1rem; max-width:200px;',
           'data-id': '354',
         }),
       'doc-after': () =>
         h('div', {
-          'class': 'wwads-cn wwads-horizontal',
-          'style': 'margin-top: 1rem; margin-bottom: 1rem; max-width:100%;',
+          class: 'wwads-cn wwads-horizontal',
+          style: 'margin-top: 1rem; margin-bottom: 1rem; max-width:100%;',
           'data-id': '354',
         }),
     })
@@ -74,6 +83,8 @@ export default {
     app.component('Experimental', Experimental)
     app.component('Deprecated', Deprecated)
     app.component('Advanced', Advanced)
+    app.component('ChangelogButton', ChangelogButton)
+    app.component('CopyPrompt', CopyPrompt)
     app.component('CourseLink', CourseLink)
     app.use(TwoslashFloatingVue)
     enhanceAppWithTabs(app)

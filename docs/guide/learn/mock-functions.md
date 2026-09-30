@@ -178,7 +178,7 @@ expect(calls[0]).toEqual({ count: 1 }) // ✅ 通过
 
 ## 监视方法
 
-[`vi.spyOn`](/api/vi#vi-spyon) 与 `vi.fn()` 有一个重要区别。它不会创建一个全新的函数，而是包装一个对象上 *已存在* 的方法。原始实现默认仍然有效，但你可以观察每一次调用，并选择性地覆盖其行为：
+[`vi.spyOn`](/api/vi#vi-spyon) 与 `vi.fn()` 有一个重要区别：它不会创建全新的函数，而是包装对象上_已存在_的方法。默认情况下，原始实现仍然有效，但你可以观察每次调用，并选择性地覆盖其行为：
 
 ```js
 import { expect, test, vi } from 'vitest'

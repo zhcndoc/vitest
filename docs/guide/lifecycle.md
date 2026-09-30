@@ -32,8 +32,9 @@ outline: deep
 当你运行 `vitest` 时，框架首先加载你的配置并准备测试环境。
 
 **发生什么：**
-- 解析 [命令行](/guide/cli) 参数
-- 加载 [配置文件](/config/)
+
+- 解析[命令行](/guide/cli)参数
+- 加载[配置文件](/config/)
 - 验证项目结构
 
 如果配置文件或其导入之一发生更改，此阶段可以再次运行。
@@ -45,15 +46,17 @@ outline: deep
 如果你配置了 [`globalSetup`](/config/globalsetup) 文件，它们会在任何测试 worker 创建之前运行一次。
 
 **发生什么：**
+
 - 全局设置文件中的 `setup()` 函数（或导出的 `default` 函数）按顺序执行
 - 多个全局设置文件按定义顺序运行
 
 **范围：** 主进程（与测试 worker 分离）
 
 **重要说明：**
+
 - 全局设置在与测试**不同的全局范围**中运行
-- 测试无法访问全局设置中定义的变量（使用 [`provide`/`inject`](/config/provide) 代替）
-- 只有当至少有一个测试排队时，全局设置才会运行
+- 测试无法访问全局设置中定义的变量（请改用 [`provide`/`inject`](/config/provide)）
+- 只有至少有一个测试排队时，全局设置才会运行
 
 ```ts [globalSetup.ts]
 export function setup(project) {
@@ -75,11 +78,12 @@ export function teardown() {
 全局设置完成后，Vitest 根据你的 [池配置](/config/pool) 创建测试 worker。
 
 **发生什么：**
-- 根据 `browser.enabled` 或 `pool` 设置生成工作线程（`threads`、`forks`、`vmThreads` 或 `vmForks`）
-- 每个工作线程都有自己的隔离环境（除非禁用 [隔离](/config/isolate)）
-- 默认情况下，为了提供隔离，工作线程不会被复用。只有在以下情况下才会复用工作线程：
-  - 禁用 [隔离](/config/isolate)
-  - 或者池是 `vmThreads` 或 `vmForks`，因为 [VM](https://nodejs.org/api/vm.html) 提供了足够的隔离
+
+- 根据 `browser.enabled` 或 `pool` 设置启动 worker（`threads`、`forks`、`vmThreads` 或 `vmForks`）
+- 每个 worker 都有独立的环境（除非禁用了[隔离](/config/isolate)）
+- 默认情况下，为了提供隔离，worker 不会复用。只有在以下情况下才会复用：
+  - 禁用了[隔离](/config/isolate)
+  - 或者池为 `vmThreads` 或 `vmForks`，因为 [VM](https://nodejs.org/api/vm.html) 提供了足够的隔离
 
 **范围：** Worker 进程/线程
 
@@ -88,16 +92,18 @@ export function teardown() {
 在每个测试文件运行之前，执行 [设置文件](/config/setupfiles)。
 
 **发生什么：**
+
 - 设置文件与测试在同一进程中运行
-- 默认情况下，设置文件**并行**运行（可通过 [`sequence.setupFiles`](/config/sequence#sequence-setupfiles) 配置）
+- 默认情况下，设置文件会**并行**运行（可通过 [`sequence.setupFiles`](/config/sequence#sequence-setupfiles) 配置）
 - 设置文件在**每个测试文件**之前执行
-- 任何全局_状态_或配置都可以在此处初始化
+- 可以在这里初始化全局_状态_或配置
 
 **范围：** Worker 进程（与测试相同）
 
 **重要说明：**
-- 如果禁用 [隔离](/config/isolate)，设置文件仍会在每个测试文件之前重新运行以触发副作用，但导入的模块会被缓存
-- 编辑设置文件会触发 watch 模式下所有测试的重新运行
+
+- 即使禁用了[隔离](/config/isolate)，设置文件仍会在每个测试文件之前重新运行以触发副作用，但导入的模块会被缓存
+- 在 watch 模式下，编辑设置文件会触发所有测试重新运行
 
 ```ts [setupFile.ts]
 import { afterEach } from 'vitest'
@@ -320,10 +326,11 @@ describe('outer', () => {
 在整个测试运行过程中，报告器接收生命周期事件并显示结果。
 
 **发生什么：**
-- 报告器在测试进行时接收事件
-- 结果被收集和格式化
+
+- 报告器会在测试运行过程中接收事件
+- 收集并格式化结果
 - 生成测试摘要
-- 生成覆盖率报告（如果启用）
+- 如果启用了覆盖率，则生成覆盖率报告
 
 有关报告器生命周期的详细信息，请参阅 [报告器](/api/advanced/reporters) 指南。
 
@@ -332,9 +339,10 @@ describe('outer', () => {
 所有测试完成后，全局清理函数执行。
 
 **发生什么：**
-- [`globalSetup`](/config/globalsetup) 文件中的 `teardown()` 函数运行
-- 多个清理函数按其设置的**逆序**运行
-- 在 watch 模式下，清理在进程退出前运行，而不是在测试重新运行之间
+
+- 运行 [`globalSetup`](/config/globalsetup) 文件中的 `teardown()` 函数
+- 多个清理函数按其设置顺序的**逆序**运行
+- 在 watch 模式下，清理会在进程退出前运行，而不是在测试重新运行之间执行
 
 **范围：** 主进程
 
@@ -349,51 +357,51 @@ export function teardown() {
 
 了解代码执行的位置对于避免常见陷阱至关重要：
 
-| 阶段 | 作用域 | 访问测试上下文 | 运行次数 |
-|-------|-------|----------------------|------|
-| 配置文件 | 主进程 | ❌ 否 | 每次 Vitest 运行一次 |
-| 全局设置 | 主进程 | ❌ 否（使用 `provide`/`inject`） | 每次 Vitest 运行一次 |
-| 设置文件 | 工作线程（与测试相同） | ✅ 是 | 每个测试文件之前 |
-| 文件级代码 | 工作线程 | ✅ 是 | 每个测试文件一次 |
-| `aroundAll` | 工作线程 | ✅ 是 | 每个套件一次（包裹所有测试） |
-| `beforeAll` / `afterAll` | 工作线程 | ✅ 是 | 每个套件一次 |
-| `aroundEach` | 工作线程 | ✅ 是 | 每个测试（包裹每个测试） |
-| `beforeEach` / `afterEach` | 工作线程 | ✅ 是 | 每个测试 |
-| 测试函数 | 工作线程 | ✅ 是 | 一次（重试/重复时可能多次） |
-| 全局清理 | 主进程 | ❌ 否 | 每次 Vitest 运行一次 |
+| 阶段                       | 作用域               | 是否可访问测试上下文             | 运行次数                     |
+| -------------------------- | -------------------- | -------------------------------- | ---------------------------- |
+| 配置文件                   | 主进程               | ❌ 否                            | 每次 Vitest 运行一次         |
+| 全局设置                   | 主进程               | ❌ 否（使用 `provide`/`inject`） | 每次 Vitest 运行一次         |
+| 设置文件                   | Worker（与测试相同） | ✅ 是                            | 每个测试文件之前             |
+| 文件级代码                 | Worker               | ✅ 是                            | 每个测试文件一次             |
+| `aroundAll`                | Worker               | ✅ 是                            | 每个套件一次（包裹所有测试） |
+| `beforeAll` / `afterAll`   | Worker               | ✅ 是                            | 每个套件一次                 |
+| `aroundEach`               | Worker               | ✅ 是                            | 每个测试（包裹每个测试）     |
+| `beforeEach` / `afterEach` | Worker               | ✅ 是                            | 每个测试                     |
+| 测试函数                   | Worker               | ✅ 是                            | 一次（重试/重复时可能多次）  |
+| 全局清理                   | 主进程               | ❌ 否                            | 每次 Vitest 运行一次         |
 
-## 监视模式生命周期
+## Watch 模式生命周期
 
-在监视模式下，生命周期会重复，但有一些区别：
+在 watch 模式下，生命周期会重复，但有一些区别：
 
-1. **初始运行**：完整的生命周期，如上所述
-2. **文件变更时**：
-   - 新的 [测试运行](/api/advanced/reporters#ontestrunstart) 开始
+1. **初次运行：** 按照上述说明执行完整生命周期
+2. **文件变更时：**
+   - 开始新的[测试运行](/api/advanced/reporters#ontestrunstart)
    - 仅重新运行受影响的测试文件
-   - [设置文件](/config/setupfiles) 会为这些测试文件再次运行
-   - [全局设置](/config/globalsetup) **不会**重新运行（使用 [`project.onTestsRerun`](/config/globalsetup#handling-test-reruns) 处理特定于重新运行的逻辑）
-3. **退出时**：
+   - 为这些测试文件再次运行[设置文件](/config/setupfiles)
+   - [全局设置](/config/globalsetup)**不会**重新运行（请使用 [`project.onTestsRerun`](/config/globalsetup#handling-test-reruns) 处理重新运行时的逻辑）
+3. **退出时：**
    - 执行全局清理
-   - 进程终止
+   - 终止进程
 
 ## 性能考量
 
 了解生命周期有助于优化测试性能：
 
-- **全局设置** 适合用于昂贵的一次性操作（数据库种子数据、服务器启动）
-- **设置文件** 在每个测试文件之前运行 - 如果你有很多测试文件，请避免在此处进行繁重操作
-- 对于不需要隔离的昂贵设置，**`beforeAll`** 比 `beforeEach` 更好
-- **禁用 [隔离](/config/isolate)** 可以提高性能，但设置文件仍然会在每个文件之前执行
-- **[池配置](/config/pool)** 影响并行化和可用的 API
+- **全局设置** 适合用于开销较大的一次性操作（数据库填充、启动服务器）
+- **设置文件** 会在每个测试文件之前运行；如果测试文件很多，请避免在这里执行繁重操作
+- 对于不需要隔离的高开销设置，**`beforeAll`** 优于 `beforeEach`
+- **禁用[隔离](/config/isolate)** 可以提升性能，但设置文件仍会在每个文件之前执行
+- **[池配置](/config/pool)** 会影响并行化和可用的 API
 
-有关如何提高性能的技巧，请阅读 [提高性能](/guide/improving-performance) 指南。
+提升性能的技巧请参阅[提高性能](/guide/improving-performance)指南。
 
 ## 相关文档
 
 - [全局设置配置](/config/globalsetup)
 - [设置文件配置](/config/setupfiles)
-- [测试排序选项](/config/sequence)
+- [测试顺序选项](/config/sequence)
 - [隔离配置](/config/isolate)
 - [池配置](/config/pool)
-- [扩展报告器](/guide/advanced/reporters) - 用于报告器生命周期事件
-- [测试 API 参考](/api/hooks) - 用于钩子 API
+- [扩展报告器](/guide/advanced/reporters) - 报告器生命周期事件
+- [测试 API 参考](/api/hooks) - 钩子 API

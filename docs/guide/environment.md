@@ -49,7 +49,10 @@ import type { Environment } from 'vitest/runtime'
 export default <Environment>{
   name: 'custom',
   viteEnvironment: 'ssr',
-  // 可选 - 仅当你支持 "vmForks" 或 "vmThreads" 池时
+  // optional - set to false when "setupVM" is fast, so vm pools
+  // do not transform the import graph while it runs
+  prewarmModules: true,
+  // optional - only if you support "vmForks" or "vmThreads" pools
   async setupVM() {
     const vm = await import('node:vm')
     const context = vm.createContext()

@@ -38,9 +38,9 @@ _2025 年 10 月 22 日_
 快速链接：
 
 - [文档](/)
-- 翻译：[简体中文](https://cn.vitest.dev/)
-- [迁移指南](/guide/migration#vitest-4)
-- [GitHub 变更日志](https://github.com/vitest-dev/vitest/releases/tag/v4.0.0)
+- 翻译：[简体中文](https://v4.cn.vitest.dev/)
+- [迁移指南](https://v4.vitest.dev/guide/migration)
+- [GitHub 更新日志](https://github.com/vitest-dev/vitest/releases/tag/v4.0.0)
 
 如果你之前没用过 Vitest，我们建议先阅读 [入门](/guide/) 和 [特性](/guide/features) 指南。
 
@@ -59,6 +59,7 @@ _2025 年 10 月 22 日_
 要定义提供者，你现在需要安装一个独立的包：[`@vitest/browser-playwright`](https://npmx.dev/package/@vitest/browser-playwright)、[`@vitest/browser-webdriverio`](https://npmx.dev/package/@vitest/browser-webdriverio) 或 [`@vitest/browser-preview`](https://npmx.dev/package/@vitest/browser-preview)。这使得使用自定义选项更简单，并且不再需要添加 `/// <reference` 注释。
 
 ::: code-group
+
 ```ts [playwright]
 import { defineConfig } from 'vitest/config'
 import { playwright } from '@vitest/browser-playwright' // [!code ++]
@@ -85,6 +86,7 @@ export default defineConfig({
   },
 })
 ```
+
 ```ts [webdriverio]
 import { defineConfig } from 'vitest/config'
 import { webdriverio } from '@vitest/browser-webdriverio' // [!code ++]
@@ -111,6 +113,7 @@ export default defineConfig({
   },
 })
 ```
+
 ```ts [preview]
 import { defineConfig } from 'vitest/config'
 import { preview } from '@vitest/browser-preview' // [!code ++]
@@ -127,6 +130,7 @@ export default defineConfig({
   },
 })
 ```
+
 :::
 
 context 不再从 `@vitest/browser/context` 导入（但它将继续工作直到下一个主版本，以便与尚未更新的工具更好地兼容），现在只需从 `vitest/browser` 导入：
@@ -146,7 +150,7 @@ test('example', async () => {
 
 Vitest 4 在浏览器模式中添加了 [视觉回归测试](/guide/browser/visual-regression-testing.md) 支持。我们将继续迭代此功能以改进体验。
 
-Vitest 中的视觉回归测试可以通过 [`toMatchScreenshot` 断言](/api/browser/assertions.html#tomatchscreenshot) 完成：
+你可以通过 [`toMatchScreenshot` 断言](/api/browser/assertions#tomatchscreenshot)在 Vitest 中进行视觉回归测试：
 
 ```ts
 import { expect, test } from 'vitest'
@@ -328,7 +332,7 @@ Vitest 4 带来了新的高级公共 [API 方法](/api/advanced/vitest)：
 
 ## 破坏性变更
 
-Vitest 4 有一些可能会影响你的破坏性变更，因此我们建议在升级前查阅详细的 [迁移指南](/guide/migration#vitest-4)。
+Vitest 4 包含一些可能影响你的破坏性变更，因此我们建议升级前查看详细的[迁移指南](https://v4.vitest.dev/guide/migration)。
 
 完整的变更列表位于 [Vitest 4 变更日志](https://github.com/vitest-dev/vitest/releases/tag/v4.0.0)。
 

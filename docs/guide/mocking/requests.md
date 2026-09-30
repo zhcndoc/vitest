@@ -106,10 +106,11 @@ afterAll(() => server.close())
 // 在每个测试之后重置处理程序以实现测试隔离
 afterEach(() => server.resetHandlers())
 ```
+
 :::
 
 > 将服务器配置为 `onUnhandledRequest: 'error'` 可确保每当存在没有相应请求处理程序的请求时，都会抛出错误。
 
 ## 更多
 
-MSW 还有更多功能。你可以访问 cookies 和查询参数，定义模拟错误响应，以及更多！要查看使用 MSW 可以做的所有事情，请阅读 [他们的文档](https://mswjs.io/docs)。
+MSW 还有更多功能。你可以访问 cookies 和查询参数、定义模拟错误响应等。要了解 MSW 的全部功能，请阅读[官方文档](https://mswjs.io/docs)。

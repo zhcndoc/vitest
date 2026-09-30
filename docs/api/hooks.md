@@ -178,12 +178,14 @@ test('insert user', async () => {
 ```
 
 ::: tip 何时使用 `aroundEach`
-当你的测试需要运行在 **包裹它的上下文中** 时，使用 `aroundEach`，例如：
+当测试需要运行在**包裹它的上下文中**时，可以使用 `aroundEach`，例如：
+
 - 将测试包裹在 [AsyncLocalStorage](https://nodejs.org/api/async_context.html#class-asynclocalstorage) 上下文中
-- 使用追踪跨度包裹测试
+- 使用 tracing span 包裹测试
 - 数据库事务
 
-如果你只需要在测试前后运行代码，建议使用带有清理返回函数的 [`beforeEach`](#beforeeach)：
+如果只需要在测试前后运行代码，建议使用带有清理返回函数的 [`beforeEach`](#beforeeach)：
+
 ```ts
 beforeEach(async () => {
   await database.connect()
@@ -192,6 +194,7 @@ beforeEach(async () => {
   }
 })
 ```
+
 :::
 
 ### 多个钩子
@@ -291,12 +294,14 @@ test('test 2', () => {
 ```
 
 ::: tip 何时使用 `aroundAll`
-当你的套件需要运行在 **包裹所有测试的上下文中** 时，使用 `aroundAll`，例如：
+当测试套件需要运行在**包裹所有测试的上下文中**时，可以使用 `aroundAll`，例如：
+
 - 将整个套件包裹在 [AsyncLocalStorage](https://nodejs.org/api/async_context.html#class-asynclocalstorage) 上下文中
-- 使用追踪跨度包裹套件
+- 使用 tracing span 包裹测试套件
 - 数据库事务
 
-如果你只需要在所有测试前后运行一次代码，建议使用带有清理返回函数的 [`beforeAll`](#beforeall)：
+如果只需要在所有测试前后各运行一次代码，建议使用带有清理返回函数的 [`beforeAll`](#beforeall)：
+
 ```ts
 beforeAll(async () => {
   await server.start()
@@ -305,6 +310,7 @@ beforeAll(async () => {
   }
 })
 ```
+
 :::
 
 ### 多个钩子
@@ -389,6 +395,7 @@ test.concurrent('performs a query', ({ onTestFinished }) => {
   db.query('SELECT * FROM users')
 })
 ```
+
 :::
 
 这个钩子在创建可复用逻辑时特别有用：
@@ -464,4 +471,5 @@ test.concurrent('performs a query', ({ onTestFailed }) => {
   db.query('SELECT * FROM users')
 })
 ```
+
 :::

@@ -38,7 +38,7 @@ _2026 年 3 月 12 日_
 快速链接：
 
 - [文档](/)
-- 翻译：[简体中文](https://cn.vitest.dev/)
+- 翻译：[简体中文](https://v4.cn.vitest.dev/)
 - [GitHub 更新日志](https://github.com/vitest-dev/vitest/releases/tag/v4.1.0)
 
 如果你之前没有使用过 Vitest，我们建议先阅读 [入门指南](/guide/) 和 [功能](/guide/features) 指南。
@@ -152,7 +152,7 @@ Vitest 4.1 引入了 [`browser.detailsPanelPosition`](/config/browser/detailspan
   <img alt="底部显示详情面板的 Vitest UI" img-light src="/ui/light-ui-details-bottom.png">
   <img alt="底部显示详情面板的 Vitest UI" img-dark src="/ui/dark-ui-details-bottom.png">
 
-  <sup>底部显示详情面板的 UI 示例。</sup>
+<sup>底部显示详情面板的 UI 示例。</sup>
 </center>
 
 这在较小屏幕上特别有用，切换到底部面板可以为你的应用留下更多水平空间：
@@ -180,7 +180,7 @@ Vitest 4.1 为浏览器模式中的 [Playwright Trace 查看器](/guide/browser/
   <img alt="显示追踪时间线和渲染组件的 Trace 查看器" img-light src="/trace-viewer-light.png">
   <img alt="显示追踪时间线和渲染组件的 Trace 查看器" img-dark src="/trace-viewer-dark.png">
 
-  <sup>高亮显示 `expect.element` 断言失败的 trace 视图示例。</sup>
+<sup>高亮显示 `expect.element` 断言失败的 trace 视图示例。</sup>
 </center>
 
 框架库也在集成 trace。例如，[`vitest-browser-react`](https://github.com/vitest-community/vitest-browser-react) 的 `render()` 工具现在会自动出现在 trace 中，并高亮显示渲染元素。
@@ -267,9 +267,10 @@ test.afterAll(async ({ db }) => {
 
 新的 `aroundEach` 钩子注册一个回调函数，该函数包裹当前套件中的每个测试。回调接收一个 `runTest` 函数，**必须**调用该函数以运行测试。`aroundAll` 钩子的工作方式类似，但它针对每个套件调用，而不是每个测试。
 
-当你的测试需要在**上下文中**运行时，你应该使用 `aroundEach`，例如：
-- 将测试包裹在 [AsyncLocalStorage](https://nodejs.org/api/async_context.html#class-asynclocalstorage) 上下文中
-- 使用追踪 span 包裹测试
+当测试需要在**包装它的上下文中**运行时，可以使用 `aroundEach`，例如：
+
+- 将测试包装在 [AsyncLocalStorage](https://nodejs.org/api/async_context.html#class-asynclocalstorage) 上下文中
+- 使用 tracing span 包装测试
 - 数据库事务
 
 ```ts
@@ -361,7 +362,7 @@ export default defineConfig({
   <img alt="GitHub Actions 任务摘要" img-dark src="/github-actions-job-summary-dark.png">
   <img alt="GitHub Actions 任务摘要" img-light src="/github-actions-job-summary-light.png">
 
-  <sup>包含不稳定测试详情的任务摘要示例。</sup>
+<sup>包含不稳定测试详情的任务摘要示例。</sup>
 </center>
 
 在 GitHub Actions 中运行时，默认启用摘要并写入 `$GITHUB_STEP_SUMMARY` 指定的路径。大多数情况下无需配置。要禁用它或自定义输出路径：
@@ -465,14 +466,14 @@ else { // [!code error]
 console.log('Included')
 ```
 
-查看更多示例请参阅 [覆盖率 | 忽略代码](/guide/coverage.html#ignoring-code)。
+查看更多示例请参阅[覆盖率 | 忽略代码](/guide/coverage#ignoring-code)。
 
 ## 仅针对变更文件的覆盖率
 
-如果你只想获取修改文件的代码覆盖率，可以使用 [`coverage.changed`](/config/coverage.html#coverage-changed) 来限制文件包含。
+如果你只想获取修改文件的代码覆盖率，可以使用 [`coverage.changed`](/config/coverage#coverage-changed) 限制包含的文件。
 
-与常规的 [`--changed`](/guide/cli.html#changed) 标志相比，`--coverage.changed` 允许你仍然运行所有测试文件，但将覆盖率报告限制为仅变更的文件。
-这允许你从覆盖率中排除 `--changed` 否则会包含的未变更文件。
+与常规的 [`--changed`](/guide/cli#changed) 标志相比，`--coverage.changed` 可以让你继续运行所有测试文件，但仅对变更的文件生成覆盖率报告。
+这样可以将原本会被 `--changed` 包含的未变更文件排除在覆盖率报告之外。
 
 ## HTML 报告器和子路径部署中的覆盖率
 

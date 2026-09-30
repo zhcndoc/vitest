@@ -132,12 +132,15 @@ expect(fn.mock.results[1].value).toBe('world')
 Vitest 支持 [happy-dom](https://github.com/capricorn86/happy-dom) 或 [jsdom](https://github.com/jsdom/jsdom) 来模拟 DOM 和浏览器 API。它们不随 Vitest 附带，你需要单独安装它们：
 
 ::: code-group
+
 ```bash [happy-dom]
 $ npm i -D happy-dom
 ```
+
 ```bash [jsdom]
 $ npm i -D jsdom
 ```
+
 :::
 
 之后，更改配置文件中的 `environment` 选项：
@@ -194,29 +197,32 @@ if (import.meta.vitest) {
 
 了解更多：[源内测试](/guide/in-source)。
 
-## 基准测试 <Experimental /> {#benchmarking}
+## 基准测试 {#benchmarking}
 
-你可以通过 [Tinybench](https://github.com/tinylibs/tinybench) 使用 [`bench`](/api/test#bench) 函数运行基准测试以比较性能结果。
+你可以通过 [Tinybench](https://github.com/tinylibs/tinybench) 使用[测试上下文](/guide/test-context#bench)中的 [`bench`](/api/test#bench) fixture 运行基准测试，以比较性能表现。
 
 ```ts [sort.bench.ts]
-import { bench, describe } from 'vitest'
+import { test } from 'vitest'
 
-describe('sort', () => {
-  bench('normal', () => {
-    const x = [1, 5, 4, 2, 3]
-    x.sort((a, b) => {
-      return a - b
-    })
-  })
-
-  bench('reverse', () => {
-    const x = [1, 5, 4, 2, 3]
-    x.reverse().sort((a, b) => {
-      return a - b
-    })
-  })
+test('sort', async ({ bench }) => {
+  await bench.compare(
+    bench('normal', () => {
+      const x = [1, 5, 4, 2, 3]
+      x.sort((a, b) => {
+        return a - b
+      })
+    }),
+    bench('reverse', () => {
+      const x = [1, 5, 4, 2, 3]
+      x.reverse().sort((a, b) => {
+        return a - b
+      })
+    }),
+  )
 })
 ```
+
+更多信息请参阅[基准测试](/guide/benchmarking)。
 
 <img alt="基准测试报告" img-dark src="https://github.com/vitest-dev/vitest/assets/4232207/6f0383ea-38ba-4f14-8a05-ab243afea01d">
 <img alt="基准测试报告" img-light src="https://github.com/vitest-dev/vitest/assets/4232207/efbcb427-ecf1-4882-88de-210cd73415f6">
@@ -274,6 +280,7 @@ export default defineConfig(({ mode }) => ({
 你可以通过手动捕获它们来禁用此行为。Vitest 假设回调由你处理，不会报告错误。
 
 ::: code-group
+
 ```ts [setup.node.js]
 // 在 Node.js 中
 process.on('unhandledRejection', () => {
@@ -284,6 +291,7 @@ process.on('uncaughtException', () => {
   // 你自己的处理程序
 })
 ```
+
 ```ts [setup.browser.js]
 // 在浏览器中
 window.addEventListener('error', () => {
@@ -294,6 +302,7 @@ window.addEventListener('unhandledrejection', () => {
   // 你自己的处理程序
 })
 ```
+
 :::
 
 或者，你也可以使用 [`dangerouslyIgnoreUnhandledErrors`](/config/dangerouslyignoreunhandlederrors) 选项忽略报告的错误。Vitest 仍然会报告它们，但它们不会影响测试结果（退出代码不会改变）。

@@ -38,13 +38,17 @@ export default defineConfig({
 })
 ```
 
-```bash [CLI]
+```bash [命令行]
 vitest --browser.traceView
 ```
 
 :::
 
-启用 `browser.traceView` 后，带有已记录 trace 的测试可以从 [browser UI](/config/browser/ui)、[Vitest UI](/guide/ui) 和 [HTML reporter](/guide/reporters#html-reporter) 中打开 trace 查看器。该查看器有两个可调整大小的面板：
+启用 `browser.traceView` 后，可以从[browser UI](/config/browser/ui)、[Vitest UI](/guide/ui) 和 [HTML 报告器](/guide/reporters#html-reporter)打开带有已记录 trace 的测试。
+
+启用 HTML 报告器后，[Vitest VS Code 扩展](https://github.com/vitest-dev/vscode#trace-view)会在 Testing 视图和编辑器装订线中的测试旁添加 **Open Trace View** 操作。
+
+查看器包含两个可调整大小的窗格：
 
 - **步骤列表**（左侧）—— 每个已记录的操作、断言、标记和生命周期条目，包含名称、时序、选择器和源位置。失败的操作和断言会以红色高亮。
 - **DOM 快照**（右侧）—— 所选步骤下页面状态的重建。被交互的元素会以蓝色高亮。
@@ -55,7 +59,6 @@ vitest --browser.traceView
 <img alt="Vitest UI trace 查看器显示步骤列表和 DOM 快照" img-dark src="/browser/trace-view-dark.png">
 
 <small>示例回放使用了 [Vuetify](https://github.com/vuetifyjs/vuetify) 的 `VDateInput` 组件。</small>
-
 
 ## 常见配置
 
@@ -72,23 +75,25 @@ TODO: The browser UI / Vitest UI / browser driver combinations are not specific 
 
 `browser.traceView` 会记录 trace。浏览器模式、UI 和 reporter 选项决定了你在哪里查看它们。
 
-| 目标 | 配置 | 结果 |
-| --- | --- | --- |
-| 为普通的本地浏览器 UI 添加 trace 回放 | `vitest --browser.traceView` | 使用默认的本地有头浏览器 UI，并为已记录的测试添加 trace 回放。 |
-| 使用无头浏览器进行本地调试 | `vitest --browser.traceView --browser.headless --ui` | 浏览器无头运行，而 Vitest UI 显示已记录的 trace 步骤和快照。 |
-| 使用可见的浏览器窗口和 Vitest UI 进行本地调试 | `vitest --browser.traceView --browser.headless=false --browser.ui=false --ui` | Vitest UI 显示已记录的 trace 步骤和快照，而测试在单独的有头浏览器窗口中运行。 |
-| 为 CI 或 run mode 生成静态报告 | `vitest run --browser.traceView --reporter=html` | HTML 报告中包含已记录测试的 trace 查看器。 |
+| 目标                                        | 配置                                                                          | 结果                                                                          |
+| ------------------------------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| 为常规的本地浏览器 UI 添加 trace 回放       | `vitest --browser.traceView`                                                  | 使用默认的本地有头浏览器 UI，并为已记录的测试添加 trace 回放。                |
+| 使用无头浏览器进行本地调试                  | `vitest --browser.traceView --browser.headless --ui`                          | 浏览器以无头模式运行，Vitest UI 显示已记录的 trace 步骤和快照。               |
+| 使用可见浏览器窗口和 Vitest UI 进行本地调试 | `vitest --browser.traceView --browser.headless=false --browser.ui=false --ui` | Vitest UI 显示已记录的 trace 步骤和快照，测试则在单独的有头浏览器窗口中运行。 |
+| 为 CI 或 run mode 生成静态报告              | `vitest run --browser.traceView --reporter=html`                              | HTML 报告包含已记录测试的 trace 查看器。                                      |
 
 ## 与 Playwright Traces 的关系
 
 `browser.traceView` 和 [`browser.trace`](/config/browser/trace) 是相互独立的功能：
 
-|                        | `browser.traceView`                                       | `browser.trace`                                |
-| ---------------------- | --------------------------------------------------------- | ---------------------------------------------- |
-| Provider 支持          | 所有 provider（playwright、webdriverio、preview）          | 仅 Playwright                                |
-| 查看器                 | Browser UI / Vitest UI / HTML reporter                    | Playwright Trace Viewer / trace.playwright.dev |
-| 格式                   | [rrweb](https://github.com/rrweb-io/rrweb) DOM 快照        | Playwright `.trace.zip`                        |
-| 需要外部工具           | 否                                                        | 是（`npx playwright show-trace`）              |
+|                        | `browser.traceView`                                 | `browser.trace`                                |
+| ---------------------- | --------------------------------------------------- | ---------------------------------------------- |
+|                        | `browser.traceView`                                 | `browser.trace`                                |
+| ---------------------- | ---                                                 | ---                                            |
+| Provider 支持          | 所有 provider（playwright、webdriverio、preview）   | 仅 Playwright                                  |
+| 查看器                 | Browser UI / Vitest UI / HTML 报告器                | Playwright Trace Viewer / trace.playwright.dev |
+| 格式                   | [rrweb](https://github.com/rrweb-io/rrweb) DOM 快照 | Playwright `.trace.zip`                        |
+| 需要外部工具           | 否                                                  | 是（`npx playwright show-trace`）              |
 
 你可以同时启用二者。关于 `browser.trace` 工作流，请参见 [Playwright Traces](./playwright-traces)。
 
@@ -102,7 +107,7 @@ TODO: The browser UI / Vitest UI / browser driver combinations are not specific 
 
 每个条目都会捕获该时刻的 DOM 状态，以及时间信息、选择器和触发它的源位置。
 
-In Vitest UI, trace entries are streamed as the test runs, so you can inspect recorded steps before the test finishes. Long-running actions, `expect.element(...)` assertions, and callback `page.mark()` entries appear as in-progress steps first, then update with their final status and duration.
+在 Vitest UI 中，trace 条目会随着测试运行持续传入，因此你可以在测试结束前检查已记录的步骤。耗时较长的操作、`expect.element(...)` 断言和回调形式的 `page.mark()` 条目会先显示为进行中，之后再更新为最终状态和耗时。
 
 ## 自定义 Trace 条目
 

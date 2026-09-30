@@ -1,9 +1,9 @@
 import type { SpanOptions } from '@opentelemetry/api'
 import type { ExpectStatic } from '@vitest/expect'
-import type { ModuleRunner } from 'vite/module-runner'
 import type { Traces } from '../../utils/traces'
 import type { Bench } from '../benchmark'
 import type { SerializedConfig } from '../config'
+import type { TestModuleRunner } from '../moduleRunner/testModuleRunner'
 import type {
   CancelReason,
   File,
@@ -36,7 +36,7 @@ import { getWorkerState } from '../utils'
 export class TestRunner implements VitestTestRunner {
   private snapshotClient = getSnapshotClient()
   private workerState = getWorkerState()
-  private moduleRunner!: ModuleRunner
+  private moduleRunner!: TestModuleRunner
   private cancelRun = false
 
   private assertionsErrors = new WeakMap<Readonly<Task>, Error>()
@@ -58,15 +58,11 @@ export class TestRunner implements VitestTestRunner {
     // nothing to tear down there; registering it anyway would keep the
     // listener, an in-context closure, alive for the lifetime of the worker
     if (this.pool !== 'vmThreads' && this.pool !== 'vmForks') {
-      this.onCleanupWorkerContext = listener => this.workerState.onCleanup(listener)
+      this.onCleanupWorkerContext = (listener) => this.workerState.onCleanup(listener)
     }
   }
 
   importFile(filepath: string, source: VitestRunnerImportSource): unknown {
-    const moduleNode = this.workerState.evaluatedModules.getModuleById(filepath)
-    if (moduleNode && (source === 'setup' || moduleNode.evaluated)) {
-      this.workerState.evaluatedModules.invalidateModule(moduleNode)
-    }
     return this._otel.$(
       `vitest.module.import_${source === 'setup' ? 'setup' : 'spec'}`,
       {
@@ -78,7 +74,8 @@ export class TestRunner implements VitestTestRunner {
         if (!this.viteModuleRunner) {
           filepath = `${filepath}?vitest=${Date.now()}`
         }
-        return this.moduleRunner.import(filepath)
+        const options = this.viteModuleRunner ? { invalidate: true } : undefined
+        return this.moduleRunner.import(filepath, options)
       },
     )
   }
@@ -109,10 +106,7 @@ export class TestRunner implements VitestTestRunner {
       }
 
       const result = await this.snapshotClient.finish(suite.file.filepath)
-      if (
-        this.workerState.config.snapshotOptions.updateSnapshot === 'none'
-        && result.unchecked
-      ) {
+      if (this.workerState.config.snapshotOptions.updateSnapshot === 'none' && result.unchecked) {
         let message = `Obsolete snapshots found when no snapshot update is expected.\n`
         for (const key of result.uncheckedKeys) {
           message += `· ${key}\n`
@@ -164,10 +158,7 @@ export class TestRunner implements VitestTestRunner {
 
     // initialize snapshot state before running file suite
     if (suite.mode !== 'skip' && 'filepath' in suite) {
-      await this.snapshotClient.setup(
-        suite.file.filepath,
-        this.workerState.config.snapshotOptions,
-      )
+      await this.snapshotClient.setup(suite.file.filepath, this.workerState.config.snapshotOptions)
     }
 
     this.workerState.current = suite
@@ -198,14 +189,10 @@ export class TestRunner implements VitestTestRunner {
       expectedAssertionsNumberErrorGen,
       isExpectingAssertions,
       isExpectingAssertionsError,
-    }
-      = test.context._local
-        ? test.context.expect.getState()
-        : getState((globalThis as any)[GLOBAL_EXPECT])
-    if (
-      expectedAssertionsNumber !== null
-      && assertionCalls !== expectedAssertionsNumber
-    ) {
+    } = test.context._local
+      ? test.context.expect.getState()
+      : getState((globalThis as any)[GLOBAL_EXPECT])
+    if (expectedAssertionsNumber !== null && assertionCalls !== expectedAssertionsNumber) {
       throw expectedAssertionsNumberErrorGen!()
     }
     if (isExpectingAssertions === true && assertionCalls === 0) {
@@ -264,9 +251,7 @@ export class TestRunner implements VitestTestRunner {
     const entries = [...(this.workerState.moduleExecutionInfo?.entries() || [])]
 
     // Sort by duration descending and keep top entries
-    const sortedEntries = entries
-      .sort(([, a], [, b]) => b.duration - a.duration)
-      .slice(0, limit)
+    const sortedEntries = entries.sort(([, a], [, b]) => b.duration - a.duration).slice(0, limit)
 
     const importDurations: Record<string, ImportDuration> = {}
     for (const [filepath, { duration, selfTime, external, importer }] of sortedEntries) {
@@ -287,7 +272,7 @@ export class TestRunner implements VitestTestRunner {
 
   trace = <T>(name: string, attributes: Record<string, any> | (() => T), cb?: () => T): T => {
     const options: SpanOptions = typeof attributes === 'object' ? { attributes } : {}
-    return this._otel.$(`vitest.test.runner.${name}`, options, cb || attributes as () => T)
+    return this._otel.$(`vitest.test.runner.${name}`, options, cb || (attributes as () => T))
   }
 
   __setTraces(traces: Traces): void {
@@ -307,8 +292,7 @@ export class TestRunner implements VitestTestRunner {
 }
 
 function clearModuleMocks(config: SerializedConfig) {
-  const { clearMocks, mockReset, restoreMocks, unstubEnvs, unstubGlobals }
-    = config
+  const { clearMocks, mockReset, restoreMocks, unstubEnvs, unstubGlobals } = config
 
   if (restoreMocks) {
     vi.restoreAllMocks()

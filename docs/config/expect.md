@@ -21,7 +21,7 @@ outline: deep
 :::
 
 ::: warning
-当你使用 `sequence.concurrent` 运行测试并将 `expect.requireAssertions` 设置为 `true` 时，你应该使用 [局部 expect](/guide/test-context.html#expect) 而不是全局的。否则，这可能在 [某些情况下 (#8469)](https://github.com/vitest-dev/vitest/issues/8469) 导致假阴性。
+当你使用 `sequence.concurrent` 运行测试并将 `expect.requireAssertions` 设为 `true` 时，应使用[本地 expect](/guide/test-context#expect)，而不是全局的 `expect`。否则，在[某些情况下 (#8469)](https://github.com/vitest-dev/vitest/issues/8469)可能会产生假阴性。
 :::
 
 ## expect.poll

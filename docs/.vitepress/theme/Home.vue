@@ -18,13 +18,15 @@ import Intro from './Intro.vue'
   <HeadingSection heading="快速、轻量、整合" />
   <VitestFeatureGrid />
   <Sponsors
-    description="Vitest 是免费且开源的，由优秀的赞助者共同支持。"
-    sponsor-link="https://github.com/sponsors/vitest-dev" :sponsors="sponsors"
+    description="Vitest 免费且开源，由优秀的赞助者共同支持。"
+    sponsor-link="https://github.com/sponsors/vitest-dev"
+    :sponsors="sponsors"
   />
   <Spacer />
   <Footer
     heading="开始使用 Vitest 测试"
-    subheading="为现代 Web 打造的高性能测试体验，全面提升你的测试效率" button-text="立即开始"
+    subheading="为现代 Web 打造的高性能测试体验，全面提升你的测试效率"
+    button-text="立即开始"
     button-link="/guide/"
   />
 </template>

@@ -49,6 +49,7 @@ import { render } from 'vitest-browser-react'
 const screen = render(<Component />) // [!code --]
 const screen = await render(<Component />) // [!code ++]
 ```
+
 :::
 
 ### 选项
@@ -258,6 +259,7 @@ await renderHook(() => {}, {
   wrapper: createWrapper(Wrapper, { value: 'foo' }),
 })
 ```
+
 :::
 
 `renderHook` 返回一些有用的方法和属性：

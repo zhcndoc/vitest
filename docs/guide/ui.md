@@ -4,13 +4,22 @@ title: Vitest UI | 指南
 
 # Vitest UI
 
-由 Vite 驱动，Vitest 在运行测试时底层也有一个开发服务器。这使得 Vitest 能够提供一个漂亮的 UI 来查看和交互你的测试。Vitest UI 是可选的，所以你需要通过以下方式安装它：
+Vitest UI 是用于浏览测试结果的可视化界面。你可以在测试运行期间交互使用，也可以将其作为静态 HTML 报告来查看已完成的测试运行。
+
+Vitest UI 是可选的，需要通过以下方式安装：
 
 ```bash
 npm i -D @vitest/ui
 ```
 
-然后你可以通过传递 `--ui` 标志来启动带 UI 的测试：
+<img alt="Vitest UI" img-light src="/ui-1-light.png">
+<img alt="Vitest UI" img-dark src="/ui-1-dark.png">
+
+## 实时 UI
+
+实时 UI 会与 Vitest 开发服务器一同运行，并需要启用 [watch 模式](/config/watch)（默认已启用）。它会持续连接运行中的 Vitest 进程，因此测试重新运行时结果也会更新。你还可以直接在 UI 中重新运行选定的测试、更新失败的快照并编辑测试文件。
+
+传入 `--ui` 标志即可启动：
 
 ```bash
 vitest --ui
@@ -22,14 +31,13 @@ vitest --ui
 Vitest UI 访问受保护。如果直接 URL 显示错误，请使用 Vitest 在终端中打印的令牌打开该 URL，例如 `http://localhost:51204/__vitest__/?token=...`。
 :::
 
-::: warning
-UI 是交互式的，需要运行中的 Vite 服务器，所以确保以 `watch` 模式运行 Vitest（默认模式）。或者，你可以通过在配置的 `reporters` 选项中指定 `html` 来生成一个看起来与 Vitest UI 完全相同的静态 HTML 报告。
-:::
+## HTML 报告器
 
-<img alt="Vitest UI 界面" img-light src="/ui-1-light.png">
-<img alt="Vitest UI 界面" img-dark src="/ui-1-dark.png">
+HTML 报告器会将测试结果写入静态版 Vitest UI。报告中的结果视图仍可浏览，但报告为只读，不能重新运行测试、更新快照或编辑测试文件。它适用于 run 模式、CI 以及之后再查看结果的自动化工作流。
 
-UI 也可以用作报告器。在 Vitest 配置中使用 `'html'` 报告器来生成 HTML 输出并预览测试结果：
+可以在命令行或 Vitest 配置中使用 `html` 报告器：
+
+::: code-group
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
@@ -41,26 +49,69 @@ export default defineConfig({
 })
 ```
 
-你可以在 Vitest UI 中查看覆盖率报告：详见 [Vitest UI 覆盖率](/guide/coverage#vitest-ui)。
+```bash [命令行]
+vitest run --reporter=html
+```
 
-::: warning
-如果你仍然希望在终端中实时查看测试运行情况，请将 `configDefaults.reporters` 添加到 `reporters` 选项中：`['html', ...configDefaults.reporters]`。
 :::
 
-::: tip
-要预览 HTML 报告，你可以使用 [vite preview](https://vitejs.dev/guide/cli.html#vite-preview) 命令：
+::: tip 保留终端输出
+配置 HTML 报告器会替换默认的终端报告器。要保留终端输出，请[包含 Vitest 的默认报告器](/guide/reporters#default-configuration)。
+
+```ts [vitest.config.ts]
+import { configDefaults, defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    reporters: ['html', ...configDefaults.reporters],
+  },
+})
+```
+
+:::
+
+### 本地预览
+
+默认情况下，报告入口会写入 `.vitest/index.html`。你可以通过 HTML 报告器的 `outputDir` 选项配置产物目录。
+
+要预览默认输出，请使用 [vite preview](https://vitejs.dev/guide/cli.html#vite-preview) 命令：
 
 ```sh
 npx vite preview --outDir .vitest
 ```
 
-你可以使用 HTML 报告器的 `outputDir` 选项配置输出位置。它指向报告产物根目录，报告入口会写入到 `<outputDir>/index.html`。默认值是 `.vitest`，即共享的 Vitest 产物目录。
+在浏览器中打开 Vite 输出的 URL。或者，也可以使用 [VS Code 集成浏览器](https://code.visualstudio.com/docs/debugtest/integrated-browser)直接打开 `.vitest/index.html`，无需预览服务器。
+
+### 以单个文件分享
+
+设置 `singleFile` 以生成自包含的 HTML 报告：
+
+```ts [vitest.config.ts]
+export default defineConfig({
+  test: {
+    reporters: [
+      ['html', { singleFile: true }],
+    ],
+  },
+})
+```
+
+启用 `singleFile` 后，Vitest 会将 UI 资源、元数据和测试附件内联到单个自包含的 `index.html` 中。这样无需保留整个输出目录，就能将报告作为单个产物轻松分享、上传或下载。
+
+由于所有内容都已内联，你可以通过 `file://` URL 在浏览器中直接打开 `<outputDir>/index.html`，不需要预览服务器。
+
+::: warning
+`singleFile` 有两个注意事项：
+
+- 由于所有内容都会内嵌，文件可能变得很大，打开速度慢、占用内存多，或超过产物查看器及静态主机的大小限制。
+- 覆盖率 HTML 报告目前不会内联，仍会作为单独文件保留。
+
+如果测试套件包含许多或较大的附件，或需要将覆盖率报告一并打包，建议使用默认的多文件报告。
 :::
 
-如果你需要一个可移植的报告，可以作为单个文件打开或共享，请参阅 HTML 报告器文档中的 [`singleFile`](/guide/reporters#html-reporter)。
+### 查看 CI 报告
 
-::: tip
-要从 CI（例如 GitHub Actions）查看 HTML 报告，请将输出目录作为工件上传：
+要从 CI（例如 GitHub Actions）查看 HTML 报告，请将输出目录上传为产物：
 
 ```yaml
 - uses: actions/upload-artifact@v7
@@ -69,21 +120,36 @@ npx vite preview --outDir .vitest
     name: vitest-report
     path: .vitest/
 
-- name: Viewer link in summary
-  run: echo "[查看 HTML 报告](https://viewer.vitest.dev/?url=${{ steps.upload-report.outputs.artifact-url }})" >> $GITHUB_STEP_SUMMARY
+- name: Link HTML report
+  run: echo "::notice title=Vitest HTML report::$REPORT_URL"
+  env:
+    REPORT_URL: https://viewer.vitest.dev/?url=${{ steps.upload-report.outputs.artifact-url }}
 ```
 
-这会在作业摘要中添加一个链接。点击它即可在浏览器中直接使用 [Vitest Viewer](https://viewer.vitest.dev/) 打开报告。你也可以手动下载工件并解压，然后像上面一样在本地运行 `vite preview`。
+这会在工作流运行中添加报告链接通知。点击链接即可在浏览器中通过 [Vitest Viewer](https://viewer.vitest.dev/) 直接打开报告。你也可以手动下载并解压产物，然后像上面那样在本地运行 `vite preview`。
 
-当你使用 `singleFile: true` 时，你可以将报告作为单个文件上传，并通过 `archive: false` 选项让 GitHub artifacts 直接可查看：
+使用 `singleFile: true` 时，你可以将报告作为单个文件上传，并通过 [`archive: false` 选项](https://github.com/actions/upload-artifact#upload-an-individual-file-unzipped)直接从 GitHub 产物中查看：
 
 ```yaml
 - uses: actions/upload-artifact@v7
+  id: upload-report
   with:
     path: .vitest/index.html
     archive: false
+
+- name: Link HTML report
+  run: echo "::notice title=Vitest HTML report::$REPORT_URL"
+  env:
+    REPORT_URL: ${{ steps.upload-report.outputs.artifact-url }}
 ```
-:::
+
+## 覆盖率
+
+Vitest UI 会在实时 UI 和 HTML 报告中显示覆盖率结果。配置和用法请参阅 [Vitest UI 覆盖率](/guide/coverage#vitest-ui)。
+
+## Trace 查看器
+
+启用 [`browser.traceView`](/guide/browser/trace-view) 后，Vitest UI 可以回放记录的浏览器交互。实时 UI 会在测试运行时持续显示 trace 条目，而 HTML 报告会保留记录，以便之后查看。
 
 ## 模块图
 

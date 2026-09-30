@@ -6,7 +6,7 @@ outline: deep
 # watch <CRoot /> {#watch}
 
 - **类型:** `boolean`
-- **默认值:** `!process.env.CI && process.stdin.isTTY`
+- **默认值:** `!process.env.CI && process.stdin.isTTY`；检测到 AI 编程代理时为 `false`
 - **命令行:** `-w`, `--watch`, `--watch=false`
 
 启用监视模式

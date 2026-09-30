@@ -9,6 +9,7 @@ Vitest 没有提供任何开箱即用的文件系统模拟 API。你可以使用
 要自动将每个 `fs` 调用重定向到 `memfs`，你可以在项目根目录下创建 `__mocks__/fs.cjs` 和 `__mocks__/fs/promises.cjs` 文件：
 
 ::: code-group
+
 ```ts [__mocks__/fs.cjs]
 // 我们也可以使用 `import`，但那样
 // 每个导出都应该显式定义
@@ -24,6 +25,7 @@ module.exports = fs
 const { fs } = require('memfs')
 module.exports = fs.promises
 ```
+
 :::
 
 ```ts [read-hello-world.js]

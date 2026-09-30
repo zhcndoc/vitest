@@ -1,11 +1,15 @@
 import { expect, test } from 'vitest'
-import { runVitest, useFS } from '../../test-utils'
+import { runInlineTests, runVitest, useFS } from '../../test-utils'
 
-test('if file has import.meta.glob, it\'s not cached', async () => {
-  const { createFile } = useFS('./fixtures/caching/import-meta-glob/generated', {
-    1: '1',
-    2: '2',
-  }, false)
+test("if file has import.meta.glob, it's not cached", async () => {
+  const { createFile } = useFS(
+    './fixtures/caching/import-meta-glob/generated',
+    {
+      1: '1',
+      2: '2',
+    },
+    false,
+  )
 
   const { errorTree: errorTree1 } = await runVitest({
     root: './fixtures/caching/import-meta-glob',
@@ -29,11 +33,7 @@ test('if file has import.meta.glob, it\'s not cached', async () => {
   const { errorTree: errorTree2 } = await runVitest({
     root: './fixtures/caching/import-meta-glob',
     provide: {
-      generated: [
-        './generated/1',
-        './generated/2',
-        './generated/3',
-      ],
+      generated: ['./generated/1', './generated/2', './generated/3'],
     },
     fsModuleCache: true,
     fsModuleCachePath: './node_modules/.vitest-fs-cache',
@@ -60,7 +60,7 @@ test('if no cache key generator is defined, the hash is invalid', async () => {
       {
         async onInit(vitest) {
           // make sure cache is empty
-          await vitest.experimental_clearCache()
+          await vitest.clearCache()
         },
       },
     ],
@@ -106,7 +106,7 @@ test('if cache key generator is defined, the hash is valid', async () => {
       {
         async onInit(vitest) {
           // make sure cache is empty
-          await vitest.experimental_clearCache()
+          await vitest.clearCache()
         },
       },
     ],
@@ -138,6 +138,62 @@ test('if cache key generator is defined, the hash is valid', async () => {
   `)
 })
 
+test.each([
+  ['foo', 'bar'],
+  ['bar', 'foo'],
+])('cache key generators are scoped to projects (%s, %s)', async (first, second) => {
+  const cold = await runInlineTests({
+    'vitest.config.js': `
+      import { defineConfig } from 'vitest/config'
+      export default defineConfig({
+        test: {
+          fsModuleCache: true,
+          fsModuleCachePath: './node_modules/.vitest-fs-cache',
+          projects: ${JSON.stringify([first, second])}.map(name => ({
+            plugins: [{
+              name: 'replacer',
+              configureVitest({ defineCacheKeyGenerator }) {
+                defineCacheKeyGenerator(() => name)
+              },
+              transform(code, id) {
+                if (id.endsWith('/common.js')) {
+                  return code.replace('PLACEHOLDER', name)
+                }
+              },
+            }],
+            test: { name, include: [name + '.test.js'] },
+          })),
+        },
+      })
+    `,
+    'common.js': `export const value = 'PLACEHOLDER'`,
+    'foo.test.js': `
+      import { expect, test } from 'vitest'
+      import { value } from './common.js'
+      test('project value', () => expect(value).toBe('foo'))
+    `,
+    'bar.test.js': `
+      import { expect, test } from 'vitest'
+      import { value } from './common.js'
+      test('project value', () => expect(value).toBe('bar'))
+    `,
+  })
+  const warm = await runVitest({ root: cold.root })
+  for (const run of [cold, warm]) {
+    expect(run.stderr).toBe('')
+    expect(run.errorTree()).toMatchInlineSnapshot(`
+      {
+        "bar.test.js": {
+          "project value": "passed",
+        },
+        "foo.test.js": {
+          "project value": "passed",
+        },
+      }
+    `)
+  }
+})
+
 test('if cache key generator bails out, the file is not cached', async () => {
   process.env.REPLACED = 'value1'
 
@@ -150,7 +206,7 @@ test('if cache key generator bails out, the file is not cached', async () => {
       {
         async onInit(vitest) {
           // make sure cache is empty
-          await vitest.experimental_clearCache()
+          await vitest.clearCache()
         },
       },
     ],

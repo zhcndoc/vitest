@@ -34,9 +34,11 @@ Duration  3.76s (environment 79%, import 13%, transform 6%, tests 1%, setup 1%)
 这会大大增加测试时间，对于不依赖副作用并能正确清理状态的项目来说，这可能不是理想的选择（对于 `node` 环境的项目通常是这样）。在这种情况下，禁用隔离将提高测试速度。为此，你可以向 CLI 提供 `--no-isolate` 标志，或在配置中将 [`test.isolate`](/config/isolate) 属性设置为 `false`。
 
 ::: code-group
+
 ```bash [CLI]
 vitest --no-isolate
 ```
+
 ```ts [vitest.config.js]
 import { defineConfig } from 'vitest/config'
 
@@ -46,6 +48,7 @@ export default defineConfig({
   },
 })
 ```
+
 :::
 
 你也可以通过使用 `projects` 仅针对特定文件禁用隔离：
@@ -82,9 +85,11 @@ export default defineConfig({
 对于某些项目，可能还需要禁用并行性以提高启动速度。为此，向 CLI 提供 `--no-file-parallelism` 标志，或在配置中将 [`test.fileParallelism`](/config/fileparallelism) 属性设置为 `false`。
 
 ::: code-group
+
 ```bash [CLI]
 vitest --no-file-parallelism
 ```
+
 ```ts [vitest.config.js]
 import { defineConfig } from 'vitest/config'
 
@@ -94,6 +99,7 @@ export default defineConfig({
   },
 })
 ```
+
 :::
 
 ## 测试环境
@@ -102,11 +108,11 @@ DOM 环境的创建成本很高：`jsdom` 每次导入大约需要 200-500ms，`
 
 以下三种配置可以降低这项成本：
 
-| 配置 | 创建环境的频率 | 隔离方式 | 权衡 |
-|---|---|---|---|
-| `pool: 'forks'`/`'threads'` + `isolate: true`（默认） | 每个文件一次 | 每个文件使用全新的进程/线程和环境 | 最安全，但速度最慢 |
-| `pool: 'vmThreads'` | 每个工作线程一次 | 每个文件使用全新的 VM 上下文和 `window` | 测试代码在 VM realm 中运行：与外部化包一起使用时可能出现跨 realm 的 `instanceof` 边界情况，并且内存回收不够可靠（请参阅 [`vmMemoryLimit`](/config/vmmemorylimit)） |
-| `isolate: false` | 每个工作线程一次 | 无 - 同一工作线程中的文件共享环境和模块状态 | 测试不能依赖干净的 `window` 或模块状态；运行 `vitest doctor` 进行检查 |
+| 配置                                                  | 创建环境的频率   | 隔离方式                                   | 权衡                                                                                                                                                           |
+| ----------------------------------------------------- | ---------------- | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pool: 'forks'`/`'threads'` + `isolate: true`（默认） | 每个文件一次     | 每个文件使用全新的进程/线程和环境          | 最安全，但速度最慢                                                                                                                                             |
+| `pool: 'vmThreads'`                                   | 每个 worker 一次 | 每个文件使用全新的 VM 上下文和 `window`    | 测试代码在 VM realm 中运行：与外部化包一起使用时可能出现跨 realm 的 `instanceof` 边界情况，且内存回收不够可靠（参见 [`vmMemoryLimit`](/config/vmmemorylimit)） |
+| `isolate: false`                                      | 每个 worker 一次 | 无，同一 worker 中的文件共享环境和模块状态 | 测试不能依赖干净的 `window` 或模块状态；运行 `vitest doctor` 进行检查                                                                                          |
 
 ```ts [vitest.config.js]
 import { defineConfig } from 'vitest/config'
@@ -153,14 +159,16 @@ NODE_COMPILE_CACHE=node_modules/.cache/node-compile-cache vitest
 
 ## 池
 
-默认情况下，Vitest 在 `pool: 'forks'` 中运行测试。虽然 `'forks'` 池更适合兼容性问题（[挂起的进程](/guide/common-errors.html#failed-to-terminate-worker) 和 [段错误](/guide/common-errors.html#segfaults-and-native-code-errors)），但在大型项目中，它可能比 `pool: 'threads'` 稍慢。
+默认情况下，Vitest 在 `pool: 'forks'` 中运行测试。虽然 `'forks'` 池更适合处理兼容性问题（[无法终止 worker](/guide/common-errors#failed-to-terminate-worker)和[段错误](/guide/common-errors#segfaults-and-native-code-errors)），但在大型项目中可能比 `pool: 'threads'` 稍慢。
 
 你可以尝试在配置中切换 `pool` 选项来提高测试运行时间：
 
 ::: code-group
+
 ```bash [CLI]
 vitest --pool=threads
 ```
+
 ```ts [vitest.config.js]
 import { defineConfig } from 'vitest/config'
 
@@ -170,6 +178,7 @@ export default defineConfig({
   },
 })
 ```
+
 :::
 
 ## 分片

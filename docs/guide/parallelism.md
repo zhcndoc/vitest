@@ -5,7 +5,7 @@ outline: deep
 
 # 并行性
 
-Vitest 在两个层面提供并行性：它可以同时运行多个 *测试文件*，并且在每个文件内可以同时运行多个 *测试*。理解两者之间的区别很重要，因为它们的工作方式不同，且各有取舍。
+Vitest 提供两个层面的并行能力：可以同时运行多个_测试文件_，也可以在每个文件中同时运行多个_测试_。理解两者的区别很重要，因为它们的工作方式不同，且各有取舍。
 
 ## 文件并行性
 
@@ -45,7 +45,7 @@ test.concurrent('fetches user posts', async () => {
 当测试被标记为 `concurrent` 时，Vitest 会将它们分组成一组，并使用 [`Promise.all`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all) 并发运行。同时运行的测试数量受 [`maxConcurrency`](/config/maxconcurrency) 选项限制。
 
 ::: tip `concurrent` 何时真正有效？
-Vitest 不会为并发测试创建额外的工作线程——它们都在所属文件的同一工作线程中运行。这意味着 `concurrent` 仅在测试花费大量时间 *等待*（如网络请求、定时器、文件 I/O 等）时才能加速执行。纯同步测试不会受益，因为它们仍然会阻塞唯一的 JavaScript 线程：
+Vitest 不会为并发测试创建额外的 worker，它们都在所属文件的同一个 worker 中运行。这意味着，只有当测试花时间_等待_网络请求、计时器、文件 I/O 等操作时，`concurrent` 才能加快执行。纯同步测试不会受益，因为它们仍会阻塞唯一的 JavaScript 线程：
 
 ```ts
 // 尽管使用了 `concurrent`，这些测试仍依次执行，
@@ -58,6 +58,7 @@ test.concurrent('the second test', () => {
   expect(2).toBe(2)
 })
 ```
+
 :::
 
 你也可以将 `concurrent` 应用到整个测试套件：
@@ -78,7 +79,7 @@ describe.concurrent('user API', () => {
 })
 ```
 
-如果你希望项目中的所有测试默认并发运行，可以在配置中将 [`sequence.concurrent`](/config/sequence#sequence-concurrent) 设为 `true`。
+如果你希望项目中的_所有_测试默认并发运行，可以在配置中将 [`sequence.concurrent`](/config/sequence#sequence-concurrent) 设为 `true`。
 
 你可以通过 `concurrent: false` 将单个测试或测试套件从继承的并发设置中排除：
 

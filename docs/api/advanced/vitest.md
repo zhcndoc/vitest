@@ -168,6 +168,7 @@ function getRelevantTestSpecifications(
 
 - 如果你需要获取已知测试文件的规范列表，请改用 [`getModuleSpecifications`](#getmodulespecifications)。
 - 如果你需要获取所有可能测试文件的列表，请使用 [`globTestSpecifications`](#globtestspecifications)。
+
 :::
 
 ## mergeReports
@@ -185,17 +186,21 @@ function mergeReports(directory?: string): Promise<TestRunResult>
 ## collect
 
 ```ts
-function collect(filters?: string[]): Promise<TestRunResult>
+function collect(
+  filters?: string[],
+  options?: {
+    staticParse?: boolean
+    staticParseConcurrency?: number
+  }
+): Promise<TestRunResult>
 ```
 
-执行测试文件而不运行测试回调。`collect` 返回未处理的错误和 [测试模块](/api/advanced/test-module) 数组。它接受字符串过滤器来匹配测试文件——这些与 [CLI 支持](/guide/filtering#cli) 的过滤器相同。
+根据 `staticParse` 的值，此方法会通过静态分析收集测试文件（默认行为），或运行代码但不执行测试回调。`collect` 会返回未处理的错误和一个 [test module](/api/advanced/test-module) 数组。它接受字符串过滤条件来匹配测试文件，与 [CLI 支持的过滤条件](/guide/filtering#cli)相同。
 
 此方法根据配置中的 `include`、`exclude` 和 `includeSource` 值解析测试规范。更多信息请参阅 [`project.globTestFiles`](/api/advanced/test-project#globtestfiles)。如果指定了 `--changed` 标志，列表将被过滤为仅包含已更改的文件。
 
 ::: warning
-请注意，Vitest 不使用静态分析来收集测试。Vitest 将像运行常规测试一样，隔离执行每个测试文件。
-
-这使得此方法非常慢，除非你在收集测试之前禁用了隔离。
+请注意，从 Vitest 5 开始，默认通过静态分析收集测试。如果通过第二个选项禁用了静态分析，Vitest 会像运行常规测试一样隔离运行每个测试文件。这会让此方法变得很慢，除非你在收集测试前手动禁用隔离。
 :::
 
 ## 启动
@@ -404,6 +409,7 @@ const dynamicExample = await vitest.import('./example.js')
 
 dynamicExample !== staticExample // ✅
 ```
+
 :::
 
 ::: info
@@ -477,7 +483,8 @@ function onFilterWatchedSpecification(
   fn: (specification: TestSpecification) => boolean
 ): void
 ```
-注册一个处理程序，当文件更改时将调用该处理程序。此回调应返回 `true` 或 `false`，表示是否需要重新运行测试文件。
+
+注册一个处理程序，当文件更改时会调用它。此回调应返回 `true` 或 `false`，表示是否需要重新运行该测试文件。
 
 使用此方法，你可以接入默认监视器逻辑，以延迟或丢弃用户当前不想跟踪的测试：
 
@@ -574,6 +581,7 @@ import { escapeTestName } from 'vitest/node'
 // 转换为 /hello, .+?/
 const escapedPattern = new RegExp(escapeTestName('hello, %s', true))
 ```
+
 :::
 
 ::: warning
@@ -582,10 +590,10 @@ Vitest 只会收集文件中定义的测试。它永远不会跟踪导入到其�
 Vitest 会收集所有 `it`、`test`、`suite` 和 `describe` 定义，即使它们不是从 `vitest` 入口点导入的。
 :::
 
-## experimental_parseSpecifications <Version type="experimental">4.0.0</Version> <Experimental /> {#parsespecifications}
+## parseSpecifications <Version>5.0.0</Version> {#parsespecifications}
 
 ```ts
-function experimental_parseSpecifications(
+function parseSpecifications(
   specifications: TestSpecification[],
   options?: {
     concurrency?: number
@@ -595,13 +603,15 @@ function experimental_parseSpecifications(
 
 此方法会从规范数组中 [收集测试](#parsespecification)。默认情况下，Vitest 一次只运行 `os.availableParallelism()` 数量的规范，以减少潜在的性能下降。你可以在第二个参数中指定不同的数字。
 
-## experimental_clearCache <Version type="experimental">4.0.11</Version> <Experimental /> {#clearcache}
+## clearCache <Version>5.0.0</Version> {#clearcache}
 
 ```ts
-function experimental_clearCache(): Promise<void>
+function clearCache(): Promise<void>
 ```
 
 删除所有 Vitest 缓存，包括 [`fsModuleCache`](/config/fsmodulecache)。
+
+此方法自 Vitest 4.0.11 起以实验性方法 `experimental_clearCache` 的形式提供。
 
 ## experimental_getSourceModuleDiagnostic <Version type="experimental">4.0.15</Version> <Experimental /> {#getsourcemodulediagnostic}
 
@@ -613,6 +623,7 @@ export function experimental_getSourceModuleDiagnostic(
 ```
 
 ::: details 类型
+
 ```ts
 export interface ModuleDefinitionLocation {
   line: number
@@ -652,6 +663,7 @@ export interface SourceModuleDiagnostic {
   untrackedModules: UntrackedModuleDefinitionDiagnostic[]
 }
 ```
+
 :::
 
 返回模块的诊断信息。如果未提供 [`testModule`](/api/advanced/test-module)，`selfTime` 和 `totalTime` 将在上次运行的所有测试中聚合。如果模块未转换或执行，诊断信息将为空。
@@ -666,7 +678,7 @@ export interface SourceModuleDiagnostic {
 function createReport(scope: string): Report
 ```
 
-创建一个仅限于给定作用域的报告。`Report` 遵循 Vitest 关于 [将工件存储在文件系统上](/guide/advanced/reporters.html#storing-artifacts-on-file-system) 的规则。
+创建一个仅限于给定作用域的报告。`Report` 遵循 Vitest 关于[在文件系统中存储产物](/guide/advanced/reporters#storing-artifacts-on-file-system)的规则。
 
 `Report` 提供了一组用于在文件系统上写入测试结果、临时文件和其他工件的实用工具。它尤其适用于自定义报告器之类的第三方集成。
 
@@ -696,7 +708,6 @@ const report = vitest.createReport('my-json-reporter')
 // 是 <project-root>/.vitest/my-json-reporter
 const root = report.root
 ```
-
 
 ### Report.clean
 
@@ -764,7 +775,6 @@ const filenames: string[] = await report.readdir()
 
 ### Report.delete
 
-<!-- eslint-skip -->
 ```ts
 function delete(filename: string): Promise<void>
 ```
@@ -777,4 +787,3 @@ const report = vitest.createReport('my-json-reporter')
 // 删除 .vitest/my-json-reporter/test-report.json 中的文件
 await report.delete('test-report.json')
 ```
-

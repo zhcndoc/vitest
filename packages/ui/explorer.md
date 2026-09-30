@@ -1,6 +1,7 @@
 # Explorer 整体行为
 
-本文档描述了新 Explorer 组件的整体行为，以及以下逻辑：
+本文档介绍新 Explorer 组件的整体行为，以及以下逻辑：
+
 - 搜索
 - 展开/折叠节点
 - 按状态过滤
@@ -10,21 +11,24 @@
 
 ## 新逻辑
 
-Explorer 不会直接使用来自 `ws-client` 状态中的 `idsMap` 和 `filesMap` 来渲染树。它将使用新的类型来在 UI 中表示树，并使用新的逻辑来处理 DOM 中的树列表：
+Explorer 不会直接使用 `ws-client` 状态中的 `idsMap` 和 `filesMap` 来渲染树。它会使用新的类型在 UI 中表示树，并使用新的逻辑处理 DOM 中的树列表：
+
 - [nodes](client/composables/explorer/tree.ts)：`ws-client` 状态中的变化会在这里映射为树结构。
-- [uiEntries](client/composables/explorer/state.ts)：一个浅层 ref，用于表示 UI 中的扁平树条目，逻辑会使用 `nodes` 来构建它。
+- [uiEntries](client/composables/explorer/state.ts)：一个浅层 ref，用于表示 UI 中的扁平树条目；逻辑会使用 `nodes` 来构建它。
 
 Explorer 更新会通过 `requestAnimationFrame` 进行节流，并且列表和 map 上的操作使用生成器。
 
 Explorer 逻辑将动作分为三个主要部分：
+
 - 在运行测试时收集任务
 - 搜索/过滤：为简洁起见，以下统称为搜索
 - 展开/折叠节点
 
-其中，收集和搜索是复杂操作，而展开/折叠节点是简单操作。为什么呢？：
-- 收集任务：我们需要遍历整棵树来更新 UI 树中的每个 test/suite/file：我们正在从服务器收集 `ws-client` 消息，而 UI 中的节点必须更新以反映状态。
-- 搜索：我们需要遍历整棵树来收集树中所有符合应用的搜索和/或过滤条件的 test/suite/file。
-- 展开/折叠：这是一个简单操作，只需要遍历 UI 中存在的节点并切换 `expanded` 属性（_展开所有节点需要完整搜索_）。
+其中，收集和搜索是复杂操作，而展开/折叠节点是简单操作。原因如下：
+
+- 收集任务：我们需要遍历整棵树，更新 UI 树中的每个 test/suite/file。由于我们正在从服务器收集 `ws-client` 消息，UI 中的节点必须更新以反映状态。
+- 搜索：我们需要遍历整棵树，收集符合搜索和/或过滤条件的所有 test/suite/file。
+- 展开/折叠：只需遍历 UI 中现有的节点并切换 `expanded` 属性，因此操作较简单（_展开所有节点仍需要完整搜索_）。
 
 ### 收集任务
 
@@ -37,12 +41,13 @@ Explorer 逻辑将动作分为三个主要部分：
 
 ### 搜索
 
-搜索和过滤相当简单，我们只需要对任务名称、模式和结果状态应用一些逻辑。
-复杂性在于过滤整棵树的节点。我们需要多次遍历树：
+搜索和过滤相当简单，只需对任务名称、模式和结果状态应用一些逻辑。
+复杂性在于过滤整棵树中的节点。我们需要多次遍历树：
+
 - 自上而下收集所有符合搜索/过滤条件的任务（整棵树）：[filter](client/composables/explorer/filter.ts) 模块中的 `visitNodes` 函数。
-- 自下而上收集包含匹配搜索/过滤条件子节点的任务和父任务（整棵树）：[filter](client/composables/explorer/filter.ts) 模块中的 `filterParents`。
-- 自上而下收集已展开文件任务的父任务，或者其父任务已展开的父任务（来自上一步的过滤树）。
-- 自下而上收集文件类型的任务，或者前一个列表中包含且已展开的父任务（过滤树）。
+- 自下而上收集包含匹配搜索/过滤条件子节点的任务及其父任务（整棵树）：[filter](client/composables/explorer/filter.ts) 模块中的 `filterParents` 函数。
+- 自上而下收集已展开文件任务的父任务，或其父任务已展开的父任务（上一步生成的过滤树）。
+- 自下而上收集文件类型的任务，或前一个列表中包含且已展开的父任务（过滤树）。
 
 主要逻辑是 [filter](client/composables/explorer/filter.ts) 模块中的 `expandNode` 函数，它会应用前述逻辑。
 
@@ -50,17 +55,19 @@ Explorer 逻辑将动作分为三个主要部分：
 
 ### 折叠节点
 
-这是 Explorer 中最便宜的操作，它只需要遍历 UI 中的节点并更新 `expanded` 属性：
-- 折叠所有节点：遍历整棵树（Explorer 树中的 [nodes](client/composables/explorer/tree.ts)）并将 `expanded` 设为 `false`，然后按 `file` 类型过滤 `uiEntries`。
-- 折叠单个节点：遍历整棵树并将该节点及其所有子节点的 `expanded` 设为 `false`，然后在 `uiEntries` 中用新的折叠后节点替换该子节点，并从 `uiEntries` 中移除其子节点。
+折叠节点是 Explorer 中开销最低的操作，只需遍历 UI 中的节点并更新 `expanded` 属性：
+
+- 折叠所有节点：遍历整棵树（Explorer 树中的 [nodes](client/composables/explorer/tree.ts)），将 `expanded` 设为 `false`，然后按 `file` 类型筛选 `uiEntries`。
+- 折叠单个节点：遍历整棵树，将该节点及其所有子节点的 `expanded` 设为 `false`，然后在 `uiEntries` 中用新的折叠节点替换原节点，并移除其子节点。
 
 这些动作可以在 [tree class](client/composables/explorer/tree.ts) 中找到，即 `collapseAllNodes` 和 `collapseNode` 方法，以及 [collapse.ts](client/composables/explorer/collapse.ts) 模块中的逻辑。
 
 ### 展开节点
 
-这在 Explorer 中也是一个开销较低的操作，它只需要遍历 UI 中的节点并更新 `expanded` 属性：
-- 折叠所有节点：遍历整棵树（Explorer 树中的 [nodes](client/composables/explorer/tree.ts)）并将 `expanded` 设为 `true`，然后使用 `search` 模块中的 `filterAll` 重建 `uiEntries`。
-- 展开单个节点：遍历其在 UI 中的子节点（Explorer 树中的 [nodes](client/composables/explorer/tree.ts)）并将 `expanded` 设为 `true`，然后使用 `search` 模块中的 `filterNode` 过滤其子节点，并通过在 UI 树中用新的节点及其过滤后的子节点替换当前节点来重建 `uiEntries`。
+展开节点在 Explorer 中同样开销较低，只需遍历 UI 中的节点并更新 `expanded` 属性：
+
+- 展开所有节点：遍历整棵树（Explorer 树中的 [nodes](client/composables/explorer/tree.ts)），将 `expanded` 设为 `true`，然后使用 `search` 模块中的 `filterAll` 重建 `uiEntries`。
+- 展开单个节点：遍历 UI 中该节点的子节点（Explorer 树中的 [nodes](client/composables/explorer/tree.ts)），将 `expanded` 设为 `true`，再使用 `search` 模块中的 `filterNode` 过滤子节点，并在 UI 树中用新节点及其过滤后的子节点替换当前节点，以此重建 `uiEntries`。
 
 这些动作可以在 [tree class](client/composables/explorer/tree.ts) 中找到，即 `expandAllNodes` 和 `expandNode` 方法，以及 [expand.ts](client/composables/explorer/expand.ts) 模块中的逻辑。
 
@@ -72,9 +79,10 @@ Explorer 逻辑将动作分为三个主要部分：
 它采用了一种处理树列表的新方法：现在我们有一个独立的 vue shallow ref 用于 UI 中的条目（[uiEntries in composables/explorer/state.ts](client/composables/explorer/state.ts)），而 WebSocket 状态则为 `idsMap` 和 `filesMap` 都使用 vue shallow ref，同时状态本身仍保持 Vue reactive。
 现在我们能够只在条目更新时更新树列表，而不是在 WebSocket 状态更新时更新，这带来了巨大的性能提升。
 
-在 `i7-12700H` 笔记本上使用 Vitest UI 运行 `test/unit` 时的一些数据（3 个 workspace、162 个文件：5100+ tests）：
-- 树列表：服务器完成运行测试后，Vitest UI 花了约 1 分钟才完成整棵树的渲染（约 150MB 内存占用）
-- Explorer：Vitest UI 在服务器 reporter 显示测试总结之前就完成了整棵树的渲染（约 10MB 内存占用）
+在 `i7-12700H` 笔记本上使用 Vitest UI 运行 `test/unit` 时的一些数据（3 个 workspace、162 个文件、5100 多个测试）：
+
+- 树列表：服务器完成测试后，Vitest UI 约花 1 分钟才完成整棵树的渲染（约占用 150 MB 内存）
+- Explorer：Vitest UI 在服务器报告器显示测试摘要前，就已完成整棵树的渲染（约占用 10 MB 内存）
 
 使用树列表方案时，展开/折叠节点或搜索会阻塞主线程；而在新的 Explorer 中，这不再阻塞主线程，几乎是瞬时完成的。
 

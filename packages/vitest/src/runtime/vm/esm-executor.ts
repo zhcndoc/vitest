@@ -1,6 +1,11 @@
 import type vm from 'node:vm'
 import type { ExternalModulesExecutor, SyncModuleDisposition } from '../external-executor'
-import type { VMModule, VMSourceTextModule, VMSyntheticModule } from './types'
+import type {
+  SourceTextModuleOptions,
+  VMModule,
+  VMSourceTextModule,
+  VMSyntheticModule,
+} from './types'
 import { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { VITEST_VM_CONTEXT_SYMBOL } from '../moduleRunner/startVitestModuleRunner'
@@ -20,9 +25,9 @@ interface EsmExecutorOptions {
 // modules built by the walk from complete modules (cache hits, synthetic
 // modules); `commit` marks modules the walk owns and should commit to the
 // cache — false for cache hits and modules owned by the CJS executor.
-type ScratchEntry
-  = | { module: VMModule; deps?: undefined; commit: boolean }
-    | { module: VMSourceTextModule; deps: string[]; commit: true }
+type ScratchEntry =
+  | { module: VMModule; deps?: undefined; commit: boolean }
+  | { module: VMSourceTextModule; deps: string[]; commit: true }
 
 // `hasAsyncGraph` only exists on SourceTextModule — a SyntheticModule is
 // synchronous by definition (its evaluation callback is sync)
@@ -30,8 +35,8 @@ function moduleHasAsyncGraph(module: VMModule): boolean {
   return module instanceof SourceTextModule && module.hasAsyncGraph()
 }
 
-const dataURIRegex
-  = /^data:(?<mime>text\/javascript|application\/json|application\/wasm)(?:;(?<encoding>charset=utf-8|base64))?,(?<code>.*)$/
+const dataURIRegex =
+  /^data:(?<mime>text\/javascript|application\/json|application\/wasm)(?:;(?<encoding>charset=utf-8|base64))?,(?<code>.*)$/
 
 function parseDataUri(identifier: string): { mime: string; code: string | Buffer } {
   const match = identifier.match(dataURIRegex)
@@ -51,11 +56,9 @@ function parseDataUri(identifier: string): { mime: string; code: string | Buffer
   }
   if (!encoding || encoding === 'charset=utf-8') {
     code = decodeURIComponent(code)
-  }
-  else if (encoding === 'base64') {
+  } else if (encoding === 'base64') {
     code = Buffer.from(code, 'base64').toString()
-  }
-  else {
+  } else {
     throw new Error(`Invalid data URI encoding: ${encoding}`)
   }
   return { mime, code }
@@ -69,7 +72,10 @@ function getContextExecutor(mod: VMModule): ExternalModulesExecutor {
   return vmContext.externalModulesExecutor
 }
 
-async function staticImportModuleDynamically(specifier: string, referencer: VMModule): Promise<VMModule> {
+async function staticImportModuleDynamically(
+  specifier: string,
+  referencer: VMModule,
+): Promise<VMModule> {
   return getContextExecutor(referencer).importModuleDynamically(specifier, referencer)
 }
 
@@ -92,6 +98,7 @@ export class EsmExecutor {
   private moduleCache = new Map<string, VMModule | Promise<VMModule>>()
 
   private esmLinkMap = new WeakMap<VMModule, Promise<void>>()
+  private linkQueue: Promise<void> = Promise.resolve()
   private context: vm.Context
 
   #httpIp = IPnumber('127.0.0.0')
@@ -109,16 +116,7 @@ export class EsmExecutor {
     if (m.status === 'errored') {
       throw m.error
     }
-    if (m.status === 'unlinked') {
-      this.esmLinkMap.set(
-        m,
-        m.link((identifier, referencer) =>
-          this.executor.resolveModule(identifier, referencer.identifier),
-        ),
-      )
-    }
-
-    await this.esmLinkMap.get(m)
+    await this.linkModule(m)
 
     if (m.status === 'linked') {
       await m.evaluate()
@@ -126,6 +124,31 @@ export class EsmExecutor {
 
     return m
   }
+
+  // Roots are linked one at a time: Node's link() does not wait for a
+  // dependency that another root is still linking, and instantiate() then
+  // fails on it. Sharing the queue with all roots keeps cycle handling to
+  // Node's own single-root linker, which never has to wait.
+  private linkModule(m: VMModule): Promise<void> {
+    const pending = this.esmLinkMap.get(m)
+    if (pending) {
+      return pending
+    }
+    if (m.status !== 'unlinked' && m.status !== 'linking') {
+      return Promise.resolve()
+    }
+    const linking = this.linkQueue.then(() => {
+      if (m.status === 'unlinked') {
+        return m.link(this.linker)
+      }
+    })
+    this.esmLinkMap.set(m, linking)
+    this.linkQueue = linking.catch(() => {})
+    return linking
+  }
+
+  private linker = (identifier: string, referencer: VMModule): Promise<VMModule> =>
+    this.executor.resolveModule(identifier, referencer.identifier)
 
   public async createEsModule(
     fileURL: string,
@@ -140,13 +163,10 @@ export class EsmExecutor {
     return promise
   }
 
-  private loadEsModule(
-    fileURL: string,
-    getCode: () => string | Promise<string>,
-  ) {
+  private loadEsModule(fileURL: string, getCode: () => string | Promise<string>) {
     const code = getCode()
     if (code instanceof Promise) {
-      return code.then(content => this.createModule(fileURL, content))
+      return code.then((content) => this.createModule(fileURL, content))
     }
     return this.createModule(fileURL, code)
   }
@@ -159,16 +179,12 @@ export class EsmExecutor {
     return module
   }
 
-  private createSourceTextModule(
-    fileURL: string,
-    code: string,
-  ): VMSourceTextModule {
+  private createSourceTextModule(fileURL: string, code: string): VMSourceTextModule {
     const codeCache = this.executor.codeCache
-    const cachedData = codeCache?.get(fileURL, code)
-    const m = new SourceTextModule(code, {
+    let cachedData = codeCache?.get(fileURL, code)
+    const options: SourceTextModuleOptions = {
       identifier: fileURL,
       context: this.context,
-      cachedData,
       // static callbacks: Node keeps them registered for as long as the
       // module's host-defined-options symbol is alive, so a closure here would
       // retain this executor (and the whole test file's world) beyond the
@@ -176,10 +192,26 @@ export class EsmExecutor {
       // at call time instead.
       importModuleDynamically: staticImportModuleDynamically,
       initializeImportMeta: staticInitializeImportMeta,
-    })
+    }
+    let m: VMSourceTextModule | undefined
+    if (cachedData) {
+      try {
+        m = new SourceTextModule(code, { ...options, cachedData })
+      } catch (error: any) {
+        // unlike vm.Script, a module throws when V8 rejects the cache (e.g. the
+        // V8 flags changed at runtime): compile from source instead
+        if (error?.code !== 'ERR_VM_MODULE_CACHED_DATA_REJECTED') {
+          throw error
+        }
+        codeCache!.delete(fileURL)
+        cachedData = undefined
+      }
+    }
+    m ??= new SourceTextModule(code, options)
     // the code cache of a SourceTextModule must be created before evaluation
     if (!cachedData) {
-      codeCache?.store(fileURL, code, () => m.createCachedData())
+      const created = m
+      codeCache?.store(fileURL, code, () => created.createCachedData())
     }
     return m
   }
@@ -215,10 +247,7 @@ export class EsmExecutor {
 
       const disposition = identifier.startsWith('data:')
         ? this.materializeSyncDataModule(identifier)
-        : this.executor.materializeSyncModule(
-            identifier,
-            identifier === rootIdentifier,
-          )
+        : this.executor.materializeSyncModule(identifier, identifier === rootIdentifier)
 
       if (disposition.kind === 'ready') {
         scratch.set(identifier, { module: disposition.module, commit: false })
@@ -235,17 +264,11 @@ export class EsmExecutor {
 
       const module = this.createSourceTextModule(identifier, disposition.code)
       if (module.hasTopLevelAwait()) {
-        throw createRequireAsyncModuleError(
-          identifier,
-          'the module uses top-level await',
-        )
+        throw createRequireAsyncModuleError(identifier, 'the module uses top-level await')
       }
       const deps: string[] = []
       for (const request of module.moduleRequests) {
-        const depIdentifier = this.executor.resolveSyncSpecifier(
-          request.specifier,
-          identifier,
-        )
+        const depIdentifier = this.executor.resolveSyncSpecifier(request.specifier, identifier)
         deps.push(depIdentifier)
         if (!scratch.has(depIdentifier)) {
           worklist.push(depIdentifier)
@@ -256,9 +279,7 @@ export class EsmExecutor {
 
     for (const entry of scratch.values()) {
       if (entry.deps) {
-        entry.module.linkRequests(
-          entry.deps.map(dep => scratch.get(dep)!.module),
-        )
+        entry.module.linkRequests(entry.deps.map((dep) => scratch.get(dep)!.module))
       }
     }
 
@@ -310,10 +331,7 @@ export class EsmExecutor {
   // anything else (a pending Promise or a module in 'unlinked' → 'evaluating')
   // is a concurrent import() mid-flight that a synchronous require() can
   // neither await nor safely link against.
-  private reuseSyncModule(
-    identifier: string,
-    cached: VMModule | Promise<VMModule>,
-  ): VMModule {
+  private reuseSyncModule(identifier: string, cached: VMModule | Promise<VMModule>): VMModule {
     if (cached instanceof Promise) {
       throw createConcurrentRequireError(identifier)
     }
@@ -327,10 +345,7 @@ export class EsmExecutor {
     // is called, while its async evaluation may still be pending — and even a
     // settled async graph is never allowed in require() (Node parity)
     if (moduleHasAsyncGraph(cached)) {
-      throw createRequireAsyncModuleError(
-        identifier,
-        'the module uses top-level await',
-      )
+      throw createRequireAsyncModuleError(identifier, 'the module uses top-level await')
     }
     return cached
   }
@@ -359,7 +374,10 @@ export class EsmExecutor {
     )
   }
 
-  public async createWebAssemblyModule(fileUrl: string, getCode: () => Buffer<ArrayBuffer>): Promise<VMModule> {
+  public async createWebAssemblyModule(
+    fileUrl: string,
+    getCode: () => Buffer<ArrayBuffer>,
+  ): Promise<VMModule> {
     const cached = this.moduleCache.get(fileUrl)
     if (cached) {
       return cached
@@ -374,23 +392,25 @@ export class EsmExecutor {
     if (fileUrl.startsWith('http:')) {
       const url = new URL(fileUrl)
       if (
-        url.hostname !== 'localhost'
-        && url.hostname !== '::1'
-        && (IPnumber(url.hostname) & IPmask(8)) !== this.#httpIp
+        url.hostname !== 'localhost' &&
+        url.hostname !== '::1' &&
+        (IPnumber(url.hostname) & IPmask(8)) !== this.#httpIp
       ) {
         throw new Error(
           // we don't know the importer, so it's undefined (the same happens in --pool=threads)
-          `import of '${fileUrl}' by undefined is not supported: `
-          + 'http can only be used to load local resources (use https instead).',
+          `import of '${fileUrl}' by undefined is not supported: ` +
+            'http can only be used to load local resources (use https instead).',
         )
       }
     }
 
-    return this.createEsModule(fileUrl, () =>
-      fetch(fileUrl).then(r => r.text()))
+    return this.createEsModule(fileUrl, () => fetch(fileUrl).then((r) => r.text()))
   }
 
-  public async loadWebAssemblyModule(source: Buffer<ArrayBuffer>, identifier: string): Promise<VMModule> {
+  public async loadWebAssemblyModule(
+    source: Buffer<ArrayBuffer>,
+    identifier: string,
+  ): Promise<VMModule> {
     const cached = this.moduleCache.get(identifier)
     if (cached) {
       return cached
@@ -404,10 +424,7 @@ export class EsmExecutor {
     const moduleLookup: Record<string, VMModule> = {}
     for (const { module } of imports) {
       if (moduleLookup[module] === undefined) {
-        moduleLookup[module] = await this.executor.resolveModule(
-          module,
-          identifier,
-        )
+        moduleLookup[module] = await this.executor.resolveModule(module, identifier)
       }
     }
 
@@ -422,14 +439,9 @@ export class EsmExecutor {
             importsObject[module] = {}
           }
           await evaluateModule(moduleLookup[module])
-          importsObject[module][name] = (moduleLookup[module].namespace as any)[
-            name
-          ]
+          importsObject[module][name] = (moduleLookup[module].namespace as any)[name]
         }
-        const wasmInstance = new WebAssembly.Instance(
-          wasmModule,
-          importsObject,
-        )
+        const wasmInstance = new WebAssembly.Instance(wasmModule, importsObject)
         for (const { name } of exports) {
           this.setExport(name, wasmInstance.exports[name])
         }
@@ -457,10 +469,7 @@ export class EsmExecutor {
     const { mime, code } = parseDataUri(identifier)
 
     if (mime === 'application/wasm') {
-      const module = this.loadWebAssemblyModule(
-        code as Buffer<ArrayBuffer>,
-        identifier,
-      )
+      const module = this.loadWebAssemblyModule(code as Buffer<ArrayBuffer>, identifier)
       this.moduleCache.set(identifier, module)
       return module
     }

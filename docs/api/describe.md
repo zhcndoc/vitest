@@ -318,8 +318,8 @@ describe.each([
 })
 ```
 
-* 第一行应为列名，用 `|` 分隔；
-* 随后的一行或多行数据使用 `${value}` 语法作为模板字面量表达式提供。
+- First row should be column names, separated by `|`;
+- One or more subsequent rows of data supplied as template literal expressions using `${value}` syntax.
 
 ```ts
 import { describe, expect, test } from 'vitest'

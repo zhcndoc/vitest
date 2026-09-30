@@ -40,7 +40,7 @@ test('should work as expected', () => {
 当测试函数返回一个 promise 时，运行器将等待其 resolved 以收集异步期望。如果 promise 被 rejected，测试将失败。
 
 ::: tip
-在 Jest 中，`TestFunction` 也可以是 `(done: DoneCallback) => void` 类型。如果使用这种形式，测试直到调用 `done` 才会结束。你可以使用 `async` 函数实现相同的效果，请参阅 [迁移指南 Done Callback 部分](/guide/migration#done-callback)。
+在 Jest 中，`TestFunction` 也可以是 `(done: DoneCallback) => void` 类型。使用这种形式时，直到调用 `done` 测试才会结束。你可以使用 `async` 函数实现相同效果，详见[迁移指南中的 Done Callback 部分](/guide/migration/jest#done-callback)。
 :::
 
 ## 测试选项
@@ -109,6 +109,7 @@ test('heavy test', { skip: true, timeout: 10_000 }, () => {
   // ...
 })
 ```
+
 :::
 
 ### retry
@@ -286,7 +287,7 @@ test('server uses correct port', ({ config, server }) => {
 
 ## test.override <Version>4.1.0</Version> {#test-override}
 
-使用 `test.override` 覆盖当前套件及其嵌套套件中所有测试的夹具值。这必须在 `describe` 块的顶层调用。请参阅 [覆盖夹具值](/guide/test-context.html#overriding-fixture-values) 以获取更多信息。
+使用 `test.override` 可以为当前套件及其嵌套套件中的所有测试覆盖 fixture 值。此方法必须在 `describe` 块的顶层调用。更多信息请参阅[覆盖 Fixture 值](/guide/test-context#overriding-fixture-values)。
 
 ```ts
 import { test as baseTest, describe, expect } from 'vitest'
@@ -557,24 +558,24 @@ test.each([
 
 如果你使用对象作为参数，还可以使用 `.` 访问对象属性：
 
-  ```ts
-  test.each`
-  a               | b      | expected
-  ${{ val: 1 }}   | ${'b'} | ${'1b'}
-  ${{ val: 2 }}   | ${'b'} | ${'2b'}
-  ${{ val: 3 }}   | ${'b'} | ${'3b'}
-  `('add($a.val, $b) -> $expected', ({ a, b, expected }) => {
-    expect(a.val + b).toBe(expected)
-  })
+```ts
+test.each`
+a               | b      | expected
+${{ val: 1 }}   | ${'b'} | ${'1b'}
+${{ val: 2 }}   | ${'b'} | ${'2b'}
+${{ val: 3 }}   | ${'b'} | ${'3b'}
+`('add($a.val, $b) -> $expected', ({ a, b, expected }) => {
+  expect(a.val + b).toBe(expected)
+})
 
-  // 这将返回
-  // ✓ add(1, b) -> 1b
-  // ✓ add(2, b) -> 2b
-  // ✓ add(3, b) -> 3b
-  ```
+// this will return
+// ✓ add(1, b) -> 1b
+// ✓ add(2, b) -> 2b
+// ✓ add(3, b) -> 3b
+```
 
-* 第一行应为列名，用 `|` 分隔；
-* 随后的一行或多行数据使用 `${value}` 语法作为模板字符串表达式提供。
+- 第一行应为列名，用 `|` 分隔；
+- 后续一行或多行数据使用 `${value}` 语法作为模板字面量表达式提供。
 
 ```ts
 import { expect, test } from 'vitest'

@@ -272,16 +272,16 @@ ARIA 快照模板使用 **YAML 的子集**语法。仅支持可访问性树所�
 
 ARIA 状态和属性以方括号显示：
 
-| HTML                                                                   | 快照                                  |
-| ---------------------------------------------------------------------- | ------------------------------------- |
-| `<input type="checkbox" checked aria-label="同意">`                   | `- checkbox "同意" [checked]`         |
-| `<input type="checkbox" aria-checked="mixed" aria-label="全选">` | `- checkbox "全选" [checked=mixed]`   |
-| `<button aria-disabled="true">提交</button>`                         | `- button "提交" [disabled]`          |
-| `<button aria-expanded="true">菜单</button>`                           | `- button "菜单" [expanded]`          |
-| `<h2>标题</h2>`                                                       | `- heading "标题" [level=2]`          |
-| `<button aria-pressed="true">粗体</button>`                            | `- button "粗体" [pressed]`           |
-| `<button aria-pressed="mixed">粗体</button>`                           | `- button "粗体" [pressed=mixed]`     |
-| `<option selected>英语</option>`                                    | `- option "英语" [selected]`       |
+| HTML                                                             | 快照                                |
+| ---------------------------------------------------------------- | ----------------------------------- |
+| `<input type="checkbox" checked aria-label="同意">`              | `- checkbox "同意" [checked]`       |
+| `<input type="checkbox" aria-checked="mixed" aria-label="全选">` | `- checkbox "全选" [checked=mixed]` |
+| `<button aria-disabled="true">提交</button>`                     | `- button "提交" [disabled]`        |
+| `<button aria-expanded="true">菜单</button>`                     | `- button "菜单" [expanded]`        |
+| `<h2>标题</h2>`                                                  | `- heading "标题" [level=2]`        |
+| `<button aria-pressed="true">粗体</button>`                      | `- button "粗体" [pressed]`         |
+| `<button aria-pressed="mixed">粗体</button>`                     | `- button "粗体" [pressed=mixed]`   |
+| `<option selected>英语</option>`                                 | `- option "英语" [selected]`        |
 
 仅当属性处于活动状态时才会显示。未被禁用的按钮不会显示 `[disabled]` 属性——没有 `[disabled=false]`。
 
@@ -471,8 +471,8 @@ await expect.element(page.getByRole('navigation')).toMatchAriaInlineSnapshot(`
 
 #### 比较
 
-| 模式 | 指令 | 行为 |
-| --- | --- | --- |
-| 部分 | _(默认)_ 或 `/children: contain` | 模板子元素是有序子序列——额外的实际子元素会被忽略 |
-| 精确 | `/children: equal` | 必须立即子元素完全匹配；后代仍使用部分匹配 |
-| 深度精确 | `/children: deep-equal` | 每个深度的所有子元素都必须完全匹配 |
+| 模式     | 指令                             | 行为                                             |
+| -------- | -------------------------------- | ------------------------------------------------ |
+| 部分     | _(默认)_ 或 `/children: contain` | 模板子元素是有序子序列，额外的实际子元素会被忽略 |
+| 精确     | `/children: equal`               | 直接子元素必须完全匹配；后代仍使用部分匹配       |
+| 深度精确 | `/children: deep-equal`          | 每一层的所有子元素都必须完全匹配                 |

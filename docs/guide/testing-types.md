@@ -51,7 +51,7 @@ test('my types work properly', () => {
 expectTypeOf({ a: 1 }).toEqualTypeOf<{ a: string }>()
 ```
 
-这是一个会失败的断言，因为 `{a: 1}` 的类型是 `{a: number}` 而不是 `{a: string}`。这种情况下的错误消息将类似于以下内容：
+这是一个会失败的断言，因为 `{a: 1}` 的类型是 `{a: number}`，而不是 `{a: string}`。此时的错误消息类似于：
 
 ```
 test/test.ts:999:999 - error TS2344: Type '{ a: string; }' does not satisfy the constraint '{ a: \\"Expected: string, Actual: number\\"; }'.
@@ -111,7 +111,7 @@ assertType<string>(answer)
 ```
 
 ::: tip
-使用 `@ts-expect-error` 语法时，你可能想要确保没有拼写错误。你可以通过将类型文件包含在 [`test.include`](/config/include) 配置选项中来做到这一点，这样 Vitest 也会实际*运行*这些测试，并在出现 `ReferenceError` 时失败。
+使用 `@ts-expect-error` 语法时，你可能希望确认没有拼写错误。可以将类型文件加入 [`test.include`](/config/include) 配置项，这样 Vitest 也会实际_运行_这些测试，并在出现 `ReferenceError` 时失败。
 
 这将通过，因为它期望一个错误，但单词"answer"有拼写错误，所以这是一个假阳性错误：
 
@@ -119,6 +119,7 @@ assertType<string>(answer)
 // @ts-expect-error answer 不是一个字符串
 assertType<string>(answr)
 ```
+
 :::
 
 ## 运行类型检查
@@ -136,18 +137,23 @@ assertType<string>(answr)
 现在你可以运行类型检查：
 
 ::: code-group
+
 ```bash [npm]
 npm run test
 ```
+
 ```bash [yarn]
 yarn test
 ```
+
 ```bash [pnpm]
 pnpm run test
 ```
+
 ```bash [bun]
 bun test
 ```
+
 :::
 
 Vitest 使用 `tsc --noEmit` 或 `vue-tsc --noEmit`，具体取决于你的配置，因此你可以从管道中删除这些脚本。

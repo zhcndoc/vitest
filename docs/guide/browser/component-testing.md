@@ -28,6 +28,7 @@ Vitest 中的组件测试使用 **浏览器模式** 通过 Playwright、Webdrive
 
 ::: tip
 浏览器模式能够捕捉到 DOM 模拟库可能忽略的问题，包括：
+
 - CSS 布局和样式问题
 - 真实的浏览器 API 行为
 - 准确的事件处理和传播
@@ -178,10 +179,12 @@ test('Solid 组件处理用户交互', async () => {
 ## 最佳实践
 
 ### 1. 在 CI/CD 中使用浏览器模式
-确保测试在真实的浏览器环境中运行以获得最准确的测试。浏览器模式提供准确的 CSS 渲染、真实的浏览器 API 和正确的事件处理。
+
+确保测试在真实浏览器环境中运行，以获得最准确的测试结果。浏览器模式提供准确的 CSS 渲染、真实的浏览器 API 和正确的事件处理。
 
 ### 2. 测试用户交互
-模拟真实的用户行为使用 Vitest 的 [交互 API](/api/browser/interactivity)。如我们的 [高级测试模式](#advanced-testing-patterns) 所示，使用 `page.getByRole()` 和 `userEvent` 方法：
+
+使用 Vitest 的[交互 API](/api/browser/interactivity)模拟真实用户行为。按照[高级测试模式](#advanced-testing-patterns)中的示例，使用 `page.getByRole()` 和 `userEvent` 方法：
 
 ```tsx
 // 好：测试实际的用户交互
@@ -193,7 +196,8 @@ await page.getByLabelText(/email/i).fill('user@example.com')
 ```
 
 ### 3. 测试无障碍性
-通过测试键盘导航、焦点管理和 ARIA 属性，确保组件适用于所有用户。请参阅我们的 [测试无障碍性](#testing-accessibility) 示例以获取实用模式：
+
+通过测试键盘导航、焦点管理和 ARIA 属性，确保组件适用于所有用户。实用模式请参阅[测试无障碍性](#testing-accessibility)示例：
 
 ```tsx
 // 测试键盘导航
@@ -205,7 +209,8 @@ await expect.element(modal).toHaveAttribute('aria-modal', 'true')
 ```
 
 ### 4. 模拟外部依赖
-通过模拟 API 和外部服务，将测试集中在组件逻辑上。这使得测试更快且更可靠。请参阅我们的 [孤立策略](#isolation-strategy) 示例：
+
+通过模拟 API 和外部服务，让测试集中于组件逻辑。这能让测试更快、更可靠。示例请参阅[隔离策略](#isolation-strategy)：
 
 ```tsx
 // 对于 API 请求，我们推荐使用 MSW (Mock Service Worker)
@@ -219,7 +224,8 @@ vi.mock(import('../components/UserCard'), () => ({
 ```
 
 ### 5. 使用有意义的测试描述
-编写解释预期行为的测试描述，而不是实现细节：
+
+编写说明预期行为而非实现细节的测试描述：
 
 ```tsx
 // 好：描述面向用户的行为
@@ -482,11 +488,13 @@ test('debug form validation', async () => {
 当组件未按预期渲染时，系统地调查：
 
 **使用 Vitest 的浏览器 UI：**
-- 启用 browser mode 运行测试
-- 打开终端中显示的浏览器 URL 以查看测试运行
+
+- 启用浏览器模式运行测试
+- 打开终端中显示的浏览器 URL，查看测试运行情况
 - 视觉检查有助于识别 CSS 问题、布局问题或缺失的元素
 
 **测试元素查询：**
+
 ```tsx
 // 调试为什么找不到元素
 const button = page.getByRole('button', { name: /submit/i })
@@ -504,6 +512,7 @@ if (button.length === 0) {
 选择器问题是测试失败的常见原因。系统地调试它们：
 
 **检查可访问名称：**
+
 ```tsx
 // 如果 getByRole 失败，检查有哪些可用的角色/名称
 const buttons = page.getByRole('button').all()
@@ -516,6 +525,7 @@ for (const button of buttons) {
 ```
 
 **测试不同的查询策略：**
+
 ```tsx
 // 使用 .or 自动重试的多种查找同一元素的方法
 const submitButton = page.getByRole('button', { name: /submit/i }) // 通过可访问名称
@@ -524,7 +534,8 @@ const submitButton = page.getByRole('button', { name: /submit/i }) // 通过可�
 // 注意：Vitest 没有 page.locator()，请使用特定的 getBy* 方法代替
 ```
 
-**常见选择器调试模式：**
+**常见的选择器调试模式：**
+
 ```tsx
 test('debug element queries', async () => {
   render(<LoginForm />)

@@ -47,7 +47,7 @@ outline: deep
 ## typecheck.exclude
 
 - **Type:** `string[]`
-- **Default:** `['**/node_modules/**', '**/dist/**', '**/cypress/**', '**/.{idea,git,cache,output,temp}/**']`
+- **Default:** `['**/node_modules/**', '**/.git/**']`
 
 不应被视为测试文件的 glob 模式。
 

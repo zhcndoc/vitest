@@ -38,5 +38,5 @@ describe('math', () => {
 ```
 
 ::: warning
-在 Vitest 5 之前，各部分使用单个空格（`math adds`）连接，以与 Jest 保持一致。详情请参阅[迁移指南](/guide/migration#vitest-5)。
+在 Vitest 5 之前，各部分使用单个空格（`math adds`）连接，以与 Jest 保持一致。详情请参阅[迁移指南](/guide/migration/#vitest-5)。
 :::

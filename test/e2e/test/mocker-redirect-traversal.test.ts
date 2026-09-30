@@ -4,9 +4,7 @@ import { createServer } from 'vite'
 import { expect, it, onTestFinished } from 'vitest'
 import { WebSocket } from 'ws'
 
-const root = fileURLToPath(
-  new URL('../fixtures/mocker/redirect-security/root', import.meta.url),
-)
+const root = fileURLToPath(new URL('../fixtures/mocker/redirect-security/root', import.meta.url))
 
 async function createMockerServer() {
   const server = await createServer({
@@ -14,6 +12,7 @@ async function createMockerServer() {
     configFile: false,
     logLevel: 'silent',
     server: {
+      host: '127.0.0.1',
       fs: { allow: [root] },
     },
     plugins: [
@@ -37,7 +36,7 @@ async function createMockerServer() {
 
 function registerRedirect(port: string, redirect: string) {
   return new Promise<void>((resolve, reject) => {
-    const ws = new WebSocket(`ws://localhost:${port}`, 'vite-hmr')
+    const ws = new WebSocket(`ws://127.0.0.1:${port}`, 'vite-hmr')
     const timeout = setTimeout(() => {
       ws.close()
       reject(new Error('timed out waiting for the register result'))
@@ -46,8 +45,7 @@ function registerRedirect(port: string, redirect: string) {
       let message: any
       try {
         message = JSON.parse(raw.toString())
-      }
-      catch {
+      } catch {
         return
       }
       if (message.type === 'custom' && message.event === 'vitest:interceptor:register:result') {
@@ -57,11 +55,13 @@ function registerRedirect(port: string, redirect: string) {
       }
     })
     ws.on('open', () => {
-      ws.send(JSON.stringify({
-        type: 'custom',
-        event: 'vitest:interceptor:register',
-        data: { type: 'redirect', raw: '', id: '/mock', url: '/mock', redirect },
-      }))
+      ws.send(
+        JSON.stringify({
+          type: 'custom',
+          event: 'vitest:interceptor:register',
+          data: { type: 'redirect', raw: '', id: '/mock', url: '/mock', redirect },
+        }),
+      )
     })
     ws.on('error', reject)
   })

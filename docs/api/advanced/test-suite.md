@@ -72,6 +72,7 @@ const hash = generateFileHash(
   undefined, // 项目名称，如果未设置则为 `undefined`
 )
 ```
+
 :::
 
 ::: danger
@@ -145,6 +146,7 @@ function visit(collection: TestCollection) {
   }
 }
 ```
+
 :::
 
 ## ok

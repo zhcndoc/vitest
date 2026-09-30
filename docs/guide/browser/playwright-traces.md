@@ -7,6 +7,7 @@ Vitest Browser Mode 支持生成 Playwright 的 [trace 文件](https://playwrigh
 :::
 
 ::: code-group
+
 ```ts [vitest.config.js]
 import { defineConfig } from 'vitest/config'
 import { playwright } from '@vitest/browser-playwright'
@@ -20,9 +21,11 @@ export default defineConfig({
   },
 })
 ```
+
 ```bash [CLI]
 vitest --browser.trace=on
 ```
+
 :::
 
 默认情况下，Vitest 会为每个测试生成一个 trace 文件。你也可以通过将 `trace` 设置为 `'on-first-retry'`、`'on-all-retries'` 或 `'retain-on-failure'` 来配置为仅在测试失败时生成 trace。文件将保存在测试文件旁边的 `__traces__` 文件夹中。trace 的名称包含项目名称、测试名称、[`repeats`](/api/test#repeats) 次数和 [`retry`](/api/test#retry) 次数：

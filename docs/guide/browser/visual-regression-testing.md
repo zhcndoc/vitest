@@ -42,6 +42,10 @@ test('button renders in default state', async () => {
 
 ## 开始使用
 
+::: tip
+**视觉回归测试在标准化且严格受控的环境中运行时最可靠**。因此，我们强烈建议使用 [Docker 容器](https://playwright.dev/docs/docker)、[仅在 CI 中运行的视觉测试工作流或云服务](#visual-testing-for-teams)。
+:::
+
 ### 环境稳定性
 
 视觉回归测试对**环境差异很敏感**，因为渲染在不同环境之间并不是完全确定性的，并且依赖多个因素：
@@ -54,7 +58,7 @@ test('button renders in default state', async () => {
 - 屏幕缩放、色彩配置文件和显示设置
 - ……以及偶尔像是月相 <MoonPhase /> 这种因素
 
-在实践中，即使看似完全相同的环境，也偶尔会产生细微的渲染差异。因此，**视觉回归测试在标准化且严格受控的环境中运行时最可靠**。这也是为什么强烈建议使用 [Docker 容器](https://playwright.dev/docs/docker)、[仅在 CI 中运行的视觉测试工作流，或云服务](#visual-testing-for-teams)。
+实际上，即使看似完全相同的环境，也偶尔会产生细微的渲染差异。
 
 ### 不是行为测试的替代品
 
@@ -152,9 +156,10 @@ expect(element).toMatchScreenshot()
 ```
 
 命名约定包括：
-- **测试名称**：要么是 `toMatchScreenshot()` 调用的第一个参数，要么是根据测试名称自动生成
-- **浏览器名称**：取决于所配置的浏览器提供方，例如 `chrome`、`chromium`、`firefox` 或 `webkit`
-- **平台**：`aix`、`darwin`、`freebsd`、`linux`、`openbsd`、`sunos` 或 `win32`
+
+- **测试名称**：可以是 `toMatchScreenshot()` 调用的第一个参数，也可以根据测试名称自动生成。
+- **浏览器名称**：取决于配置的浏览器提供者，例如 `chrome`、`chromium`、`firefox` 或 `webkit`。
+- **平台**：`aix`、`darwin`、`freebsd`、`linux`、`openbsd`、`sunos` 或 `win32`。
 
 这确保了来自不同环境的截图不会相互覆盖。
 
@@ -204,7 +209,7 @@ expect(element).toMatchScreenshot()
   <img alt="视觉回归差异视图的动画演示，切换标签并使用滑块显示差异" img-light src="/visual-regression/diff-view-light.avif">
   <img alt="视觉回归差异视图的动画演示，切换标签并使用滑块显示差异" img-dark src="/visual-regression/diff-view-dark.avif">
 
-  <sup>视觉回归差异 UI 的示例，展示了“差异”、“参考”、“实际”和“滑块”标签，以及滑块如何揭示组件中非预期的视觉变化。</sup>
+<sup>视觉回归差异 UI 示例，展示了“Diff”、“Reference”、“Actual”和“Slider”选项卡，以及滑块如何显示组件中意料之外的视觉变化。</sup>
 </center>
 
 #### 理解差异图
@@ -474,7 +479,7 @@ Vitest 没有为不匹配像素定义默认容差。合适的值取决于你的�
 
 1. **自托管运行器**（例如 Docker 镜像），设置和维护都比较复杂
 1. **在 CI 中生成参考截图**，这需要一些配置
-1. **云服务**，例如 [Azure App Testing](https://azure.microsoft.com/en-us/products/app-testing/)，专门用来解决这个问题，但通常只支持特定的提供商和浏览器
+1. **云服务**，例如 [Azure App Testing](https://azure.microsoft.com/en-us/products/app-testing/) 或 [Chromatic](https://www.chromatic.com/vitest)，专门用于解决此问题，但通常只支持特定的提供者和浏览器
 
 方案 2 和 3 最容易快速上手，因此下面主要介绍它们。
 
@@ -520,14 +525,15 @@ GitHub runners 默认没有预装浏览器。请在运行测试前根据你的 p
 
 在本地运行 `vitest --update` 会在你的机器上生成截图，这就违背了受控环境的初衷。相反，你需要一种方式在 CI 中触发更新，因为那里运行测试的环境与生成参考截图的环境一致。
 
-你不希望这件事在每个 PR 上自动发生 <small>*(混乱！)*</small>。相反，应创建一个手动触发的工作流，在 UI 有意更改时运行。
+你不会希望每个 PR 都自动执行这项操作 <small>_(太混乱了！)_</small>。相反，应创建一个手动触发的工作流，在有意更改 UI 时运行。
 
-下面的工作流：
-- 仅在功能分支上运行（绝不在 main 上）
+下面的工作流会：
+
+- 仅在功能分支上运行（绝不在 main 上运行）
 - 将触发者列为共同作者
-- 防止同一分支上的并发运行
-- 显示漂亮的摘要：
-  - **当截图发生变化时**，它会列出变化内容
+- 防止同一分支上的工作流并发运行
+- 显示清晰的摘要：
+  - **截图发生变化时**，列出变化内容
 
     <img alt="更新后的操作摘要" img-light src="/vrt-gha-summary-update-light.png">
     <img alt="更新后的操作摘要" img-dark src="/vrt-gha-summary-update-dark.png">
@@ -742,6 +748,170 @@ env:
 
 然后像平常一样运行测试。服务会处理浏览器基础设施。
 
+=== Chromatic（云服务）
+
+Chromatic 提供了与 Vitest 集成的插件，用于视觉回归测试。首先，像平常一样运行测试，Chromatic 会完整捕获组件视觉状态的 DOM 存档。然后运行 Chromatic CLI 上传这些存档、计算视觉差异，并在 Chromatic 网页应用中展示结果以供审查。
+
+由于 DOM 存档会在一致的云端浏览器环境中渲染，视觉差异更可靠，也不容易受到本地环境变化导致的误报影响。
+
+默认情况下，Chromatic 插件会自动捕获每个测试的最终状态。你也可以使用该插件提供的 `takeSnapshot` 函数捕获中间状态。
+
+### 要求
+
+- Vitest 版本 4.0.0 或更高版本
+- Vitest 项目必须使用 `@vitest/browser-playwright`
+
+### 开始使用
+
+首先，安装 Chromatic 插件：
+
+::: code-group
+
+```bash [npm]
+npm install -D @chromatic-com/vitest
+```
+
+```bash [yarn]
+yarn add -D @chromatic-com/vitest
+```
+
+```bash [pnpm]
+pnpm add -D @chromatic-com/vitest
+```
+
+:::
+
+然后，将插件添加到 Vitest 配置中：
+
+```ts{3,6-8} [vitest.config.ts]
+import { defineConfig } from 'vitest/config'
+import { playwright } from '@vitest/browser-playwright'
+import { chromaticPlugin } from '@chromatic-com/vitest/plugin'
+
+export default defineConfig({
+  plugins: [chromaticPlugin({
+    // ...options here: https://www.chromatic.com/docs/vitest/configure/
+  })],
+  test: {
+    browser: {
+      provider: playwright(),
+      enabled: true,
+      instances: [{ browser: 'chromium' }],
+    },
+  },
+})
+```
+
+完成后，Vitest 就已集成 Chromatic 插件，可以进行视觉回归测试。
+
+### 配置测试
+
+你可以按需配置测试套件或单个测试。例如，要在测试中的特定位置额外获取快照，可以像下面这样使用 `takeSnapshot` 函数。
+
+```tsx{4,8-13,24-25,31-34} [accordion.test.tsx]
+import { expect, test } from 'vitest'
+import { page } from 'vitest/browser'
+import { render } from 'vitest-browser-react'
+import { configure, takeSnapshot } from '@chromatic-com/vitest'
+import { Accordion } from '../src/components/Accordion'
+
+test('Can open accordion', async () => {
+  // 👇 Configure Chromatic plugin for this test
+  configure({
+    // 👇 Prevent automatic snapshot at the end of the test
+    disableAutoSnapshot: true,
+    // ...more options here: https://www.chromatic.com/docs/vitest/configure/
+  })
+
+  await render(<Accordion header="Example header">Example content</Accordion>)
+
+  const toggle = page.getByRole('button', { name: 'Example header' })
+  const content = page.getByText('Example content')
+
+  // Open accordion, content should become visible
+  await toggle.click()
+  await expect.element(content).toBeInTheDocument()
+
+  // 👇 Call takeSnapshot to capture the component at this point in the test.
+  await takeSnapshot()
+
+  // Close accordion, content should become hidden
+  await toggle.click()
+  await expect.element(content).not.toBeInTheDocument()
+
+  // You can call takeSnapshot multiple times if necessary.
+  // To help disambiguate, you can give the snapshot a name,
+  // which is passed as the first argument to takeSnapshot.
+  await takeSnapshot('closed')
+})
+```
+
+### 运行测试
+
+首先，[创建一个 Chromatic Vitest 项目](https://www.chromatic.com/signup)，并记下项目 token，稍后会用到。
+
+然后，像平常一样运行 Vitest 测试：
+
+```bash
+npm run test # Your test script that runs vitest
+```
+
+最后，运行 Chromatic CLI 上传快照：
+
+```bash
+npx chromatic --vitest -t=<YOUR_PROJECT_TOKEN>
+```
+
+视觉回归测试完成后，命令会输出一个链接，你可以通过该链接查看结果。
+
+### CI 设置
+
+在 CI 中运行与本地完全相同：先运行 `vitest`，再运行 `chromatic`。
+
+为了简化流程，Chromatic 提供了 GitHub Action：
+
+```yaml [.github/workflows/chromatic.yml]
+name: Chromatic
+
+on: push
+
+jobs:
+  tests:
+    name: Run Vitest & Chromatic
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      # ⚠️ See your package manager's documentation for the correct command to install dependencies in a CI environment.
+      - name: Install dependencies
+        run: npm ci
+
+      - run: npx playwright install chromium --only-shell
+
+      - name: Run Vitest tests
+        run: npm run test
+
+      - name: Run Chromatic
+        uses: chromaui/action@latest
+        with:
+          # ⚠️ Enable Vitest
+          vitest: true
+          # ⚠️ Make sure to configure a `CHROMATIC_PROJECT_TOKEN` repository secret
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+        # ⚠️ Optionally configure the archive location with env vars to match your outputDirectory https://www.chromatic.com/docs/vitest/configure/#test-run-options
+        env:
+          CHROMATIC_ARCHIVE_LOCATION: .vitest/chromatic
+```
+
+如果你没有使用 GitHub Actions，Chromatic 也提供了针对 GitLab、Bitbucket 和 CircleCI 等常见 CI 提供者的[指南](https://www.chromatic.com/docs/ci/)。
+
+在 CI 工作流中设置 Chromatic 后，你就可以[直接在 Chromatic 应用中快速审查视觉变化并协作](https://www.chromatic.com/docs/in-pull-request/)。
+
 ::::
 
 ### 选择合适的方案
@@ -762,11 +932,11 @@ CI 运行适用于任何浏览器提供商，并且能让你完全掌控，但�
 
 视觉回归测试依赖于跨运行保持截图稳定。实际上，页面不会瞬间稳定：图片会异步加载，动画在不同时间结束，字体会渲染，布局也会逐渐稳定。为缓解这一点，Vitest 使用一种“稳定截图检测”策略：
 
-1. 它会先拍摄一张初始截图（如果有参考截图，则使用参考截图）作为基线
-1. 它再拍摄一张截图，并将其与基线进行比较
-    - 如果截图匹配，说明页面已稳定，测试继续进行
-    - 如果它们不同，Vitest 会使用最新的截图作为基线并重复此过程
-1. 这一过程会持续，直到达到稳定状态或超时
+1. 拍摄初始截图（如果有参考截图，则使用参考截图）作为基线
+1. 再次拍摄截图并与基线比较
+   - 如果截图匹配，页面已稳定，测试继续
+   - 如果不匹配，Vitest 会将最新截图作为基线并重复此过程
+1. 持续执行，直到页面稳定或达到超时时间
 
 这可以确保临时性的视觉变化（例如加载中的旋转图标或动画）不会导致误报。不过，如果某些内容一直在持续动画，你就会触发超时，因此可以考虑在测试期间[禁用动画](#disable-animations)。
 

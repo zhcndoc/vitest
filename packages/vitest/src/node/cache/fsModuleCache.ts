@@ -1,4 +1,5 @@
-import type { DevEnvironment } from 'vite'
+import type { StaticMockCall } from '@vitest/mocker/node'
+import type { DevEnvironment, TransformResult } from 'vite'
 import type { ModuleType, VitestFetchResult } from '../../types/general'
 import type { Vitest } from '../core'
 import type { ResolvedConfig } from '../types/config'
@@ -24,7 +25,10 @@ const METADATA_FILE = '_metadata.json'
 // whenever dependencies are reinstalled.
 const DEFAULT_CACHE_DIRNAME = '.vitest-cache'
 
-const parallelFsCacheRead = new Map<string, Promise<{ code: string; meta: CachedInlineModuleMeta } | undefined>>()
+const parallelFsCacheRead = new Map<
+  string,
+  Promise<{ code: string; meta: CachedInlineModuleMeta } | undefined>
+>()
 
 export class FileSystemModuleCache {
   /**
@@ -38,10 +42,10 @@ export class FileSystemModuleCache {
   private rootCache: string
   private metadataFilePath: string
 
-  private version = '1.0.0-beta.5'
+  private version = '1.0.0-beta.8'
   private fsCacheRoots = new WeakMap<ResolvedConfig, string>()
   private fsEnvironmentHashMap = new WeakMap<DevEnvironment, string>()
-  private fsCacheKeyGenerators = new Set<CacheKeyIdGenerator>()
+  private fsCacheKeyGenerators = new WeakMap<ResolvedConfig, Set<CacheKeyIdGenerator>>()
   private warnedDeprecatedIgnore = new Set<string>()
   // this exists only to avoid the perf. cost of reading a file and generating a hash again
   // surprisingly, on some machines this has negligible effect
@@ -52,13 +56,19 @@ export class FileSystemModuleCache {
   >()
 
   constructor(private vitest: Vitest) {
-    this.rootCache = vitest.config.fsModuleCachePath
-      || join(searchForWorkspaceRoot(vitest.viteConfig.root), 'node_modules', DEFAULT_CACHE_DIRNAME)
+    this.rootCache =
+      vitest.config.fsModuleCachePath ||
+      join(searchForWorkspaceRoot(vitest.viteConfig.root), 'node_modules', DEFAULT_CACHE_DIRNAME)
     this.metadataFilePath = join(this.rootCache, METADATA_FILE)
   }
 
-  public defineCacheKeyGenerator(callback: CacheKeyIdGenerator): void {
-    this.fsCacheKeyGenerators.add(callback)
+  public defineCacheKeyGenerator(config: ResolvedConfig, callback: CacheKeyIdGenerator): void {
+    let generators = this.fsCacheKeyGenerators.get(config)
+    if (!generators) {
+      generators = new Set()
+      this.fsCacheKeyGenerators.set(config, generators)
+    }
+    generators.add(callback)
   }
 
   // A plugin can exclude itself from the cache key via `api.vitest.ignoreFsModuleCache`.
@@ -83,11 +93,11 @@ export class FileSystemModuleCache {
     const fsCachePaths = [
       // the root cache also holds the shared metadata file
       this.rootCache,
-      ...this.vitest.projects.map(r => r.config.fsModuleCachePath || this.rootCache),
+      ...this.vitest.projects.map((r) => r.config.fsModuleCachePath || this.rootCache),
     ]
     const uniquePaths = Array.from(new Set(fsCachePaths))
     await Promise.all(
-      uniquePaths.map(directory => rm(directory, { force: true, recursive: true })),
+      uniquePaths.map((directory) => rm(directory, { force: true, recursive: true })),
     )
     if (log) {
       this.vitest.logger.log(`[cache] cleared fs module cache at ${uniquePaths.join(', ')}`)
@@ -96,25 +106,29 @@ export class FileSystemModuleCache {
 
   private readCachedFileConcurrently(cachedFilePath: string) {
     if (!parallelFsCacheRead.has(cachedFilePath)) {
-      parallelFsCacheRead.set(cachedFilePath, readFile(cachedFilePath, 'utf-8').then((code) => {
-        const matchIndex = code.lastIndexOf(cacheComment)
-        if (matchIndex === -1) {
-          debugFs?.(`${c.red('[empty]')} ${cachedFilePath} exists, but doesn't have a ${cacheComment} comment, transforming by vite instead`)
-          return
-        }
+      parallelFsCacheRead.set(
+        cachedFilePath,
+        readFile(cachedFilePath, 'utf-8')
+          .then((code) => {
+            const matchIndex = code.lastIndexOf(cacheComment)
+            if (matchIndex === -1) {
+              debugFs?.(
+                `${c.red('[empty]')} ${cachedFilePath} exists, but doesn't have a ${cacheComment} comment, transforming by vite instead`,
+              )
+              return
+            }
 
-        return { code, meta: this.fromBase64(code.slice(matchIndex + cacheCommentLength)) }
-      }).finally(() => {
-        parallelFsCacheRead.delete(cachedFilePath)
-      }))
+            return { code, meta: this.fromBase64(code.slice(matchIndex + cacheCommentLength)) }
+          })
+          .finally(() => {
+            parallelFsCacheRead.delete(cachedFilePath)
+          }),
+      )
     }
     return parallelFsCacheRead.get(cachedFilePath)!
   }
 
-  async getCachedModule(cachedFilePath: string): Promise<
-    CachedInlineModuleMeta
-    | undefined
-  > {
+  async getCachedModule(cachedFilePath: string): Promise<CachedInlineModuleMeta | undefined> {
     if (!existsSync(cachedFilePath)) {
       debugFs?.(`${c.red('[empty]')} ${cachedFilePath} doesn't exist, transforming by vite first`)
       return
@@ -133,16 +147,20 @@ export class FileSystemModuleCache {
       url: meta.url,
       file: meta.file,
       code,
-      importedUrls: meta.importedUrls,
+      imports: meta.imports,
       mappings: meta.mappings,
       moduleType: meta.moduleType,
+      deps: meta.deps,
+      dynamicDeps: meta.dynamicDeps,
+      staticMocks: meta.staticMocks,
     }
   }
 
   async saveCachedModule(
     cachedFilePath: string,
     fetchResult: VitestFetchResult,
-    importedUrls: string[] = [],
+    transformResult: TransformResult | null,
+    imports: CachedModuleImports = { urls: [], ids: {} },
     mappings: boolean = false,
   ): Promise<void> {
     if ('code' in fetchResult) {
@@ -150,12 +168,18 @@ export class FileSystemModuleCache {
         file: fetchResult.file,
         id: fetchResult.id,
         url: fetchResult.url,
-        importedUrls,
+        imports,
         mappings,
         moduleType: fetchResult.moduleType,
+        deps: transformResult?.deps,
+        dynamicDeps: transformResult?.dynamicDeps,
+        staticMocks: transformResult?.__vitestStaticMocks,
       } satisfies Omit<CachedInlineModuleMeta, 'code'>
       debugFs?.(`${c.yellow('[write]')} ${fetchResult.id} is cached in ${cachedFilePath}`)
-      await atomicWriteFile(cachedFilePath, `${fetchResult.code}${cacheComment}${this.toBase64(result)}`)
+      await atomicWriteFile(
+        cachedFilePath,
+        `${fetchResult.code}${cacheComment}${this.toBase64(result)}`,
+      )
     }
   }
 
@@ -169,10 +193,7 @@ export class FileSystemModuleCache {
     return parse(json)
   }
 
-  invalidateCachePath(
-    environment: DevEnvironment,
-    id: string,
-  ): void {
+  invalidateCachePath(environment: DevEnvironment, id: string): void {
     debugFs?.(`cache for ${id} in ${environment.name} environment is invalidated`)
     this.fsCacheKeys.get(environment)?.delete(id)
   }
@@ -182,15 +203,11 @@ export class FileSystemModuleCache {
     this.fsCacheKeys.get(environment)?.clear()
   }
 
-  getMemoryCachePath(
-    environment: DevEnvironment,
-    id: string,
-  ): string | null | undefined {
+  getMemoryCachePath(environment: DevEnvironment, id: string): string | null | undefined {
     const result = this.fsCacheKeys.get(environment)?.get(id)
     if (result != null) {
       debugMemory?.(`${c.green('[read]')} ${id} was cached in ${result}`)
-    }
-    else if (result === null) {
+    } else if (result === null) {
       debugMemory?.(`${c.green('[read]')} ${id} was bailed out`)
     }
     return result
@@ -212,7 +229,7 @@ export class FileSystemModuleCache {
 
     let hashString = ''
 
-    for (const generator of this.fsCacheKeyGenerators) {
+    for (const generator of this.fsCacheKeyGenerators.get(vitestConfig) || []) {
       const result = generator({ environment, id, sourceCode: fileContent })
       if (typeof result === 'string') {
         hashString += result
@@ -227,10 +244,12 @@ export class FileSystemModuleCache {
     const config = environment.config
     // coverage provider is dynamic, so we also clear the whole cache if
     // vitest.enableCoverage/vitest.disableCoverage is called
-    const coverageAffectsCache = String(this.vitest.config.coverage.enabled && this.vitest.coverageProvider?.requiresTransform?.(id))
-    let cacheConfig = this.fsEnvironmentHashMap.get(environment)
-    if (!cacheConfig) {
-      cacheConfig = JSON.stringify(
+    const coverageAffectsCache = String(
+      this.vitest.config.coverage.enabled && this.vitest.coverageProvider?.requiresTransform?.(id),
+    )
+    let environmentHash = this.fsEnvironmentHashMap.get(environment)
+    if (!environmentHash) {
+      const cacheConfig = JSON.stringify(
         {
           root: config.root,
           // at the moment, Vitest always forces base to be /
@@ -241,12 +260,12 @@ export class FileSystemModuleCache {
           injectCjsGlobal: vitestConfig.injectCjsGlobals,
           // plugins can have different options, so this is not the best key,
           // but we cannot access the options because there is no standard API for it
-          plugins: config.plugins
-            .filter(p => !this.ignoresFsModuleCache(p))
-            .map(p => p.name),
+          plugins: config.plugins.filter((p) => !this.ignoresFsModuleCache(p)).map((p) => p.name),
           // in case local plugins change
           // configFileDependencies also includes configFile
-          configFileDependencies: config.configFileDependencies.map(file => tryReadFileSync(file)),
+          configFileDependencies: config.configFileDependencies.map((file) =>
+            tryReadFileSync(file),
+          ),
           environment: environment.name,
           // this affects Vitest CSS plugin
           css: vitestConfig.css,
@@ -258,15 +277,16 @@ export class FileSystemModuleCache {
           return value
         },
       )
-      this.fsEnvironmentHashMap.set(environment, cacheConfig)
+      // everything in the key that does not depend on the module, as one digest
+      environmentHash = hash(
+        'sha1',
+        (process.env.NODE_ENV ?? '') + this.version + cacheConfig,
+        'hex',
+      )
+      this.fsEnvironmentHashMap.set(environment, environmentHash)
     }
 
-    hashString += id
-      + fileContent
-      + (process.env.NODE_ENV ?? '')
-      + this.version
-      + cacheConfig
-      + coverageAffectsCache
+    hashString += id + fileContent + environmentHash + coverageAffectsCache
 
     const cacheKey = hash('sha1', hashString, 'hex')
 
@@ -302,8 +322,20 @@ export class FileSystemModuleCache {
     try {
       const content = await readFile(this.metadataFilePath, 'utf-8')
       return JSON.parse(content)
+    } catch {}
+  }
+
+  private async writeMetadata(lockfileHash: string): Promise<void> {
+    try {
+      if (!existsSync(this.rootCache)) {
+        mkdirSync(this.rootCache, { recursive: true })
+      }
+      await writeFile(this.metadataFilePath, JSON.stringify({ lockfileHash }, null, 2), 'utf-8')
+    } catch (error) {
+      // Recording the metadata is best-effort and losing the file shouldn't
+      // abort the entire execution
+      debugFs?.(`failed to write fs cache metadata: ${error}`)
     }
-    catch {}
   }
 
   // before vitest starts running tests, we check that the lockfile wasn't updated
@@ -311,10 +343,9 @@ export class FileSystemModuleCache {
   // or a new version of vite/vitest is installed
   // for the same reason we also cache config file content, but that won't catch changes made in external plugins
   public async ensureCacheIntegrity(): Promise<void> {
-    const enabled = [
-      this.vitest.getRootProject(),
-      ...this.vitest.projects,
-    ].some(p => p.config.fsModuleCache)
+    const enabled = [this.vitest.getRootProject(), ...this.vitest.projects].some(
+      (p) => p.config.fsModuleCache,
+    )
     if (!enabled) {
       return
     }
@@ -325,22 +356,7 @@ export class FileSystemModuleCache {
     // no metadata found, just store a new one, don't reset the cache
     if (!metadata) {
       debugFs?.(`fs metadata file was created with hash ${currentLockfileHash}`)
-
-      try {
-        if (!existsSync(this.rootCache)) {
-          mkdirSync(this.rootCache, { recursive: true })
-        }
-        await writeFile(
-          this.metadataFilePath,
-          JSON.stringify({ lockfileHash: currentLockfileHash }, null, 2),
-          'utf-8',
-        )
-      }
-      catch (error) {
-        // Recording the metadata is best-effort and losing the file shouldn't
-        // abort the entire execution
-        debugFs?.(`failed to write fs cache metadata: ${error}`)
-      }
+      await this.writeMetadata(currentLockfileHash)
       return
     }
 
@@ -351,13 +367,11 @@ export class FileSystemModuleCache {
 
     // lockfile changed, let's clear all caches
     await this.clearCache(false)
-    this.vitest.vite.config.logger.info(
-      `fs cache was cleared because lockfile has changed`,
-      {
-        timestamp: true,
-        environment: c.yellow('[vitest]'),
-      },
-    )
+    await this.writeMetadata(currentLockfileHash)
+    this.vitest.vite.config.logger.info(`fs cache was cleared because lockfile has changed`, {
+      timestamp: true,
+      environment: c.yellow('[vitest]'),
+    })
     debugFs?.(`fs cache was cleared because lockfile has changed`)
   }
 }
@@ -383,14 +397,12 @@ async function atomicWriteFile(realFilePath: string, data: string): Promise<void
   try {
     await writeFile(tmpFilePath, data, 'utf-8')
     await rename(tmpFilePath, realFilePath)
-  }
-  finally {
+  } finally {
     try {
       if (await stat(tmpFilePath)) {
         await unlink(tmpFilePath)
       }
-    }
-    catch {}
+    } catch {}
   }
 }
 
@@ -400,8 +412,17 @@ export interface CachedInlineModuleMeta {
   file: string | null
   code: string
   mappings: boolean
-  importedUrls: string[]
+  imports: CachedModuleImports
   moduleType?: ModuleType
+  deps?: string[]
+  dynamicDeps?: string[]
+  staticMocks?: StaticMockCall[] | null
+}
+
+export interface CachedModuleImports {
+  urls: string[]
+  // resolved ids that differ from the id derived from the url
+  ids: Record<string, string>
 }
 
 /**
@@ -476,23 +497,18 @@ const lockfileFormats = [
 ].sort((_, { manager }) => {
   return process.env.npm_config_user_agent?.startsWith(manager) ? 1 : -1
 })
-const lockfilePaths = lockfileFormats.map(l => l.path)
+const lockfilePaths = lockfileFormats.map((l) => l.path)
 
 function getLockfileHash(root: string): string {
   const lockfilePath = lookupFile(root, lockfilePaths)
   let content = lockfilePath ? fs.readFileSync(lockfilePath, 'utf-8') : ''
   if (lockfilePath) {
     const normalizedLockfilePath = lockfilePath.replaceAll('\\', '/')
-    const lockfileFormat = lockfileFormats.find(f =>
-      normalizedLockfilePath.endsWith(f.path),
-    )!
+    const lockfileFormat = lockfileFormats.find((f) => normalizedLockfilePath.endsWith(f.path))!
     if (lockfileFormat.checkPatchesDir) {
       // Default of https://github.com/ds300/patch-package
       const baseDir = lockfilePath.slice(0, -lockfileFormat.path.length)
-      const fullPath = join(
-        baseDir,
-        lockfileFormat.checkPatchesDir as string,
-      )
+      const fullPath = join(baseDir, lockfileFormat.checkPatchesDir as string)
       const stat = tryStatSync(fullPath)
       if (stat?.isDirectory()) {
         content += stat.mtimeMs.toString()
@@ -502,10 +518,7 @@ function getLockfileHash(root: string): string {
   return hash('sha256', content, 'hex').substring(0, 8).padEnd(8, '_')
 }
 
-function lookupFile(
-  dir: string,
-  fileNames: string[],
-): string | undefined {
+function lookupFile(dir: string, fileNames: string[]): string | undefined {
   while (dir) {
     for (const fileName of fileNames) {
       const fullPath = join(dir, fileName)
@@ -525,8 +538,7 @@ function lookupFile(
 function tryReadFileSync(file: string): string {
   try {
     return readFileSync(file, 'utf-8')
-  }
-  catch {
+  } catch {
     return ''
   }
 }
@@ -535,8 +547,7 @@ function tryStatSync(file: string): fs.Stats | undefined {
   try {
     // The "throwIfNoEntry" is a performance optimization for cases where the file does not exist
     return fs.statSync(file, { throwIfNoEntry: false })
-  }
-  catch {
+  } catch {
     // Ignore errors
   }
 }

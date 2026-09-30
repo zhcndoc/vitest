@@ -5,7 +5,7 @@ outline: deep
 
 # 覆盖率 <CRoot /> {#coverage}
 
-你可以使用 [`v8`](/guide/coverage.html#v8-provider)、[`istanbul`](/guide/coverage.html#istanbul-provider) 或 [自定义覆盖率解决方案](/guide/coverage#custom-coverage-provider) 进行覆盖率收集。
+你可以使用 [`v8`](/guide/coverage#v8-provider)、[`istanbul`](/guide/coverage#istanbul-provider) 或[自定义覆盖率方案](/guide/coverage#custom-coverage-provider)收集覆盖率。
 
 你可以使用点表示法向 CLI 提供覆盖率选项：
 
@@ -47,7 +47,7 @@ npx vitest --coverage.enabled --coverage.provider=istanbul
 
 模式会根据每个文件相对于项目根目录的路径进行匹配。不包含 glob 通配符的模式会被视为目录，并匹配其中的所有内容，因此 `include: ['src']` 等同于 `include: ['src/**']`。
 
-示例请参阅 [在覆盖率报告中包含和排除文件](/guide/coverage.html#including-and-excluding-files-from-coverage-report)。
+示例请参阅[在覆盖率报告中包含和排除文件](/guide/coverage#including-and-excluding-files-from-coverage-report)。
 
 ## coverage.exclude
 
@@ -58,7 +58,7 @@ npx vitest --coverage.enabled --coverage.provider=istanbul
 
 以 glob 模式列出从覆盖率中排除的文件。模式的匹配方式与 [`coverage.include`](#coverage-include) 相同。
 
-示例请参阅 [在覆盖率报告中包含和排除文件](/guide/coverage.html#including-and-excluding-files-from-coverage-report)。
+示例请参阅[在覆盖率报告中包含和排除文件](/guide/coverage#including-and-excluding-files-from-coverage-report)。
 
 ## coverage.clean
 
@@ -98,14 +98,13 @@ npx vitest --coverage.enabled --coverage.provider=istanbul
 - **适用提供者：** `'v8' | 'istanbul'`
 - **命令行：** `--coverage.reporter=<reporter>`, `--coverage.reporter=<reporter1> --coverage.reporter=<reporter2>`
 
-要使用的覆盖率报告器。有关所有报告器的详细列表，请参阅 [istanbul 文档](https://istanbul.js.org/docs/advanced/alternative-reporters/)。有关报告器特定选项的详细信息，请参阅 [`@types/istanbul-reports`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/276d95e4304b3670eaf6e8e5a7ea9e265a14e338/types/istanbul-reports/index.d.ts)。
+要使用的覆盖率报告器。有关所有报告器的详细列表，请参阅 [istanbul 文档](https://istanbul.js.org/docs/advanced/alternative-reporters/)。有关报告器特定选项的详情，请参阅 [`@vitest/istanbul-lib-report`](https://github.com/vitest-dev/istanbuljs/tree/main/packages/istanbul-lib-report/src/reports)。
 
 报告器有三种不同的类型：
 
 - 单个报告器：`{ reporter: 'html' }`
 - 多个不带选项的报告器：`{ reporter: ['html', 'json'] }`
 - 带报告器选项的单个或多个报告器：
-  <!-- eslint-skip -->
   ```ts
   {
     reporter: [
@@ -118,7 +117,6 @@ npx vitest --coverage.enabled --coverage.provider=istanbul
 
 你也可以传递自定义覆盖率报告器。有关更多信息，请参阅 [指南 - 自定义覆盖率报告器](/guide/coverage#custom-coverage-reporter)。
 
-<!-- eslint-skip -->
 ```ts
   {
     reporter: [
@@ -186,7 +184,6 @@ npx vitest --coverage.enabled --coverage.provider=istanbul
 
 如果阈值设置为负数，它将被视为允许的最大未覆盖项数量。例如，将行阈值设置为 `-10` 意味着未覆盖的行数不得超过 10 行。
 
-<!-- eslint-skip -->
 ```ts
 {
   coverage: {
@@ -242,7 +239,6 @@ npx vitest --coverage.enabled --coverage.provider=istanbul
 
 当为 `true` 时，每个文件都会按顶层阈值进行检查，而不是按项目范围的汇总值进行检查。当设置为对象时，两者都会被检查：汇总值按顶层阈值检查，每个文件按这些按文件最低阈值检查。
 
-<!-- eslint-skip -->
 ```ts
 {
   coverage: {
@@ -264,7 +260,6 @@ npx vitest --coverage.enabled --coverage.provider=istanbul
 
 对象中也可以接受 `{ 100: true }` 作为将全部四项指标设置为 `100` 的快捷方式：
 
-<!-- eslint-skip -->
 ```ts
 {
   coverage: {
@@ -280,7 +275,6 @@ npx vitest --coverage.enabled --coverage.provider=istanbul
 
 `perFile` 也可以在单个 [glob 模式阈值](/config/coverage#coverage-thresholds-glob-pattern) 上设置。glob 模式**不会**继承顶层的 `perFile`；请在每个 glob 上单独设置。
 
-<!-- eslint-skip -->
 ```ts
 {
   coverage: {
@@ -309,7 +303,6 @@ npx vitest --coverage.enabled --coverage.provider=istanbul
 
 你也可以传递一个用于格式化更新后阈值值的函数。该函数接收新的阈值作为第一个参数，接收之前的阈值作为第二个参数：
 
-<!-- eslint-skip -->
 ```ts
 {
   coverage: {
@@ -352,7 +345,6 @@ Vitest 会将所有文件（包括被 glob 模式覆盖的文件）计入全局�
 这与 Jest 的行为不同。
 :::
 
-<!-- eslint-skip -->
 ```ts
 {
   coverage: {
@@ -389,7 +381,6 @@ Vitest 会将所有文件（包括被 glob 模式覆盖的文件）计入全局�
 
 为匹配 glob 模式的文件将阈值设置为 100。
 
-<!-- eslint-skip -->
 ```ts
 {
   coverage: {
@@ -418,8 +409,8 @@ Vitest 会将所有文件（包括被 glob 模式覆盖的文件）计入全局�
 
 ## coverage.watermarks
 
-- **类型：**
-<!-- eslint-skip -->
+- **类型:**
+
 ```ts
 {
   statements?: [number, number],
@@ -429,8 +420,8 @@ Vitest 会将所有文件（包括被 glob 模式覆盖的文件）计入全局�
 }
 ```
 
-- **默认值：**
-<!-- eslint-skip -->
+- **默认值:**
+
 ```ts
 {
   statements: [50, 80],
@@ -459,11 +450,10 @@ Vitest 会将所有文件（包括被 glob 模式覆盖的文件）计入全局�
 - **类型：** `(options: InstrumenterOptions) => CoverageInstrumenter`
 - **适用提供者：** `'istanbul'`
 
-用于替代默认 `istanbul-lib-instrument` 的自定义 instrumenter 工厂。Vitest 会在初始化期间调用一次该工厂，并在每个文件中复用返回的 instrumenter。Istanbul 管道的其余部分（收集、合并、报告）保持不变。
+用于替代默认 `@vitest/istanbul-lib-instrument` 的自定义 instrumenter 工厂。Vitest 会在初始化时调用一次该工厂，并在每个文件中复用返回的 instrumenter。Istanbul 管道的其余部分（收集、合并和报告）保持不变。
 
 该工厂接收一个包含 Vitest 运行时覆盖率设置的 `InstrumenterOptions` 对象，并且必须返回一个实现 `CoverageInstrumenter` 接口的对象。这两个类型都从 `vitest/node` 导出。
 
-<!-- eslint-skip -->
 ```ts
 interface InstrumenterOptions {
   coverageVariable: string
@@ -479,7 +469,6 @@ interface CoverageInstrumenter {
 }
 ```
 
-<!-- eslint-skip -->
 ```ts
 import { defineConfig } from 'vitest/config'
 import { createInstrumenter } from '@vitest/some-custom-instrumenter'
@@ -508,7 +497,7 @@ export default defineConfig({
 - **默认值：** 自动从 `html`、`html-spa` 或 `lcov` 覆盖率报告器推断
 - **命令行：** `--coverage.htmlDir=<path>`
 
-要在 [Vitest UI](/guide/ui) 和 [HTML 报告器](/guide/reporters.html#html-reporter) 中展示的 HTML 覆盖率输出目录。
+要在 [Vitest UI](/guide/ui) 和 [HTML 报告器](/guide/reporters#html-reporter) 中展示的 HTML 覆盖率输出目录。
 
 当使用生成 HTML 输出的内置覆盖率报告器（`html`、`html-spa` 和 `lcov`）时，此选项会自动配置。当使用自定义覆盖率报告器时，可使用此选项覆盖设置为自定义覆盖率报告位置。
 

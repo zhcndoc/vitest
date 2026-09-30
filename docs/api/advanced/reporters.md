@@ -61,6 +61,7 @@ function onInit(vitest: Vitest): Awaitable<void>
 请注意，你还可以通过 [`project`](/api/advanced/test-project) 属性从测试用例、套件和测试模块中访问 `vitest` 实例，但在此方法中存储对 `vitest` 的引用也可能很有用。
 
 ::: details 示例
+
 ```ts
 import type { Reporter, TestSpecification, Vitest } from 'vitest/node'
 
@@ -82,6 +83,7 @@ class MyReporter implements Reporter {
 
 export default new MyReporter()
 ```
+
 :::
 
 ## onBrowserInit {#onbrowserinit}
@@ -105,6 +107,7 @@ function onTestRunStart(
 如果 Vitest 没有找到任何要运行的测试文件，此事件将以空数组调用，然后紧接着调用 [`onTestRunEnd`](#ontestrunend)。
 
 ::: details 示例
+
 ```ts
 import type { Reporter, TestSpecification } from 'vitest/node'
 
@@ -116,6 +119,7 @@ class MyReporter implements Reporter {
 
 export default new MyReporter()
 ```
+
 :::
 
 ## onTestRunEnd
@@ -143,6 +147,7 @@ function onTestRunEnd(
 如果 Vitest 没有找到任何要运行的测试文件，此事件将以空的模块和错误数组调用，并且状态将取决于 [`config.passWithNoTests`](/config/passwithnotests) 的值。
 
 ::: details 示例
+
 ```ts
 import type {
   Reporter,
@@ -179,6 +184,7 @@ class MyReporter implements Reporter {
 
 export default new MyReporter()
 ```
+
 :::
 
 ## onCoverage
@@ -187,10 +193,10 @@ export default new MyReporter()
 function onCoverage(coverage: unknown): Awaitable<void>
 ```
 
-此钩子在覆盖率结果处理后调用。覆盖率提供者的报告器在此钩子之后调用。`coverage` 的类型取决于 `coverage.provider`。对于 Vitest 默认的内置提供者，你可以从 `istanbul-lib-coverage` 包导入类型：
+此钩子会在覆盖率结果处理完成后调用。覆盖率提供程序的报告器会在此钩子之后调用。`coverage` 的类型取决于 `coverage.provider`。对于 Vitest 默认内置的提供程序，你可以从 `@vitest/istanbul-lib-coverage` 包中导入类型：
 
 ```ts
-import type { CoverageMap } from 'istanbul-lib-coverage'
+import type { CoverageMap } from '@vitest/istanbul-lib-coverage'
 
 declare function onCoverage(coverage: CoverageMap): Awaitable<void>
 ```

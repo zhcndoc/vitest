@@ -66,16 +66,16 @@ export default defineConfig({
 })
 ```
 
-并行批次会先完成，*然后* 顺序批次才开始。总墙钟时间仍然接近并行时间加上顺序测试运行时间之和。
+并行批次会先完成，_然后_ 顺序批次才会开始。总耗时仍接近并行部分的耗时加上顺序测试运行时间之和。
 
 ## 文件作用域 vs. 测试作用域
 
 Vitest 中有两个不同的“并行”开关。不要混淆它们：
 
-| 作用域 | 开关 | 控制内容 |
-| --- | --- | --- |
-| 跨文件 | [`fileParallelism`](/config/fileparallelism) | 两个测试 *文件* 是否在并行 worker 中运行 |
-| 文件内 | `describe.concurrent` / `test.concurrent` | 一个文件内部的测试是否并发运行 |
+| 作用域 | 开关                                         | 控制内容                               |
+| ------ | -------------------------------------------- | -------------------------------------- |
+| 跨文件 | [`fileParallelism`](/config/fileparallelism) | 两个测试_文件_是否在并行 worker 中运行 |
+| 文件内 | `describe.concurrent` / `test.concurrent`    | 一个文件内部的测试是否并发运行         |
 
 `fileParallelism: false` 并不会让文件内的测试变成并发；文件内的测试默认就是顺序执行。而 `describe` 或 `test` 上的 `concurrent` 不会影响文件的调度方式。
 

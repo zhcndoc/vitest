@@ -134,6 +134,7 @@ export default class Runner {
   }
 }
 ```
+
 :::
 
 ::: warning
@@ -258,11 +259,11 @@ export interface TaskResult {
    */
   hooks?: Partial<Record<'afterAll' | 'beforeAll' | 'beforeEach' | 'afterEach', TaskState>>
   /**
-   * 任务重试的次数。仅当任务失败且设置了 `retry` 选项时才会重试任务。
+   * The number of times the task has been retried across all repeats.
    */
   retryCount?: number
   /**
-   * 任务重复的次数。仅当设置了 `repeats` 选项时才会重复任务。此数字也包含 `retryCount`。
+   * The zero-based index of the current repeat.
    */
   repeatCount?: number
 }

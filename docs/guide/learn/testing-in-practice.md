@@ -54,7 +54,7 @@ test('rounds to two decimal places', () => {
 })
 ```
 
-注意这些测试*没有*做什么。它们没有检查传递给内部 `Intl.NumberFormat` 的选项，也没有检查中间变量。它们只验证输出。
+注意这些测试_没有_做什么。它们没有检查传给内部 `Intl.NumberFormat` 的选项，也没有检查中间变量是否被赋值。它们只检查输出。
 
 ::: tip
 一个实用的经验法则是：如果有人重构了内部实现但输出保持不变，测试应该失败吗？如果是，那么你很可能在测试实现细节而不是行为。
@@ -156,7 +156,7 @@ test('throws for empty string', () => {
 
 ### 属性基础测试
 
-对于具有广泛有效输入的函数，手动选择边界情况可能远远不够。**属性基础测试**是一种技术：你描述应该对任何输入成立的*属性*，测试框架会生成数百个随机输入，试图找到破坏属性的反例。
+对于有效输入范围很广的函数，手动选择边界情况往往不够。**基于属性的测试**是一种技术：你描述任何输入都应成立的_属性_，测试框架会生成数百个随机输入，试图找到违反属性的反例。
 
 例如，你可以说“对于任何有效的年龄字符串，parseAge 应该返回一个非负整数”，然后让工具寻找反例。[fast-check](https://fast-check.dev/) 是一个与 Vitest 集成的流行属性基础测试库。这是一个高级技术，但随着测试需求的增长，了解它是非常有价值的。
 
@@ -176,7 +176,7 @@ test('throws for empty string', () => {
 
 ### 不要模拟什么
 
-不要模拟你正在测试的东西。如果你正在测试一个 `UserService`，不要模拟 `UserService`。而是模拟它的*依赖项*（数据库、邮件发送器），让服务本身真实运行。
+不要模拟你正在测试的对象。如果你正在测试 `UserService`，就不要模拟 `UserService`。应该模拟它的_依赖项_（数据库、邮件发送器），让服务本身真实运行。
 
 另外，当依赖项是简单内存数据结构或纯函数时，优先使用真实实现。越接近真实使用场景，测试提供的信心就越多。
 
@@ -432,7 +432,7 @@ describe('getCompleted', () => {
 :::
 
 ::: details What about `nextId`?
-The `nextId` counter at the top of the module is shared across all calls to `createTodoList()`, including across tests. This means IDs aren't predictable: one test might get IDs 1 and 2, while another gets 3 and 4 depending on execution order. This works fine here because the tests only check *relative* uniqueness (`first.id !== second.id`), not specific ID values. If a test asserted `expect(todo.id).toBe(1)`, it would break depending on which tests ran before it. When you have shared module-level state like this, make sure your tests don't depend on its specific value.
+模块顶部的 `nextId` 计数器会在所有 `createTodoList()` 调用间共享，测试之间也不例外。这意味着 ID 不可预测：一个测试可能获得 1 和 2，另一个测试则可能因执行顺序而获得 3 和 4。这里没有问题，因为测试只检查_相对_唯一性（`first.id !== second.id`），而不是特定 ID 值。如果测试断言 `expect(todo.id).toBe(1)`，其结果就会取决于之前运行了哪些测试。遇到此类模块级共享状态时，请确保测试不依赖其具体值。
 :::
 
 ---

@@ -171,6 +171,8 @@ export default defineProject({
 })
 ```
 
+默认情况下，每个项目测试中的 `process.cwd()` 都会返回启动 Vitest 时所在的目录，即使项目使用了不同的根目录也是如此。详情和解决方法请参阅[项目工作目录不会改变](/guide/common-errors#project-working-directory-does-not-change)。
+
 ## 运行测试
 
 要运行测试，请在根 `package.json` 中定义一个脚本：
@@ -186,54 +188,70 @@ export default defineProject({
 现在可以使用你的包管理器运行测试：
 
 ::: code-group
+
 ```bash [npm]
 npm run test
 ```
+
 ```bash [yarn]
 yarn test
 ```
+
 ```bash [pnpm]
 pnpm run test
 ```
+
 ```bash [bun]
 bun run test
 ```
+
 :::
 
 如果你只需要在单个项目中运行测试，请使用 `--project` CLI 选项：
 
 ::: code-group
+
 ```bash [npm]
 npm run test --project e2e
 ```
+
 ```bash [yarn]
 yarn test --project e2e
 ```
+
 ```bash [pnpm]
 pnpm run test --project e2e
 ```
+
 ```bash [bun]
 bun run test --project e2e
 ```
+
 :::
 
-::: tip
-CLI 选项 `--project` 可以多次使用以过滤出多个项目：
+:::: tip
+CLI 选项 `--project` 可以多次使用，以筛选出多个项目：
 
 ::: code-group
+
 ```bash [npm]
 npm run test --project e2e --project unit
 ```
+
 ```bash [yarn]
 yarn test --project e2e --project unit
 ```
+
 ```bash [pnpm]
 pnpm run test --project e2e --project unit
 ```
+
 ```bash [bun]
 bun run test --project e2e --project unit
 ```
+
 :::
+::::
 
 该过滤器支持 `*` 通配符和 `!` 排除项。如果项目不匹配任何否定模式，并且同时提供了常规模式，则至少匹配其中一个常规模式，该项目就会运行：
 

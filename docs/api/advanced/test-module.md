@@ -39,7 +39,9 @@ if (task.type === 'module') {
 这是一个 Vite 的 [`DevEnvironment`](https://vite.dev/guide/api-environment)，用于转换测试模块中的所有文件。
 
 ::: details 历史
+
 - `v4.0.15`：作为实验性功能添加
+
 :::
 
 ## state

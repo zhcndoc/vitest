@@ -24,6 +24,7 @@ getApplesSpy.mock.calls.length === 1
 Vitest 监听器在初始化时会继承实现的 [`length`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/length) 属性，但如果之后更改了实现，它不会覆盖该属性：
 
 ::: code-group
+
 ```ts [vi.fn]
 const fn = vi.fn((arg1) => {})
 fn.length // == 1
@@ -31,6 +32,7 @@ fn.length // == 1
 fn.mockImplementation(() => {})
 fn.length // == 1
 ```
+
 ```ts [vi.spyOn]
 const example = {
   fn(arg1, arg2) {
@@ -44,6 +46,7 @@ fn.length // == 2
 fn.mockImplementation(() => {})
 fn.length // == 2
 ```
+
 :::
 
 ::: tip
@@ -89,6 +92,7 @@ mock.mockImplementation(class {
   }
 })
 ```
+
 :::
 
 ## getMockImplementation
@@ -504,6 +508,7 @@ const fn = vi.fn((arg) => {
 
 expect(calledArguments[0]).toEqual({ value: 0 })
 ```
+
 :::
 
 ## mock.lastCall
@@ -703,4 +708,5 @@ const a = new Spy()
 Spy.mock.instances[0] !== a
 Spy.mock.results[0] === a
 ```
+
 :::

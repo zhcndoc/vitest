@@ -94,6 +94,7 @@ declare module 'vitest' {
 
 await expect('foo').toBeAsyncAssertion()
 ```
+
 :::
 
 匹配器函数内的第一个参数是接收到的值（`expect(received)` 中的那个）。其余的是直接传递给匹配器的参数。自 4.1 版本以来，Vitest 暴露了几种可供自定义匹配器使用的类型：

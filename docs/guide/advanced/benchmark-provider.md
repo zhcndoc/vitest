@@ -22,7 +22,7 @@ export default defineConfig({
 })
 ```
 
-该模块必须使用默认导出，并导出一个实现了 `BenchmarkProvider` 的对象。此示例封装了 Tinybench，用于演示注册信息和结果如何通过提供程序流转。如果在提供程序中使用 Tinybench，请将其作为项目的直接依赖项添加。
+该模块必须默认导出一个实现了 `BenchmarkProvider` 的对象。此示例封装 Tinybench，用于演示注册信息和结果如何通过提供程序流转。如果在提供程序中使用 Tinybench，请将其添加为项目的直接依赖。
 
 ```ts [benchmark-provider.ts]
 import type { BenchmarkProvider } from 'vitest'

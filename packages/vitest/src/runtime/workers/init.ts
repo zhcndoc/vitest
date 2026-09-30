@@ -30,8 +30,7 @@ function createImportMetaEnvProxy(): MetaEnv {
       }
       if (booleanKeys.includes(key)) {
         process.env[key] = value ? '1' : ''
-      }
-      else {
+      } else {
         process.env[key] = value
       }
       return true
@@ -49,6 +48,11 @@ const __vitest_worker_response__ = true
 const memoryUsage = process.memoryUsage.bind(process)
 let reportMemory = false
 
+const streams = [
+  { write: process.stdout.write.bind(process.stdout) },
+  { write: process.stderr.write.bind(process.stderr) },
+]
+
 // In worker threads stdio is proxied to the parent over a MessagePort with a
 // backpressure protocol: a chunk stays buffered inside the worker until the
 // parent acks the previous one. The pool starts `runner.stop()` as soon as it
@@ -58,16 +62,15 @@ let reportMemory = false
 // it before signaling completion guarantees the output reached the parent.
 // A cheap no-op for forks, where stdio goes through OS pipes.
 function flushStdio(): Promise<unknown> {
-  const flush = (stream: NodeJS.WriteStream) =>
+  const flush = (stream: (typeof streams)[number]) =>
     new Promise((resolve) => {
       try {
         stream.write('', () => resolve(undefined))
-      }
-      catch {
+      } catch {
         resolve(undefined)
       }
     })
-  return Promise.all([flush(process.stdout), flush(process.stderr)])
+  return Promise.all(streams.map((stream) => flush(stream)))
 }
 
 let traces!: Traces
@@ -90,9 +93,7 @@ export function init(worker: Options): void {
   }
 
   async function onMessage(rawMessage: unknown) {
-    const message: WorkerRequest = worker.deserialize
-      ? worker.deserialize(rawMessage)
-      : rawMessage
+    const message: WorkerRequest = worker.deserialize ? worker.deserialize(rawMessage) : rawMessage
 
     if (message?.__vitest_worker_request__ !== true) {
       return
@@ -131,15 +132,12 @@ export function init(worker: Options): void {
             projectName: config.name || '',
             traces,
           }
-          workerTeardown = await traces.$(
-            'vitest.runtime.setup',
-            { context },
-            () => worker.setup?.(setupContext),
+          workerTeardown = await traces.$('vitest.runtime.setup', { context }, () =>
+            worker.setup?.(setupContext),
           )
 
           send({ type: 'started', __vitest_worker_response__ })
-        }
-        catch (error) {
+        } catch (error) {
           send({ type: 'started', __vitest_worker_response__, error: serializeError(error) })
         }
 
@@ -159,8 +157,7 @@ export function init(worker: Options): void {
 
         try {
           process.env.VITEST_WORKER_ID = String(message.context.workerId)
-        }
-        catch (error) {
+        } catch (error) {
           return send({
             type: 'testfileFinished',
             __vitest_worker_response__,
@@ -184,8 +181,10 @@ export function init(worker: Options): void {
                 'vitest.worker.id': message.context.workerId,
               },
             },
-            () => entrypoint.run({ ...setupContext, ...message.context, concurrencyId: poolId }, worker, traces)
-              .catch(error => serializeError(error)),
+            () =>
+              entrypoint
+                .run({ ...setupContext, ...message.context, concurrencyId: poolId }, worker, traces)
+                .catch((error) => serializeError(error)),
           )
           const error = await runPromise
 
@@ -197,8 +196,7 @@ export function init(worker: Options): void {
             error,
             usedMemory: reportMemory ? memoryUsage().heapUsed : undefined,
           })
-        }
-        finally {
+        } finally {
           runPromise = undefined
           isRunning = false
         }
@@ -219,8 +217,7 @@ export function init(worker: Options): void {
 
         try {
           process.env.VITEST_WORKER_ID = String(message.context.workerId)
-        }
-        catch (error) {
+        } catch (error) {
           return send({
             type: 'testfileFinished',
             __vitest_worker_response__,
@@ -244,8 +241,14 @@ export function init(worker: Options): void {
                 'vitest.worker.id': message.context.workerId,
               },
             },
-            () => entrypoint.collect({ ...setupContext, ...message.context, concurrencyId: poolId }, worker, traces)
-              .catch(error => serializeError(error)),
+            () =>
+              entrypoint
+                .collect(
+                  { ...setupContext, ...message.context, concurrencyId: poolId },
+                  worker,
+                  traces,
+                )
+                .catch((error) => serializeError(error)),
           )
           const error = await runPromise
 
@@ -257,8 +260,7 @@ export function init(worker: Options): void {
             error,
             usedMemory: reportMemory ? memoryUsage().heapUsed : undefined,
           })
-        }
-        finally {
+        } finally {
           runPromise = undefined
           isRunning = false
         }
@@ -279,22 +281,17 @@ export function init(worker: Options): void {
         const persistCompileCache = () => {
           try {
             Module.flushCompileCache?.()
-          }
-          catch {}
+          } catch {}
         }
 
         try {
           const context = traces.getContextFromCarrier(message.otelCarrier)
 
-          const error = await traces.$(
-            'vitest.runtime.teardown',
-            { context },
-            async () => {
-              const error = await entrypoint.teardown().catch(error => serializeError(error))
-              await workerTeardown?.()
-              return error
-            },
-          )
+          const error = await traces.$('vitest.runtime.teardown', { context }, async () => {
+            const error = await entrypoint.teardown().catch((error) => serializeError(error))
+            await workerTeardown?.()
+            return error
+          })
 
           await traces.finish()
 
@@ -303,8 +300,7 @@ export function init(worker: Options): void {
           await flushStdio()
 
           send({ type: 'stopped', error, __vitest_worker_response__ })
-        }
-        catch (error) {
+        } catch (error) {
           persistCompileCache()
 
           await flushStdio()

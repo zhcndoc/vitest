@@ -1,14 +1,19 @@
 import type { Awaitable } from '@vitest/utils'
-import type { RuntimeContext, SuiteCollector, Test, TestAnnotation, TestContext, VitestRunner, WriteableTestContext } from './types'
-import { getSafeTimers } from '@vitest/utils/timers'
+import type { PendingOperation } from './deadline'
+import type {
+  RuntimeContext,
+  SuiteCollector,
+  Test,
+  TestAnnotation,
+  TestContext,
+  VitestRunner,
+  WriteableTestContext,
+} from './types'
 import { manageArtifactAttachment, recordArtifact, recordAsyncOperation } from './artifact'
+import { TaskDeadline } from './deadline'
 import { PendingError } from './errors'
 import { finishSendTasksUpdate } from './run'
 import { getRunner } from './suite'
-
-const now = globalThis.performance
-  ? globalThis.performance.now.bind(globalThis.performance)
-  : Date.now
 
 export const collectorContext: RuntimeContext = {
   tasks: [],
@@ -40,46 +45,55 @@ export function withTimeout<T extends (...args: any[]) => any>(
     return fn
   }
 
-  const { setTimeout, clearTimeout } = getSafeTimers()
-
   // this function name is used to filter error in test/e2e/test/fails.test.ts
-  return (function runWithTimeout(...args: T extends (...args: infer A) => any ? A : never) {
-    const startTime = now()
+  return function runWithTimeout(...args: T extends (...args: infer A) => any ? A : never) {
     const runner = getRunner()
-    runner._currentTaskStartTime = startTime
-    runner._currentTaskTimeout = timeout
+    const previousDeadline = runner._deadline
     return new Promise((resolve_, reject_) => {
-      const timer = setTimeout(() => {
-        clearTimeout(timer)
+      let settled = false
+      const deadline = new TaskDeadline(timeout, () => {
+        // an operation derived a shorter deadline from this one,
+        // so its error describes the failure better than a generic timeout
+        const pending = deadline.settle()
+        if (pending) {
+          pending.then(rejectTimeoutError, reject)
+          return
+        }
         rejectTimeoutError()
-      }, timeout)
-      // `unref` might not exist in browser
-      timer.unref?.()
+      })
+      runner._deadline = deadline
 
-      function rejectTimeoutError() {
-        const error = makeTimeoutError(isHook, timeout, stackTraceError)
+      function rejectTimeoutError(pending?: PendingOperation[]) {
+        if (settled) {
+          return
+        }
+        settled = true
+        const error = makeTimeoutError(isHook, timeout, stackTraceError, pending)
         onTimeout?.(args, error)
         reject_(error)
       }
 
       function resolve(result: unknown) {
-        runner._currentTaskStartTime = undefined
-        runner._currentTaskTimeout = undefined
-        clearTimeout(timer)
+        runner._deadline = previousDeadline
+        deadline.clear()
         // if test/hook took too long in microtask, setTimeout won't be triggered,
         // but we still need to fail the test, see
         // https://github.com/vitest-dev/vitest/issues/2920
-        if (now() - startTime >= timeout) {
+        if (deadline.exceeded()) {
           rejectTimeoutError()
           return
         }
+        settled = true
         resolve_(result)
       }
 
       function reject(error: unknown) {
-        runner._currentTaskStartTime = undefined
-        runner._currentTaskTimeout = undefined
-        clearTimeout(timer)
+        if (settled) {
+          return
+        }
+        settled = true
+        runner._deadline = previousDeadline
+        deadline.clear()
         reject_(error)
       }
 
@@ -90,8 +104,7 @@ export function withTimeout<T extends (...args: any[]) => any>(
         // to avoid creating new promises
         if (typeof result === 'object' && result != null && typeof result.then === 'function') {
           result.then(resolve, reject)
-        }
-        else {
+        } else {
           resolve(result)
         }
       }
@@ -100,14 +113,11 @@ export function withTimeout<T extends (...args: any[]) => any>(
         reject(error)
       }
     })
-  }) as T
+  } as T
 }
 
-export function withCancel<T extends (...args: any[]) => any>(
-  fn: T,
-  signal: AbortSignal,
-): T {
-  return (function runWithCancel(...args: T extends (...args: infer A) => any ? A : never) {
+export function withCancel<T extends (...args: any[]) => any>(fn: T, signal: AbortSignal): T {
+  return function runWithCancel(...args: T extends (...args: infer A) => any ? A : never) {
     return new Promise((resolve, reject) => {
       const onAbort = () => reject(signal.reason)
       signal.addEventListener('abort', onAbort, { once: true })
@@ -128,18 +138,16 @@ export function withCancel<T extends (...args: any[]) => any>(
               reject(error)
             },
           )
-        }
-        else {
+        } else {
           cleanup()
           resolve(result)
         }
-      }
-      catch (error) {
+      } catch (error) {
         cleanup()
         reject(error)
       }
     })
-  }) as T
+  } as T
 }
 
 const abortControllers = new WeakMap<TestContext, AbortController>()
@@ -155,10 +163,7 @@ export function abortContextSignal(context: TestContext, error: Error): void {
   abortController?.abort(error)
 }
 
-export function createTestContext(
-  test: Test,
-  runner: VitestRunner,
-): TestContext {
+export function createTestContext(test: Test, runner: VitestRunner): TestContext {
   const context = function () {
     throw new Error('done() callback is deprecated, use promise instead')
   } as unknown as WriteableTestContext
@@ -189,7 +194,9 @@ export function createTestContext(
 
   context.annotate = ((message, type, attachment) => {
     if (test.result && test.result.state !== 'run') {
-      throw new Error(`Cannot annotate tests outside of the test run. The test "${test.name}" finished running with the "${test.result.state}" state already.`)
+      throw new Error(
+        `Cannot annotate tests outside of the test run. The test "${test.name}" finished running with the "${test.result.state}" state already.`,
+      )
     }
 
     const annotation: TestAnnotation = {
@@ -206,17 +213,19 @@ export function createTestContext(
 
     return recordAsyncOperation(
       test,
-      recordArtifact(test, { type: 'internal:annotation', annotation }).then(async ({ annotation }) => {
-        if (!runner.onTestAnnotate) {
-          throw new Error(`Test runner doesn't support test annotations.`)
-        }
+      recordArtifact(test, { type: 'internal:annotation', annotation }).then(
+        async ({ annotation }) => {
+          if (!runner.onTestAnnotate) {
+            throw new Error(`Test runner doesn't support test annotations.`)
+          }
 
-        await finishSendTasksUpdate(runner)
+          await finishSendTasksUpdate(runner)
 
-        const resolvedAnnotation = await runner.onTestAnnotate(test, annotation)
-        test.annotations.push(resolvedAnnotation)
-        return resolvedAnnotation
-      }),
+          const resolvedAnnotation = await runner.onTestAnnotate(test, annotation)
+          test.annotations.push(resolvedAnnotation)
+          return resolvedAnnotation
+        },
+      ),
     )
   }) as TestContext['annotate']
 
@@ -249,10 +258,23 @@ export function createTestContext(
   return runner.extendTaskContext?.(context) || context
 }
 
-function makeTimeoutError(isHook: boolean, timeout: number, stackTraceError?: Error) {
+function makeTimeoutError(
+  isHook: boolean,
+  timeout: number,
+  stackTraceError?: Error,
+  pending?: PendingOperation[],
+) {
+  const waiting = pending?.length
+    ? ` while waiting for ${pending.map((operation) => operation.name).join(', ')}`
+    : ''
+  // point at the action the task is stuck on rather than at the task itself
+  const lastOperationSource = pending?.at(-1)?.source
+  if (lastOperationSource) {
+    stackTraceError = lastOperationSource
+  }
   const message = `${
     isHook ? 'Hook' : 'Test'
-  } timed out in ${timeout}ms.\nIf this is a long-running ${
+  } timed out in ${timeout}ms${waiting}.\nIf this is a long-running ${
     isHook ? 'hook' : 'test'
   }, pass a timeout value as the last argument or configure it globally with "${
     isHook ? 'hookTimeout' : 'testTimeout'

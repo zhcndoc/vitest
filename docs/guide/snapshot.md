@@ -604,7 +604,8 @@ export default defineConfig({
 
 当在创建快照文件期间传递自定义消息时，Vitest 使用尖括号 `>` 而不是冒号 `:` 作为分隔符，以提高可读性。
 
-对于以下示例测试代码：
+以下面的测试代码为例：
+
 ```js
 test('toThrowErrorMatchingSnapshot', () => {
   expect(() => {
@@ -613,12 +614,14 @@ test('toThrowErrorMatchingSnapshot', () => {
 })
 ```
 
-在 Jest 中，快照将是：
+在 Jest 中，快照如下：
+
 ```console
 exports[`toThrowErrorMatchingSnapshot: hint 1`] = `"error"`;
 ```
 
-在 Vitest 中，等效的快照将是：
+在 Vitest 中，对应的快照如下：
+
 ```console
 exports[`toThrowErrorMatchingSnapshot > hint 1`] = `[Error: error]`;
 ```

@@ -13,6 +13,7 @@ title: 测试项目
 name 是用户分配或由 Vitest 解释的唯一字符串。如果用户没有提供 name，Vitest 会尝试加载项目根目录中的 `package.json` 并从中获取 `name` 属性。如果没有 `package.json`，Vitest 默认使用文件夹的 name。内联项目使用数字作为 name（转换为字符串）。
 
 ::: code-group
+
 ```ts [node.js]
 import { createVitest } from 'vitest/node'
 
@@ -24,6 +25,7 @@ vitest.projects.map(p => p.name) === [
   'custom'
 ]
 ```
+
 ```ts [vitest.config.js]
 import { defineConfig } from 'vitest/config'
 
@@ -48,6 +50,7 @@ export default defineConfig({
   },
 })
 ```
+
 :::
 
 ::: info
@@ -74,6 +77,7 @@ const config: SerializedConfig = vitest.projects[0].serializedConfig
 ```ts
 project.serializedConfig === project.serializedConfig // ❌
 ```
+
 :::
 
 ## globalConfig
@@ -128,6 +132,7 @@ function provide<T extends keyof ProvidedContext & string>(
 一种向测试提供自定义值的方法，除了 [`config.provide`](/config/provide) 字段之外。所有值在存储前都会使用 [`structuredClone`](https://developer.mozilla.org/en-US/docs/Web/API/Window/structuredClone) 进行验证，但 `providedContext` 上的值本身不会被克隆。
 
 ::: code-group
+
 ```ts [node.js]
 import { createVitest } from 'vitest/node'
 
@@ -136,10 +141,12 @@ const project = vitest.projects.find(p => p.name === 'custom')
 project.provide('key', 'value')
 await vitest.start()
 ```
+
 ```ts [test.spec.js]
 import { inject } from 'vitest'
 const value = inject('key')
 ```
+
 :::
 
 值可以动态提供。测试中提供的值将在下次运行时更新。
@@ -152,6 +159,7 @@ export default function setup({ provide }) {
   provide('wsPort', 3000)
 }
 ```
+
 :::
 
 ## getProvidedContext
@@ -248,6 +256,7 @@ Vitest 使用 [fast-glob](https://npmx.dev/package/fast-glob) 来查找测试文
 - `test.include`、`test.exclude` 用于查找常规测试文件
 - `test.includeSource`、`test.exclude` 用于查找源内测试
 - `test.typecheck.include`、`test.typecheck.exclude` 用于查找类型检查测试
+
 :::
 
 ## matchesTestGlob
@@ -294,6 +303,7 @@ const dynamicExample = await project.import('./example.js')
 
 dynamicExample !== staticExample // ✅
 ```
+
 :::
 
 ::: info

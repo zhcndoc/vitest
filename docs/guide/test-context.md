@@ -384,6 +384,7 @@ const test = baseTest.extend<{
   baseUrl: 'http://localhost:3000'
 })
 ```
+
 :::
 
 #### 选项的元组语法
@@ -454,6 +455,7 @@ test('context must be destructured', ({ database }) => { // [!code ++]
   expect(database).toBeDefined()
 })
 ```
+
 :::
 
 ### 扩展已扩展的测试
@@ -600,11 +602,11 @@ const test = baseTest
 
 夹具只能访问来自相同或更高（寿命更长）作用域的其他夹具：
 
-| 夹具作用域 | 可以访问 |
-|---------------|------------|
-| `worker` | 仅其他 worker 夹具 |
-| `file` | Worker + 文件夹具 |
-| `test` | Worker + 文件 + 测试夹具 + [测试上下文](#built-in-test-context) |
+| 夹具作用域 | 可以访问                                                        |
+| ---------- | --------------------------------------------------------------- |
+| `worker`   | 仅其他 worker 夹具                                              |
+| `file`     | Worker + 文件夹具                                               |
+| `test`     | Worker + 文件 + 测试夹具 + [测试上下文](#built-in-test-context) |
 
 ```ts
 const test = baseTest
@@ -666,6 +668,7 @@ const test = baseTest.extend<{
 自 Vitest 3 起，你可以在不同的 [项目](/guide/projects) 中提供不同的值。要启用此功能，请在选项中传递 `{ injected: true }`。如果 [项目配置](/config/provide) 中未指定键，则将使用默认值。
 
 :::code-group
+
 ```ts [fixtures.test.ts]
 import { test as baseTest } from 'vitest'
 
@@ -678,6 +681,7 @@ test('works correctly', ({ url }) => {
   // 在 "project-empty" 中 url 是 "/empty"
 })
 ```
+
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
 
@@ -709,6 +713,7 @@ export default defineConfig({
   },
 })
 ```
+
 :::
 
 ### 覆盖夹具值 <Version>4.1.0</Version> {#overriding-fixture-values}
@@ -927,4 +932,5 @@ test.beforeAll(({ testFixture }) => {})
 // ✅ 有效：文件作用域夹具可用
 test.beforeAll(({ fileFixture }) => {})
 ```
+
 :::

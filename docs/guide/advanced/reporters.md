@@ -75,7 +75,7 @@ class MyReporter implements Reporter {
 ## 在文件系统中存储工件
 
 ::: tip
-Vitest 提供了 [`vitest.createReport`](/api/advanced/vitest.html#createreport)，它提供了一组便于在文件系统中写入工件的工具。
+Vitest 提供 [`vitest.createReport`](/api/advanced/vitest#createreport)，其中包含一组便于在文件系统中写入产物的工具。
 :::
 
 如果你的自定义报告器需要在文件系统中存储任何工件，它应该将它们放在 `.vitest` 目录中。这个目录是 Vitest 报告器和第三方集成可以使用的一种约定，用于将它们的结果放在同一个目录中。这样，你的自定义报告器用户就不需要在他们的 `.gitignore` 中添加多个排除项。只需要 `.vitest` 即可。

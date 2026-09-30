@@ -1,4 +1,4 @@
-import type { CoverageMapData } from 'istanbul-lib-coverage'
+import type { CoverageMapData } from '@vitest/istanbul-lib-coverage'
 import type { IstanbulCoverageProvider } from './provider'
 import { COVERAGE_STORE_KEY } from './constants'
 
@@ -40,7 +40,7 @@ export const BaseCoverageProviderModule = {
     const providerPath = './provider.js'
     const { IstanbulCoverageProvider } = (await import(
       /* @vite-ignore */
-      providerPath,
+      providerPath
     )) as typeof import('./provider')
 
     return new IstanbulCoverageProvider()

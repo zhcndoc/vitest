@@ -319,7 +319,6 @@ test('compare parser versions', async ({ bench }) => {
 test('cross-project baseline', async ({ bench }) => {
   await bench(
     'parse',
-    // eslint-disable-next-line no-template-curly-in-string
     { perProject: true, writeResult: './benchmarks/parse.${projectName}.json' },
     () => parse(largeInput),
   ).run()
@@ -479,4 +478,5 @@ import { parse } from 'my-library'
     )
   })
   ```
-- **跨浏览器差异**：V8（Chrome）、SpiderMonkey（Firefox）和 JSC（Safari）会以不同方式优化不同的模式。在 Chrome 中显示某个库获胜的基准，在 Firefox 中可能会显示相反的结果。
+
+- **跨浏览器差异**：V8（Chrome）、SpiderMonkey（Firefox）和 JSC（Safari）对不同模式的优化方式各不相同。在 Chrome 中显示某个库更快的基准测试，在 Firefox 中可能会得出相反结果。

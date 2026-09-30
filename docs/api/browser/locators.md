@@ -34,6 +34,7 @@ const deleteButton = page
 await deleteButton.click()
 await expect.element(deleteButton).toBeEnabled()
 ```
+
 :::
 
 ## getByRole
@@ -92,7 +93,7 @@ await page.getByRole('button', { name: /提交/i }).click()
 
 - `exact: boolean`
 
-  是否精确匹配 `name`：区分大小写且全字符串匹配。默认禁用。如果 `name` 是正则表达式，则忽略此选项。注意，精确匹配仍然会修剪空白字符。
+  `name` 是否精确匹配（区分大小写且匹配整个字符串）。默认采用 [`browser.locators.exact`](/config/browser/locators#browser-locators-exact) 的值，该项默认值为 `true`。如果 `name` 是正则表达式，则忽略此选项。注意，精确匹配仍会修剪空白字符。
 
   ```tsx
   <button>Hello World</button>
@@ -240,7 +241,7 @@ page.getByAltText('non existing alt text') // ❌
 
 - `exact: boolean`
 
-  是否精确匹配 `text`：区分大小写且全字符串匹配。默认禁用。如果 `text` 是正则表达式，则忽略此选项。注意，精确匹配仍然会修剪空白字符。
+  `text` 是否精确匹配（区分大小写且匹配整个字符串）。默认采用 [`browser.locators.exact`](/config/browser/locators#browser-locators-exact) 的值，该项默认值为 `true`。如果 `text` 是正则表达式，则忽略此选项。注意，精确匹配仍会修剪空白字符。
 
 **另见**
 
@@ -287,7 +288,7 @@ function getByLabelText(
 
 - `exact: boolean`
 
-  是否精确匹配 `text`：区分大小写且全字符串匹配。默认禁用。如果 `text` 是正则表达式，则忽略此选项。注意，精确匹配仍然会修剪空白字符。
+  `text` 是否精确匹配（区分大小写且匹配整个字符串）。默认采用 [`browser.locators.exact`](/config/browser/locators#browser-locators-exact) 的值，该项默认值为 `true`。如果 `text` 是正则表达式，则忽略此选项。注意，精确匹配仍会修剪空白字符。
 
 **另见**
 
@@ -319,7 +320,7 @@ page.getByPlaceholder('not found') // ❌
 
 - `exact: boolean`
 
-  是否精确匹配 `text`：区分大小写且全字符串匹配。默认禁用。如果 `text` 是正则表达式，则忽略此选项。注意，精确匹配仍然会修剪空白字符。
+  `text` 是否精确匹配（区分大小写且匹配整个字符串）。默认采用 [`browser.locators.exact`](/config/browser/locators#browser-locators-exact) 的值，该项默认值为 `true`。如果 `text` 是正则表达式，则忽略此选项。注意，精确匹配仍会修剪空白字符。
 
 **另见**
 
@@ -351,7 +352,7 @@ page.getByText('about', { exact: true }) // ❌
 
 - `exact: boolean`
 
-  `text` 是否精确匹配：区分大小写且为整个字符串。默认禁用。如果 `text` 是正则表达式，则忽略此选项。注意，精确匹配仍然会修剪空白。
+  `text` 是否精确匹配（区分大小写且匹配整个字符串）。默认采用 [`browser.locators.exact`](/config/browser/locators#browser-locators-exact) 的值，该项默认值为 `true`。如果 `text` 是正则表达式，则忽略此选项。注意，精确匹配仍会修剪空白字符。
 
 **另见**
 
@@ -379,7 +380,7 @@ page.getByTitle('Create') // ❌
 
 - `exact: boolean`
 
-  `text` 是否精确匹配：区分大小写且为整个字符串。默认禁用。如果 `text` 是正则表达式，则忽略此选项。注意，精确匹配仍然会修剪空白。
+  `text` 是否精确匹配（区分大小写且匹配整个字符串）。默认采用 [`browser.locators.exact`](/config/browser/locators#browser-locators-exact) 的值，该项默认值为 `true`。如果 `text` 是正则表达式，则忽略此选项。注意，精确匹配仍会修剪空白字符。
 
 **另见**
 
@@ -403,12 +404,6 @@ page.getByTestId('non-existing-element') // ❌
 ::: warning
 建议仅在其他定位器不适用于你的用例时使用此方法。使用 `data-testid` 属性并不像你的软件被使用的方式，如果可能应避免使用。
 :::
-
-**选项**
-
-- `exact: boolean`
-
-  `text` 是否精确匹配：区分大小写且为整个字符串。默认禁用。如果 `text` 是正则表达式，则忽略此选项。注意，精确匹配仍然会修剪空白。
 
 **另见**
 
@@ -510,6 +505,7 @@ page.getByRole('button')
   .or(page.getByRole('link'))
   .click() // ❌ 匹配多个元素
 ```
+
 :::
 
 ## filter
@@ -561,6 +557,7 @@ page.getByRole('article')
   .filter({ has: page.getByRole('button', { name: 'delete row' }) })
   .filter({ has: page.getByText('Vitest') })
 ```
+
 :::
 
 ### hasNot
@@ -877,7 +874,7 @@ function query(): Element | null
 
 此方法返回与定位器选择器匹配的单个元素，如果未找到元素则返回 `null`。
 
-如果多个元素匹配选择器，此方法将抛出错误。当你需要所有匹配的 DOM 元素时使用 [`.elements()`](#elements)，如果你需要匹配选择器的定位器数组时使用 [`.all()`](#all)。
+如果多个元素匹配该选择器，此方法会抛出错误。需要所有匹配的 DOM 元素时使用 [`.elements()`](#elements)；需要匹配该选择器的定位器数组时使用 [`.all()`](#all)。
 
 ::: danger
 这是针对不支持定位器的外部 API 的应急方案。建议优先使用定位器方法。
@@ -927,6 +924,7 @@ function element(): Element
 ```ts
 await expect.element(page.getByRole('button')).toBeDisabled()
 ```
+
 :::
 
 考虑以下 DOM 结构：
@@ -1134,6 +1132,7 @@ test('works correctly', async () => {
   await commands.test(page.getByText('Hello')) // ✅
 })
 ```
+
 :::
 
 ### length

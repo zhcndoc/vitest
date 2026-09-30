@@ -142,8 +142,9 @@ const flakyValue = await vi.waitFor(() => getFlakyValue())
 expect(flakyValue).toMatchSnapshot()
 ```
 
-- 不支持 `.resolves` 和 `.rejects`。如果条件是异步的，`expect.poll` 已经会 await 它。
+- 不支持 `.resolves` 和 `.rejects`。如果条件是异步的，`expect.poll` 已经会等待它完成。
 - 不支持 `toThrow` 及其别名，因为 `expect.poll` 的条件总是在匹配器获取值之前解析。
+
 :::
 
 ## not
@@ -447,6 +448,7 @@ test('toBeTypeOf cannot check for null or array', () => {
   expect([]).toBeTypeOf('object')
 })
 ```
+
 :::
 
 ## toBeInstanceOf
@@ -576,9 +578,9 @@ expect(new Error('hi')).toEqual(new Error('hi', { cause: 'x' }))
 
 与 [`.toEqual`](#toequal) 的区别：
 
--  检查具有 `undefined` 属性的键。例如，使用 `.toStrictEqual` 时，`{a: undefined, b: 2}` 不匹配 `{b: 2}`。
--  检查数组稀疏性。例如，使用 `.toStrictEqual` 时，`[, 1]` 不匹配 `[undefined, 1]`。
--  检查对象类型是否相等。例如，具有字段 `a` 和 `b` 的类实例不等于具有字段 `a` 和 `b` 的字面量对象。
+- Keys with `undefined` properties are checked. e.g. `{a: undefined, b: 2}` does not match `{b: 2}` when using `.toStrictEqual`.
+- Array sparseness is checked. e.g. `[, 1]` does not match `[undefined, 1]` when using `.toStrictEqual`.
+- Object types are checked to be equal. e.g. A class instance with fields `a` and `b` will not equal a literal object with fields `a` and `b`.
 
 ```ts
 import { expect, test } from 'vitest'
@@ -799,13 +801,15 @@ test('元素数量必须完全匹配', () => {
 :::tip
 你必须将代码包装在函数中，否则错误将被捕获不到，测试将失败。
 
-这不适用于异步调用，因为 [rejects](#rejects) 会正确地解包 promise：
+这不适用于异步调用，因为 [rejects](#rejects) 会正确解包 promise：
+
 ```ts
 test('expect rejects toThrow', async ({ expect }) => {
   const promise = Promise.reject(new Error('Test'))
   await expect(promise).rejects.toThrow()
 })
 ```
+
 :::
 
 例如，如果我们想测试 `getFruitStock('pineapples')` 抛出错误，我们可以写：
@@ -852,6 +856,7 @@ test('菠萝时抛出错误', async () => {
   await expect(() => getAsyncFruitStock()).rejects.toThrow('empty')
 })
 ```
+
 :::
 
 :::tip
@@ -863,6 +868,7 @@ test('抛出非 Error 值', () => {
   expect(() => { throw { message: 'error' } }).toThrow({ message: 'error' })
 })
 ```
+
 :::
 
 :::warning 使用假定时器时的未处理拒绝
@@ -909,6 +915,7 @@ test('rejects', async () => {
   await assertion
 })
 ```
+
 :::
 
 ## toMatchSnapshot
@@ -920,7 +927,7 @@ test('rejects', async () => {
 你可以提供一个可选的 `hint` 字符串参数，它会附加到测试名称后面。虽然 Vitest 总是在快照名称末尾附加一个数字，但简短的描述性提示可能比数字更有用，以便在单个 `it` 或 `test` 块中区分多个快照。Vitest 在相应的 `.snap` 文件中按名称对快照进行排序。
 
 :::tip
-  当快照不匹配导致测试失败时，如果预期不匹配，你可以按 `u` 键更新快照一次。或者你可以传递 `-u` 或 `--update` CLI 选项让 Vitest 始终更新测试。
+当快照不匹配导致测试失败时，如果此不匹配是预期的，你可以按 `u` 键更新一次快照。也可以传入 `-u` 或 `--update` CLI 选项，让 Vitest 始终更新测试快照。
 :::
 
 ```ts
@@ -1822,7 +1829,7 @@ test('spy called after another', () => {
 ```
 
 ::: tip 迁移指南
-有关从 Mocha+Chai+Sinon 迁移到 Vitest 的完整指南，请参阅 [迁移指南](/guide/migration#mocha-chai-sinon)。
+有关从 Mocha+Chai+Sinon 迁移到 Vitest 的完整指南，请参阅[迁移指南](/guide/migration/mocha)。
 :::
 
 ## toSatisfy
@@ -1933,6 +1940,7 @@ test('all assertions are called', async () => {
   await doAsync(callback1, callback2)
 })
 ```
+
 ::: warning
 当在异步并发测试中使用 `assertions` 时，必须使用本地 [测试上下文](/guide/test-context) 中的 `expect` 以确保检测到正确的测试。
 :::
@@ -1984,7 +1992,7 @@ test('callback was called', async () => {
 
 例如，如果我们想测试 `build()` 因为接收到的目录没有 `src` 文件夹而抛出错误，并且还要单独处理每个错误，我们可以这样做：
 
-```ts
+````ts
 import { expect, test } from 'vitest'
 
 async function build(dir) {
@@ -2018,6 +2026,28 @@ test.each(errorDirs)('build 因 "%s" 失败', async (dir) => {
     }
   }
 })
+
+## expect.fail
+
+- **类型:** `(message?: string) => never`
+
+显式使测试失败，并可附带自定义消息。
+
+例如，你可以在 `try/catch` 块中使用它，以确保抛出了错误：
+
+```ts
+import { expect, test } from 'vitest'
+
+test('fails when error is not thrown', async () => {
+  try {
+    await performAction()
+    expect.fail('Expected performAction to throw an error')
+  }
+  catch (error) {
+    expect(error).toBeInstanceOf(CustomError)
+  }
+})
+````
 
 ## expect.anything
 

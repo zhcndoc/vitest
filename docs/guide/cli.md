@@ -42,6 +42,7 @@ $ vitest ./basic/foo:10 # ❌
 $ vitest basic/foo.test.ts:10, basic/foo.test.ts:25 # ✅
 $ vitest basic/foo.test.ts:10-25 # ❌
 ```
+
 :::
 
 ### `vitest run`
@@ -67,18 +68,19 @@ vitest related /src/index.ts /src/hello-world.js
 ```
 
 ::: tip
-别忘了 Vitest 默认启用监视模式运行。如果你正在使用像 `lint-staged` 这样的工具，你还应该传递 `--run` 选项，以便命令可以正常退出。
+请记住，Vitest 默认以监视模式运行。如果你使用 `lint-staged` 之类的工具，还应传入 `--run` 选项，使命令可以正常退出。
 
 ```js [.lintstagedrc.js]
 export default {
   '*.{js,ts}': 'vitest related --run',
 }
 ```
+
 :::
 
 ### `vitest bench`
 
-仅运行 [基准测试](/guide/features.html#benchmarking) 测试，比较性能结果。
+只运行用于比较性能结果的[基准测试](/guide/features#benchmarking)。
 
 ### `vitest init`
 
@@ -121,7 +123,7 @@ tests/test1.test.ts
 tests/test2.test.ts
 ```
 
-自 Vitest 4.1 起，你可以传递 `--static-parse` 来 [解析测试文件](/api/advanced/vitest#parsespecifications) 而不是运行它们来收集测试。Vitest 以有限的并发度解析测试文件，默认为 `os.availableParallelism()`。你可以通过 `--static-parse-concurrency` 选项更改它。
+从 Vitest 5 开始，`vitest list` 会通过[静态解析测试文件](/api/advanced/vitest#parsespecifications)来收集测试，而不是运行这些文件。传入 `--no-static-parse` 可改为运行文件。Vitest 会以有限并发度解析测试文件，默认值为 `os.availableParallelism()`。可以通过 `--static-parse-concurrency` 选项更改并发度。
 
 ### `vitest doctor`
 
@@ -155,7 +157,7 @@ vitest doctor
 
 Doctor 还会在获胜配置的基础上测试较低的 [`maxWorkers`](/config/maxworkers) 值：每个 worker 都会将其转换请求通过同一个主线程 Vite 服务器处理，因此超过某个数量后，增加 worker 会使运行变慢而不是变快。Doctor 从当前 worker 数量的一半开始，只要测试套件至少快 5%，就会继续将数量减半，并在建议中包含获胜的值。
 
-运行 DOM 环境的测试套件会在两个 vm pool（`vmThreads` 和 `vmForks`）下进行测量：它们通过让每个 worker 保留一个环境来摊销环境创建成本，同时每个文件仍会获得一个全新的 VM 上下文。`vmForks` 使用子进程而不是 worker 线程：每个子进程都有自己的堆和垃圾回收器，因此根据测试套件的不同，任一 pool 都可能更快；对于无法在 worker 线程中运行的测试套件，应使用 `vmForks` 这一 vm 选项。
+在 DOM 或自定义环境中运行的测试套件，会分别在 `vmThreads` 和 `vmForks` 两个 VM 池下进行测量：它们让每个 worker 保留一个环境，从而摊销环境创建成本，同时仍为每个文件提供全新的 VM 上下文。`vmForks` 使用子进程而非 worker 线程；每个子进程都有自己的堆和垃圾回收器，因此哪个池更快取决于测试套件。对于无法在 worker 线程中运行的套件，应使用 VM 选项 `vmForks`。
 
 如果安装了 `jsdom`，运行 `jsdom` 的项目也会在 `environment: 'happy-dom'` 下进行测量。该替换会针对每个项目单独应用；使用其他环境的项目会保留原环境。happy-dom 与 jsdom 采用不同的 DOM 实现，因此在采用此替换方案前，应验证依赖布局或导航功能的测试。当 [fs 模块缓存](/config/fsmodulecache) 关闭时，doctor 会在一次不计时的预热运行（用于填充缓存）之后测量 `fsModuleCache: true`，因此报告的时间就是重复运行时实际付出的时间。
 
@@ -229,6 +231,7 @@ vitest --reporter=dot --reporter=default
 vitest --no-api
 vitest --api=false
 ```
+
 :::
 
 <!--@include: ./cli-generated.md-->

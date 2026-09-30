@@ -4,7 +4,7 @@ import type { RunnerTestFile, RunnerTask as Task, TestAnnotation, TestError } fr
 import { until, useResizeObserver, watchDebounced } from '@vueuse/core'
 import { createTooltip, destroyTooltip } from 'floating-vue'
 import { computed, nextTick, onBeforeUnmount, ref, shallowRef, watch } from 'vue'
-import { getAttachmentUrl, sanitizeFilePath } from '~/composables/attachments'
+import { getAttachmentUrl, openPlaywrightTrace, sanitizeFilePath } from '~/composables/attachments'
 import { client, config, isReport } from '~/composables/client'
 import { finished } from '~/composables/client/state'
 import { codemirrorRef } from '~/composables/codemirror'
@@ -55,45 +55,40 @@ watch(
       code.value = (await client.rpc.readTestFile(props.file.filepath)) || ''
       serverCode.value = code.value
       draft.value = false
-    }
-    catch (e) {
+    } catch (e) {
       console.error('cannot fetch file', e)
     }
 
     await nextTick()
 
-    // fire focusing editor after loading
     loading.value = false
   },
   { immediate: true },
 )
 
-watch(() => [loading.value, saving.value, props.file, lineNumber.value, columnNumber.value] as const, ([loadingFile, s, _, l, c]) => {
-  if (!loadingFile && !s) {
-    if (l != null) {
-      nextTick(() => {
-        const cp = currentPosition.value
-        const line = cp ?? { line: (l ?? 1) - 1, ch: c ?? 0 }
-        // restore caret position: the watchDebounced below will use old value
-        if (cp) {
-          currentPosition.value = undefined
-        }
-        else {
-          codemirrorRef.value?.scrollIntoView(line, 100)
-          nextTick(() => {
-            codemirrorRef.value?.focus()
-            codemirrorRef.value?.setCursor(line)
-          })
-        }
-      })
+watch(
+  () => [loading.value, saving.value, props.file, lineNumber.value, columnNumber.value] as const,
+  ([loadingFile, s, _, l, c]) => {
+    if (!loadingFile && !s) {
+      if (l != null) {
+        nextTick(() => {
+          const cp = currentPosition.value
+          const line = cp ?? { line: (l ?? 1) - 1, ch: c ?? 0 }
+          // restore caret position: the watchDebounced below will use old value
+          if (cp) {
+            currentPosition.value = undefined
+          } else {
+            codemirrorRef.value?.scrollIntoView(line, 100)
+            nextTick(() => {
+              codemirrorRef.value?.setCursor(line)
+            })
+          }
+        })
+      }
     }
-    else {
-      nextTick(() => {
-        codemirrorRef.value?.focus()
-      })
-    }
-  }
-}, { flush: 'post' })
+  },
+  { flush: 'post' },
+)
 
 const ext = computed(() => props.file?.filepath?.split(/\./g).pop() || 'js')
 const editor = ref<any>()
@@ -102,7 +97,7 @@ const errors = computed(() => {
   const errors: TestError[] = []
   function addFailed(task: Task) {
     if (task.result?.errors) {
-      errors.push(...task.result.errors as TestError[])
+      errors.push(...(task.result.errors as TestError[]))
     }
     if (task.type === 'suite') {
       task.tasks.forEach(addFailed)
@@ -187,7 +182,9 @@ function syncTraceMarkers() {
       marker.active
         ? 'ring-2 ring-current ring-offset-1 ring-offset-white dark:ring-offset-gray-900'
         : 'opacity-75 scale-120',
-    ].filter(Boolean).join(' ')
+    ]
+      .filter(Boolean)
+      .join(' ')
     el.dataset.testid = 'trace-editor-marker'
     el.ariaLabel = `Select trace step: ${marker.entry.name}`
     if (marker.active) {
@@ -218,9 +215,7 @@ watch(
 )
 
 function createErrorElement(e: TestError) {
-  const stacks = (e?.stacks || []).filter(
-    i => i.file && i.file === props.file?.filepath,
-  )
+  const stacks = (e?.stacks || []).filter((i) => i.file && i.file === props.file?.filepath)
   const stack = stacks?.[0]
   if (!stack) {
     return
@@ -234,8 +229,8 @@ function createErrorElement(e: TestError) {
   pre.innerHTML = `${' '.repeat(stack.column)}^ ${filter.toHtml(escapeHtml(`${e.name}: ${e.message}`))}`
   div.appendChild(pre)
   const span = document.createElement('span')
-  span.className
-    = 'i-carbon-launch c-red-700 dark:c-red-400 hover:cursor-pointer min-w-1em min-h-1em'
+  span.className =
+    'i-carbon-launch c-red-700 dark:c-red-400 hover:cursor-pointer min-w-1em min-h-1em'
   span.tabIndex = 0
   span.ariaLabel = 'Open in Editor'
   createTooltip(
@@ -268,13 +263,7 @@ function createAnnotationElement(annotation: TestAnnotation) {
   }
 
   const notice = document.createElement('div')
-  notice.classList.add(
-    'wrap',
-    'bg-active',
-    'py-3',
-    'px-6',
-    'my-1',
-  )
+  notice.classList.add('wrap', 'bg-active', 'py-3', 'px-6', 'my-1')
   notice.role = 'note'
 
   const messageWrapper = document.createElement('div')
@@ -298,23 +287,53 @@ function createAnnotationElement(annotation: TestAnnotation) {
       link.classList.add('inline-block', 'mt-3')
       link.style.maxWidth = '50vw'
       const potentialUrl = attachment.path || attachment.body
-      if (typeof potentialUrl === 'string' && (potentialUrl.startsWith('http://') || potentialUrl.startsWith('https://'))) {
+      if (
+        typeof potentialUrl === 'string' &&
+        (potentialUrl.startsWith('http://') || potentialUrl.startsWith('https://'))
+      ) {
         img.setAttribute('src', potentialUrl)
         link.referrerPolicy = 'no-referrer'
-      }
-      else {
+      } else {
         img.setAttribute('src', getAttachmentUrl(attachment))
       }
       link.target = '_blank'
       link.href = img.src
       link.append(img)
       notice.append(link)
-    }
-    else {
+    } else {
+      if (annotation.type === 'traces') {
+        const open = document.createElement('button')
+        open.type = 'button'
+        open.ariaLabel = 'Open trace'
+        open.addEventListener('click', () => openPlaywrightTrace(attachment))
+        open.classList.add(
+          'flex',
+          'w-min',
+          'gap-2',
+          'items-center',
+          'font-sans',
+          'underline',
+          'cursor-pointer',
+        )
+        const openIcon = document.createElement('div')
+        openIcon.classList.add('i-carbon:launch', 'block')
+        const openText = document.createElement('span')
+        openText.textContent = 'Open'
+        open.append(openIcon, openText)
+        notice.append(open)
+      }
       const download = document.createElement('a')
       download.href = getAttachmentUrl(attachment)
       download.download = sanitizeFilePath(annotation.message, attachment.contentType)
-      download.classList.add('flex', 'w-min', 'gap-2', 'items-center', 'font-sans', 'underline', 'cursor-pointer')
+      download.classList.add(
+        'flex',
+        'w-min',
+        'gap-2',
+        'items-center',
+        'font-sans',
+        'underline',
+        'cursor-pointer',
+      )
       const icon = document.createElement('div')
       icon.classList.add('i-carbon:download', 'block')
       const text = document.createElement('span')
@@ -346,8 +365,8 @@ const { pause, resume } = watch(
 
     // cleanup previous data
     clearListeners()
-    widgets.forEach(widget => widget.clear())
-    handles.forEach(h => cmValue?.removeLineClass(h, 'wrap'))
+    widgets.forEach((widget) => widget.clear())
+    handles.forEach((h) => cmValue?.removeLineClass(h, 'wrap'))
     widgets.length = 0
     handles.length = 0
 
@@ -368,11 +387,15 @@ const { pause, resume } = watch(
   { immediate: true },
 )
 
-watchDebounced(() => [finished.value, saving.value, currentPosition.value] as const, ([f, s], old) => {
-  if (f && !s && old && old[2]) {
-    codemirrorRef.value?.setCursor(old[2])
-  }
-}, { debounce: 100, flush: 'post' })
+watchDebounced(
+  () => [finished.value, saving.value, currentPosition.value] as const,
+  ([f, s], old) => {
+    if (f && !s && old && old[2]) {
+      codemirrorRef.value?.setCursor(old[2])
+    }
+  },
+  { debounce: 100, flush: 'post' },
+)
 
 async function onSave(content: string) {
   if (saving.value) {
@@ -395,8 +418,8 @@ async function onSave(content: string) {
 
   // cleanup previous data
   clearListeners()
-  widgets.forEach(widget => widget.clear())
-  handles.forEach(h => cmValue?.removeLineClass(h, 'wrap'))
+  widgets.forEach((widget) => widget.clear())
+  handles.forEach((h) => cmValue?.removeLineClass(h, 'wrap'))
   widgets.length = 0
   handles.length = 0
 
@@ -408,8 +431,7 @@ async function onSave(content: string) {
     serverCode.value = content
     // update draft indicator in the tab title (</> * Code)
     draft.value = false
-  }
-  catch (e) {
+  } catch (e) {
     console.error('error saving file', e)
   }
 
@@ -424,8 +446,7 @@ async function onSave(content: string) {
     await until(finished).toBe(false, { flush: 'sync', timeout: 1000, throwOnTimeout: true })
     // await to finish
     await until(finished).toBe(true, { flush: 'sync', timeout: 1000, throwOnTimeout: false })
-  }
-  catch {
+  } catch {
     // ignore errors
   }
 
@@ -454,11 +475,12 @@ onBeforeUnmount(clearListeners)
   <CodeMirrorContainer
     ref="editor"
     v-model="code"
-    h-full
-    v-bind="{
+    class="h-full"
+    :read-only="isReport || !config.api?.allowWrite"
+    :saving="saving"
+    :options="{
       lineNumbers: true,
-      readOnly: isReport || !config.api?.allowWrite,
-      saving,
+      styleActiveLine: true,
       gutters: ['CodeMirror-linenumbers', ...traceGutterConfigs],
     }"
     :mode="ext"

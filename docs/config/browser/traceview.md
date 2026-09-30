@@ -37,11 +37,11 @@ export default defineConfig({
 })
 ```
 
-| 选项 | 默认值 | 描述 |
-| --- | --- | --- |
-| `enabled` | `false` | 启用 Vitest trace-view 产物采集。 |
-| `inlineImages` | `false` | 将加载的 `<img>` 像素内联到快照中，以实现更便携的回放，这在 HTML 报告器中很有用。 |
-| `recordCanvas` | `false` | 在快照中捕获 canvas 像素。 |
+| 选项           | 默认值  | 描述                                                                        |
+| -------------- | ------- | --------------------------------------------------------------------------- |
+| `enabled`      | `false` | 启用 Vitest trace-view 产物采集。                                           |
+| `inlineImages` | `false` | 将已加载的 `<img>` 像素内联到快照中，便于跨环境回放，也适用于 HTML 报告器。 |
+| `recordCanvas` | `false` | 在快照中捕获 canvas 像素。                                                  |
 
 ## browser.traceView.enabled {#traceview-enabled}
 
