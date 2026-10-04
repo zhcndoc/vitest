@@ -700,14 +700,15 @@ export interface InlineConfig {
   maxConcurrency?: number
 
   /**
-   * Options for configuring cache policy.
-   * @default { dir: 'node_modules/.vite/vitest/{project-hash}' }
+   * Store the results of test runs on the file system to run failed
+   * and longer test files first. The cache is stored in Vite's "cacheDir".
+   * @default true
    */
   cache?:
-    | false
+    | boolean
     | {
         /**
-         * @deprecated Use Vite's "cacheDir" instead if you want to change the cache director. Note caches will be written to "cacheDir\/vitest".
+         * @deprecated This option has no effect. Use Vite's "cacheDir" instead if you want to change the cache directory.
          */
         dir: string
       }
@@ -716,7 +717,7 @@ export interface InlineConfig {
    * Cache transformed modules on the file system and reuse them between reruns
    * and separate Vitest processes, which can significantly speed up cold starts.
    *
-   * @default false
+   * @default true
    */
   fsModuleCache?: boolean
 

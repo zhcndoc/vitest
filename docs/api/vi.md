@@ -828,7 +828,7 @@ function when(spy: Mock, options?: WhenOptions): When
 
 在间谍上按参数定义行为，在 `when` 链持续期间替换其实现。
 
-在返回的对象上调用 `.calledWith(...args)` 来指定要匹配的调用参数，然后链式调用一个或多个 `then*` 方法，以声明当使用这些参数调用时，间谍应该返回、抛出或解析什么。参数按深度相等进行匹配，并支持诸如 `expect.any()` 之类的非对称匹配器。
+在返回的对象上调用 `.calledWith(...args)` 来指定要匹配的调用参数，然后链式调用一个或多个 `then*` 方法，以声明当使用这些参数调用时，间谍应该返回、抛出或解析什么。参数按深度相等进行匹配，并支持诸如 `expect.any()` 之类的非对称匹配器。参数的比较方式与 [`toEqual`](/api/expect#toequal) 相同。
 
 ```ts
 const spy = vi.fn()

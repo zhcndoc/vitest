@@ -1,8 +1,8 @@
-import type { CLIOption, CLIOptions } from '../../../packages/vitest/src/node/cli/cli-config'
+import type { CLIOption, CLIOptions } from '../../../packages/vitest/src/node/cli/cli-config.ts'
 import { writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { cliOptionsConfig } from '../../../packages/vitest/src/node/cli/cli-config'
+import { cliOptionsConfig } from '../../../packages/vitest/src/node/cli/cli-config.ts'
 
 const docsDir = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 const cliTablePath = resolve(docsDir, './guide/cli-generated.md')
@@ -62,7 +62,7 @@ function resolveCommand(name: string, config: CLIOption<any> | null): any {
     title += `-${config.shorthand}, `
   }
   title += `--${config.alias || name}`
-  if ('argument' in config) {
+  if ('argument' in config && config.argument) {
     title += ` ${config.argument}`
   }
   title += '`'

@@ -387,7 +387,7 @@ test('getApplesCount 有一些不寻常的副作用...', () => {
 
 - **类型：** `(sample: Array<any> | Set<any>) => any`
 
-`toBeOneOf` 断言一个值是否匹配所提供的数组或集合中的任意值。
+`toBeOneOf` 断言一个值是否匹配所提供的数组或集合中的任意值。值的比较方式与 [`toEqual`](#toequal) 相同。
 
 ::: warning 实验性
 提供 `Set` 是一项实验性功能，未来版本中可能会发生变化。
@@ -1298,7 +1298,7 @@ test('spy 函数返回值两次', () => {
 
 - **类型:** `(returnValue: any) => Awaitable<void>`
 
-你可以调用此断言来检查一个函数是否至少成功返回过一次带有特定参数的值。需要向 `expect` 传递一个 spy 函数。
+你可以调用此断言来检查一个函数是否至少成功返回过一次特定的值。需要向 `expect` 传递一个 spy 函数。值的比较方式与 [`toEqual`](#toequal) 相同。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1316,7 +1316,7 @@ test('spy function returns a product', () => {
 
 - **类型:** `(returnValue: any) => Awaitable<void>`
 
-你可以调用此断言来检查一个函数在最后一次被调用时是否成功返回了特定值。需要向 `expect` 传递一个 spy 函数。
+你可以调用此断言来检查一个函数在最后一次被调用时是否成功返回了特定值。需要向 `expect` 传递一个 spy 函数。值的比较方式与 [`toEqual`](#toequal) 相同。
 
 ```ts
 import { expect, test, vi } from 'vitest'
@@ -1335,7 +1335,7 @@ test('spy function returns bananas on a last call', () => {
 
 - **类型:** `(time: number, returnValue: any) => Awaitable<void>`
 
-你可以调用此断言来检查一个函数在某次调用时是否成功返回了带有特定参数的值。需要向 `expect` 传递一个 spy 函数。
+你可以调用此断言来检查一个函数在某次调用时是否成功返回了特定的值。需要向 `expect` 传递一个 spy 函数。值的比较方式与 [`toEqual`](#toequal) 相同。
 
 计数从 1 开始。因此，要检查第二次调用，你应该写 `.toHaveNthReturnedWith(2, ...)`。
 
@@ -1403,7 +1403,7 @@ test('spy 函数成功解析了两次值', async () => {
 
 - **类型:** `(returnValue: any) => Awaitable<void>`
 
-你可以调用此断言来检查一个函数是否至少成功解析过某个特定值。需要向 `expect` 传递一个 spy 函数。
+你可以调用此断言来检查一个函数是否至少成功解析过某个特定值。需要向 `expect` 传递一个 spy 函数。值的比较方式与 [`toEqual`](#toequal) 相同。
 
 如果函数返回了一个 promise，但尚未解析，这将失败。
 
@@ -1423,7 +1423,7 @@ test('spy function resolved a product', async () => {
 
 - **类型:** `(returnValue: any) => Awaitable<void>`
 
-你可以调用此断言来检查一个函数在最后一次被调用时是否成功解析了某个特定值。需要向 `expect` 传递一个 spy 函数。
+你可以调用此断言来检查一个函数在最后一次被调用时是否成功解析了某个特定值。需要向 `expect` 传递一个 spy 函数。值的比较方式与 [`toEqual`](#toequal) 相同。
 
 如果函数返回了一个 promise，但尚未解析，这将失败。
 
@@ -1444,7 +1444,7 @@ test('spy function resolves bananas on a last call', async () => {
 
 - **类型:** `(time: number, returnValue: any) => Awaitable<void>`
 
-你可以调用此断言来检查一个函数在特定调用时是否成功解析了某个特定值。需要向 `expect` 传递一个 spy 函数。
+你可以调用此断言来检查一个函数在特定调用时是否成功解析了某个特定值。需要向 `expect` 传递一个 spy 函数。值的比较方式与 [`toEqual`](#toequal) 相同。
 
 如果函数返回了一个 promise，但尚未解析，这将失败。
 

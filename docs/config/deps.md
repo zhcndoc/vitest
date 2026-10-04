@@ -28,7 +28,7 @@ outline: deep
 此选项还会继承你的 `optimizeDeps` 配置（对于 web，Vitest 将扩展 `optimizeDeps`，对于 ssr - `ssr.optimizeDeps`）。如果你在 `deps.optimizer` 中重新定义 `include`/`exclude` 选项，它在运行测试时将扩展你的 `optimizeDeps`。如果 `include` 中列出的选项也在 `exclude` 中，Vitest 会自动将其从 `include` 中移除。
 
 ::: tip
-你将无法编辑 `node_modules` 代码进行调试，因为代码实际上位于你的 `cacheDir` 或 `test.cache.dir` 目录中。如果你想通过 `console.log` 语句进行调试，请直接编辑它或使用 `deps.optimizer?.[mode].force` 选项强制重新捆绑。
+你将无法编辑 `node_modules` 中的代码进行调试，因为代码实际上位于 `cacheDir` 目录中。如果你想通过 `console.log` 语句进行调试，请直接编辑它或使用 `deps.optimizer?.[mode].force` 选项强制重新捆绑。
 :::
 
 ### deps.optimizer.{mode}.enabled

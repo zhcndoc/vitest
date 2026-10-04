@@ -6,7 +6,7 @@ outline: deep
 # fsModuleCache <Version>5.0.0</Version>
 
 - **类型：** `boolean`
-- **默认值：** `false`
+- **默认值：** `true`
 - **CLI：** `--fsModuleCache`、`--fsModuleCache=false`
 
 在监听模式下，Vitest 会将所有转换后的文件缓存在内存中，从而加快重新运行的速度。但是，测试运行结束后，此缓存会被丢弃。启用此选项后，Vitest 会将转换后的模块持久化到文件系统中，以便在后续重新运行以及不同的 Vitest 进程之间重复使用。

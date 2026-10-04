@@ -710,12 +710,12 @@ await expect.element(button).not.toHaveStyle({
 
 ```ts
 function toHaveTextContent(
-  text: string | number,
+  text?: string | number,
   options?: { normalizeWhitespace: boolean }
 ): Promise<void>
 ```
 
-此匹配器允许你验证元素的文本是否与提供的字符串完全匹配。这支持元素，也支持文本节点和片段。
+此匹配器允许你验证元素的文本是否与提供的字符串完全匹配。这支持元素，也支持文本节点和片段。不带参数调用时，它会断言元素包含文本，因此 `.not.toHaveTextContent()` 会检查元素是否为空。
 
 如果你希望执行部分检查或进行区分大小写的匹配，请改用 [`toMatchTextContent`](#tomatchtextcontent)。
 
@@ -728,6 +728,10 @@ const element = getByTestId('text-content')
 
 await expect.element(element).toHaveTextContent('Text Content')
 await expect.element(element).not.toHaveTextContent('Content')
+// element has some text content
+await expect.element(element).toHaveTextContent()
+// element has no text content
+await expect.element(page.getByTestId('empty')).not.toHaveTextContent()
 ```
 
 ## toMatchTextContent

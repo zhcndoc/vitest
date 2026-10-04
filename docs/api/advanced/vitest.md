@@ -44,7 +44,40 @@ const testCase = vitest.state.getReportedEntity(task) // 新 API
 
 ## 缓存
 
-缓存管理器，存储有关最新测试结果和测试文件统计信息。在 Vitest 本身中，这仅由默认排序器用于测试排序。
+缓存管理器，存储之前测试运行的结果。在 Vitest 本身中，这仅由默认排序器用于测试排序。
+
+### cache.getTestSpecificationResult <Version type="experimental">5.0.4</Version> {#cache-gettestspecificationresult}
+
+返回测试文件在之前测试运行中的结果；如果 Vitest 没有该文件的结果，则返回 `undefined`。
+
+```ts
+function getTestSpecificationResult(
+  specification: TestSpecification
+): CachedTestFileResult | undefined
+
+interface CachedTestFileResult {
+  /**
+   * The file has a known failure.
+   * Only a complete run of the file clears it.
+   */
+  failed: boolean
+  /**
+   * Duration of the last complete run in milliseconds.
+   */
+  duration: number
+  /**
+   * Unix timestamp in milliseconds of the start of the last complete run.
+   * It is not set if the file never ran completely.
+   */
+  lastRun?: number
+}
+```
+
+如果某次运行被取消，或仅执行了文件的一部分（例如因为测试名称模式、行过滤器或 `.only`），则该运行不完整。
+
+::: warning
+`vitest.cache.getFileTestResults` 和 `vitest.cache.getFileStats` 已弃用，并将在下一个主版本中移除。请使用 `getTestSpecificationResult` 替代 `getFileTestResults`。Vitest 不再缓存文件大小；如果你的排序器需要文件大小，请从文件系统中读取。
+:::
 
 ## 监听器 <Version>4.0.0</Version> {#watcher}
 
