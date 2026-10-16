@@ -47,6 +47,17 @@ catch (err) {
 }
 ```
 
+- Node.js API 和测试环境创建的对象及数组也来自沙盒之外。这包括 `Response` 或 `Request` 上 `await response.json()` 的结果、`structuredClone()`、`path.parse()`，以及 `element.getAttributeNames()` 等 DOM 方法的结果。它们的原型不是测试中的 `Object.prototype` 或 `Array.prototype`，因此 [`toStrictEqual`](/api/expect#tostrictequal) 不会将它们视为与相同字面量相等，并且通过原型检测普通对象的库会把它们当作类实例。如果测试依赖这些值，请在 `forks` 或 `threads` 池中运行，或在[设置文件](/config/setupfiles)中、沙盒内解析 fetch 响应：
+
+```ts [vitest.setup.ts]
+Response.prototype.json = async function () {
+  return JSON.parse(await this.text())
+}
+Request.prototype.json = async function () {
+  return JSON.parse(await this.text())
+}
+```
+
 - 导入 ES 模块会无限期缓存它们，如果你有很多上下文（测试文件），这会引入内存泄漏。Node.js 中没有 API 可以清除该缓存。
 - 在沙盒环境中访问全局变量 [耗时更长](https://github.com/nodejs/node/issues/31658)。
 

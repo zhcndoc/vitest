@@ -38,6 +38,8 @@ export default defineConfig({
 更多示例，请参阅 ["多设置" 指南](/guide/browser/multiple-setups)。
 :::
 
+定义 `instances` 的配置中的 [`globalSetup`](/config/globalsetup) 文件会对所有实例运行一次，而不是每个实例运行一次，并且会接收该配置对应的项目。它们通过 `project.provide` 提供的值可供每个实例使用。在实例中定义的全局设置文件则只会对该实例运行。
+
 可用的 `browser` 选项列表：
 
 - `browser`（浏览器名称）

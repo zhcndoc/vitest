@@ -138,6 +138,13 @@ test('flaky database test', { tags: ['flaky', 'db'], timeout: 120_000 })
 // { timeout: 120_000, retry: 3 }
 ```
 
+将选项设为 `undefined` 时会忽略该选项，因此不会覆盖标签中的值：
+
+```ts
+test('flaky database test', { tags: ['flaky', 'db'], timeout: undefined })
+// { timeout: 30_000, retry: 3 }
+```
+
 ## 在测试中使用标签
 
 你可以使用 `tags` 选项将标签应用于单个测试或整个套件：

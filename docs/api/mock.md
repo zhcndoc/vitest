@@ -54,7 +54,7 @@ fn.length // == 2
 :::
 
 ::: warning 类支持 {#class-support}
-简写方法如 `mockReturnValue`、`mockReturnValueOnce`、`mockResolvedValue` 等不能用于模拟类。类构造函数关于返回值具有 [反直觉的行为](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/constructor)：
+`mockReturnValue`、`mockReturnValueOnce`、`mockResolvedValue`、`mockResolvedValueOnce`、`mockRejectedValue` 和 `mockRejectedValueOnce` 方法不能在使用 `new` 关键字调用模拟时使用。类构造函数对于返回值具有 [反直觉的行为](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/constructor)：
 
 ```ts {2,7}
 const CorrectDogClass = vi.fn(class {
@@ -74,7 +74,7 @@ Marti instanceof CorrectDogClass // ✅ true
 Newt instanceof IncorrectDogClass // ❌ false!
 ```
 
-即使形状相同，构造函数的 _返回值_ 也被赋值给了 `Newt`，它是一个普通对象，而不是模拟的实例。Vitest 会在简写方法中防止这种行为（但在 `mockImplementation` 中不会！）并抛出错误。
+即使形状相同，构造函数的 _返回值_ 也会赋给 `Newt`，它是一个普通对象，而不是模拟实例。Vitest 会在这些方法中阻止这种行为（但在 `mockImplementation` 中不会！），并改为抛出错误。
 
 如果你需要模拟类的构造实例，考虑使用 `class` 语法配合 `mockImplementation`：
 
@@ -101,7 +101,7 @@ mock.mockImplementation(class {
 function getMockImplementation(): T | undefined
 ```
 
-如果存在，返回当前的模拟实现。
+如果存在，返回当前的模拟实现。如果通过 [`mockImplementationOnce`](#mockimplementationonce) 排入了实现，则改为返回队列中的第一个实现。
 
 如果模拟是使用 [`vi.fn`](/api/vi#vi-fn) 创建的，它将使用提供的方法作为模拟实现。
 
@@ -230,7 +230,7 @@ myMockFn() // 'original'
 可以与异步回调一起使用。之后必须等待该方法才能使用原始实现。
 
 ```ts
-test('async callback', () => {
+test('async callback', async () => {
   const myMockFn = vi.fn(() => 'original')
 
   // 我们 await 这个调用因为回调是异步的
@@ -285,7 +285,7 @@ await asyncMock() // 抛出 Error<'Async error'>
 function mockReset(): Mock<T>
 ```
 
-执行 [`mockClear`](#mockClear) 的操作并重置模拟实现。这也会重置所有 "once" 实现。
+执行 [`mockClear`](#mockclear) 的操作并重置模拟实现。这也会重置所有 "once" 实现。
 
 请注意，重置来自 `vi.fn()` 的模拟会将实现设置为返回 `undefined` 的空函数。重置来自 `vi.fn(impl)` 的模拟会将实现重置为 `impl`。
 
@@ -314,7 +314,7 @@ expect(spy.mock.calls).toEqual([['Bob']])
 ## mockRestore
 
 ```ts
-function mockRestore(): Mock<T>
+function mockRestore(): void
 ```
 
 执行 [`mockReset`](#mockreset) 的操作并恢复被监听对象的原始描述符，如果模拟是使用 [`vi.spyOn`](/api/vi#vi-spyon) 创建的。
@@ -410,7 +410,7 @@ mock() // 43
 function mockReturnValueOnce(value: ReturnType<T>): Mock<T>
 ```
 
-接受一个值，每当模拟函数被调用时将该值返回。TypeScript 只会接受与原函数返回类型匹配的值。
+接受一个值，在下一次函数调用时返回。TypeScript 只接受与原函数返回类型匹配的值。如果链式调用，每次连续调用都会返回指定的值。
 
 当模拟函数用完实现时，如果曾调用过 `vi.fn(() => defaultValue)` 或 `.mockImplementation(() => defaultValue)`，它将调用设置的默认实现：
 
@@ -525,8 +525,8 @@ const lastCall: Parameters<T> | undefined
 interface MockResultReturn<T> {
   type: 'return'
   /**
-   * 从函数返回的值。
-   * 如果函数返回了一个 Promise，那么这将是已解析的值。
+   * 函数返回的值。
+   * 如果函数返回了 Promise，这里就是该 Promise，而不是它解析后的值。
    */
   value: T
 }
@@ -663,10 +663,14 @@ fn2.mock.invocationCallOrder === [2]
 ## mock.contexts
 
 ```ts
-const contexts: ThisParameterType<T>[]
+type MockProcedureContext<T> = T extends new (...args: any[]) => any
+  ? InstanceType<T>
+  : ThisParameterType<T>
+
+const contexts: MockProcedureContext<T>[]
 ```
 
-此属性是一个数组，包含每次调用模拟函数时使用的 `this` 值。
+此属性是一个数组，包含每次调用模拟函数时使用的 `this` 值。如果使用 `new` 关键字调用模拟，该值与 [`mock.instances`](#mock-instances) 中的值相同。
 
 ```js
 const fn = vi.fn()
@@ -682,22 +686,23 @@ fn.mock.contexts[1] === context
 ## mock.instances
 
 ```ts
-const instances: ReturnType<T>[]
+const instances: MockProcedureContext<T>[]
 ```
 
-此属性是一个数组，包含使用 `new` 关键字调用模拟时创建的所有实例。注意，这里是函数的实际上下文（`this`），而不是返回值。
-
-::: warning
-如果使用 `new MyClass()` 实例化模拟，那么 `mock.instances` 将是一个只包含一个值的数组：
+此属性是一个数组，每次调用模拟函数都会对应一个值。如果使用 `new` 关键字调用模拟，该值就是 `new` 返回的对象；如果构造函数抛出错误，则为 `undefined`。否则，该值就是调用时的上下文（`this`），与 [`mock.contexts`](#mock-contexts) 中的值相同。
 
 ```js
 const MyClass = vi.fn()
+const context = {}
+
 const a = new MyClass()
+MyClass.call(context)
 
 MyClass.mock.instances[0] === a
+MyClass.mock.instances[1] === context
 ```
 
-如果你从构造函数返回一个值，它不会出现在 `instances` 数组中，而是会出现在 `results` 中：
+如果实现从构造函数返回一个对象，`mock.instances` 会存储该对象：
 
 ```js
 const Spy = vi.fn(function () {
@@ -705,8 +710,6 @@ const Spy = vi.fn(function () {
 })
 const a = new Spy()
 
-Spy.mock.instances[0] !== a
-Spy.mock.results[0] === a
+Spy.mock.instances[0] === a
+Spy.mock.results[0].value === a
 ```
-
-:::

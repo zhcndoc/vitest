@@ -375,6 +375,49 @@ export default {
 }
 ```
 
+## experimental.recordDependencies <Version type="experimental">5.0.4</Version> {#experimental-recorddependencies}
+
+- **类型:** `boolean`
+- **默认值:** `false`
+
+记录测试文件在运行期间加载的所有文件，并使用这些记录为 [`--changed`](/guide/cli#changed) 和 [`vitest related`](/guide/cli#vitest-related) 选择测试。未启用此选项时，Vitest 会在运行前转换每个测试文件的模块图，以找出受影响的测试。启用后，Vitest 会改为读取上一次运行的记录，因此筛选过程不会触发转换。
+
+```ts [vitest.config.ts]
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    experimental: {
+      recordDependencies: true,
+    },
+  },
+})
+```
+
+`dependencies.json` 文件与[结果缓存](/config/cache)一起存储在 Vite 的 `cacheDir` 中。因此，禁用 `cache` 时此选项不起作用。启用此选项后，每次 `vitest run` 都会更新本次运行过的测试文件的记录。如果某次运行跳过了文件中的部分测试（例如使用 [`-t`](/config/testnamepattern) 或 `.only`），就可能漏掉这些测试中的动态导入，因此该次运行只会向现有记录添加文件，不会创建新记录。没有记录的测试文件（例如新文件，或在浏览器、[类型检查](/guide/testing-types)池中运行过的文件）始终会运行。
+
+记录包含：
+
+- 测试文件及其导入的所有模块，包括实际运行过的动态导入
+- [设置文件](/config/setupfiles)、[自定义环境](/config/environment)、[自定义运行器](/config/runner)、[快照序列化器](/config/snapshotserializers)及其导入的模块
+- `__mocks__` 文件夹中的模拟文件，以及模拟工厂导入的模块
+- 插件通过 `this.addWatchFile` 监听的文件
+- 快照文件，以及 [`toMatchFileSnapshot`](/api/expect#tomatchfilesnapshot) 使用的所有文件
+
+更改[全局设置](/config/globalsetup)文件或其导入项、配置文件或其导入项，或 `.env` 文件时，会运行项目中的所有测试。
+
+记录来自真实运行，因此可以准确捕获静态模块图无法确定的依赖。使用工厂替换为 `vi.mock` 的模块不会加载其导入项，因此这些导入不会被记录。测试从未调用的函数中的动态导入也不会被记录。
+
+::: warning
+这些记录描述测试上一次运行时加载的文件。如果添加导入的更改在测试再次运行前就已提交，那么之后更改新导入的文件时不会选中该测试，因为添加导入的提交已不在 `--changed` 差异中。更改导入后运行一次测试，以更新记录。
+
+Vitest 只记录自身加载的文件。通过 `fs` 读取的文件（例如测试夹具）以及[外置](/config/server#server-deps-external)模块的导入项都不会被记录。
+
+如果禁用了 [`isolate`](/config/isolate)，在同一个工作线程中运行的测试文件会共享模块图。此时，记录可能包含前一个测试文件动态加载的模块，因此 `--changed` 可能会选中多于必要数量的测试，但不会少选。
+
+如果禁用了 [`experimental.viteModuleRunner`](#experimental-vitemodulerunner)，Vitest 会通过 [`module.registerHooks`](https://nodejs.org/api/module.html#moduleregisterhooksoptions) 的解析钩子记录导入项。不支持该 API 的 Node.js 版本不会写入记录，因此每个测试都会运行。
+:::
+
 ## experimental.nodeLoader <Version type="experimental">4.1.0</Version> {#experimental-nodeloader}
 
 - **类型：** `boolean`

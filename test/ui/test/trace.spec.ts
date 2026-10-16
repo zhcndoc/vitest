@@ -26,7 +26,7 @@ test.describe('ui', () => {
 
   test.beforeEach(async ({ page }) => {
     await page.goto(baseURL)
-    await assertTestCounts(page, { pass: 13, fail: 0 })
+    await assertTestCounts(page, { pass: 15, fail: 0 })
   })
 
   test('basic', async ({ page }) => {
@@ -39,6 +39,10 @@ test.describe('ui', () => {
 
   test('popover', async ({ page }) => {
     await testPopover(page)
+  })
+
+  test('multiple match highlight', async ({ page }) => {
+    await testMultipleMatchHighlight(page)
   })
 
   test('pseudo-state', async ({ page }) => {
@@ -79,6 +83,10 @@ test.describe('ui', () => {
 
   test('persists resized trace panes across reloads', async ({ page }) => {
     await testPersistsResizedTracePanes(page)
+  })
+
+  test('zoom', async ({ page }) => {
+    await testZoom(page)
   })
 })
 
@@ -116,7 +124,7 @@ test.describe('html reporter', () => {
 
   test.beforeEach(async ({ page }) => {
     await page.goto(baseURL)
-    await assertTestCounts(page, { pass: 13, fail: 0 })
+    await assertTestCounts(page, { pass: 15, fail: 0 })
   })
 
   test('basic', async ({ page }) => {
@@ -129,6 +137,10 @@ test.describe('html reporter', () => {
 
   test('popover', async ({ page }) => {
     await testPopover(page)
+  })
+
+  test('multiple match highlight', async ({ page }) => {
+    await testMultipleMatchHighlight(page)
   })
 
   test('pseudo-state', async ({ page }) => {
@@ -169,6 +181,10 @@ test.describe('html reporter', () => {
 
   test('persists resized trace panes across reloads', async ({ page }) => {
     await testPersistsResizedTracePanes(page)
+  })
+
+  test('zoom', async ({ page }) => {
+    await testZoom(page)
   })
 })
 
@@ -264,6 +280,63 @@ async function testBasic(page: Page) {
   await expect(traceFrame.getByRole('button', { name: 'Switch Target' })).toBeVisible()
 }
 
+async function testZoom(page: Page) {
+  await openExplorerItem(page, 'zoom')
+
+  const traceView = page.getByTestId('trace-view')
+  const traceFrame = traceView.frameLocator('iframe')
+  const iframe = traceView.locator('iframe')
+  const zoomTrigger = traceView.getByTestId('trace-zoom-trigger')
+  const zoomPopover = page.getByTestId('trace-zoom-popover')
+  const zoomPercent = zoomPopover.getByTestId('trace-zoom-percent')
+  const zoomIn = zoomPopover.getByRole('button', { name: 'Zoom In' })
+  const zoomOut = zoomPopover.getByRole('button', { name: 'Zoom Out' })
+  const fitToPane = zoomPopover.getByRole('button', { name: 'Fit' })
+  const resetZoom = zoomPopover.getByRole('button', { name: 'Reset' })
+
+  // wait for the snapshot replay
+  await expect(traceFrame.getByRole('button', { name: 'Two' })).toBeVisible()
+
+  // verify zoom label and scaled iframe width of the 400px wide fixture viewport
+  async function expectZoom(scale: number) {
+    await expect(zoomTrigger).toHaveText(`${Math.round(scale * 100)}%`)
+    await expect.poll(async () => (await iframe.boundingBox())!.width).toBeCloseTo(400 * scale, 0)
+  }
+
+  // actual size by default
+  await expectZoom(1)
+  await zoomTrigger.click()
+  await expect(zoomPercent).toHaveText('100%')
+  await expect(resetZoom).toBeDisabled()
+
+  // step through levels and persist across reloads
+  await zoomOut.click()
+  await expectZoom(0.75)
+  await zoomOut.click()
+  await expectZoom(0.5)
+  await page.reload()
+  await expectZoom(0.5)
+
+  // fit to the 599x196 replay pane is limited by height and persists across reloads
+  const fitScale = 196 / 600
+  await zoomTrigger.click()
+  await fitToPane.click()
+  await expect(zoomTrigger).toHaveText('33%')
+  await expectZoom(fitScale)
+  await page.reload()
+  await expectZoom(fitScale)
+
+  // zoom in from fit goes to the next level
+  await zoomTrigger.click()
+  await zoomIn.click()
+  await expectZoom(0.5)
+
+  // back to actual size
+  await resetZoom.click()
+  await expectZoom(1)
+  await expect(resetZoom).toBeDisabled()
+}
+
 async function testViewport(page: Page) {
   await openExplorerItem(page, 'viewport')
 
@@ -289,6 +362,33 @@ async function testPopover(page: Page) {
   await expect(popoverContent).toBeVisible()
   await traceSteps.getByText('Render closed popover').click()
   await expect(popoverContent).toBeHidden()
+}
+
+async function testMultipleMatchHighlight(page: Page) {
+  await openExplorerItem(page, 'multiple-match')
+
+  const traceView = page.getByTestId('trace-view')
+  const traceFrame = traceView.frameLocator('iframe')
+  const traceHighlight = traceFrame.getByTestId('trace-view-highlight')
+  const showHighlightCheckbox = traceView.getByRole('checkbox', { name: 'Show highlight' })
+  await expect(traceView).toBeVisible()
+  await traceView.getByTestId('trace-step-name').getByText('Render multiple').click()
+  await expect(traceFrame.getByRole('button', { name: 'Three' })).toBeVisible()
+  await expect(traceHighlight).toHaveCount(3)
+  const buttons = traceFrame.getByRole('button')
+  for (let i = 0; i < 3; i++) {
+    expect(await traceHighlight.nth(i).boundingBox()).toEqual(await buttons.nth(i).boundingBox())
+  }
+
+  // toggle hides and shows all highlights
+  await showHighlightCheckbox.uncheck()
+  for (let i = 0; i < 3; i++) {
+    await expect(traceHighlight.nth(i)).toBeHidden()
+  }
+  await showHighlightCheckbox.check()
+  for (let i = 0; i < 3; i++) {
+    await expect(traceHighlight.nth(i)).toBeVisible()
+  }
 }
 
 async function testPseudoState(page: Page) {

@@ -439,7 +439,7 @@ Vitest 会将所有文件（包括被 glob 模式覆盖的文件）计入全局�
 ## coverage.processingConcurrency
 
 - **类型：** `boolean`
-- **默认值：** `Math.min(20, os.availableParallelism?.() ?? os.cpus().length)`
+- **默认值：** `Math.min(20, os.availableParallelism())`
 - **适用提供者：** `'v8' | 'istanbul'`
 - **命令行：** `--coverage.processingConcurrency=<number>`
 

@@ -75,6 +75,8 @@ test('skipped concurrent test', { skip: true, concurrent: true }, () => {
 
 它们的工作方式完全相同。使用哪一种纯粹是风格选择。
 
+设为 `undefined` 的选项会被忽略。它们不会覆盖通过选项链、父级套件或[标签](/guide/test-tags)继承的值。
+
 ### timeout
 
 - **类型:** `number`
@@ -372,11 +374,13 @@ test.skipIf(isDev)('prod only test', () => {
 })
 ```
 
+与 `test.skip` 不同，`test.skipIf` 始终会设置 [`skip`](#skip) 选项：条件为真时设为 `true`，否则设为 `false`。条件为假时会覆盖从[标签](/guide/test-tags)继承的 `skip`，效果与 `test(name, { skip: false })` 相同。
+
 ## test.runIf
 
 - **别名:** `it.runIf`
 
-[test.skipIf](#test-skipif) 的反面。
+[test.skipIf](#test-skipif) 的反面。它始终会设置 [`skip`](#skip) 选项：条件为真时设为 `false`，否则设为 `true`。
 
 ```ts
 import { assert, test } from 'vitest'

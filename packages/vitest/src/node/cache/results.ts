@@ -5,6 +5,7 @@ import { existsSync } from 'node:fs'
 import { mkdir, readFile, rm, stat } from 'node:fs/promises'
 import { dirname, relative, resolve } from 'pathe'
 import { createDebugger } from '../../utils/debugger'
+import { tagCacheDir } from './cachedirTag'
 import { atomicWriteFile } from './fsModuleCache'
 
 const debug = createDebugger('vitest:cache:results')
@@ -124,7 +125,7 @@ export class ResultsCache {
       const failed = state === 'fail'
       const duration = Math.max(task.result?.duration ?? 0, 0)
 
-      if (!this.isPartialRun(specification, task)) {
+      if (!isPartialRun(this.vitest, specification, task)) {
         results.set(file, { failed, duration, lastRun: startTime })
       } else if (failed) {
         results.set(file, { duration, ...previous, failed })
@@ -152,29 +153,8 @@ export class ResultsCache {
     }
   }
 
-  // a partial run does not prove that the whole file passes
-  private isPartialRun(specification: TestSpecification, task: File): boolean {
-    return !!(
-      this.vitest.isCancelling ||
-      task.containsOnly ||
-      specification.testLines?.length ||
-      specification.testIds?.length ||
-      specification.testNamePattern ||
-      specification.testTagsFilter?.length ||
-      this.vitest.getGlobalTestNamePattern() ||
-      this.vitest.config.tagsFilter?.length
-    )
-  }
-
-  // relative to the root, so the cache is the same in CI and locally
   private getFilePath(specification: TestSpecification): string {
-    const root = this.vitest.config.root
-    const moduleId = specification.moduleId
-    // "relative" normalizes both paths, which is slow for thousands of files
-    if (moduleId.startsWith(root) && moduleId[root.length] === '/') {
-      return moduleId.slice(root.length + 1)
-    }
-    return relative(root, moduleId)
+    return getRootRelativePath(this.vitest.config.root, specification.moduleId)
   }
 
   private getProjectResults(name: string): ProjectResults {
@@ -199,7 +179,10 @@ export class ResultsCache {
     }
     const results: SerializedResults = { version: RESULTS_VERSION, projects }
     try {
-      await mkdir(dirname(this.path), { recursive: true })
+      const cacheDir = dirname(this.path)
+      await mkdir(cacheDir, { recursive: true })
+      // the cache is in "cacheDir/vitest/<hash>", Vitest owns the "vitest" directory
+      tagCacheDir(dirname(cacheDir))
       await atomicWriteFile(this.path, JSON.stringify(results))
       this.fileStamp = await getFileStamp(this.path)
     } catch (error) {
@@ -212,8 +195,35 @@ function isFinalState(state: string | undefined): boolean {
   return state === 'pass' || state === 'fail' || state === 'skip' || state === 'todo'
 }
 
+// a partial run does not prove that the whole file passes
+export function isPartialRun(
+  vitest: Vitest,
+  specification: TestSpecification,
+  task: File,
+): boolean {
+  return !!(
+    vitest.isCancelling ||
+    task.containsOnly ||
+    specification.testLines?.length ||
+    specification.testIds?.length ||
+    specification.testNamePattern ||
+    specification.testTagsFilter?.length ||
+    vitest.getGlobalTestNamePattern() ||
+    vitest.config.tagsFilter?.length
+  )
+}
+
+// relative to the root, so the cache is the same in CI and locally
+export function getRootRelativePath(root: string, file: string): string {
+  // "relative" normalizes both paths, which is slow for thousands of files
+  if (file.startsWith(root) && file[root.length] === '/') {
+    return file.slice(root.length + 1)
+  }
+  return relative(root, file)
+}
+
 // every write replaces the file, so a write by another process changes the inode
-async function getFileStamp(path: string): Promise<string | undefined> {
+export async function getFileStamp(path: string): Promise<string | undefined> {
   const stats = await stat(path).catch(() => undefined)
   return stats && `${stats.ino}:${stats.mtimeMs}:${stats.size}`
 }

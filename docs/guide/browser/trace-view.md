@@ -121,7 +121,7 @@ await page.mark('内容已渲染')
 await page.getByRole('button', { name: 'Sign in' }).mark('登录按钮')
 ```
 
-你也可以向 `page.mark()` 传入回调。请注意，目前不支持分组——每个内部操作都会单独记录，而 mark 条目会显示在末尾：
+你也可以向 `page.mark()` 传入回调来分组步骤。mark 条目会覆盖整个回调，其中的操作会在步骤列表中嵌套显示在 mark 下：
 
 ```ts
 await page.mark('登录流程', async () => {
