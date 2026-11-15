@@ -1,15 +1,32 @@
 import type { ReportOptions } from '@vitest/istanbul-lib-report'
 import type { Arrayable } from '@vitest/utils'
-import type { TransformResult as ViteTransformResult } from 'vite'
+import type { DevEnvironment, parseAstAsync, TransformResult as ViteTransformResult } from 'vite'
 import type { AfterSuiteRunMeta } from '../../types/general'
 import type {
   RuntimeCoverageModuleLoader,
   RuntimeCoverageProviderModule,
 } from '../../utils/coverage'
 import type { Vitest } from '../core'
+import type { TestSpecification } from '../test-specification'
 
 type TransformResult = string | Partial<ViteTransformResult> | undefined | null | void
 type CoverageResults = unknown
+
+// Vite 6 and 7 parse with Rollup, Vite 8 with Rolldown. Collect node types from whichever parser is installed.
+type AstNode = CollectNodes<Awaited<ReturnType<typeof parseAstAsync>>>
+type CollectNodes<T, Depth extends unknown[] = []> = Depth['length'] extends 8
+  ? T
+  : CollectNodes<T | ChildNodes<T>, [...Depth, unknown]>
+type ChildNodes<T> = T extends unknown
+  ? Extract<
+      {
+        [K in keyof T]: NonNullable<T[K]> extends readonly (infer U)[]
+          ? NonNullable<U>
+          : NonNullable<T[K]>
+      }[keyof T],
+      { type: string }
+    >
+  : never
 
 export interface CoverageProvider {
   name: string
@@ -27,7 +44,7 @@ export interface CoverageProvider {
   onAfterSuiteRun: (meta: AfterSuiteRunMeta) => void | Promise<void>
 
   /** Callback called when test run starts */
-  onTestRunStart?: () => void | Promise<void>
+  onTestRunStart?: (specifications: ReadonlyArray<TestSpecification>) => void | Promise<void>
 
   /** Callback called when test run fails due to test failures */
   onTestFailure?: () => void | Promise<void>
@@ -55,6 +72,27 @@ export interface CoverageProvider {
    * @experimental
    */
   requiresTransform?: (id: string) => boolean
+
+  /**
+   * Version of the coverage provider. Can be used as cache key in various caching mechanisms.
+   * @experimental
+   */
+  version?: string
+
+  /**
+   * Return data that should be stored with the transformed module in `fsModuleCache`,
+   * e.g. data collected in `onFileTransform`. The data must be JSON serializable.
+   * When the module is later loaded from `fsModuleCache`, `onFileTransform` is not called.
+   * The data is passed to `restoreModuleCacheData` instead.
+   * @experimental
+   */
+  getModuleCacheData?: (environment: DevEnvironment, id: string) => unknown
+
+  /**
+   * Called with the data returned by `getModuleCacheData` when the module is loaded from `fsModuleCache`.
+   * @experimental
+   */
+  restoreModuleCacheData?: (environment: DevEnvironment, id: string, data: unknown) => void
 
   /** Callback that's called when the coverage is enabled via a programmatic `enableCoverage` API. */
   onEnabled?: () => void | Promise<void>
@@ -267,6 +305,22 @@ export interface CoverageOptions {
    * @default []
    */
   ignoreClassMethods?: string[]
+
+  /**
+   * Filter to ignore code from coverage based on its AST node.
+   * Called only for nodes that Vitest's built-in filters don't already ignore.
+   * Return `'ignore-this-and-nested-nodes'` to also ignore all nodes inside the given node.
+   * Supported only by `v8` provider.
+   *
+   * @example
+   * ```ts
+   * ignoreNode: (node, type) => type === 'statement' && node.type === 'DebuggerStatement'
+   * ```
+   */
+  ignoreNode?: (
+    node: AstNode,
+    type: 'function' | 'statement' | 'branch',
+  ) => boolean | 'ignore-this-and-nested-nodes' | void
 
   /**
    * Custom instrumenter factory to use instead of the default `@vitest/istanbul-lib-instrument`.

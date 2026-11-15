@@ -235,6 +235,58 @@ await page.getByRole('tablist').wheel({ direction: 'right' })
 此方法旨在用于测试明确监听 `wheel` 事件的 UI（例如，自定义缩放控件、水平标签页滚动、画布交互）。如果你需要滚动页面以将元素带入视图，请依赖其他 `userEvent` 方法或 [locator 动作](/api/browser/locators#methods) 提供的内置自动滚动功能。
 :::
 
+## userEvent.pointer <Version type="experimental">5.1.0</Version> <Experimental /> {#userevent-pointer}
+
+```ts
+function pointer(options: UserEventPointerInput): Promise<void>
+```
+
+执行一个或多个 pointer 操作。可以传入按键字符串、操作对象，或由字符串和对象组成的数组。按键字符串使用 [user-event 的 `pointer` 语法](https://testing-library.com/docs/user-event/pointer)。例如，`[MouseLeft]` 会按下并释放鼠标左键，`[MouseLeft>]` 会保持按下状态，而 `[/MouseLeft]` 会释放按键。
+
+::: tip
+`pointer` 是一种底层 API，可用于组合复杂的 pointer 交互，也可执行专用方法不支持的操作，例如将元素拖动到精确位置。
+
+对于单次操作，优先使用对应的专用方法，因为它们通常更简单。例如，如果只想点击一次元素，请使用 [`userEvent.click`](#userevent-click)。
+:::
+
+操作对象接受 `keys`、`target` 和 `coords`。不含 `keys` 的对象只会移动 pointer。
+
+同一个 `userEvent` 实例中的多次 `userEvent.pointer` 调用会保留 pointer 位置。因此，如果某个操作省略了 `target` 和 `coords`，就会使用上一个操作的位置。
+
+::: warning
+启用[浏览器 UI](/config/browser/ui)时，测试 iframe 可能会缩放以适应可用空间。Vitest 会相应调整 pointer 坐标，但浏览器的像素取整可能导致最终事件坐标偏差数个 _iframe 像素_。**此模式下请勿依赖精确坐标**。
+:::
+
+```ts
+import { page, userEvent } from 'vitest/browser'
+
+test('drags an element with pointer actions', async () => {
+  const source = page.getByTestId('source')
+  const target = page.getByTestId('target')
+
+  await userEvent.pointer([
+    { target: source, keys: '[MouseLeft>]' },
+    { target, coords: { x: 10, y: 10 }, keys: '[/MouseLeft]' },
+  ])
+})
+```
+
+::: warning 提供者支持情况及与 user-event 的差异
+此 API 在各提供者中的支持情况并不一致，其行为也可能与 `user-event` 库不同。
+
+- `playwright` 提供者不支持 `TouchA` 等触摸 pointer 按键。
+- `webdriverio` 提供者完全不支持此方法。
+- `preview` 提供者使用 `@testing-library/user-event` 模拟事件。
+
+Vitest 不支持用于文本选择的 `node` 和 `offset` 字段，`coords` 中只接受 `x` 和 `y` 值。
+
+未提供 `target` 时，`coords` 值会被视为相对于视口的坐标。提供 `target` 时，它们表示相对于目标左上角的偏移量。与 user-event 不同，后者在 `coords` 与 `target` 同时提供时会将坐标视为 pointer 的最终位置，而不是偏移量。提供 `coords` 时，未指定的坐标轴默认为 `0`。
+:::
+
+参考资料：
+
+- [testing-library 的 `pointer` API](https://testing-library.com/docs/user-event/pointer)
+
 ## userEvent.fill
 
 ```ts

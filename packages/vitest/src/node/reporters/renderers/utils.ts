@@ -30,7 +30,7 @@ export const separator: string = c.dim(' > ')
 
 const labelDefaultColors = [c.bgYellow, c.bgCyan, c.bgGreen, c.bgMagenta] as const
 
-function getCols(delta = 0) {
+export function getCols(delta = 0): number {
   let length = process.stdout?.columns
   if (!length || Number.isNaN(length)) {
     length = 30
@@ -122,10 +122,6 @@ export function renderSnapshotSummary(rootDir: string, snapshots: SnapshotSummar
   }
 
   return summary
-}
-
-export function countTestErrors(tasks: Task[]): number {
-  return tasks.reduce((c, i) => c + (i.result?.errors?.length || 0), 0)
 }
 
 export function getStateString(tasks: Task[], name = 'tests', showTotal = true): string {
@@ -242,7 +238,11 @@ export function padSummaryTitle(str: string): string {
 }
 
 export function truncateString(text: string, maxLength: number): string {
-  return utilsTruncateString(stripVTControlCharacters(text), maxLength)
+  const plainText = stripVTControlCharacters(text)
+  if (plainText.length <= maxLength) {
+    return text
+  }
+  return utilsTruncateString(plainText, maxLength)
 }
 
 function capitalize<T extends string>(text: T) {

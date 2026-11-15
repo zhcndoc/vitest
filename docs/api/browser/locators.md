@@ -620,6 +620,10 @@ page.getByRole('article').filter({ hasText: 'Vite' }) // ✅
 
 所有方法都是异步的，必须被等待。自 Vitest 3 起，如果方法未被等待，测试将失败。
 
+::: tip
+启用[假计时器](/api/vi#vi-usefaketimers)时，这些方法会在运行期间推进计时器。详情请参阅[自动推进](/guide/mocking/timers#automatic-advancing)。
+:::
+
 ### click
 
 ```ts

@@ -13,6 +13,12 @@ outline: deep
 
 工作区中的每个项目共享同一个缓存目录。默认情况下，该目录位于工作区根目录的 `node_modules` 中（因此在重新安装依赖项时会自然失效）；使用 [`fsModuleCachePath`](/config/fsmodulecachepath) 可以更改其位置。你可以运行 [`vitest --clearCache`](/guide/cli#clearcache) 来删除缓存。
 
+如果配置文件和 CLI 都未设置此选项，Vitest 会从 `VITEST_FS_MODULE_CACHE` 环境变量读取它。将其设为 `false`，即可在不更改项目配置的情况下禁用缓存：
+
+```shell
+VITEST_FS_MODULE_CACHE=false vitest
+```
+
 ::: warning 浏览器支持
 目前，此选项不会影响[浏览器](/guide/browser/)。
 :::
@@ -26,6 +32,32 @@ DEBUG=vitest:cache:fs vitest --fsModuleCache
 ::: tip
 缓存的位置是一个工作区范围内的统一目录。请参阅 [`fsModuleCachePath`](/config/fsmodulecachepath) 以更改其位置。
 :::
+
+## 清单 {#manifest}
+
+每次测试运行结束后，各项目都会在缓存目录中、已缓存模块旁写入一个 `_manifest-<project>-<hash>.json` 文件。`<project>` 是[项目名称](/config/name)；如果项目没有名称，则使用项目根目录的名称。清单按 Vite 环境分组。`modules` 将每个已缓存模块的 URL 映射到其缓存文件名；`externalized` 将每个[外部化](/config/server#server-deps-external)依赖项的 URL 映射到 Node.js 未经转换直接导入的文件：
+
+```json [node_modules/.vitest-cache/_manifest-app-1a2b3c4d.json]
+{
+  "name": "",
+  "root": "/projects/app",
+  "modules": {
+    "ssr": {
+      "/src/math.test.ts": "3b1af86df9d029d4281e7ae6ef10059153a80e14",
+      "/src/math.ts": "e8e20f586e230bde9b163dfc191f4440b241272a"
+    }
+  },
+  "externalized": {
+    "ssr": {
+      "/node_modules/lodash-es/lodash.js": "/projects/app/node_modules/lodash-es/lodash.js"
+    }
+  }
+}
+```
+
+清单会保留之前运行的条目，因此某次运行只导入部分文件时，不会删除其余条目。
+
+缓存文件包含 Vitest 实际运行的代码，因此你可以编辑它来调试转换结果。Vitest 会继续运行编辑后的代码，直到模块再次被转换：例如源文件或配置发生变化，或通过 [`--clearCache`](/guide/cli#clearcache) 清除缓存。请保留文件末尾的 `//# vitestCache=` 注释，否则 Vitest 会再次转换该模块。
 
 ## 已知问题
 

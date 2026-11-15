@@ -228,7 +228,7 @@ interface TestResultPassed {
 ```
 
 ::: warning
-注意，处于 `passed` 状态的测试仍然可能附有错误——如果 `retry` 至少被触发过一次，就会发生这种情况。
+注意，处于 `passed` 状态的测试仍然可能附有错误——如果 `retry` 至少被触发过一次，就会发生这种情况。使用 [`attempts()`](#attempts) 可以查看每个错误来自哪次运行。
 :::
 
 ## diagnostic
@@ -276,6 +276,58 @@ interface TestDiagnostic {
 
 ::: info
 如果测试尚未计划运行，`diagnostic()` 将返回 `undefined`。
+:::
+
+## attempts <Version>5.1.0</Version> {#attempts}
+
+```ts
+function attempts(): ReadonlyArray<TestAttempt>
+```
+
+测试每次运行的结果，按执行顺序排列。配置 [`retry`](/config/retry) 或 [`repeats`](/api/test#repeats) 时，测试会运行多次，并为每次运行生成一个条目。`result()` 只报告最终结果，并合并所有运行的错误；此处的每次尝试则分别保留自身的状态、错误和时序。
+
+```ts
+interface TestAttempt {
+  /**
+   * The state of this attempt. `fails` tests are already inverted,
+   * so an expected failure is reported as `passed`.
+   */
+  readonly state: 'passed' | 'failed' | 'skipped'
+  /**
+   * Errors thrown during this attempt only.
+   */
+  readonly errors: ReadonlyArray<TestError> | undefined
+  /**
+   * How long in milliseconds the attempt took to run.
+   */
+  readonly duration: number
+  /**
+   * Time in milliseconds when the attempt started.
+   */
+  readonly startTime: number
+  /**
+   * The zero-based retry index within the current repeat.
+   */
+  readonly retryIndex: number
+  /**
+   * The zero-based repeat index.
+   */
+  readonly repeatIndex: number
+}
+```
+
+例如，设置 `retry: 2` 且在第三次运行时通过的测试会返回：
+
+```ts
+[
+  { state: 'failed', retryIndex: 0, repeatIndex: 0, errors: [/* ... */] },
+  { state: 'failed', retryIndex: 1, repeatIndex: 0, errors: [/* ... */] },
+  { state: 'passed', retryIndex: 2, repeatIndex: 0, errors: undefined },
+]
+```
+
+::: info
+如果测试尚未运行，`attempts()` 会返回空数组。
 :::
 
 ## annotations

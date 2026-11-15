@@ -15,7 +15,7 @@ import { Traces } from 'vitest/internal/traces'
 // This needs to be tree shaken properly to not include the whole runner by accident
 import { generateFileHash } from '../../../vitest/src/utils/tasks.js'
 import { getUiAPI } from './ui'
-import { getBrowserState, getConfig } from './utils'
+import { getBrowserState, getConfig, supportsLateImportMaps } from './utils'
 
 const ID_ALL = '__vitest_all__'
 // the next document gets this long to fire "load" before the unload counts as a broken iframe
@@ -36,11 +36,21 @@ export class IframeOrchestrator {
   constructor() {
     debug('init orchestrator', getBrowserState().sessionId)
 
-    if (getConfig().browser.traceView.enabled) {
-      const domSnapshot = import('rrweb-snapshot')
-      // a load failure surfaces in the tester that awaits this
-      domSnapshot.catch(() => {})
-      getBrowserState().browserTraceDomSnapshotPromise = domSnapshot
+    const traceView = getConfig().browser.traceView
+    if (traceView.enabled) {
+      let domSnapshot: Promise<typeof import('rrweb-snapshot')> | undefined
+      getBrowserState().loadBrowserTraceDomSnapshot = () => {
+        if (!domSnapshot) {
+          domSnapshot = import('rrweb-snapshot')
+          // a load failure surfaces in the tester that awaits this
+          domSnapshot.catch(() => {})
+        }
+        return domSnapshot
+      }
+      // 'failure-only' loads it at the first failure instead
+      if (traceView.mode === 'on') {
+        void getBrowserState().loadBrowserTraceDomSnapshot!()
+      }
     }
 
     const otelConfig = getBrowserState().config.experimental.openTelemetry
@@ -55,7 +65,7 @@ export class IframeOrchestrator {
     // Notify the server once the websocket is ready without blocking orchestrator creation.
     void client
       .waitForConnection()
-      .then(() => client.rpc.onOrchestratorReady())
+      .then(() => client.rpc.onOrchestratorReady({ lateImportMaps: supportsLateImportMaps() }))
       .catch((error) => {
         debug('failed to notify orchestrator readiness', error)
       })
@@ -78,7 +88,8 @@ export class IframeOrchestrator {
       await this.traces.flush()
     }
 
-    const startTime = performance.now()
+    // tester iframes have their own time origin
+    const startTime = performance.timeOrigin + performance.now()
 
     this.cancelled = false
 
@@ -435,8 +446,9 @@ export class IframeOrchestrator {
     iframe.style.setProperty('width', 'var(--viewport-width)')
     iframe.style.setProperty('height', 'var(--viewport-height)')
 
-    // enable scaling only when using the UI, without UI the iframe fills the page
-    if (config.browser.ui) {
+    // scale the iframe to fit the UI; without the UI the provider resizes the page
+    // to fit the iframe, except preview, which cannot resize the window
+    if (config.browser.ui || getBrowserState().provider === 'preview') {
       if (config.browser.name !== 'firefox') {
         iframe.style.setProperty(
           'transform',
@@ -499,7 +511,16 @@ export class IframeOrchestrator {
           )
           break
         }
-        await setIframeViewport(width, height)
+        try {
+          await setIframeViewport(width, height)
+        } catch (error: any) {
+          channel.postMessage({
+            event: 'viewport:fail',
+            iframeId: id,
+            error: error.message,
+          } satisfies IframeViewportFailEvent)
+          break
+        }
         channel.postMessage({
           event: 'viewport:done',
           iframeId: id,
@@ -581,7 +602,11 @@ export class IframeOrchestrator {
         }
         if (e.data.event === `response:${event.event}`) {
           cleanupEvents()
-          resolve()
+          if (e.data.error) {
+            reject(new Error(e.data.error))
+          } else {
+            resolve()
+          }
         }
       }
 
@@ -633,6 +658,10 @@ async function setIframeViewport(width: number, height: number) {
   } else {
     document.body.style.setProperty('--viewport-width', `${width}px`)
     document.body.style.setProperty('--viewport-height', `${height}px`)
+
+    if (getBrowserState().provider === 'preview') {
+      return
+    }
 
     // playwright emulates the viewport per page, so it keeps its size
     // between test files and the command round trip is only needed when

@@ -531,7 +531,7 @@ Vitest 不再通过不带参数的 `/__vitest_test__/` URL 提供浏览器编排
 
 ## `browser.api` 已被顶层 `api` 替代
 
-浏览器模式现在运行在单个 Vite 服务器上，并由顶层 [`api`](/config/api) 选项配置；浏览器模式的默认端口仍为 `63315`。`browser.api` 选项已弃用且不再生效，请将其值移至 `api`：
+浏览器模式现在运行在单个 Vite 服务器上，并由顶层 [`api`](/config/api) 选项配置；浏览器模式的默认端口为 `23315`。`browser.api` 选项已弃用且不再生效，请将其值移至 `api`：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'

@@ -7,7 +7,7 @@ outline: deep
 
 在 Vitest 4 之前，此选项用于定义 `vite-node` 服务器的配置。
 
-目前，此选项允许你配置内联和外部化机制，以及模块运行器的调试配置。
+目前，此选项允许你配置内联和外部化机制。
 
 ::: warning
 这些选项应仅作为最后的手段使用，以便通过外部化自动内联的依赖项来提高性能，或通过内联无效的外部依赖项来修复问题。
@@ -20,7 +20,7 @@ outline: deep
 ### server.deps.external
 
 - **类型：** `(string | RegExp)[]`
-- **默认：** [`moduleDirectories`](/config/deps#moduledirectories) 内的文件
+- **默认：** [`moduleDirectories`](/config/deps#deps-moduledirectories) 内的文件
 
 指定不应由 Vite 转换而应直接由引擎处理的模块。这些模块通过原生动态 `import` 导入，并绕过转换和解析阶段。
 
@@ -43,7 +43,7 @@ export default defineConfig({
 通常，`node_modules` 下的包会被外部化。
 
 ::: tip
-如果提供的是字符串，它首先会通过添加 `/node_modules/` 或其他 [`moduleDirectories`](/config/deps#moduledirectories) 段前缀进行标准化（例如，`'react'` 变为 `/node_modules/react/`），然后将结果字符串与完整文件路径进行匹配。例如，位于 `packages/some-name` 内的包 `@company/some-name` 应指定为 `some-name`，并且 `packages` 应包含在 `deps.moduleDirectories` 中。
+如果提供的是字符串，Vitest 会先为其添加 `/node_modules/` 或其他 [`moduleDirectories`](/config/deps#deps-moduledirectories) 段作为前缀，再将结果字符串与完整文件路径进行匹配（例如，`'react'` 会变成 `/node_modules/react/`）。例如，位于 `packages/some-name` 中的包 `@company/some-name` 应指定为 `some-name`，并且 `packages` 应包含在 `deps.moduleDirectories` 中。
 
 如果提供的是 `RegExp`，则它与完整文件路径进行匹配。
 :::
@@ -58,7 +58,7 @@ export default defineConfig({
 通常，你的源文件会被内联。
 
 ::: tip
-如果提供的是字符串，它首先会通过添加 `/node_modules/` 或其他 [`moduleDirectories`](/config/deps#moduledirectories) 段前缀进行标准化（例如，`'react'` 变为 `/node_modules/react/`），然后将结果字符串与完整文件路径进行匹配。例如，位于 `packages/some-name` 内的包 `@company/some-name` 应指定为 `some-name`，并且 `packages` 应包含在 `deps.moduleDirectories` 中。
+如果提供的是字符串，Vitest 会先为其添加 `/node_modules/` 或其他 [`moduleDirectories`](/config/deps#deps-moduledirectories) 段作为前缀，再将结果字符串与完整文件路径进行匹配（例如，`'react'` 会变成 `/node_modules/react/`）。例如，位于 `packages/some-name` 中的包 `@company/some-name` 应指定为 `some-name`，并且 `packages` 应包含在 `deps.moduleDirectories` 中。
 
 如果提供的是 `RegExp`，则它与完整文件路径进行匹配。
 :::
@@ -71,3 +71,7 @@ export default defineConfig({
 启用后，Vitest 将通过检查一些常见的 CJS/UMD 文件名和文件夹模式（如 `.mjs`、`.umd.js`、`.cjs.js`、`umd/`、`cjs/`、`lib/`）来尝试猜测 ESM 入口的 CommonJS 构建。
 
 这是一种尽力而为的启发式方法，用于绕过混乱或不正确的 ESM/CJS 打包，可能不适用于所有依赖项。
+
+## server.debug <Deprecated />
+
+此选项不起作用。若要检查或编辑 Vitest 运行的代码，请在 [`fsModuleCache` 清单](/config/fsmodulecache#manifest)中查找相应模块。

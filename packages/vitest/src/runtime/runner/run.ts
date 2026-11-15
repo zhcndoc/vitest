@@ -12,6 +12,7 @@ import type {
   Task,
   TaskMeta,
   TaskResult,
+  TaskResultAttempt,
   TaskResultPack,
   TaskState,
   TaskUpdateEvent,
@@ -37,6 +38,7 @@ import {
 import {
   callFixtureCleanup,
   callFixtureCleanupFrom,
+  callFixtureCleanups,
   getFixtureCleanupCount,
   TestFixtures,
 } from './fixture'
@@ -512,7 +514,10 @@ function throttle<T extends (...args: any[]) => void>(fn: T, ms: number): T {
     }
 
     // Make sure fn is still called even if there are no further calls
-    pendingCall ??= setTimeout(call.bind(this), ms, ...args)
+    pendingCall ??= setTimeout(() => {
+      pendingCall = undefined
+      call.apply(this, args)
+    }, ms)
   } as any
 }
 
@@ -599,6 +604,7 @@ async function runTest(test: Test, runner: VitestRunner): Promise<void> {
     state: 'run',
     startTime: unixNow(),
     retryCount: 0,
+    attempts: [],
   }
   updateTask('test-prepare', test, runner)
 
@@ -615,7 +621,20 @@ async function runTest(test: Test, runner: VitestRunner): Promise<void> {
     test.result.state = 'run' as TaskState
     const retry = getRetryCount(test.retry)
     for (let retryCount = 0; retryCount <= retry; retryCount++) {
+      const attemptStart = now()
+      const attemptStartTime = unixNow()
       const attemptErrorsStart = test.result.errors?.length ?? 0
+      const recordAttempt = (state: TaskResultAttempt['state']) => {
+        const errors = test.result!.errors?.slice(attemptErrorsStart)
+        test.result!.attempts!.push({
+          state,
+          errors: errors?.length ? errors : undefined,
+          duration: now() - attemptStart,
+          startTime: attemptStartTime,
+          retryIndex: retryCount,
+          repeatIndex: repeatCount,
+        })
+      }
       const beforeEachCleanups: unknown[] = []
       // fixtureCheckpoint is passed by callAroundEachHooks - it represents the count
       // of fixture cleanup functions AFTER all aroundEach fixtures have been resolved
@@ -714,12 +733,14 @@ async function runTest(test: Test, runner: VitestRunner): Promise<void> {
 
       // skipped with new PendingError
       if (test.result?.pending || test.result?.state === 'skip') {
+        recordAttempt('skip')
         test.mode = 'skip'
         test.result = {
           state: 'skip',
           note: test.result?.note,
           pending: true,
           duration: now() - start,
+          attempts: test.result.attempts,
         }
         updateTask('test-finished', test, runner)
         setCurrentTest(undefined)
@@ -744,6 +765,7 @@ async function runTest(test: Test, runner: VitestRunner): Promise<void> {
           }
         }
       }
+      recordAttempt(test.result.state === 'pass' ? 'pass' : 'fail')
       if (test.result.state === 'pass') {
         break
       }
@@ -923,8 +945,7 @@ async function runSuite(suite: Suite, runner: VitestRunner): Promise<void> {
               await $('suite.cleanup', () => callCleanupHooks(runner, beforeAllCleanups))
             }
             if (suite.file === suite) {
-              const contexts = TestFixtures.getFileContexts(suite.file)
-              await Promise.all(contexts.map((context) => callFixtureCleanup(context)))
+              await callFixtureCleanups(TestFixtures.getFileContexts(suite.file))
             }
           } catch (e) {
             failTask(suite.result!, e, runner.config._diffOptions)
@@ -1047,9 +1068,7 @@ export async function startTests(
 
   if (!workerRunners.has(runner)) {
     runner.onCleanupWorkerContext?.(async () => {
-      await Promise.all(
-        Array.from(TestFixtures.getWorkerContexts(), (context) => callFixtureCleanup(context)),
-      ).finally(() => {
+      await callFixtureCleanups(Array.from(TestFixtures.getWorkerContexts())).finally(() => {
         TestFixtures.clearDefinitions()
       })
     })

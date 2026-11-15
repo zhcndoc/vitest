@@ -22,6 +22,7 @@ import type {
 } from '../cache/fsModuleCache'
 import type { VitestResolver } from '../resolver'
 import type { ResolvedConfig } from '../types/config'
+import { hash } from 'node:crypto'
 import { existsSync, mkdirSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import { isExternalUrl, unwrapId } from '@vitest/utils/helpers'
@@ -29,7 +30,6 @@ import { join } from 'pathe'
 import c from 'tinyrainbow'
 import { fetchModule } from 'vite'
 import { createDebugger } from '../../utils/debugger'
-import { hash } from '../hash'
 import { detectModuleType } from '../resolver'
 import { fsPathFromId } from '../vite'
 import { normalizeResolvedIdToUrl } from './normalizeUrl'
@@ -83,8 +83,10 @@ export class ModuleTransformService {
    */
   async transform(id: string, environment: DevEnvironment): Promise<TransformResult | null> {
     await this.traces.waitInit()
+    // the module graph keeps the url of the first request, so it has to be the url that workers import
+    const url = normalizeResolvedIdToUrl(environment, id)
     const result = await this.traces.$('vitest.module.transform', (span) =>
-      this.fetchInSpan(span, id, undefined, environment),
+      this.fetchInSpan(span, url, undefined, environment),
     )
     // externalized modules are loaded by Node without a transform, like in a normal run
     if ('externalize' in result) {
@@ -96,7 +98,7 @@ export class ModuleTransformService {
         return transformResult
       }
     }
-    return environment.transformRequest(id)
+    return environment.transformRequest(url)
   }
 
   private async fetchInSpan(
@@ -145,6 +147,14 @@ export class ModuleTransformService {
 
     const externalize = await this.resolver.shouldExternalize(moduleGraphModule.id!)
     if (externalize) {
+      if (this.fsCacheEnabled) {
+        this.fsCache.recordManifestExternal(
+          this.config,
+          environment,
+          moduleGraphModule.url,
+          externalize,
+        )
+      }
       return { externalize, type: 'module' }
     }
 
@@ -190,6 +200,8 @@ export class ModuleTransformService {
       })
     }
 
+    this.fsCache.recordManifestModule(this.config, environment, moduleGraphModule.url, cachePath)
+
     if (saveCachePromises.has(cachePath)) {
       return saveCachePromises.get(cachePath)!.then((result) => {
         this.recordResult(trace, result)
@@ -218,6 +230,7 @@ export class ModuleTransformService {
     const imports = this.getCachedImports(environment, moduleGraphModule)
     const map = moduleGraphModule.transformResult?.map
     const mappings = map && !('version' in map) && map.mappings === ''
+    const coverageData = this.fsCache.getCoverageData(environment, moduleGraphModule.id!)
 
     const cachedResult = await this.cacheResult(
       result,
@@ -225,6 +238,7 @@ export class ModuleTransformService {
       moduleGraphModule.transformResult,
       imports,
       !!mappings,
+      coverageData,
     )
     // remember where the code is stored on disk so that repeat fetches and the
     // `fetchWarmModules` snapshot can point at it in this session already, not
@@ -279,7 +293,7 @@ export class ModuleTransformService {
     environment: DevEnvironment,
     moduleGraphModule: EnvironmentModuleNode,
   ): Promise<null | string> {
-    if (!this.fsCacheEnabled) {
+    if (!this.fsCacheEnabled || this.fsCache.getCacheRoot(this.config) == null) {
       return null
     }
     const moduleId = moduleGraphModule.id!
@@ -361,8 +375,19 @@ export class ModuleTransformService {
       return
     }
 
+    if (cachedModule.file) {
+      this.fsCache.watchFile(cachedModule.file)
+    }
+
+    // Notify coverage provider that cached results were read
+    if (cachedModule.hasCoverageData) {
+      this.fsCache.restoreCoverageData(environment, cachedModule.id, cachedModule.coverageData)
+    }
+
     // keep the module graph in sync
-    let map: Rollup.SourceMap | null | { mappings: '' } = extractSourceMap(cachedModule.code)
+    let map: Rollup.SourceMap | null | { mappings: '' } = cachedModule.sourceMap
+      ? parseSourceMap(cachedModule.sourceMap)
+      : null
     if (map && cachedModule.file) {
       map.file = cachedModule.file
     }
@@ -380,6 +405,7 @@ export class ModuleTransformService {
       __vitestTmp: cachePath,
       __vitestModuleType: moduleType,
       __vitestStaticMocks: cachedModule.staticMocks,
+      __vitestSourceMap: cachedModule.sourceMap ?? null,
     }
 
     // we populate the module graph to make the watch mode work because it relies on importers
@@ -400,7 +426,7 @@ export class ModuleTransformService {
       file: cachedModule.file,
       id: cachedModule.id,
       tmp: cachePath,
-      url: cachedModule.url,
+      url: moduleGraphModule.url,
       invalidate: false,
       moduleType,
     }
@@ -506,6 +532,7 @@ export class ModuleTransformService {
     transformResult: TransformResult | null,
     imports?: CachedModuleImports,
     mappings = false,
+    coverageData?: unknown,
   ): Promise<FetchResult | FetchCachedFileSystemResult> {
     const returnResult = 'code' in result ? getCachedResult(result, cachePath) : result
 
@@ -514,7 +541,7 @@ export class ModuleTransformService {
     }
 
     const savePromise = this.fsCache
-      .saveCachedModule(cachePath, result, transformResult, imports, mappings)
+      .saveCachedModule(cachePath, result, transformResult, imports, mappings, coverageData)
       .then(() => returnResult)
       .catch((error) => {
         debugFs?.(`failed to cache ${cachePath}, serving it inline: ${error}`)
@@ -572,23 +599,19 @@ function getSafeModulePaths(environment: DevEnvironment): Set<string> | undefine
 let SOURCEMAPPING_URL = 'sourceMa'
 SOURCEMAPPING_URL += 'ppingURL'
 
-const MODULE_RUNNER_SOURCEMAPPING_SOURCE = '//# sourceMappingSource=vite-generated'
-
-function processResultSource(environment: DevEnvironment, result: FetchResult): FetchResult {
+// the source map is sent next to the code, so V8 doesn't compile it with every module
+function processResultSource(environment: DevEnvironment, result: FetchResult): VitestFetchResult {
   if (!('code' in result)) {
     return result
   }
 
   const node = environment.moduleGraph.getModuleById(result.id)
-  if (node?.transformResult) {
-    // this also overrides node.transformResult.code which is also what the module
-    // runner does under the hood by default (we disable source maps inlining)
-    inlineSourceMap(node.transformResult)
-  }
+  const sourceMap = node?.transformResult ? getSourceMap(node.transformResult) : undefined
 
   return {
     ...result,
     code: node?.transformResult?.code || result.code,
+    sourceMap,
   }
 }
 
@@ -597,22 +620,25 @@ const OTHER_SOURCE_MAP_REGEXP = new RegExp(
   'gm',
 )
 
-// we have to inline the source map ourselves, because
+// we don't let Vite inline the source map, because
 // - we don't need //# sourceURL since we are running code in VM
 //   - important in stack traces and the V8 coverage
 // - we need to inject an empty line for --inspect-brk
-function inlineSourceMap(result: TransformResult) {
-  const map = result.map
-  let code = result.code
-
-  if (!map || !('version' in map) || code.includes(MODULE_RUNNER_SOURCEMAPPING_SOURCE)) {
-    return result
+function getSourceMap(result: TransformResult): string | undefined {
+  if (result.__vitestSourceMap !== undefined) {
+    return result.__vitestSourceMap ?? undefined
   }
 
-  // to reduce the payload size, we only inline vite node source map, because it's also the only one we use
+  const map = result.map
+  if (!map || !('version' in map)) {
+    result.__vitestSourceMap = null
+    return undefined
+  }
+
+  // to reduce the payload size, we only keep vite node source map, because it's also the only one we use
   OTHER_SOURCE_MAP_REGEXP.lastIndex = 0
-  if (OTHER_SOURCE_MAP_REGEXP.test(code)) {
-    code = code.replace(OTHER_SOURCE_MAP_REGEXP, '')
+  if (OTHER_SOURCE_MAP_REGEXP.test(result.code)) {
+    result.code = result.code.replace(OTHER_SOURCE_MAP_REGEXP, '')
   }
 
   const sourceMap = { ...map }
@@ -623,18 +649,8 @@ function inlineSourceMap(result: TransformResult) {
     sourceMap.mappings = `AAAA,CAAA${sourceMap.mappings}`
   }
 
-  result.code = `${code.trimEnd()}\n${
-    MODULE_RUNNER_SOURCEMAPPING_SOURCE
-  }\n//# ${SOURCEMAPPING_URL}=${genSourceMapUrl(sourceMap)}\n`
-
-  return result
-}
-
-function genSourceMapUrl(map: Rollup.SourceMap | string): string {
-  if (typeof map !== 'string') {
-    map = JSON.stringify(map)
-  }
-  return `data:application/json;base64,${Buffer.from(map).toString('base64')}`
+  result.__vitestSourceMap = JSON.stringify(sourceMap)
+  return result.__vitestSourceMap
 }
 
 function getCachedResult(
@@ -652,23 +668,9 @@ function getCachedResult(
   }
 }
 
-const MODULE_RUNNER_SOURCEMAPPING_REGEXP = new RegExp(
-  `//# ${SOURCEMAPPING_URL}=data:application/json;base64,(.+)`,
-)
-
-function extractSourceMap(code: string): null | Rollup.SourceMap {
-  const pattern = `//# ${SOURCEMAPPING_URL}=data:application/json;base64,`
-  const lastIndex = code.lastIndexOf(pattern)
-  if (lastIndex === -1) {
-    return null
-  }
-
-  const mapString = MODULE_RUNNER_SOURCEMAPPING_REGEXP.exec(code.slice(lastIndex))?.[1]
-  if (!mapString) {
-    return null
-  }
-  const sourceMap = JSON.parse(Buffer.from(mapString, 'base64').toString('utf-8'))
-  // remove source map mapping added by "inlineSourceMap" to keep the original behaviour of transformRequest
+function parseSourceMap(map: string): Rollup.SourceMap {
+  const sourceMap = JSON.parse(map)
+  // remove source map mapping added by "getSourceMap" to keep the original behaviour of transformRequest
   if (sourceMap.mappings.startsWith('AAAA,CAAA;')) {
     // 9 because we want to only remove "AAAA,CAAA", but keep ; at the start
     sourceMap.mappings = sourceMap.mappings.slice(9)
@@ -706,5 +708,7 @@ declare module 'vite' {
     __vitestModuleType?: ModuleType
     // set by the hoistMocks plugin; null when the file was not hoisted
     __vitestStaticMocks?: StaticMockCall[] | null
+    // the source map sent to workers; null when the module has none
+    __vitestSourceMap?: string | null
   }
 }

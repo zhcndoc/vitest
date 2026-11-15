@@ -407,6 +407,35 @@ Vitest 会将所有文件（包括被 glob 模式覆盖的文件）计入全局�
 设置为要忽略覆盖率的类方法名称数组。
 参见 [istanbul 文档](https://github.com/istanbuljs/nyc#ignoring-methods) 获取更多信息。
 
+## coverage.ignoreNode <Version>5.1.0</Version> {#coverage-ignorenode}
+
+- **类型：** `(node: Node, type: 'function' | 'statement' | 'branch') => boolean | 'ignore-this-and-nested-nodes' | void`
+- **适用的提供者：** `'v8'`
+
+根据 AST 节点筛选要从覆盖率中忽略的代码。Vitest 会针对转换后代码中的每个节点调用此函数，并传入该节点所计入的覆盖率类型。返回 `true` 可忽略该节点；返回 `'ignore-this-and-nested-nodes'` 则还会忽略其内部的所有节点。
+
+这适用于源文件中不存在、无法添加[忽略提示](/guide/coverage#ignoring-code)的代码，例如编译器或其他插件生成的代码。由于这些节点来自 Vite 转换后的代码，筛选函数可以准确看到插件生成的内容。
+
+Vitest 会先运行内置筛选器，因此 Vitest 已忽略的节点（例如自身转换生成的内容）不会传入此函数。
+
+```ts
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    coverage: {
+      provider: 'v8',
+      ignoreNode: (node, type) =>
+        type === 'statement'
+        && node.type === 'ExpressionStatement'
+        && node.expression.type === 'CallExpression'
+        && node.expression.callee.type === 'Identifier'
+        && node.expression.callee.name === '__generatedHelper',
+    },
+  },
+})
+```
+
 ## coverage.watermarks
 
 - **类型:**

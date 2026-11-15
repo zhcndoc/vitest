@@ -1,4 +1,4 @@
-import type { Config as FakeTimersConfig } from '@sinonjs/fake-timers'
+import type { TemporalTimelike } from '@sinonjs/fake-timers'
 import type {
   MaybeMocked,
   MaybeMockedDeep,
@@ -10,6 +10,7 @@ import type { Disposable } from 'vitest/optional-runtime-types.js'
 import type { RuntimeOptions, SerializedConfig } from '../runtime/config'
 import type { VitestMocker } from '../runtime/moduleRunner/moduleMocker'
 import type { MockFactoryWithHelper, MockOptions } from '../types/mocker'
+import type { FakeTimersConfig } from './mock/timers'
 import {
   clearAllMocks,
   fn,
@@ -21,6 +22,7 @@ import {
 import { assertTypes, createSimpleStackTrace } from '@vitest/utils/helpers'
 import { getSafeTimers } from '@vitest/utils/timers'
 import { getWorkerState, isChildProcess, resetModules } from '../runtime/utils'
+import { copyStackTrace } from '../utils/errors'
 import { parseSingleStack } from '../utils/source-map'
 import { FakeTimers } from './mock/timers'
 import { isWhenChain, when } from './mock/when'
@@ -93,7 +95,7 @@ export interface VitestUtils {
    * If fake timers are enabled, this method simulates a user changing the system clock (will affect date related API like `hrtime`, `performance.now` or `new Date()`) - however, it will not fire any timers.
    * If fake timers are not enabled, this method will only mock `Date.*` and `new Date()` calls.
    */
-  setSystemTime: (time: number | string | Date) => VitestUtils
+  setSystemTime: (time: number | string | Date | TemporalTimelike) => VitestUtils
   /**
    * Returns mocked current date. If date is not mocked the method will return `null`.
    */
@@ -577,7 +579,7 @@ function createVitest(): VitestUtils {
       return timers().getTimerCount()
     },
 
-    setSystemTime(time: number | string | Date) {
+    setSystemTime(time: number | string | Date | TemporalTimelike) {
       timers().setSystemTime(time)
       return utils
     },
@@ -837,13 +839,6 @@ function getImporter(name: string) {
   })
   const stack = parseSingleStack(stackArray[importerStackIndex + 1])
   return stack?.file || ''
-}
-
-function copyStackTrace(target: Error, source: Error) {
-  if (source.stack !== undefined) {
-    target.stack = source.stack.replace(source.message, target.message)
-  }
-  return target
 }
 
 function waitNextTick() {

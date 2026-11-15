@@ -113,11 +113,13 @@ TypeError: default is not a function
 - **Type:** `string[]`
 - **Default:** `['node_modules']`
 
-应被视为模块目录的目录列表。此配置选项会影响 [`vi.mock`](/api/vi#vi-mock) 的行为：当未提供工厂且你正在模拟的路径匹配 `moduleDirectories` 值之一时，Vitest 将尝试通过在项目的 [root](/config/root) 中查找 `__mocks__` 文件夹来解析模拟。
+包含依赖项的目录列表。Vitest 会在每个值前后加上斜杠，并检查文件路径是否包含该目录：`'vendor'` 会匹配 `vendor` 文件夹中的所有文件，绝对路径则只匹配该目录中的文件。Vitest 始终会包含 `node_modules`。
 
-此选项还将影响在外部化依赖项时是否应将文件视为模块。默认情况下，Vitest 使用原生 Node.js 导入外部模块，绕过 Vite 转换步骤。
+Vitest 会将这些目录中的文件视为依赖项：
 
-设置此选项将 _覆盖_ 默认值，如果你希望仍然搜索 `node_modules` 中的包，请将其与其他选项一起包含：
+- 未提供工厂函数的 [`vi.mock`](/api/vi#vi-mock) 只会在项目[根目录](/config/root)的 `__mocks__` 文件夹中查找模拟文件。
+- Vitest 会[外部化](/config/server#server-deps-external) Node.js 可直接导入的 JavaScript 文件，例如 `type` 设置为 `module` 的包中的 `.js` 文件。Vitest 使用原生 Node.js 导入这些文件，Vite 插件不会转换它们，而 `vi.mock` 也不会作用于这些文件导入的模块。
+- Vitest 会为 [`server.deps.inline`](/config/server#server-deps-inline) 和 [`server.deps.external`](/config/server#server-deps-external) 的字符串值添加这些目录作为前缀。
 
 ```ts
 import { defineConfig } from 'vitest/config'
@@ -125,8 +127,16 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   test: {
     deps: {
-      moduleDirectories: ['node_modules', path.resolve('../../packages')],
-    }
+      moduleDirectories: ['vendor'],
+    },
   },
 })
 ```
+
+::: tip
+在 monorepo 中模拟工作区包时，无需设置此选项。即使包解析到 `node_modules` 之外，只要你使用包名调用 `vi.mock`，Vitest 就会在根目录的 `__mocks__` 文件夹中查找。
+:::
+
+::: warning
+不要添加包含项目源文件的目录。例如，若项目位于 `packages/app`，将 `packages` 设为此选项的值也会让 Vitest 把 `packages/app` 中的文件视为依赖项。
+:::

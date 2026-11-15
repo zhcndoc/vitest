@@ -9,9 +9,9 @@ outline: deep
 - **Default:** `true`
 - **CLI:** `--cache`, `--no-cache`
 
-在文件系统中存储测试运行的结果。Vitest 使用这些结果优先运行失败和耗时较长的测试文件。
+在文件系统中存储测试运行的结果。Vitest 使用这些结果优先运行失败和耗时较长的测试文件，并通过 [`--last-failed`](/guide/cli#last-failed) 选择测试。
 
-对于每个测试文件，Vitest 会存储该文件是否失败、运行时长以及上次运行的时间。如果某次运行没有执行完整个文件（例如使用 [`--testNamePattern`](/config/testnamepattern) 过滤或被 [`bail`](/config/bail) 取消），则可以将该文件标记为失败，但不能将其标记为通过。
+Vitest 会为每个测试文件存储其是否失败、哪些测试失败、运行时长以及上次运行时间。如果某次运行没有执行完整个文件（例如使用 [`--testNamePattern`](/config/testnamepattern) 过滤或被 [`bail`](/config/bail) 取消），则可以将该文件标记为失败，但不能将其标记为通过。
 
 你可以运行 [`vitest --clearCache`](/guide/cli#clearcache) 删除缓存。
 

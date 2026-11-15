@@ -1,8 +1,14 @@
 import type { Page } from '@playwright/test'
 import type { PreviewServer } from 'vite'
 import type { Vitest } from 'vitest/node'
-import { expect, test } from '@playwright/test'
-import { assertTestCounts, openExplorerItem, startHtmlReportPreview, startVitestUi } from './helper'
+import { expect } from '@playwright/test'
+import {
+  assertTestCounts,
+  openExplorerItem,
+  startHtmlReportPreview,
+  startVitestUi,
+  test,
+} from './helper'
 
 test.describe('ui', () => {
   let vitest: Vitest | undefined
@@ -88,6 +94,10 @@ test.describe('ui', () => {
   test('zoom', async ({ page }) => {
     await testZoom(page)
   })
+
+  test('aria snapshot', async ({ page }) => {
+    await testAriaSnapshot(page)
+  })
 })
 
 test.describe('html reporter', () => {
@@ -104,7 +114,7 @@ test.describe('html reporter', () => {
         reporters: 'html',
         browser: {
           traceView: {
-            enabled: true,
+            mode: 'on',
             inlineImages: true,
           },
         },
@@ -186,7 +196,50 @@ test.describe('html reporter', () => {
   test('zoom', async ({ page }) => {
     await testZoom(page)
   })
+
+  test('aria snapshot', async ({ page }) => {
+    await testAriaSnapshot(page)
+  })
 })
+
+async function testAriaSnapshot(page: Page) {
+  const traceView = page.getByTestId('trace-view')
+  await openExplorerItem(page, 'simple')
+  const traceSteps = traceView.getByTestId('trace-step')
+  await traceSteps.nth(0).click()
+
+  // DOM snapshot is shown by default
+  const viewSelect = traceView.getByRole('combobox', { name: 'Trace snapshot view' })
+  const showHighlightCheckbox = traceView.getByRole('checkbox', { name: 'Show highlight' })
+  const zoomTrigger = traceView.getByTestId('trace-zoom-trigger')
+  await expect(viewSelect).toHaveValue('dom')
+  await expect(showHighlightCheckbox).toBeEnabled()
+  await expect(zoomTrigger).toBeEnabled()
+  await expect(
+    traceView.frameLocator('iframe').getByRole('button', { name: 'Simple' }),
+  ).toBeVisible()
+
+  // aria view shows the captured accessibility tree and disables DOM-only controls
+  const ariaSnapshot = traceView.getByTestId('trace-aria-snapshot')
+  await viewSelect.selectOption('aria')
+  await expect(ariaSnapshot).toHaveText('- button "Simple"')
+  await expect(traceView.locator('iframe')).toHaveCount(0)
+  await expect(showHighlightCheckbox).toBeDisabled()
+  await expect(zoomTrigger).toBeDisabled()
+
+  // selected view is kept across steps and reloads
+  await traceSteps.nth(1).click()
+  await expect(ariaSnapshot).toHaveText('- button "Another"')
+  await page.reload()
+  await expect(viewSelect).toHaveValue('aria')
+  await expect(ariaSnapshot).toHaveText('- button "Another"')
+
+  // switching back rebuilds the DOM snapshot with highlight
+  await viewSelect.selectOption('dom')
+  const traceFrame = traceView.frameLocator('iframe')
+  await expect(traceFrame.getByRole('button', { name: 'Another' })).toBeVisible()
+  await expect(traceFrame.getByTestId('trace-view-highlight')).toBeVisible()
+}
 
 async function testBasic(page: Page) {
   // selecting test case opens trace viewer
@@ -212,7 +265,10 @@ async function testBasic(page: Page) {
   await expect(activeLine).toContainText('Render simple')
 
   // markers ordered by 'test finished' > 'Render simple' > 'Render another'
-  const traceEditorMarkers = page.getByTestId('editor').getByTestId('trace-editor-marker')
+  const editor = page.getByTestId('editor')
+  const traceEditorMarkers = editor.getByTestId('trace-editor-marker')
+  const traceGutter = editor.locator('.CodeMirror-gutter.trace-step-gutter')
+  await expect(traceGutter).toBeVisible()
   await expect(traceEditorMarkers).toHaveCount(3)
   await expect(traceEditorMarkers.nth(1)).toHaveAttribute('aria-current', 'step')
   await expect(traceEditorMarkers.nth(2)).not.toHaveAttribute('aria-current', 'step')
@@ -272,6 +328,7 @@ async function testBasic(page: Page) {
   // verify closing trace viewer doesn't immediately auto-open it again
   await traceView.getByRole('button', { name: 'Close Trace Viewer' }).click()
   await expect(traceView).toBeHidden()
+  await expect(traceGutter).toHaveCount(0)
 
   // reopen the trace viewer from the report
   await page.getByTestId('btn-report').click()
@@ -423,6 +480,8 @@ async function testPseudoState(page: Page) {
   await expect(traceFrame.locator('.test-focus')).toHaveCSS(...pseudoOff)
   await traceSteps.nth(3).click()
   await expect(traceFrame.locator('.test-focus')).toHaveCSS(...pseudoOn)
+  // restoring pseudo-state keeps case-sensitive class matching
+  await expect(traceFrame.locator('.test-focus')).toHaveCSS('color', 'rgb(0, 128, 0)')
 
   // focus-within
   await expect(traceFrame.locator('.test-focus-within')).toHaveCSS(...pseudoOff)

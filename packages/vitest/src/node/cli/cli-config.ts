@@ -401,6 +401,10 @@ export const cliOptionsConfig: VitestCLIOptions = {
         description:
           'Control if Vitest catches uncaught exceptions so they can be reported (default: `true`)',
       },
+      importMapMocks: {
+        description:
+          'Serve module mocks through an import map instead of request interception. By default, enabled when the browser supports it',
+      },
       trace: {
         description:
           'Enable trace view mode. Supported: "on", "off", "on-first-retry", "on-all-retries", "retain-on-failure".',
@@ -411,18 +415,33 @@ export const cliOptionsConfig: VitestCLIOptions = {
         },
       },
       traceView: {
-        description: 'Enable Vitest trace-view collection for browser tests (default: `false`)',
+        description:
+          'Enable Vitest trace-view collection for browser tests. `true` records every test, and `false` turns it off (default: `"failure-only"`)',
         argument: '',
-        transform: transformNestedBoolean,
+        transform(value) {
+          if (typeof value === 'boolean') {
+            return { mode: value ? 'on' : 'off' }
+          }
+          return value
+        },
         subcommands: {
           enabled: {
-            description: 'Enable Vitest trace-view collection for browser tests (default: `false`)',
+            description:
+              'Deprecated, use `--browser.traceView.mode` instead. `true` is the same as `--browser.traceView.mode=on`',
+          },
+          mode: {
+            description:
+              'How trace view records tests. Supported: "on" (every test), "failure-only" (only failed tests), "off" (default: `"failure-only"`)',
+            argument: '<mode>',
           },
           recordCanvas: {
             description: 'Capture canvas pixels in trace-view snapshots (default: `false`)',
           },
           inlineImages: {
             description: 'Inline loaded image pixels in trace-view snapshots (default: `false`)',
+          },
+          ariaSnapshot: {
+            description: 'Capture the accessibility tree in trace-view snapshots (default: `true`)',
           },
         },
       },
@@ -505,6 +524,13 @@ export const cliOptionsConfig: VitestCLIOptions = {
     description: 'Run tests that are affected by the changed files (default: `false`)',
     argument: '[since]',
   },
+  sinceLastRun: {
+    description:
+      'Run only the tests whose recorded dependencies were modified since the last run of the test, and the tests that failed in their last run. Enables `--changed`, `--experimental.recordDependencies` and the `mtime` provider (default: `false`)',
+  },
+  lastFailed: {
+    description: 'Run only the tests that failed in the last run (default: `false`)',
+  },
   sequence: {
     description: 'Options for how tests should be sorted',
     argument: '<options>',
@@ -583,7 +609,17 @@ export const cliOptionsConfig: VitestCLIOptions = {
   },
   bail: {
     description: 'Stop test execution when given number of tests have failed (default: `0`)',
-    argument: '<number>',
+    argument: '[number]',
+    transform(value) {
+      if (value === true) {
+        return 1
+      }
+      if (typeof value === 'number') {
+        return value
+      }
+
+      throw new TypeError(`Unexpected value "--bail=${value}". Use "--bail=1 ${value}" instead.`)
+    },
   },
   retry: {
     description: 'Retry the test specific number of times if it fails (default: `0`)',
@@ -931,9 +967,14 @@ export const cliOptionsConfig: VitestCLIOptions = {
         description:
           'Controls whether Vitest will use Node.js Loader API to process in-source or mocked files. This has no effect if `viteModuleRunner` is enabled. Disabling this can increase performance. (default: `true`)',
       },
+      traceTimeline: {
+        description:
+          'Record `expect.poll`, `vi.waitFor`, and `vi.waitUntil` steps of each test and print them as a timeline when the test fails. This has no effect in browser mode. (default: `false`)',
+      },
       vcsProvider: {
         argument: '<path>',
-        description: 'Custom provider for detecting changed files. (default: `git`)',
+        description:
+          'Provider for detecting changed files: `git`, `mtime` (requires `experimental.recordDependencies`) or a path to a custom provider. (default: `git`)',
         subcommands: null,
       },
       recordDependencies: {
@@ -1029,5 +1070,12 @@ export const collectCliOptionsConfig: VitestCLIOptions = {
   changed: {
     description: 'Print only tests that are affected by the changed files (default: `false`)',
     argument: '[since]',
+  },
+  sinceLastRun: {
+    description:
+      'Print only the tests whose recorded dependencies were modified since the last run of the test, and the tests that failed in their last run (default: `false`)',
+  },
+  lastFailed: {
+    description: 'Print only the tests that failed in the last run (default: `false`)',
   },
 }

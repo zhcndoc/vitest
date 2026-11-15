@@ -4,6 +4,7 @@ import type {
   Plugin as VitePlugin,
   UserConfig as ViteUserConfig,
 } from 'vite'
+import type { CliOptions } from '../cli/cli-api'
 import type { Logger } from '../logger'
 import type {
   ApiConfig,
@@ -22,6 +23,7 @@ import c from 'tinyrainbow'
 import { mergeConfig, resolveConfig as viteResolveConfig } from 'vite'
 import { configFiles, defaultInspectPort } from '../../constants'
 import { benchmarkConfigDefaults, configDefaults } from '../../defaults'
+import { isInspectorOpen } from '../../runtime/inspector'
 import { wildcardPatternToRegExp } from '../../utils/base'
 import { isAgent, isCI, stdProvider } from '../../utils/env'
 import { getDefaultMaxWorkers, resolveMaxWorkers } from '../../utils/workers'
@@ -36,6 +38,8 @@ import { BaseSequencer } from '../sequencers/BaseSequencer'
 import { RandomSequencer } from '../sequencers/RandomSequencer'
 import { resolveApiToken } from './apiToken'
 import { PluginHarness } from './pluginHarness'
+
+const builtinVCSProviders = new Set(['git', 'mtime'])
 
 function resolvePath(path: string, root: string) {
   // local-pkg (mlly)'s resolveModule("./file", { paths: ["/some/root"] }) tries
@@ -117,7 +121,7 @@ export function resolveApiServerConfig(
   }
 
   if (api) {
-    if (!api.port && !api.middlewareMode) {
+    if (api.port == null && !api.middlewareMode) {
       api.port = defaultPort
     }
   } else {
@@ -129,7 +133,7 @@ export function resolveApiServerConfig(
     api.middlewareMode = false
     // The browser server is standalone, so it always needs a port even when the
     // user didn't configure `api`/`ui` (in which case `api` defaulted above)
-    if (!api.port) {
+    if (api.port == null) {
       api.port = defaultPort
     }
   }
@@ -228,6 +232,7 @@ export function resolveTestConfig(
     resolved.coverage = globalConfig.coverage
     resolved.attachmentsDir = globalConfig.attachmentsDir
     resolved.mergeReportsLabel = globalConfig.mergeReportsLabel
+    resolved.watch = globalConfig.watch
   }
 
   const rootStats = statSync(resolved.root, { throwIfNoEntry: false })
@@ -340,6 +345,7 @@ export function resolveTestConfig(
     ...parseInspector(inspector),
     enabled: !!inspector,
     waitForDebugger: options.inspector?.waitForDebugger ?? !!resolved.inspectBrk,
+    openInMainProcess: isInspectorOpen(),
   }
 
   if (viteConfig.base !== '/') {
@@ -510,6 +516,18 @@ export function resolveTestConfig(
         resolved.coverage.reporter.push(['text-summary', {}])
       }
     }
+  }
+  // CLI options are merged into the test config
+  if ((options as CliOptions).sinceLastRun) {
+    if (resolved.cache === false) {
+      throw new Error(
+        'The "--since-last-run" flag requires the "cache" option to store the dependencies of the test files.',
+      )
+    }
+    resolved.changed ||= true
+    resolved.experimental ??= {} as any
+    resolved.experimental.recordDependencies = true
+    resolved.experimental.vcsProvider = 'mtime'
   }
   if (resolved.coverage.changed === undefined && resolved.changed !== undefined) {
     resolved.coverage.changed = resolved.changed
@@ -852,7 +870,11 @@ export function resolveTestConfig(
   resolved.typecheck ??= {} as any
   resolved.typecheck.enabled ??= false
 
-  if (resolved.typecheck.enabled && !warnedTypeCheck) {
+  if (
+    resolved.typecheck.enabled &&
+    !warnedTypeCheck &&
+    !process.env.VITEST_DISABLE_EXPERIMENTAL_LOG
+  ) {
     warnedTypeCheck = true
     logger.console.warn(
       c.yellow(
@@ -938,19 +960,31 @@ export function resolveTestConfig(
   }
 
   const traceView = resolved.browser.traceView
-  resolved.browser.traceView =
-    typeof traceView === 'object'
-      ? {
-          enabled: traceView.enabled ?? false,
-          recordCanvas: traceView.recordCanvas ?? false,
-          inlineImages: traceView.inlineImages ?? false,
-        }
-      : {
-          enabled: traceView ?? false,
-          recordCanvas: false,
-          inlineImages: false,
-        }
-  if (resolved.browser.enabled && resolved.browser.traceView.enabled) {
+  const traceViewOptions = typeof traceView === 'object' ? traceView : undefined
+  if (traceViewOptions?.enabled != null) {
+    logger.deprecate(
+      '`browser.traceView.enabled` is deprecated. Use `browser.traceView.mode` instead.',
+    )
+  }
+  const traceViewMode =
+    typeof traceView === 'string'
+      ? traceView
+      : typeof traceView === 'object'
+        ? (traceView.mode ??
+          (traceView.enabled === undefined ? 'failure-only' : traceView.enabled ? 'on' : 'off'))
+        : traceView === undefined
+          ? 'failure-only'
+          : traceView
+            ? 'on'
+            : 'off'
+  resolved.browser.traceView = {
+    enabled: traceViewMode !== 'off',
+    mode: traceViewMode,
+    recordCanvas: traceViewOptions?.recordCanvas ?? false,
+    inlineImages: traceViewOptions?.inlineImages ?? false,
+    ariaSnapshot: traceViewOptions?.ariaSnapshot ?? true,
+  }
+  if (resolved.browser.enabled && resolved.browser.traceView.mode === 'on') {
     resolved.browser.detailsPanelPosition = 'bottom'
   }
   if (resolved.browser.trace.tracesDir != null) {
@@ -967,23 +1001,15 @@ export function resolveTestConfig(
 
   if (htmlReporter) {
     resolved.includeTaskLocation ??= true
-  } else if (resolved.browser.enabled && resolved.browser.traceView.enabled && !resolved.watch) {
-    logger.console.warn(
-      c.yellow(
-        withLabel('yellow', 'Vitest', '--browser.traceView is enabled without the HTML reporter.'),
-      ),
-    )
   }
 
   resolved.server ??= {}
   resolved.server.deps ??= {}
 
-  if (resolved.server.debug?.dump || process.env.VITEST_DEBUG_DUMP) {
-    const userFolder = resolved.server.debug?.dump || process.env.VITEST_DEBUG_DUMP
-    resolved.dumpDir = resolve(
-      resolved.root,
-      typeof userFolder === 'string' && userFolder !== 'true' ? userFolder : '.vitest-dump',
-      resolved.name || 'root',
+  // projects inherit the root option, so they warn only when they set it themselves
+  if (resolved.server.debug && (!globalConfig || !globalConfig.server.debug)) {
+    logger.deprecate(
+      '`server.debug` is deprecated and has no effect. To inspect or edit the transformed code, look up the module in the `fsModuleCache` manifest: https://vitest.dev/config/fsmodulecache#manifest',
     )
   }
 
@@ -1039,7 +1065,7 @@ export function resolveTestConfig(
 
   if (
     typeof resolved.experimental.vcsProvider === 'string' &&
-    resolved.experimental.vcsProvider !== 'git'
+    !builtinVCSProviders.has(resolved.experimental.vcsProvider)
   ) {
     resolved.experimental.vcsProvider = resolvePath(
       resolved.experimental.vcsProvider,
@@ -1068,9 +1094,16 @@ export function resolveTestConfig(
       resolved.fsModuleCachePath = legacyExperimental.fsModuleCachePath
     }
   }
+  // the config and the CLI take priority over the environment
+  const fsModuleCacheEnv = process.env.VITEST_FS_MODULE_CACHE
+  if (resolved.fsModuleCache == null && fsModuleCacheEnv) {
+    resolved.fsModuleCache = fsModuleCacheEnv !== 'false' && fsModuleCacheEnv !== '0'
+    resolved.providedOptions.fsModuleCache = true
+  }
   resolved.fsModuleCache ??= true
-  if (resolved.fsModuleCachePath) {
-    resolved.fsModuleCachePath = resolve(resolved.root, resolved.fsModuleCachePath)
+  const fsModuleCachePath = resolved.fsModuleCachePath || process.env.VITEST_FS_MODULE_CACHE_PATH
+  if (fsModuleCachePath) {
+    resolved.fsModuleCachePath = resolve(resolved.root, fsModuleCachePath)
   }
 
   return resolved
@@ -1127,6 +1160,7 @@ export async function resolveConfig(
   options: UserConfig = {},
   viteOverrides: ViteUserConfig = {},
   pluginsHarness: PluginHarness = new PluginHarness(),
+  cliFilters: string[] = [],
 ): Promise<ResolvedViteConfig> {
   // We clone CLI Options and Vite overrides to reuse when a watch mode is triggered.
   const cliOptionsCopy = deepMerge({}, options) as UserConfig
@@ -1203,6 +1237,7 @@ export async function resolveConfig(
   rootConfig.cliOptions = cliOptionsCopy
   rootConfig.viteOverrides = viteOverridesCopy
   rootConfig._browserContribution = captures.browserContribution
+  rootConfig._cliFilters = cliFilters
   // projects never inherit `tagsFilter` and `browser` from the programmatic
   // config (see `inheritRootViteOverrides`), so remove them from the base too
   if (captures.rawTestConfig) {

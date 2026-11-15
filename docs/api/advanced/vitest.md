@@ -44,7 +44,7 @@ const testCase = vitest.state.getReportedEntity(task) // 新 API
 
 ## 缓存
 
-缓存管理器，存储之前测试运行的结果。在 Vitest 本身中，这仅由默认排序器用于测试排序。
+缓存管理器，存储之前测试运行的结果。Vitest 会在默认排序器中用它排列测试，也会用它通过 [`--last-failed`](/guide/cli#last-failed) 选择测试。
 
 ### cache.getTestSpecificationResult <Version type="experimental">5.0.4</Version> {#cache-gettestspecificationresult}
 
@@ -58,7 +58,7 @@ function getTestSpecificationResult(
 interface CachedTestFileResult {
   /**
    * The file has a known failure.
-   * Only a complete run of the file clears it.
+   * A complete run of the file clears it, or a run in which every known failed test passes.
    */
   failed: boolean
   /**
@@ -70,6 +70,12 @@ interface CachedTestFileResult {
    * It is not set if the file never ran completely.
    */
   lastRun?: number
+  /**
+   * Full names of the tests that failed in the last run of the file.
+   * `--last-failed` runs only these tests.
+   * It is not set if the failure happened outside of tests, for example in a hook or during collection.
+   */
+  failedTests?: string[]
 }
 ```
 
@@ -230,7 +236,7 @@ function collect(
 
 根据 `staticParse` 的值，此方法会通过静态分析收集测试文件（默认行为），或运行代码但不执行测试回调。`collect` 会返回未处理的错误和一个 [test module](/api/advanced/test-module) 数组。它接受字符串过滤条件来匹配测试文件，与 [CLI 支持的过滤条件](/guide/filtering#cli)相同。
 
-此方法根据配置中的 `include`、`exclude` 和 `includeSource` 值解析测试规范。更多信息请参阅 [`project.globTestFiles`](/api/advanced/test-project#globtestfiles)。如果指定了 `--changed` 标志，列表将被过滤为仅包含已更改的文件。
+此方法根据配置中的 `include`、`exclude` 和 `includeSource` 值解析测试规范。更多信息请参阅 [`project.globTestFiles`](/api/advanced/test-project#globtestfiles)。如果指定了 `--changed` 标志，列表将被过滤为仅包含已更改的文件；如果指定了 [`--shard`](/guide/cli#shard)，则只收集当前分片中的文件。
 
 ::: warning
 请注意，从 Vitest 5 开始，默认通过静态分析收集测试。如果通过第二个选项禁用了静态分析，Vitest 会像运行常规测试一样隔离运行每个测试文件。这会让此方法变得很慢，除非你在收集测试前手动禁用隔离。
@@ -299,7 +305,7 @@ function runTestSpecifications(
 ): Promise<TestRunResult>
 ```
 
-此方法根据接收到的 [规范](/api/advanced/test-specification) 运行每个测试。第二个参数 `allTestsRun` 由覆盖率提供者使用，以确定是否需要在报告中包含未覆盖的文件。
+此方法根据接收到的[规范](/api/advanced/test-specification)运行每个测试，不会应用 [`--shard`](/guide/cli#shard) 选项。覆盖率提供者会使用第二个参数 `allTestsRun`，判断是否需要在报告中包含未覆盖的文件。
 
 ::: warning
 此方法不会触发 `onWatcherRerun`、`onWatcherStart` 和 `onTestsRerun` 回调。如果你是基于文件更改重新运行测试，请考虑使用 [`rerunTestSpecifications`](#runtestspecifications) 代替。
@@ -349,7 +355,7 @@ function collectTests(
 
 执行测试文件而不运行测试回调。`collectTests` 返回未处理的错误和 [测试模块](/api/advanced/test-module) 数组。
 
-此方法的工作方式与 [`collect`](#collect) 完全相同，但你需要自己提供测试规范。
+此方法的工作方式与 [`collect`](#collect) 完全相同，但你需要自己提供测试规范。它不会应用 [`--shard`](/guide/cli#shard) 选项。
 
 ::: warning
 请注意，Vitest 不使用静态分析来收集测试。Vitest 将像运行常规测试一样，隔离执行每个测试文件。这使得此方法非常慢，除非你在收集测试之前禁用了隔离。
@@ -599,7 +605,7 @@ function experimental_parseSpecification(
 ): Promise<TestModule>
 ```
 
-此函数会收集文件内的所有测试而不运行它。它在 Vite 的 `ssrTransform` 之上使用 rollup 的 `parseAst` 函数来静态分析文件并收集所有能收集到的测试。
+此函数会收集文件内的所有测试而不运行它。它在 Vite 的 `ssrTransform` 之上使用 Rollup 的 `parseAst` 函数静态分析文件，并尽可能收集测试。只有第一个参数是字符串、模板字符串、数字、变量、类似 `MyClass.name` 的属性，或由这些形式构成的条件表达式（`a ? b : c`、`a ?? b`、`a || b`）时，才会收集该调用；因此 `test(getName(), fn)` 不会被收集。对于 `test(isWindows ? 'a' : 'b', fn)` 这类名称不是字面量的测试，收集时会将其源码作为名称。测试仍会保留位置信息，但测试名称模式无法匹配它。
 
 ::: warning
 如果 Vitest 无法分析测试名称，它会向测试或套件注入一个 `dynamic: true` 属性。`id` 也会带有 `-dynamic` 后缀，以免破坏正确收集的测试。

@@ -11,6 +11,7 @@ import type {
 import type { SerializedCoverageConfig } from '../runtime/config'
 import type { AfterSuiteRunMeta } from '../types/general'
 import type { TestProject } from './project'
+import type { TestSpecification } from './test-specification'
 import { createHash } from 'node:crypto'
 import { existsSync, promises as fs, readdirSync, writeFileSync } from 'node:fs'
 import module from 'node:module'
@@ -24,6 +25,7 @@ import { glob } from 'tinyglobby'
 import c from 'tinyrainbow'
 import { coverageConfigDefaults } from '../defaults'
 import { resolveCoverageReporters } from '../node/config/resolveConfig'
+import { createModulesResolver } from '../node/modules-resolver'
 import { getCoverageFilesDirectory, resolveCoverageProviderModule } from '../utils/coverage'
 
 type Threshold = 'lines' | 'functions' | 'statements' | 'branches'
@@ -375,12 +377,13 @@ export class BaseCoverageProvider {
     }
   }
 
-  async onTestRunStart(): Promise<void> {
+  async onTestRunStart(specifications: ReadonlyArray<TestSpecification>): Promise<void> {
     if (this.options.changed) {
       try {
         const changedFiles = await this.ctx.vcs.findChangedFiles({
           root: this.ctx.config.root,
           changedSince: this.options.changed,
+          resolver: createModulesResolver(this.ctx, specifications),
         })
 
         this.changedFiles = changedFiles
@@ -776,7 +779,10 @@ export class BaseCoverageProvider {
       const code = await fs.readFile(filename, 'utf-8')
       return {
         // `transform` mode will inject source maps comment at the end
-        code: module.stripTypeScriptTypes(code, { mode: isTransform ? 'transform' : 'strip' }),
+        // Node 26 removed the 'transform' mode, older versions still support it
+        code: module.stripTypeScriptTypes(code, {
+          mode: (isTransform ? 'transform' : 'strip') as 'strip',
+        }),
         map: null,
       }
     }
@@ -796,7 +802,9 @@ export class BaseCoverageProvider {
       let lastError
 
       for (const project of projects) {
-        const root = project.config.root
+        const root = project.config.root.endsWith('/')
+          ? project.config.root
+          : `${project.config.root}/`
 
         if (
           // On Windows root doesn't start with "/" while filenames do

@@ -26,6 +26,7 @@ export async function run(
   config: SerializedConfig,
   moduleRunner: TestModuleRunner,
   traces: Traces,
+  syncBuiltinESMExports: () => void,
 ): Promise<void> {
   const workerState = getWorkerState()
 
@@ -63,6 +64,7 @@ export async function run(
     util,
     timers,
     timersPromises,
+    syncBuiltinESMExports,
   }
 
   await traces.$('vitest.runtime.coverage.start', () =>
@@ -144,6 +146,8 @@ export async function run(
         // mocks should not affect different files
         vi.restoreAllMocks()
         moduleRunner.mocker?.reset()
+        // fake timers patch the worker's `process`, which outlives this file
+        vi.useRealTimers()
       }
     })
   } finally {

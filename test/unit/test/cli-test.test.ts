@@ -227,6 +227,18 @@ test('maxConcurrency is parsed correctly', () => {
   expect(getCLIOptions('--max-concurrency=1000')).toEqual({ maxConcurrency: 1000 })
 })
 
+test('bail is parsed correctly', () => {
+  expect(getCLIOptions('--bail')).toEqual({ bail: 1 })
+  expect(getCLIOptions('--bail --run')).toEqual({ bail: 1, run: true })
+  expect(getCLIOptions('--bail 2')).toEqual({ bail: 2 })
+  expect(getCLIOptions('--bail=2')).toEqual({ bail: 2 })
+  expect(getCLIOptions('--bail=0')).toEqual({ bail: 0 })
+
+  expect(() => getCLIOptions('--bail example.test.ts')).toThrowErrorMatchingInlineSnapshot(
+    `[TypeError: Unexpected value "--bail=example.test.ts". Use "--bail=1 example.test.ts" instead.]`,
+  )
+})
+
 test('project is parsed correctly', () => {
   // cac copies the raw value to the shorthand key, it is ignored by vitest
   expect(getCLIOptions('--project space_1')).toEqual({ project: ['space_1'], p: 'space_1' })
@@ -313,6 +325,24 @@ test('browser.locators are passed correctly', () => {
   expect(getCLIOptions('--browser.locators.exact')).toEqual({
     browser: { locators: { exact: true } },
   })
+})
+
+test('browser.traceView boolean is parsed as mode', () => {
+  expect(getCLIOptions('--browser.traceView')).toEqual({
+    browser: { traceView: { mode: 'on' } },
+  })
+  expect(getCLIOptions('--browser.traceView=false')).toEqual({
+    browser: { traceView: { mode: 'off' } },
+  })
+  expect(getCLIOptions('--browser.traceView.mode=failure-only')).toEqual({
+    browser: { traceView: { mode: 'failure-only' } },
+  })
+})
+
+test('browser.traceView keeps the following filter', () => {
+  const { options, args } = parseArguments('--browser.traceView basic.test.ts')
+  expect(options).toEqual({ browser: { traceView: { mode: 'on' } } })
+  expect(args).toEqual(['basic.test.ts'])
 })
 
 test('clearScreen', async (ctx) => {
@@ -564,6 +594,26 @@ test('public parseCLI works correctly', () => {
       color: true,
     },
   })
+})
+
+test.each(['', 'run', 'list'])('sinceLastRun accepts both spellings (%s)', (command) => {
+  for (const flag of ['--sinceLastRun', '--since-last-run']) {
+    expect(getCLIOptions(`${command} ${flag}`)).toEqual({ sinceLastRun: true })
+    expect(getCLIOptions(`${command} ${flag.replace('--', '--no-')}`)).toEqual({
+      sinceLastRun: false,
+    })
+  }
+})
+
+test.each(['', 'run', 'list'])('help uses camelCase for sinceLastRun (%s)', (command) => {
+  const cli = createCLI()
+  let helpText = ''
+  cli.help((sections) => {
+    helpText = sections.map((section) => section.body).join('\n')
+  })
+  cli.parse(['node', '/index.js', ...(command ? [command] : []), '--help'], { run: false })
+
+  expect(new Set(helpText.match(/--since\S+/g))).toEqual(new Set(['--sinceLastRun']))
 })
 
 test('should include builtin reporters list', () => {

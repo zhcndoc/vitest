@@ -15,6 +15,8 @@ outline: deep
 
 默认情况下，Vitest 会将缓存存储在工作区根目录的 `node_modules` 中。根目录基于包管理器的锁文件确定（例如 `.package-lock.json`、`.yarn-state.yml`、`.pnpm/lock.yaml` 等）。将缓存保存在 `node_modules` 中意味着每当重新安装依赖项时，缓存都会自然失效。
 
+如果配置文件和 CLI 都未设置此选项，Vitest 会从 `VITEST_FS_MODULE_CACHE_PATH` 环境变量读取它。相对路径以[根目录](/config/root)为基准解析。
+
 ```ts
 import { defineConfig } from 'vitest/config'
 

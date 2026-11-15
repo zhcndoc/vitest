@@ -54,7 +54,7 @@ export default defineConfig({
 ```
 
 ::: warning
-与 Playwright 测试运行器不同，Vitest 打开_单个_页面来运行定义在同一文件中的所有测试。这意味着隔离限制在单个测试文件，而不是每个单独的测试。
+与 Playwright Test 不同，Vitest 不会为每个测试或每个测试文件都创建新的浏览器上下文。同一文件中的测试会共享浏览器状态，不同测试文件也可能共享浏览器存储（参见 [`contextOptions`](#contextoptions)）。
 :::
 
 ## launchOptions
@@ -155,14 +155,14 @@ export default defineConfig({
 
 ## contextOptions
 
-Vitest 通过调用 [`browser.newContext()`](https://playwright.dev/docs/api/class-browsercontext) 为每个测试文件创建一个新上下文。你可以通过指定 [自定义参数](https://playwright.dev/docs/api/class-browser#browser-new-context) 来配置此行为。
+默认情况下，Vitest 会调用 [`browser.newContext()`](https://playwright.dev/docs/api/class-browsercontext) 创建浏览器上下文。你可以通过指定[自定义参数](https://playwright.dev/docs/api/class-browser#browser-new-context)来配置此行为。
 
 ::: tip
-请注意，上下文是为每个_测试文件_创建的，而不是像 playwright 测试运行器那样为每个_测试_创建。
+Vitest 不会为每个_测试文件_都创建新的上下文。测试文件可以重复使用同一个上下文，因此一个测试文件设置的 cookie、`localStorage` 和其他浏览器存储内容，后续运行的测试文件也可能访问到。
 :::
 
 ::: warning
-Vitest 总是将 `ignoreHTTPSErrors` 设置为 `true`，以防你的服务器通过 HTTPS 提供服务，并将 `serviceWorkers` 设置为 `'allow'` 以支持通过 [MSW](https://mswjs.io) 进行模块 mocking。
+Vitest 总是将 `ignoreHTTPSErrors` 设置为 `true`，这样即使服务器使用浏览器不信任的 HTTPS 证书（例如自签名证书），测试也能运行。
 
 还建议使用 [`test.browser.viewport`](/config/browser/headless) 而不是在此处指定，因为当测试在无头模式下运行时它会丢失。
 :::

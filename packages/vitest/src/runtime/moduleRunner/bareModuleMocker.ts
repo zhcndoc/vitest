@@ -166,13 +166,27 @@ export class BareModuleMocker implements TestModuleMocker {
     )
   }
 
-  public async resolveMocks(): Promise<void> {
-    if (!BareModuleMocker.pendingIds.length) {
-      return
-    }
+  public registeringMocks: Promise<void> | undefined
 
-    const pendingIds = BareModuleMocker.pendingIds
-    BareModuleMocker.pendingIds = []
+  public async resolveMocks(): Promise<void> {
+    if (BareModuleMocker.pendingIds.length) {
+      const pendingIds = BareModuleMocker.pendingIds
+      BareModuleMocker.pendingIds = []
+      const registration = this.registerMocks(pendingIds, this.registeringMocks).finally(() => {
+        if (this.registeringMocks === registration) {
+          this.registeringMocks = undefined
+        }
+      })
+      this.registeringMocks = registration
+    }
+    await this.registeringMocks
+  }
+
+  private async registerMocks(
+    pendingIds: PendingSuiteMock[],
+    previous: Promise<void> | undefined,
+  ): Promise<void> {
+    await previous?.catch(() => {})
 
     const resolveMock = async (mock: PendingSuiteMock) => {
       const resolved = await this.resolveId(mock.id, mock.importer)
@@ -218,8 +232,12 @@ export class BareModuleMocker implements TestModuleMocker {
     return registry.get(url)
   }
 
-  public findMockRedirect(mockPath: string, external: string | null): string | null {
-    return findMockRedirect(this.root, mockPath, external)
+  public findMockRedirect(
+    mockPath: string,
+    external: string | null,
+    rawId?: string,
+  ): string | null {
+    return findMockRedirect(this.root, mockPath, external, rawId)
   }
 
   public mockObject(
@@ -283,7 +301,7 @@ export class BareModuleMocker implements TestModuleMocker {
     } else if (mockType === 'autospy') {
       registry.register('autospy', originalId, id, url)
     } else {
-      const redirect = this.findMockRedirect(id, external)
+      const redirect = this.findMockRedirect(id, external, originalId)
       if (redirect) {
         registry.register('redirect', originalId, id, url, redirect)
       } else {

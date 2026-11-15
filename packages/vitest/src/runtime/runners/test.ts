@@ -31,6 +31,7 @@ import { createTaskCollector, getCurrentSuite } from '../runner/suite'
 import { getCurrentTest } from '../runner/test-state'
 import { createChainable } from '../runner/utils/chain'
 import { matchesTags } from '../runner/utils/tags'
+import { finishTraceAttempt, startTraceAttempt } from '../trace-timeline'
 import { getWorkerState } from '../utils'
 
 export class TestRunner implements VitestTestRunner {
@@ -167,21 +168,36 @@ export class TestRunner implements VitestTestRunner {
     this.workerState.current = suite
   }
 
-  onBeforeTryTask(test: Task, _options: TestTryOptions): void {
+  onBeforeTryTask(test: Task, options: TestTryOptions): void {
+    if (this.config.experimental.traceTimeline && test.type === 'test') {
+      startTraceAttempt(test, options)
+    }
     clearModuleMocks(this.config)
     this.snapshotClient.clearTest(test.file.filepath, test.id)
+    const assertionState = {
+      assertionCalls: 0,
+      isExpectingAssertions: false,
+      isExpectingAssertionsError: null,
+      expectedAssertionsNumber: null,
+      expectedAssertionsNumberErrorGen: null,
+    }
     setState(
       {
-        assertionCalls: 0,
-        isExpectingAssertions: false,
-        isExpectingAssertionsError: null,
-        expectedAssertionsNumber: null,
-        expectedAssertionsNumberErrorGen: null,
+        ...assertionState,
         currentTestName: getTestName(test),
         snapshotState: this.snapshotClient.getSnapshotState(test.file.filepath),
       },
       (globalThis as any)[GLOBAL_EXPECT],
     )
+    if (test.type === 'test' && test.context._local) {
+      setState(assertionState, test.context.expect)
+    }
+  }
+
+  async onAfterRetryTask(test: Test, _options: TestTryOptions): Promise<void> {
+    if (this.config.experimental.traceTimeline) {
+      await finishTraceAttempt(test)
+    }
   }
 
   onAfterTryTask(test: Test): void {

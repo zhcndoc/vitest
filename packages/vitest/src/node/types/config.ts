@@ -1,4 +1,3 @@
-import type { Config as FakeTimersConfig } from '@sinonjs/fake-timers'
 import type { PrettyFormatOptions } from '@vitest/pretty-format'
 import type { SnapshotStateOptions } from '@vitest/snapshot'
 import type { Arrayable } from '@vitest/utils'
@@ -12,6 +11,7 @@ import type {
   UserConfig as ViteUserConfig,
 } from 'vite'
 import type { ChaiConfig } from '../../integrations/chai/config'
+import type { FakeTimersConfig } from '../../integrations/mock/timers'
 import type { SerializedConfig } from '../../runtime/config'
 import type {
   SequenceHooks,
@@ -216,7 +216,8 @@ interface DepsOptions {
   interopDefault?: boolean
 
   /**
-   * A list of directories relative to the config file that should be treated as module directories.
+   * A list of directories that contain dependencies. A file is a dependency if its path includes `/<directory>/`.
+   * `node_modules` is always included.
    *
    * @default ['node_modules']
    */
@@ -288,21 +289,13 @@ export interface InlineConfig {
 
   server?: {
     deps?: ServerDepsOptions
+    /**
+     * @deprecated This option does nothing. To inspect or edit the transformed code,
+     * look up the module in the `fsModuleCache` manifest.
+     * @see {@link https://vitest.dev/config/fsmodulecache#manifest}
+     */
     debug?: {
-      /**
-       * The folder where Vitest stores the contents of transformed
-       * test files that can be inspected manually.
-       *
-       * If `true`, Vitest dumps the files in `.vitest-dump` folder relative to the root of the project.
-       *
-       * You can also use `VITEST_DEBUG_DUMP` env variable to enable this.
-       */
       dump?: string | true
-      /**
-       * If dump is enabled, should Vitest load the files from there instead of transforming them.
-       *
-       * You can also use `VITEST_DEBUG_LOAD_DUMP` env variable to enable this.
-       */
       load?: boolean
     }
   }
@@ -1026,13 +1019,26 @@ export interface InlineConfig {
     nodeLoader?: boolean
 
     /**
-     * Custom provider for detecting changed files. Used with the `--changed` flag
+     * Record `expect.poll`, `vi.waitFor`, and `vi.waitUntil` steps of each test and print them as a timeline when the test fails.
+     * Steps of passing tests are dropped without being reported.
+     *
+     * This has no effect in browser mode, which records its steps with `browser.traceView`.
+     * @default false
+     */
+    traceTimeline?: boolean
+
+    /**
+     * Provider for detecting changed files. Used with the `--changed` flag
      * to determine which files have been modified.
      *
-     * By default, Vitest uses Git to detect changed files. You can provide a custom
-     * implementation of the `VCSProvider` interface to use a different version control system.
+     * - `'git'` (default) compares the working tree with the `--changed` reference.
+     * - `'mtime'` compares the modification time of every recorded dependency with the run
+     *   that recorded it. It requires `experimental.recordDependencies`. The test files that
+     *   failed in their last run also run.
+     *
+     * You can also provide a custom implementation of the `VCSProvider` interface.
      */
-    vcsProvider?: VCSProvider | string
+    vcsProvider?: 'git' | 'mtime' | VCSProvider | (string & {})
 
     /**
      * Record the modules that every test file loads in the cache and use the records
@@ -1270,6 +1276,7 @@ export interface ResolvedConfig extends Omit<
   | 'tagsFilter'
   | 'reporter'
   | 'ui'
+  | 'inspector'
 > {
   name: ProjectName['label']
   color?: ProjectName['color']
@@ -1301,6 +1308,14 @@ export interface ResolvedConfig extends Omit<
    * @internal
    */
   _scriptDefines?: Record<string, any>
+
+  inspector: NonNullable<UserConfig['inspector']> & {
+    /**
+     * The main process has an open inspector. A debugger attached to it can attach to workers too.
+     * @internal
+     */
+    openInMainProcess: boolean
+  }
 
   api: ResolvedApiConfig
   ui: boolean
@@ -1341,7 +1356,6 @@ export interface ResolvedConfig extends Omit<
   maxWorkers: number
 
   vmMemoryLimit?: string | number
-  dumpDir?: string
   tagsFilter?: string[]
   mergeReportsLabel?: string
 
@@ -1415,6 +1429,11 @@ export interface ResolvedConfig extends Omit<
    * @internal
    */
   _apiRequested?: boolean
+  /**
+   * File filters passed on the command line, known before projects resolve.
+   * @internal
+   */
+  _cliFilters?: string[]
 }
 
 /**
@@ -1452,9 +1471,10 @@ export interface ResolvedProjectEntry {
   viteConfig: ResolvedViteConfig
   projectConfig: ResolvedConfig
   /**
-   * Whether test files were found while resolving browser dependencies. This
-   * early result is used only to decide whether prewarming is useful; runtime
-   * discovery still globs after plugins have configured the server.
+   * Whether test files matching the CLI filters were found while resolving
+   * browser dependencies. This early result is used only to decide whether
+   * prewarming is useful; runtime discovery still globs after plugins have
+   * configured the server.
    *
    * @internal
    */

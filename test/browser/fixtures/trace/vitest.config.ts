@@ -1,6 +1,6 @@
 import { defineConfig } from 'vitest/config'
 import type { MarkOptions } from 'vitest/browser';
-import { instances, provider } from '../../settings'
+import { instances, provider } from '../../settings.ts'
 
 // TEST_BROWSER=chromium pnpm -C test/browser test-fixtures --root fixtures/trace
 // TEST_BROWSER=chromium pnpm -C test/browser test-fixtures --root fixtures/trace --ui --browser.headless
@@ -14,7 +14,7 @@ export default defineConfig({
       provider: provider,
       instances: instances,
       traceView: {
-        enabled: true,
+        mode: 'on',
         inlineImages: true,
         recordCanvas: true,
       },

@@ -53,9 +53,6 @@ export function createPool(ctx: Vitest): ProcessPool {
 
   const options = resolveOptions(ctx)
 
-  const Sequencer = ctx.config.sequence.sequencer
-  const sequencer = new Sequencer(ctx)
-
   let browserPool: BrowserPool | undefined
 
   async function executeTests(
@@ -65,16 +62,6 @@ export function createPool(ctx: Vitest): ProcessPool {
   ): Promise<void> {
     ctx.onCancel(() => pool.cancel())
 
-    if (ctx.config.shard) {
-      if (!ctx.config.passWithNoTests && ctx.config.shard.count > specs.length) {
-        throw new Error(
-          '--shard <count> must be a smaller than count of test files. ' +
-            `Resolved ${specs.length} test files for --shard=${ctx.config.shard.index}/${ctx.config.shard.count}.`,
-        )
-      }
-      specs = await sequencer.shard(Array.from(specs))
-    }
-
     const taskGroups: {
       tasks: PoolTask[]
       maxWorkers: number
@@ -83,9 +70,8 @@ export function createPool(ctx: Vitest): ProcessPool {
     }[] = []
     let workerId = 1
 
-    const sorted = await sequencer.sort(specs)
     const { environments, tags } = await getSpecificationsOptions(specs)
-    const groups = groupSpecs(sorted, environments)
+    const groups = groupSpecs(specs, environments)
 
     const projectEnvs = new WeakMap<TestProject, Partial<NodeJS.ProcessEnv>>()
     const projectExecArgvs = new WeakMap<TestProject, string[]>()
@@ -159,8 +145,10 @@ export function createPool(ctx: Vitest): ProcessPool {
               testLocations: spec.testLines,
               testNamePattern: spec.testNamePattern,
               testIds: spec.testIds,
+              testNames: spec.testNames,
               testTagsFilter: spec.testTagsFilter,
             })),
+            // Vitest's own pools don't read it, but a custom pool whose worker outlives a run can use it
             invalidates,
             providedContext: project.getProvidedContext(),
             workerId: workerId++,

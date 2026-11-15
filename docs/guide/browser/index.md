@@ -138,7 +138,7 @@ export default defineConfig({
 ```
 
 ::: info
-Vitest 会分配端口 `63315`，以避免与开发服务器冲突，从而允许两者并行运行。你可以通过 [`api`](/config/api) 选项更改端口。端口会在首次启动浏览器时绑定；如果启用了 `api` 或 `ui`，则会在启动时绑定。
+Vitest 会分配端口 `23315`，以避免与开发服务器冲突，从而允许两者并行运行。你可以通过 [`api`](/config/api) 选项更改端口。端口会在首次启动浏览器时绑定；如果启用了 `api` 或 `ui`，则会在启动时绑定。
 :::
 
 如果你之前没有使用过 Vite，请确保已安装并在配置中指定了你的框架插件。某些框架可能需要额外配置才能工作 - 请查看它们的 Vite 相关文档以确保无误。
@@ -361,7 +361,7 @@ npx vitest --browser.headless
 
 无头模式是浏览器模式中的另一个可用选项。在无头模式下，浏览器在没有用户界面的情况下在后台运行，这使得它对于运行自动化测试非常有用。Vitest 中的 headless 选项可以设置为布尔值以启用或禁用无头模式。
 
-使用无头模式时，Vitest 不会自动打开 UI。如果你想继续使用 UI 但让测试无头运行，你可以安装 [`@vitest/ui`](/guide/ui) 包并在运行 Vitest 时传递 `--ui` 标志。
+使用无头模式时，Vitest 不会自动打开浏览器 UI。如果你想继续使用 UI，但让测试在无头浏览器中运行，可以安装 [`@vitest/ui`](/guide/ui) 包，并在运行 Vitest 时传递 `--ui` 标志。有关各选项的作用及其默认值之间的关系，请参阅[无头模式与 UI](#headless-mode-and-ui)。
 
 以下是启用无头模式的配置示例：
 
@@ -391,6 +391,26 @@ npx vitest --browser.headless
 ::: warning
 默认情况下不提供无头模式。你需要使用 [`playwright`](https://npmx.dev/package/playwright) 或 [`webdriverio`](https://npmx.dev/package/webdriverio) 提供者来启用此功能。
 :::
+
+### 无头模式与 UI {#headless-mode-and-ui}
+
+浏览器模式运行时，以下三个选项决定你会看到什么：
+
+- [`browser.headless`](/config/browser/headless) 控制运行测试的浏览器是否显示窗口。
+- [`browser.ui`](/config/browser/ui) 控制是否在该浏览器中渲染浏览器 UI，并在中央显示测试 iframe。
+- 顶层 `--ui` 标志控制 Vitest 是否提供 [Vitest UI](/guide/ui)，并在默认浏览器中打开它；该浏览器与运行测试的浏览器相互独立。
+
+在 CI 中，`browser.headless` 默认为 `true`；浏览器为有头模式且 Vitest 不在 CI 中运行时，`browser.ui` 默认为 `true`。下表列出了一些常见配置：
+
+| 目标                   | 设置                      | 结果                                                                     |
+| ---------------------- | ------------------------- | ------------------------------------------------------------------------ |
+| 本地开发               | 默认值                    | 浏览器窗口显示浏览器 UI。                                                |
+| 在普通浏览器窗口中观察测试 | `--browser.ui=false`      | 浏览器窗口只显示按配置视口大小呈现的测试 iframe，不显示浏览器 UI。       |
+| 在 CI 中运行           | 默认值                    | 不显示窗口，结果会在终端中报告。                                         |
+| 在无头浏览器中使用 Vitest UI | `--ui --browser.headless` | Vitest UI 显示结果，测试在无头浏览器中运行。                             |
+| 在可见浏览器窗口中使用 Vitest UI | `--ui --browser.ui=false` | Vitest UI 显示结果，测试则在单独的浏览器窗口中运行，且不显示浏览器 UI。 |
+
+仅传递 `--ui` 会继续在有头浏览器窗口中显示浏览器 UI；如果只想使用 Vitest UI，请设置 `--browser.ui=false`。
 
 ## 示例
 

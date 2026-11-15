@@ -144,15 +144,6 @@ export default ({ mode }: { mode: string }) => {
 
           search: {
             provider: 'local',
-            /* provider: 'algolia',
-      options: {
-        appId: 'ZTF29HGJ69',
-        apiKey: '9c3ced6fed60d2670bb36ab7e8bed8bc',
-        indexName: 'vitest',
-        // searchParameters: {
-        //   facetFilters: ['tags:en'],
-        // },
-      }, */
           },
 
           // banner: {
@@ -717,6 +708,10 @@ export default ({ mode }: { mode: string }) => {
                     link: '/config/browser/trackunhandlederrors',
                   },
                   {
+                    text: 'browser.importMapMocks',
+                    link: '/config/browser/importmapmocks',
+                  },
+                  {
                     text: 'browser.expect',
                     link: '/config/browser/expect',
                   },
@@ -1091,6 +1086,10 @@ export default ({ mode }: { mode: string }) => {
                   {
                     text: '并行与顺序测试文件',
                     link: '/guide/recipes/parallel-sequential',
+                  },
+                  {
+                    text: '仅运行受影响的测试',
+                    link: '/guide/recipes/affected-tests',
                   },
                 ],
               },

@@ -9,7 +9,7 @@ Vitest 提供两个层面的并行能力：可以同时运行多个_测试文件
 
 ## 文件并行性
 
-默认情况下，Vitest 在多个工作进程（workers）中并行运行测试文件。每个文件拥有独立的环境，因此不同文件中的测试不会相互干扰。
+默认情况下，Vitest 会在多个工作进程（workers）中并行运行测试文件。每个文件都有独立的环境，因此不同文件中的测试不会相互干扰。不过在[浏览器模式](/guide/browser/)下，不同测试文件可能会共享 cookie、`localStorage` 等浏览器存储（参见 [`contextOptions`](/config/browser/playwright#contextoptions)）。
 
 Vitest 用于创建工作进程的机制取决于配置的 [`pool`](/config/pool)：
 

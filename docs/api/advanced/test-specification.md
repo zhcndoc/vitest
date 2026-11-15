@@ -38,7 +38,9 @@ Vite 模块图中模块的 ID。通常，它是使用 posix 分隔符的绝对�
 
 ## testModule
 
-与规范关联的 [`TestModule`](/api/advanced/test-module) 实例。如果测试尚未排队，这将是 `undefined`。
+与规范关联的 [`TestModule`](/api/advanced/test-module) 实例。在 Vitest 将模块排入队列或解析模块之前（例如通过 [`experimental.preParse`](/config/experimental#experimental-preparse) 或 [`parseSpecifications`](/api/advanced/vitest#parsespecifications)），此值为 `undefined`。
+
+测试运行结束后，Vitest 仍会保留该模块。如果规范再次运行，在模块重新排入队列之前，此处会返回上一次运行的模块。
 
 ## pool {#pool}
 
@@ -85,6 +87,10 @@ describe('a group of tests', () => { // [!code error]
 ## testIds <Version>4.1.0</Version> {#testids}
 
 要运行的此规范内部任务的 id。
+
+## testNames <Version>5.1.0</Version> {#testnames}
+
+此规范中要运行的测试的完整名称，包括父级套件；各级名称之间以 `>` 分隔。
 
 ## testTagsFilter <Version>4.1.0</Version> {#testtagsfilter}
 

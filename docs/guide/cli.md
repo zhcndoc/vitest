@@ -271,3 +271,39 @@ vitest run --shard=3/3
 ```sh
 vitest --merge-reports --reporter=junit
 ```
+
+### since-last-run <Version type="experimental">5.1.0</Version> {#since-last-run}
+
+- **类型：** `boolean`
+- **默认值：** `false`
+
+只运行自该测试上次运行以来依赖项发生变化的测试。如果测试上次运行时加载的某个文件，其修改时间晚于那次运行，或该文件已被删除，就会选中此测试。之前未使用此标志运行过的测试没有记录，因此始终会运行。上次运行失败的测试文件也会继续运行，直到通过为止，因为失败原因可能在记录的文件之外，例如环境变量或当时不可用的服务器。
+
+```sh
+vitest run --since-last-run
+```
+
+此标志会启用 [`changed`](/config/changed)、[`experimental.recordDependencies`](/config/experimental#experimental-recorddependencies) 和 `mtime`[提供者](/config/experimental#experimental-vcsprovider)。每次使用此标志运行时，都会更新已运行测试的记录，因此下次运行只会选中期间所做更改影响到的测试。若要再次运行所有测试，请不带此标志运行 Vitest，或使用 [`--clearCache`](#clearcache) 删除缓存。
+
+此标志需要启用 [`cache`](/config/cache)。如果缓存已禁用，Vitest 会报错。
+
+::: warning
+修改时间来自文件系统。若 `git checkout` 或解压归档时将文件修改时间设为过去的时间，就无法检测到变化。测试上次运行时未加载的文件也无法检测，例如新建的 `.env` 文件或 `__mocks__` 文件。记录文件的完整列表请参阅 [`experimental.recordDependencies`](/config/experimental#experimental-recorddependencies)。
+:::
+
+关于它与 `--changed` 的比较，请参阅[仅运行受影响的测试](/guide/recipes/affected-tests)。
+
+### last-failed
+
+- **类型：** `boolean`
+- **默认值：** `false`
+
+只运行上次运行时失败的测试。Vitest 会从[结果缓存](/config/cache)中读取失败信息，并跳过其他所有测试文件和测试：
+
+```sh
+vitest run --last-failed
+```
+
+如果测试文件在测试之外失败（例如在 `beforeAll` 钩子或收集期间失败），Vitest 会运行该文件中的全部测试。Vitest 根据测试的完整名称进行选择，因此重命名的测试要等到不带此标志再次运行该文件时才会运行。如果上次运行没有测试失败，Vitest 会打印 `No failed tests found` 并以代码 1 退出，除非设置了 [`--passWithNoTests`](/config/passwithnotests)。
+
+此标志可以与其他过滤条件组合使用。例如，`vitest run --last-failed -t login` 只运行名称匹配 `login` 的失败测试。在监听模式下，只有第一次运行会限制为失败测试。

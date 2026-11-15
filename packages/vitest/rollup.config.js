@@ -38,6 +38,7 @@ const entries = {
   'workers/threads': 'src/runtime/workers/threads.ts',
   'workers/vmThreads': 'src/runtime/workers/vmThreads.ts',
   'workers/vmForks': 'src/runtime/workers/vmForks.ts',
+  'workers/watchdog': 'src/runtime/workers/watchdog.ts',
 
   'workers/runVmTests': 'src/runtime/runVmTests.ts',
 }
@@ -162,6 +163,16 @@ export default ({ watch }) =>
           resolveId(source) {
             if (source === '@vitest/spy/optional-types.js') {
               return 'vitest/optional-runtime-types.js'
+            }
+          },
+        },
+        {
+          // rollup-plugin-dts drops reference directives of .ts sources,
+          // so every chunk that uses the global `Chai` namespace loads @types/chai here
+          name: 'vitest-chai-type-reference',
+          renderChunk(code) {
+            if (/\bChai\./.test(code)) {
+              return `/// <reference types="chai" />\n${code}`
             }
           },
         },

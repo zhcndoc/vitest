@@ -9,7 +9,7 @@ import type {
   UserConfig as ViteUserConfig,
 } from 'vite'
 import type { BrowserCommands, CDPSession, MarkOptions } from 'vitest/browser'
-import type { BrowserTraceViewMode } from '../../runtime/config'
+import type { BrowserTraceViewMode, BrowserTraceViewRecordingMode } from '../../runtime/config'
 import type { CancelReason } from '../../runtime/runner/types'
 import type { BrowserTesterOptions } from '../../types/browser'
 import type { OTELCarrier } from '../../utils/traces'
@@ -74,14 +74,23 @@ export interface _BrowserNames {}
 
 export interface BrowserTraceViewOptions {
   /**
-   * Enable Vitest trace view artifacts collection.
-   *
-   * This option controls Vitest's own trace-view pipeline, independently from provider-specific trace retention.
-   *
-   * @default false
-   * @experimental
+   * @deprecated Use `mode` instead. `true` is the same as `mode: 'on'`.
    */
   enabled?: boolean
+
+  /**
+   * How trace view records tests.
+   *
+   * - `'on'`: every test gets a trace with a snapshot at every step, and Vitest UI shows steps live as tests run.
+   * - `'failure-only'`: only failed tests get a trace, with the full step timeline and a snapshot at the end.
+   * - `'off'`: no traces.
+   *
+   * Takes precedence over `enabled`.
+   *
+   * @default 'failure-only'
+   * @experimental
+   */
+  mode?: BrowserTraceViewRecordingMode
 
   /**
    * Capture canvas pixels in trace view snapshots.
@@ -90,7 +99,6 @@ export interface BrowserTraceViewOptions {
    * In the trace viewer, this enables a weaker replay iframe sandbox because rrweb needs scripts to redraw canvas data.
    *
    * @default false
-   * @experimental
    */
   recordCanvas?: boolean
 
@@ -101,9 +109,18 @@ export interface BrowserTraceViewOptions {
    * but can increase trace artifact size and does not preserve original image resource bytes.
    *
    * @default false
-   * @experimental
    */
   inlineImages?: boolean
+
+  /**
+   * Capture the accessibility tree alongside each trace view snapshot.
+   *
+   * The trace viewer's snapshot pane can then switch between "DOM" and "Aria" views.
+   *
+   * @default true
+   * @experimental
+   */
+  ariaSnapshot?: boolean
 }
 
 type UnsupportedProperties =
@@ -270,15 +287,16 @@ export interface BrowserConfigOptions {
       }
 
   /**
+   * Records the actions, assertions, and marks of browser tests with DOM snapshots for the trace viewer.
    *
-   * Enable Vitest trace view artifacts collection.
+   * - `'failure-only'`: records only failed tests.
+   * - `true` or `'on'`: records every test.
+   * - `false` or `'off'`: turns trace view off.
    *
-   * This option controls Vitest's own trace-view pipeline, independently from provider-specific trace retention.
-   *
-   * @default false
-   * @experimental
+   * @default 'failure-only'
+   * @see {@link https://vitest.dev/guide/browser/trace-view}
    */
-  traceView?: boolean | BrowserTraceViewOptions
+  traceView?: boolean | BrowserTraceViewRecordingMode | BrowserTraceViewOptions
 
   /**
    * Directory where screenshots will be saved when page.screenshot() is called
@@ -363,6 +381,20 @@ export interface BrowserConfigOptions {
    * @default true
    */
   trackUnhandledErrors?: boolean
+
+  /**
+   * Serve module mocks through an import map in the tester document instead of
+   * intercepting network requests.
+   *
+   * By default, Vitest checks once per browser whether it accepts an import map
+   * after a module has loaded (Chromium 133+, Safari 18.4+, Firefox 150+ with
+   * `dom.multiple_import_maps.enabled`, which the Playwright provider sets) and
+   * falls back to request interception otherwise. `true` fails in a browser that
+   * cannot, `false` always intercepts.
+   *
+   * @experimental
+   */
+  importMapMocks?: boolean
 }
 
 export interface BrowserCommandContext {
@@ -474,7 +506,7 @@ export interface ProjectBrowser {
   close: () => Promise<void>
   initBrowserProvider: (project: TestProject) => Promise<void>
   closeBrowserProvider: (options?: BrowserProviderCloseOptions) => Promise<void>
-  parseStacktrace: (stack: string) => ParsedStack[]
+  parseStacktrace: (stack: string, options?: StackTraceParserOptions) => ParsedStack[]
   parseErrorStacktrace: (error: TestError, options?: StackTraceParserOptions) => ParsedStack[]
   registerCommand: <K extends keyof BrowserCommands>(
     name: K,

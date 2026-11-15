@@ -50,6 +50,15 @@ describe('correctly defines api flag', () => {
     })
   })
 
+  it.for<[string, Parameters<typeof config>[0]]>([
+    ['api.port', { api: { port: 0 } }],
+    ['api', { api: 0 }],
+  ])('keeps port 0 with %s', async ([, options]) => {
+    const c = await config(options)
+    expect(c.api.port).toBe(0)
+    expect(c.$viteConfig.server.port).toBe(0)
+  })
+
   it('allowWrite and allowExec default to true when not exposed to network', async () => {
     const c = await config({ api: { port: 5555 } })
     expect(c.api.allowWrite).toBe(true)
@@ -142,6 +151,7 @@ describe.each(['--inspect', '--inspect-brk'])('correctly parses %s flags', (insp
     expect(c.inspector).toEqual({
       ...inspect,
       waitForDebugger: inspectFlagName === '--inspect-brk' && inspect.enabled,
+      openInMainProcess: expect.any(Boolean),
     })
   })
   it('cannot use URL', async () => {

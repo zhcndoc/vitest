@@ -84,7 +84,7 @@ import Box from '../.vitepress/components/Box.vue'
 
 ## Istanbul 提供者
 
-[Istanbul 代码覆盖率工具](https://istanbul.js.org/) 自 2012 年以来一直存在，且经过了非常充分的实战检验。这个提供者可在任何 JavaScript 运行时上工作，因为覆盖率跟踪是通过转换你的源代码来添加插桩逻辑实现的。实际上，Vitest 最终运行的代码大致会像这样：
+[Istanbul 代码覆盖率工具](https://istanbul.js.org/) 自 2012 年以来一直存在，经过了充分的实战检验。Vitest 使用自己的 [`@vitest/istanbuljs`](https://github.com/vitest-dev/istanbuljs)，这是原始 [`istanbuljs/istanbuljs`](https://github.com/istanbuljs/istanbuljs) 项目的一个分支。此提供者可用于任何 JavaScript 运行时，因为它通过转换源代码并添加插桩逻辑来跟踪覆盖率。实际上，Vitest 最终运行的代码大致如下：
 
 ```js
 // 分支和函数覆盖率计数器的简化示例
@@ -123,7 +123,7 @@ globalThis.__VITEST_COVERAGE__[filename] = coverage // [!code ++]
 <div style="display: flex; flex-direction: column; align-items: center; padding: 2rem 0; max-width: 20rem;">
   <Box>测试文件</Box>
   <ArrowDown />
-  <Box>使用 Babel 预插桩</Box>
+  <Box>在 JavaScript 端进行预插桩</Box>
   <ArrowDown />
   <Box>运行文件</Box>
   <ArrowDown />
@@ -535,6 +535,29 @@ export function ignored() { // [!code error]
 ## 覆盖率性能
 
 如果项目生成代码覆盖率较慢，请参阅[分析测试性能 | 代码覆盖率](/guide/profiling-test-performance#code-coverage)。
+
+## HTML 报告主题
+
+Vitest 的 HTML 覆盖率报告默认使用 Vitest 风格的主题。深色或浅色主题按以下优先级确定：
+
+- [报告器选项](/config/coverage#coverage-reporter)：`coverage.reporter: [['html', { theme: 'light' | 'dark' | 'legacy' }]]`
+- 你上次在主题选择器中的选择
+- 操作系统的颜色偏好
+
+通过 Vitest UI 查看覆盖率报告时，报告会使用 UI 的颜色主题。显式设置报告器选项可以覆盖此行为。
+
+如果不想使用 Vitest 风格的报告，可以设置 `coverage.reporter: [['html', { theme: 'legacy' }]]`，强制使用原始 Istanbul 风格的主题。
+
+::: tabs key:coverage-report-theme
+== 浅色
+<img alt="浅色主题的 HTML 覆盖率报告" src="/coverage-report-theme-light.png">
+
+== 深色
+<img alt="深色主题的 HTML 覆盖率报告" src="/coverage-report-theme-dark.png">
+
+== 旧版
+<img alt="旧版 Istanbul.js 主题的 HTML 覆盖率报告" src="/coverage-report-theme-legacy.png">
+:::
 
 ## Vitest UI
 

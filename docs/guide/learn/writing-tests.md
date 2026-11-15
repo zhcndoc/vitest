@@ -236,6 +236,6 @@ test('no import needed', () => {
 
 ## 运行测试
 
-Vitest 默认**并行**运行所有测试文件，**使用 [子进程](/config/pool)**。每个测试文件都在其独立的上下文中运行，因此测试文件之间不会共享状态。这可以防止不同文件中的测试意外相互干扰。
+Vitest 默认使用[子进程](/config/pool)**并行**运行所有测试文件。每个测试文件都在独立的上下文中运行，因此不同文件中的测试不会共享状态，也不会意外相互干扰。浏览器模式是个例外：不同测试文件可能共享 cookie、`localStorage` 等浏览器存储（参见 [`contextOptions`](/config/browser/playwright#contextoptions)）。
 
 单个文件**内部**的测试默认按顺序运行，这通常是你想要的，因为同一文件中的测试经常共享设置代码。如果你的测试确实彼此独立，你可以使用 [`test.concurrent`](/api/test#concurrent) 让它们并发运行，以加快速度。有关如何控制测试执行的更多细节，请参阅 [并行性](/guide/parallelism) 指南。

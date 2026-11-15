@@ -2,8 +2,17 @@ import type { Assertion, ExpectStatic } from '@vitest/expect'
 import type { Test } from '../../runtime/runner/types'
 import { chai } from '@vitest/expect'
 import { delay, getSafeTimers } from '@vitest/utils/timers'
+import { getRunningTests } from '../../runtime/runner/test-state'
+import { createTraceRangeId, getTraceAttempt, recordTraceEntry } from '../../runtime/trace-timeline'
 import { getWorkerState } from '../../runtime/utils'
+import { copyStackTrace } from '../../utils/errors'
 import { vi } from '../vi'
+
+type PollOnStart = (meta: { assertion: Assertion }) => void | Promise<void>
+type PollOnSettled = (meta: {
+  assertion: Assertion
+  status: 'pass' | 'fail'
+}) => void | Promise<void>
 
 // these matchers are not supported because they don't make sense with poll
 const unsupported = [
@@ -28,20 +37,32 @@ const unsupported = [
 ]
 
 /**
- * Attaches a `cause` property to the error if missing, copies the stack trace from the source, and throws.
+ * Attaches a `cause` property to the error if missing, prefixes the custom message, copies the stack trace from the source, and throws.
  *
  * @param error - The error to throw
  * @param source - Error to copy the stack trace from
+ * @param message - Custom message passed to `expect.poll`
  *
  * @throws Always throws the provided error with an amended stack trace
  */
-function throwWithCause(error: any, source: Error) {
+function throwWithCause(error: any, source: Error, message: string | undefined) {
   error.cause ??= new Error('Matcher did not succeed in time.')
+  // matcher errors already start with the custom message
+  if (message && typeof error.message === 'string' && !error.message.startsWith(`${message}: `)) {
+    try {
+      error.message = `${message}: ${error.message}`
+    } catch {
+      // message can be read-only, e.g. DOMException
+    }
+  }
 
   throw copyStackTrace(error, source)
 }
 
-export function createExpectPoll(expect: ExpectStatic): ExpectStatic['poll'] {
+export function createExpectPoll(
+  expect: ExpectStatic,
+  isLocalExpect: boolean,
+): ExpectStatic['poll'] {
   return function poll(fn, options = {}) {
     const state = getWorkerState()
     const defaults = state.config.expect?.poll ?? {}
@@ -62,6 +83,10 @@ export function createExpectPoll(expect: ExpectStatic): ExpectStatic['poll'] {
     const test = chai.util.flag(assertion, 'vitest-test') as Test | undefined
     if (!test) {
       throw new Error('expect.poll() must be called inside a test')
+    }
+    // the global expect guesses the current test, which is ambiguous while several tests run concurrently
+    if (isLocalExpect || getRunningTests().size === 1) {
+      setTraceHandlers(assertion, test)
     }
     const proxy: any = new Proxy(assertion, {
       get(target, key, receiver) {
@@ -105,8 +130,10 @@ export function createExpectPoll(expect: ExpectStatic): ExpectStatic['poll'] {
             chai.util.flag(assertion, '_name', key)
             chai.util.flag(assertion, 'error', STACK_TRACE_ERROR)
 
-            const onStart = chai.util.flag(assertion, '_poll.onStart') as Function | undefined
-            const onSettled = chai.util.flag(assertion, '_poll.onSettled') as Function | undefined
+            const onStart = chai.util.flag(assertion, '_poll.onStart') as PollOnStart | undefined
+            const onSettled = chai.util.flag(assertion, '_poll.onSettled') as
+              | PollOnSettled
+              | undefined
             await onStart?.({ assertion })
 
             // We use `matcher.__vitest_poll_takeover__` flag
@@ -124,7 +151,7 @@ export function createExpectPoll(expect: ExpectStatic): ExpectStatic['poll'] {
                 return output
               } catch (err) {
                 await onSettled?.({ assertion, status: 'fail' })
-                throwWithCause(err, STACK_TRACE_ERROR)
+                throwWithCause(err, STACK_TRACE_ERROR, message)
               }
             }
 
@@ -186,7 +213,7 @@ export function createExpectPoll(expect: ExpectStatic): ExpectStatic['poll'] {
             }
             if (lastError) {
               await onSettled?.({ assertion, status: 'fail' })
-              throwWithCause(lastError, STACK_TRACE_ERROR)
+              throwWithCause(lastError, STACK_TRACE_ERROR, message)
             }
           }
           let awaited = false
@@ -235,11 +262,36 @@ export function createExpectPoll(expect: ExpectStatic): ExpectStatic['poll'] {
   }
 }
 
-function copyStackTrace(target: Error, source: Error) {
-  if (source.stack !== undefined) {
-    target.stack = source.stack.replace(source.message, target.message)
+function setTraceHandlers(assertion: Assertion, test: Test) {
+  const attempt = getTraceAttempt(test)
+  if (!attempt) {
+    return
   }
-  return target
+  const rangeId = createTraceRangeId()
+  // TODO: compute the name once in `__VITEST_POLL_CHAIN__` and pass it to the hooks,
+  // so this and `getTraceName` in packages/browser/src/client/tester/expect-element.ts can share it
+  const getName = (assertion: Assertion) => {
+    const negated = chai.util.flag(assertion, 'negate') ? 'not.' : ''
+    const message = chai.util.flag(assertion, 'message')
+    const name = `expect.poll().${negated}${chai.util.flag(assertion, '_name')}`
+    return message ? `${message} (${name})` : `${name}()`
+  }
+  const onStart: PollOnStart = ({ assertion }) => {
+    recordTraceEntry(
+      attempt,
+      { name: getName(assertion), kind: 'expect', range: { id: rangeId, phase: 'start' } },
+      chai.util.flag(assertion, 'error'),
+    )
+  }
+  const onSettled: PollOnSettled = ({ assertion, status }) => {
+    recordTraceEntry(
+      attempt,
+      { name: getName(assertion), kind: 'expect', range: { id: rangeId, phase: 'end' }, status },
+      chai.util.flag(assertion, 'error'),
+    )
+  }
+  chai.util.flag(assertion, '_poll.onStart', onStart)
+  chai.util.flag(assertion, '_poll.onSettled', onSettled)
 }
 
 function raceWith<A, B>(

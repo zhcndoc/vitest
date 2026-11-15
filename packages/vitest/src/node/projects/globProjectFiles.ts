@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { slash } from '@vitest/utils/helpers'
+import { isAbsolute, join, relative } from 'pathe'
 import { glob } from 'tinyglobby'
 
 /**
@@ -58,4 +59,35 @@ export async function globProjectTestFiles(
   }
 
   return testFiles
+}
+
+/**
+ * Keep the test files that match the CLI filters. With no filters, every file matches.
+ */
+export function filterTestFiles(testFiles: string[], filters: string[], dir: string): string[] {
+  if (!filters.length) {
+    return testFiles
+  }
+  if (process.platform === 'win32') {
+    filters = filters.map((f) => slash(f))
+  }
+  const patterns = filters.map((f) => {
+    const relativePath = f.endsWith('/') ? join(relative(dir, f), '/') : relative(dir, f)
+    return {
+      filter: f,
+      isAbsolute: isAbsolute(f),
+      lowerCase: f.toLocaleLowerCase(),
+      relativeLowerCase: relativePath.toLocaleLowerCase(),
+    }
+  })
+  return testFiles.filter((t) => {
+    const testFile = relative(dir, t).toLocaleLowerCase()
+    return patterns.some((p) => {
+      // if filter is a full file path, we should include it if it's in the same folder
+      if (p.isAbsolute && t.startsWith(p.filter)) {
+        return true
+      }
+      return testFile.includes(p.lowerCase) || testFile.includes(p.relativeLowerCase)
+    })
+  })
 }

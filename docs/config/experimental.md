@@ -316,7 +316,7 @@ export default defineConfig({
 
 ## experimental.vcsProvider <Version type="experimental">实验性</Version> {#experimental-vcsprovider}
 
-- **类型：** `VCSProvider | string`
+- **类型：** `'git' | 'mtime' | VCSProvider | string`
 
 ```ts
 interface VCSProvider {
@@ -326,14 +326,55 @@ interface VCSProvider {
 interface VCSProviderOptions {
   root: string
   changedSince?: string | boolean
+  /** Resolves the dependencies of the test files of the run. */
+  resolver: ModulesResolver
+}
+
+interface ModulesResolver {
+  /**
+   * Every file whose change can affect the test files of the run.
+   */
+  getDependencies(): Promise<ModuleDependency[]>
+}
+
+interface ModuleDependency {
+  /** Absolute path of the file. */
+  file: string
+  /**
+   * Start time of the oldest run that recorded the file, in milliseconds.
+   * Not set when the dependency comes from the static module graph.
+   */
+  recordedAt?: number
 }
 ```
 
 - **默认值：** `'git'`
 
-用于检测变更文件的自定义提供者。与 [`--changed`](/guide/cli#changed) 标志一起使用，以确定哪些文件已被修改。
+用于检测变更文件的提供者。与 [`--changed`](/guide/cli#changed) 标志一起使用，以确定哪些文件已被修改。
 
-默认情况下，Vitest 使用 Git 来检测变更文件。你可以提供 `VCSProvider` 接口的自定义实现来使用不同的版本控制系统：
+Vitest 内置了两种提供者：
+
+- `'git'` 会返回与 `--changed` 参考提交不同的文件，以及已暂存和未跟踪的文件。
+- `'mtime'` <Version type="experimental">5.1.0</Version> 会返回修改时间晚于记录它们的那次运行的依赖项，以及已删除的依赖项。它需要启用 [`experimental.recordDependencies`](#experimental-recorddependencies)：没有记录的依赖项始终会被视为已更改，因此记录创建之前每个测试都会运行。此提供者不需要 Git，也会忽略 `--changed` 参考提交。一次 `--changed` 运行会更新其所运行测试的记录，因此下一次 `--changed` 运行只会选中依赖项在此后发生变化的测试，以及上次运行失败的测试文件。
+
+```ts [vitest.config.ts]
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    experimental: {
+      recordDependencies: true,
+      vcsProvider: 'mtime',
+    },
+  },
+})
+```
+
+::: warning
+`mtime` 提供者会根据运行测试的机器时钟比较文件时间。如果检出或复制文件时将文件时间设为过去的时间，则无法检测到这些文件。
+:::
+
+你可以提供 `VCSProvider` 接口的自定义实现来使用不同的版本控制系统。`options.resolver.getDependencies()` 会返回本次运行中测试文件依赖的所有文件，因此提供者可以将处理范围限制在这些文件内：
 
 ```ts [vitest.config.ts]
 import { defineConfig } from 'vitest/config'
@@ -342,8 +383,9 @@ export default defineConfig({
   test: {
     experimental: {
       vcsProvider: {
-        async findChangedFiles({ root, changedSince }) {
-          // 返回变更文件的路径
+        async findChangedFiles({ root, changedSince, resolver }) {
+          const dependencies = await resolver.getDependencies()
+          // return the paths of the changed files
           return []
         },
       },
@@ -375,7 +417,7 @@ export default {
 }
 ```
 
-## experimental.recordDependencies <Version type="experimental">5.0.4</Version> {#experimental-recorddependencies}
+## experimental.recordDependencies <Version type="experimental">5.1.0</Version> {#experimental-recorddependencies}
 
 - **类型:** `boolean`
 - **默认值:** `false`
@@ -416,6 +458,39 @@ Vitest 只记录自身加载的文件。通过 `fs` 读取的文件（例如测�
 如果禁用了 [`isolate`](/config/isolate)，在同一个工作线程中运行的测试文件会共享模块图。此时，记录可能包含前一个测试文件动态加载的模块，因此 `--changed` 可能会选中多于必要数量的测试，但不会少选。
 
 如果禁用了 [`experimental.viteModuleRunner`](#experimental-vitemodulerunner)，Vitest 会通过 [`module.registerHooks`](https://nodejs.org/api/module.html#moduleregisterhooksoptions) 的解析钩子记录导入项。不支持该 API 的 Node.js 版本不会写入记录，因此每个测试都会运行。
+:::
+
+## experimental.traceTimeline <Version type="experimental">5.1.0</Version> {#experimental-tracetimeline}
+
+- **类型：** `boolean`
+- **默认值：** `false`
+
+记录每个测试中的 [`expect.poll`](/api/expect#poll)、[`vi.waitFor`](/api/vi#vi-waitfor) 和 [`vi.waitUntil`](/api/vi#vi-waituntil) 步骤，并在测试失败时将它们作为时间线显示在错误信息下方。这样可以查看测试失败前等待了什么，以及每次等待花了多长时间，有助于排查等待服务器、队列或文件监听器时出现的不稳定测试。
+
+```ts [vitest.config.ts]
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    experimental: {
+      traceTimeline: true,
+    },
+  },
+})
+```
+
+<<< ./snippets/trace-timeline-failure.ansi [错误报告]
+
+只有失败的尝试才会报告步骤，因此此选项几乎不会给通过的测试带来额外开销。
+
+步骤位置的解析方式与错误堆栈相同，因此辅助文件中的步骤会指向该文件，而 [`vi.defineHelper`](/api/vi#vi-definehelper) 辅助函数中的步骤会指向调用该函数的代码行。
+
+`expect.poll`、`vi.waitFor` 和 `vi.waitUntil` 的 `message` 选项会用作步骤名称，例如上方报告中的 `user saved (vi.waitUntil)`。
+
+此选项在浏览器模式中无效；浏览器模式通过 [`browser.traceView`](/config/browser/traceview) 打印相同的时间线。
+
+::: warning
+`vi.waitFor`、`vi.waitUntil` 和全局 `expect` 中的轮询都会归属于当前正在运行的测试。当多个测试通过 [`test.concurrent`](/api/test#test-concurrent) 同时运行时，不会记录 `vi.waitFor` 和 `vi.waitUntil`，而全局 `expect` 中的轮询可能会出现在其他测试的时间线中。在并发测试中，请使用[测试上下文](/guide/test-context)中的 `expect`，以便将轮询记录到正确的测试中。
 :::
 
 ## experimental.nodeLoader <Version type="experimental">4.1.0</Version> {#experimental-nodeloader}

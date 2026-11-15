@@ -171,7 +171,7 @@ function state(): TestSuiteState
 - **skipped**：此套件在收集期间被跳过。
 
 ::: warning
-请注意，[测试模块](/api/advanced/test-module) 也有一个 `state` 方法返回相同的值，但如果模块尚未执行，它还可以返回额外的 `queued` 状态。
+请注意，[测试模块](/api/advanced/test-module)也有一个 `state` 方法，会返回相同的值；如果模块已排队但 Vitest 尚未收集其中的测试，该方法还会返回额外的 `queued` 状态。
 :::
 
 ## errors

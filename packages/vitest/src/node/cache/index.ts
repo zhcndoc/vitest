@@ -60,7 +60,8 @@ export class VitestCache {
   async _update(specifications: TestSpecification[], startTime: number): Promise<void> {
     await Promise.all([
       this._results.update(specifications, startTime),
-      this._dependencies.update(specifications),
+      this._dependencies.update(specifications, startTime),
+      this._modules.writeManifests(),
     ])
   }
 

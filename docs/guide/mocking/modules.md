@@ -188,7 +188,11 @@ expect(answer()).toBe(42)
 expect(answer).toHaveBeenCalled()
 ```
 
-被模拟的模块支持的一个好处是在实例及其原型之间共享状态。考虑这个模块：
+::: warning
+使用 `spy: true` 时，Vitest 不会复制导出的对象和类原型，而是直接将它们的方法替换为 spy。Node.js 内置模块和[外部化](/config/server#server-deps-external)依赖项只会求值一次，因此其他代码、`vi.importActual` 和 `require` 也能看到这些 spy。例如，`vi.mock(import('node:events'), { spy: true })` 会将 `EventEmitter.prototype.emit` 替换为 spy，使工作进程中的每个事件发射器都使用它。
+:::
+
+被模拟的模块支持的一个优点是可以在实例及其原型之间共享状态。请看这个模块：
 
 ```ts [answer.js]
 export class Answer {
@@ -326,7 +330,7 @@ console.log(__vitest_module_0__.answer())
 
 ### 浏览器模式
 
-Vitest 在浏览器模式中使用原生 ESM。这意味着我们不能那么容易地替换模块。相反，Vitest 拦截 fetch 请求（通过 playwright 的 `page.route` 或 Vite 插件 API，如果使用 `preview` 或 `webdriverio`），如果模块被模拟，则提供转换后的代码。
+Vitest 在浏览器模式中使用原生 ESM，因此无法轻易替换模块。相反，如果模块被模拟，Vitest 会拦截 fetch 请求（通过 Playwright 的 `page.route`，或在使用 `preview` 或 `webdriverio` 时通过 Vite 插件 API），并提供转换后的代码。启用实验性选项 [`browser.importMapMocks`](/config/browser/importmapmocks) 后，被模拟的模块会改由测试器文档中的导入映射提供，因此不会拦截请求。
 
 例如，如果模块被自动模拟，Vitest 可以解析静态导出并创建一个占位模块：
 

@@ -2,14 +2,16 @@ import type { ParsedStack, SerializedError } from '@vitest/utils'
 import type {
   File,
   Task,
+  TaskResultAttempt,
   TestAnnotation,
   TestBenchmark,
   TestBenchmarkTask,
 } from '../../runtime/runner/types'
-import type { AsyncLeak, TestError, UserConsoleLog } from '../../types/general'
+import type { AsyncLeak, UserConsoleLog } from '../../types/general'
 import type { Vitest } from '../core'
 import type { TestSpecification } from '../test-specification'
 import type { Reporter, TestRunEndReason } from '../types/reporter'
+import type { ErrorGroup } from './renderers/failures'
 import type {
   TestCase,
   TestCollection,
@@ -21,7 +23,7 @@ import type {
 } from './reported-tasks'
 import { readFileSync } from 'node:fs'
 import { performance } from 'node:perf_hooks'
-import { toArray } from '@vitest/utils/helpers'
+import { ordinal, toArray } from '@vitest/utils/helpers'
 import { parseStacktrace } from '@vitest/utils/source-map'
 import { relative } from 'pathe'
 import c from 'tinyrainbow'
@@ -43,9 +45,10 @@ import {
   padBenchRow,
   renderBenchmarkRow,
 } from './renderers/benchmark-table'
+import { groupTaskErrors } from './renderers/failures'
 import { F_CHECK, F_DOWN_RIGHT, F_POINTER } from './renderers/figures'
+import { formatTraceTimeline } from './renderers/trace-timeline'
 import {
-  countTestErrors,
   divider,
   errorBanner,
   formatProjectName,
@@ -502,6 +505,7 @@ export abstract class BaseReporter implements Reporter {
 
     if (hasFailedSnapshot(files)) {
       hints.unshift(c.dim('press ') + c.bold(c.yellow('u')) + c.dim(' to update snapshot'))
+      hints.unshift(c.dim('press ') + c.bold(c.yellow('i')) + c.dim(' to review snapshot fails'))
     } else {
       hints.push(c.dim('press ') + c.bold('q') + c.dim(' to quit'))
     }
@@ -670,12 +674,21 @@ export abstract class BaseReporter implements Reporter {
       related.length === 1 && !this.ctx.config.changed
         ? relative(this.ctx.config.root, related[0])
         : `${related.length} ${this.ctx.config.changed ? 'changed ' : ''}${noun(related.length, 'file', 'files')}`
+    const failed = result.failed ? `, ${result.failed} previously failed` : ''
 
     this.log(
       padSummaryTitle('Affected'),
       `${result.affected} of ${result.total} test files`,
-      c.dim(`(related to ${sources})`),
+      c.dim(`(related to ${sources}${failed})`),
     )
+  }
+
+  private printLastFailedSummary(): void {
+    const result = this.ctx._failedFilterResult
+    if (!result) {
+      return
+    }
+    this.log(padSummaryTitle('Last Failed'), `${result.selected} of ${result.total} test files`)
   }
 
   reportTestSummary(files: File[], errors: unknown[], leakCount: number): void {
@@ -697,6 +710,7 @@ export abstract class BaseReporter implements Reporter {
 
     this.log(padSummaryTitle('Test Files'), getStateString(affectedFiles))
     this.printSourceFilterSummary()
+    this.printLastFailedSummary()
     this.log(padSummaryTitle('Tests'), getStateString(tests))
 
     if (this.ctx.projects.some((c) => c.config.typecheck.enabled)) {
@@ -1274,21 +1288,22 @@ export abstract class BaseReporter implements Reporter {
 
     const failedSuites = suites.filter((i) => i.result?.errors)
     const failedTests = tests.filter((i) => i.result?.state === 'fail')
-    const failedTotal = countTestErrors(failedSuites) + countTestErrors(failedTests)
+    const suiteErrors = groupTaskErrors(failedSuites)
+    const testErrors = groupTaskErrors(failedTests)
+    const failedTotal = suiteErrors.length + testErrors.length
 
-    // TODO: error divider should take into account merged errors for counting
     let current = 1
     const errorDivider = () =>
       this.error(`${c.red(c.dim(divider(`[${current++}/${failedTotal}]`, undefined, 1)))}\n`)
 
     if (failedSuites.length) {
       this.error(`\n${errorBanner(`Failed Suites ${failedSuites.length}`)}\n`)
-      this.printTaskErrors(failedSuites, errorDivider)
+      this.printTaskErrors(suiteErrors, errorDivider)
     }
 
     if (failedTests.length) {
       this.error(`\n${errorBanner(`Failed Tests ${failedTests.length}`)}\n`)
-      this.printTaskErrors(failedTests, errorDivider)
+      this.printTaskErrors(testErrors, errorDivider)
     }
 
     if (errors.length) {
@@ -1447,47 +1462,29 @@ export abstract class BaseReporter implements Reporter {
     }
   }
 
-  private printTaskErrors(tasks: Task[], errorDivider: () => void) {
-    const errorsQueue: [error: TestError | undefined, tests: Task[]][] = []
-
-    for (const task of tasks) {
-      // Merge identical errors
-      task.result?.errors?.forEach((error) => {
-        let previous
-
-        if (error?.stack) {
-          previous = errorsQueue.find((i) => {
-            if (i[0]?.stack !== error.stack || i[0]?.diff !== error.diff) {
-              return false
-            }
-
-            const currentProjectName = (task as File)?.projectName || task.file?.projectName || ''
-            const projectName = (i[1][0] as File)?.projectName || i[1][0].file?.projectName || ''
-
-            const currentAnnotations = task.type === 'test' && task.annotations
-            const itemAnnotations = i[1][0].type === 'test' && i[1][0].annotations
-
-            return (
-              projectName === currentProjectName && deepEqual(currentAnnotations, itemAnnotations)
-            )
-          })
-        }
-
-        if (previous) {
-          previous[1].push(task)
-        } else {
-          errorsQueue.push([error, [task]])
-        }
-      })
-    }
-
-    for (const [error, tasks] of errorsQueue) {
-      for (const task of tasks) {
+  private printTaskErrors(groups: ErrorGroup[], errorDivider: () => void) {
+    for (const { error, sources } of groups) {
+      const tasks = sources.map(({ task }) => task)
+      const attemptsByTask = new Map<Task, (TaskResultAttempt | undefined)[]>()
+      for (const { task, attempt } of sources) {
+        attemptsByTask.set(task, [...(attemptsByTask.get(task) ?? []), attempt])
+      }
+      const screenshotPaths = [...attemptsByTask].flatMap(([task, attempts]) =>
+        [...new Set(attempts)].flatMap((attempt) =>
+          attempt ? getFailureScreenshotPaths(task, attempt) : [],
+        ),
+      )
+      for (const [task, attempts] of attemptsByTask) {
         const filepath = (task as File)?.filepath || ''
         const projectName = (task as File)?.projectName || task.file?.projectName || ''
         const project = this.ctx.projects.find((p) => p.name === projectName)
 
         let name = this.getFullName(task, separator)
+
+        const attemptLabel = formatErrorAttempts(task, attempts)
+        if (attemptLabel) {
+          name += c.dim(` (${attemptLabel})`)
+        }
 
         if (filepath) {
           name += c.dim(` [ ${this.relative(filepath)} ]`)
@@ -1499,25 +1496,23 @@ export abstract class BaseReporter implements Reporter {
         )
       }
 
-      const screenshotPaths = tasks.reduce<string[]>((paths, t) => {
-        if (t.type === 'test') {
-          for (const artifact of t.artifacts) {
-            if (artifact.type === 'internal:failureScreenshot') {
-              if (artifact.attachments.length) {
-                paths.push(artifact.attachments[0].originalPath)
-              }
-            }
-          }
-        }
-
-        return paths
-      }, [])
-
       this.ctx.logger.printError(error, {
         project: this.ctx.getProjectByName(tasks[0].file.projectName || ''),
         verbose: this.verbose,
         screenshotPaths,
       })
+
+      for (const [task, attempts] of attemptsByTask) {
+        for (const attempt of attempts) {
+          const timeline =
+            task.type === 'test' &&
+            attempt &&
+            formatTraceTimeline(task.artifacts, attempt, this.ctx.config.root)
+          if (timeline) {
+            this.error(`${timeline}\n`)
+          }
+        }
+      }
 
       if (tasks[0].type === 'test' && tasks[0].annotations.length) {
         const test = this.ctx.state.getReportedEntity(tasks[0]) as TestCase
@@ -1530,26 +1525,43 @@ export abstract class BaseReporter implements Reporter {
   }
 }
 
-function deepEqual(a: any, b: any): boolean {
-  if (a === b) {
-    return true
-  }
-  if (typeof a !== 'object' || typeof b !== 'object' || a === null || b === null) {
-    return false
-  }
+function formatErrorAttempts(task: Task, attempts: (TaskResultAttempt | undefined)[]): string {
+  const showAttempt = (task.result?.attempts?.length ?? 0) > 1
+  return [...Map.groupBy(attempts, (attempt) => attempt)]
+    .map(([attempt, occurrences]) => {
+      const label = showAttempt && attempt ? formatAttempt(attempt) : ''
+      const count = occurrences.length > 1 ? `${occurrences.length} times` : ''
+      return count && label ? `${count} in ${label}` : count || label
+    })
+    .filter(Boolean)
+    .join(', ')
+}
 
-  const keysA = Object.keys(a)
-  const keysB = Object.keys(b)
-  if (keysA.length !== keysB.length) {
-    return false
+function formatAttempt({ repeatIndex, retryIndex }: TaskResultAttempt): string {
+  const repeat = repeatIndex ? `${ordinal(repeatIndex)} repeat` : ''
+  const retry = retryIndex ? `${ordinal(retryIndex)} retry` : ''
+  if (repeat && retry) {
+    return `${retry} of ${repeat}`
   }
+  return repeat || retry || 'initial run'
+}
 
-  for (const key of keysA) {
-    if (!Object.hasOwn(b, key) || !deepEqual(a[key], b[key])) {
-      return false
+function getFailureScreenshotPaths(task: Task, attempt: TaskResultAttempt): string[] {
+  if (task.type !== 'test') {
+    return []
+  }
+  const paths: string[] = []
+  for (const artifact of task.artifacts) {
+    if (
+      artifact.type === 'internal:failureScreenshot' &&
+      artifact.attachments.length &&
+      artifact.retryIndex === attempt.retryIndex &&
+      artifact.repeatIndex === attempt.repeatIndex
+    ) {
+      paths.push(artifact.attachments[0].originalPath)
     }
   }
-  return true
+  return paths
 }
 
 function sum<T>(items: T[], cb: (_next: T) => number | undefined) {

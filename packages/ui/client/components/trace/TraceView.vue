@@ -1,10 +1,7 @@
 <script setup lang="ts">
+import type { NormalizedBrowserTraceData, NormalizedBrowserTraceEntry } from '@vitest/utils/trace'
 import type { SplitpanesResizedPayload } from 'splitpanes'
-import type {
-  NormalizedBrowserTraceData,
-  NormalizedBrowserTraceEntry,
-  TraceSelection,
-} from '~/composables/trace-view'
+import type { TraceSelection } from '~/composables/trace-view'
 import { createCache, createMirror, rebuild } from 'rrweb-snapshot'
 import { Pane, Splitpanes } from 'splitpanes'
 import { computed, ref, watch } from 'vue'
@@ -14,6 +11,7 @@ import {
   getTraceEntryClass,
   selectActiveTraceStep,
   showTraceSelectorHighlight,
+  useTraceSnapshotViewMode,
   useTraceZoom,
 } from '~/composables/trace-view'
 
@@ -24,6 +22,7 @@ const props = defineProps<{
 
 const entries = computed(() => props.trace.entries)
 const selectedStep = computed(() => entries.value[props.selection.selectedStepIndex])
+const { showAriaSnapshot } = useTraceSnapshotViewMode(() => props.trace)
 
 const iframeEl = ref<HTMLIFrameElement>()
 const iframeSandbox = computed(() => {
@@ -33,7 +32,7 @@ const iframeSandbox = computed(() => {
 })
 
 const { level: zoomLevel, setFitContainer } = useTraceZoom()
-const viewport = computed(() => selectedStep.value?.snapshot.viewport)
+const viewport = computed(() => selectedStep.value?.snapshot?.viewport)
 const scaledViewportStyle = computed(() =>
   viewport.value
     ? {
@@ -78,22 +77,34 @@ function onStepKeydown(event: KeyboardEvent, index: number) {
 
 watch(
   [selectedStep, iframeEl],
-  ([step, iframe]) => {
-    if (!step || !iframe) {
+  async ([step, iframe], _, onCleanup) => {
+    if (!step?.snapshot || !iframe) {
       return
+    }
+    // rrweb rebuilds the snapshot into the iframe document but leaves that
+    // document still loading. While the page is also loading, this blocks the
+    // page load event and the browser tab spins forever. Finishing the iframe
+    // document with `document.close()` would switch it to quirks mode, so wait
+    // for the page load before rebuilding instead.
+    // TODO: fix upstream so the rebuilt document can be closed in standards mode.
+    if (document.readyState !== 'complete') {
+      let cancelled = false
+      onCleanup(() => {
+        cancelled = true
+      })
+      await new Promise((resolve) => window.addEventListener('load', resolve, { once: true }))
+      if (cancelled) {
+        return
+      }
     }
     const { serialized, selectorIds, viewport, scroll, pseudoClassIds } = step.snapshot
     iframe.style.width = `${viewport.width}px`
     iframe.style.height = `${viewport.height}px`
     // Rebuild snapshot into iframe contentDocument — pattern from rrweb replayer:
     // https://github.com/rrweb-io/rrweb/blob/master/packages/rrweb/src/replay/index.ts
-    // doc.open/close resets the iframe document to a blank state before rebuild.
     // Unlike Playwright which serves snapshots via HTTP, this is fully client-side
     // but external resources (images, stylesheets) won't load without a server.
     const doc = iframe.contentDocument!
-    // TODO: rrweb also closes and opens the document during rebuild, so this reset may be redundant.
-    doc.open()
-    doc.close()
     const mirror = createMirror()
     // rrweb >=2.0 hardened the API to force sandbox iframe usage https://github.com/rrweb-io/rrweb/issues/1817. We already ensure the same manually so opt-out the guard by UNSAFE_allowUnprotectedRebuild
     rebuild(serialized, {
@@ -102,9 +113,6 @@ watch(
       mirror,
       UNSAFE_allowUnprotectedRebuild: true,
     })
-    // Close rrweb's parser after rebuilding. During page load, leaving it open
-    // prevents the parent load event, which browsers may show as an endless spinner.
-    doc.close()
     for (const [className, ids] of Object.entries(pseudoClassIds)) {
       for (const id of ids) {
         const el = mirror.getNode(id) as HTMLElement | null
@@ -267,11 +275,19 @@ function onSplitpanesResized({ panes }: SplitpanesResizedPayload) {
     </Pane>
     <Pane :size="traceViewSplitSizes[1]" min-size="20">
       <div :ref="setFitContainer" class="h-full min-h-0 flex flex-col overflow-auto">
-        <div
-          v-if="selectedStep"
-          class="mx-auto flex-none overflow-hidden"
-          :style="scaledViewportStyle"
-        >
+        <div v-if="!selectedStep" class="text-sm opacity-50 p-4">No trace step found</div>
+        <div v-else-if="!selectedStep.snapshot" class="text-sm opacity-50 p-4">
+          No snapshot captured for this trace step
+        </div>
+        <template v-else-if="showAriaSnapshot">
+          <pre
+            v-if="selectedStep.snapshot.ariaSnapshot != null"
+            data-testid="trace-aria-snapshot"
+            class="m-0 p-4 font-mono text-xs whitespace-pre"
+            >{{ selectedStep.snapshot.ariaSnapshot }}</pre>
+          <div v-else class="text-sm opacity-50 p-4">No aria snapshot for this step</div>
+        </template>
+        <div v-else class="mx-auto flex-none overflow-hidden" :style="scaledViewportStyle">
           <iframe
             ref="iframeEl"
             :key="iframeSandbox"
@@ -280,7 +296,6 @@ function onSplitpanesResized({ panes }: SplitpanesResizedPayload) {
             :style="{ transform: `scale(${zoomLevel})` }"
           />
         </div>
-        <div v-else class="text-sm opacity-50 p-4">No trace step found</div>
       </div>
     </Pane>
   </Splitpanes>
